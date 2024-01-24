@@ -10,6 +10,6 @@ java {
 
 dependencies{
     // Inject
-    implementation ("javax.inject:javax.inject:1")
+    implementation (Libraries.inject)
 
 }
