@@ -16,5 +16,4 @@ java {
 dependencies {
     // Inject
     implementation(Libraries.inject)
-
 }

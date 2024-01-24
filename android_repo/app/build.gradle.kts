@@ -63,7 +63,7 @@ dependencies {
     implementation(Libraries.retrofit)
     implementation(Libraries.retrofitGson)
 
-    //Okhttp
+    // Okhttp
     implementation(Libraries.okhttp)
     implementation(Libraries.okhttpLogging)
 }
