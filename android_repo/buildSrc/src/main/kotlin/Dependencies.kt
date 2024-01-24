@@ -6,7 +6,7 @@ object Versions {
     const val JUNIT = "4.13.2"
     const val ANDROIDX_JUNIT = "1.1.5"
     const val ESPRESSO_CORE = "3.5.1"
-    const val HILT = "2.44"
+    const val HILT = "2.48"
     const val INJECT = "1"
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.10.0"
