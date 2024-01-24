@@ -1,4 +1,5 @@
 package com.d101.domain.usecase.main
 
-class CheckTodayFruitUseCase {
+class GetTodayFruitUseCase {
+
 }
