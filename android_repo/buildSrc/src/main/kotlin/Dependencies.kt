@@ -8,6 +8,8 @@ object Versions {
     const val ESPRESSO_CORE = "3.5.1"
     const val HILT = "2.44"
     const val INJECT = "1"
+    const val RETROFIT = "2.9.0"
+    const val OKHTTP = "4.10.0"
 }
 
 object Libraries{
@@ -20,4 +22,6 @@ object Libraries{
     const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.HILT}"
     const val hiltCompiler = "com.google.dagger:hilt-compiler:${Versions.HILT}"
     const val inject = "javax.inject:javax.inject:${Versions.INJECT}"
+    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
+    const val okhttp = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
 }

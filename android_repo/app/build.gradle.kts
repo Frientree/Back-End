@@ -58,4 +58,10 @@ dependencies {
     // Hilt
     implementation(Libraries.hiltAndroid)
     kapt(Libraries.hiltCompiler)
+
+    // Retrofit
+    implementation(Libraries.retrofit)
+
+    //Okhttp
+    implementation(Libraries.okhttp)
 }
