@@ -5,5 +5,4 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class FrientreeApplication : Application() {
-    val a = 30
 }
