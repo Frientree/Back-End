@@ -1,5 +1,6 @@
 package com.d101.frientree.di
 
+import com.d101.data.api.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,4 +24,10 @@ object ApiModule {
         .client(okHttpClient)
         .addConverterFactory(gsonConverterFactory)
         .build()
+
+    @Singleton
+    @Provides
+    fun provideUserApi(
+        retrofit: Retrofit,
+    ): UserService = retrofit.create((UserService::class.java))
 }
