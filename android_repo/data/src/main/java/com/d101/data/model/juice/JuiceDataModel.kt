@@ -1,6 +1,6 @@
-package com.d101.data.model.calendar.response
+package com.d101.data.model.juice
 
-data class JuiceDataResponse(
+data class JuiceDataModel(
     val condolenceMessage: String,
     val juiceDescription: String,
     val juiceImageUrl: String,

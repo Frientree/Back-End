@@ -1,6 +1,6 @@
 package com.d101.data.model.juice.request
 
-data class JuiceCreateRequest(
+data class JuiceCreationRequest(
     val startDate: String,
     val endDate: String,
 )
