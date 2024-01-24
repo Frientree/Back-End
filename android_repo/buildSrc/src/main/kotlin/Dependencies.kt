@@ -23,5 +23,7 @@ object Libraries{
     const val hiltCompiler = "com.google.dagger:hilt-compiler:${Versions.HILT}"
     const val inject = "javax.inject:javax.inject:${Versions.INJECT}"
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.RETROFIT}"
+    const val retrofitGson = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
     const val okhttp = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
+    const val okhttpLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
 }

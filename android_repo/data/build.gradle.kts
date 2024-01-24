@@ -54,7 +54,9 @@ dependencies {
 
     // Retrofit
     implementation(Libraries.retrofit)
+    implementation(Libraries.retrofitGson)
 
     //Okhttp
     implementation(Libraries.okhttp)
+    implementation(Libraries.okhttpLogging)
 }
