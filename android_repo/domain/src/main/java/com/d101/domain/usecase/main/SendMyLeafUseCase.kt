@@ -1,4 +1,3 @@
 package com.d101.domain.usecase.main
 
-class SendMyLeafUseCase {
-}
+class SendMyLeafUseCase

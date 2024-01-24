@@ -1,4 +1,3 @@
 package com.d101.domain.usecase.main
 
-class MakeFruitByTextUseCase {
-}
+class MakeFruitByTextUseCase

@@ -1,5 +1,3 @@
 package com.d101.domain.usecase.main
 
-class DecideTodayFruitUseCase {
-
-}
+class DecideTodayFruitUseCase

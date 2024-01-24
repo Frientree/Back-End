@@ -1,4 +1,3 @@
 package com.d101.domain.usecase.mypage
 
-class ChangeBackgroundMusicUseCase {
-}
+class ChangeBackgroundMusicUseCase
