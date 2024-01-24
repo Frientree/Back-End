@@ -7,6 +7,7 @@ plugins {
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+
     ktlint {
         version.set("0.48.0")
     }
@@ -14,5 +15,5 @@ java {
 
 dependencies {
     // Inject
-    implementation("javax.inject:javax.inject:1")
+   implementation (Libraries.inject)
 }
