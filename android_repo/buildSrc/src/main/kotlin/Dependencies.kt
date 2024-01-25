@@ -13,6 +13,7 @@ object Versions {
     const val NAV_FRAGMENT = "2.7.6"
     const val NAV_UI = "2.7.6"
     const val VIEWMODEL = "2.7.0"
+    const val FRAGMENT = "1.6.2"
 }
 
 object Libraries {
@@ -32,4 +33,5 @@ object Libraries {
     const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:${Versions.NAV_FRAGMENT}"
     const val navigationUi = "androidx.navigation:navigation-ui-ktx:${Versions.NAV_UI}"
     const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
+    const val fragment = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT}"
 }
