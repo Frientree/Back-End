@@ -11,7 +11,6 @@ import com.d101.frientree.service.UserService;
 import com.d101.frientree.util.CustomJwtException;
 import com.d101.frientree.util.JwtUtil;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,12 +36,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserSignInResponseDTO signIn(UserSignInRequestDTO userSignInRequestDTO) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequestDTO.getUsername());
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequestDTO.getUserPw());
 
-        System.out.println(userSignInRequestDTO.getPassword());
+        System.out.println(userSignInRequestDTO.getUserPw());
         System.out.println(userDetails.getPassword());
 
-        if (!passwordEncoder.matches(userSignInRequestDTO.getPassword(), userDetails.getPassword())) {
+        if (!passwordEncoder.matches(userSignInRequestDTO.getUserPw(), userDetails.getPassword())) {
             // TODO: 비밀번호 불일치 커스텀 에러 처리 추가해야 합니다.
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
