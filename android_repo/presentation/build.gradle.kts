@@ -59,4 +59,10 @@ dependencies {
     // Navigation
     implementation(Libraries.navigationFragment)
     implementation(Libraries.navigationUi)
+
+    // ViewModel
+    implementation(Libraries.viewModel)
+
+    // Fragment
+    implementation(Libraries.fragment)
 }
