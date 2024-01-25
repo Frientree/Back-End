@@ -24,10 +24,12 @@ public class LeafDetail {
     private LeafCategory leafCategory;
 
     @Column(name = "leaf_complain")
-    private Long leafComplain;
+    @Builder.Default
+    private Long leafComplain = 0l;
 
     @Column(name = "leaf_view")
-    private Long leafView;
+    @Builder.Default
+    private Long leafView = 0l;
 
     @Column(name = "leaf_create_date")
     private Date leafCreateDate;
