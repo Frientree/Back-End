@@ -4,6 +4,7 @@
     <application android:theme="@style/Theme.Frientree">
         <activity
             android:name=".SplashActivity"
+            android:theme="@style/Theme.Splash"
             android:exported="true" >
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
