@@ -10,9 +10,10 @@ object Versions {
     const val INJECT = "1"
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.10.0"
+    const val VIEWMODEL = "2.7.0"
 }
 
-object Libraries{
+object Libraries {
     const val coreKtx = "androidx.core:core-ktx:${Versions.KOTLIN_VERSION}"
     const val appCompat = "androidx.appcompat:appcompat:${Versions.APP_COMPAT}"
     const val material = "com.google.android.material:material:${Versions.MATERIAL}"
@@ -26,4 +27,5 @@ object Libraries{
     const val retrofitGson = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
     const val okhttp = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
     const val okhttpLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
+    const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
 }
