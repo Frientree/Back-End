@@ -1,1 +1,5 @@
-<resources></resources>
+<resources>
+    <item name="base_tree_message" type="string">안녕 나는 프렌트리야!</item>
+    <item name="base_fruit_status_message" type="string">오늘의 열매가 아직 열리지 않았어요!</item>
+    <item name="create_fruit_button_text" type="string">오늘의 열매 만들기</item>
+</resources>
