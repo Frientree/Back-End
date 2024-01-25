@@ -12,9 +12,10 @@ object Versions {
     const val OKHTTP = "4.10.0"
     const val NAV_FRAGMENT = "2.7.6"
     const val NAV_UI = "2.7.6"
+    const val VIEWMODEL = "2.7.0"
 }
 
-object Libraries{
+object Libraries {
     const val coreKtx = "androidx.core:core-ktx:${Versions.KOTLIN_VERSION}"
     const val appCompat = "androidx.appcompat:appcompat:${Versions.APP_COMPAT}"
     const val material = "com.google.android.material:material:${Versions.MATERIAL}"
@@ -30,4 +31,5 @@ object Libraries{
     const val okhttpLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:${Versions.NAV_FRAGMENT}"
     const val navigationUi = "androidx.navigation:navigation-ui-ktx:${Versions.NAV_UI}"
+    const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
 }
