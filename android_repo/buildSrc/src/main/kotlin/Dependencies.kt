@@ -9,6 +9,7 @@ object Versions {
     const val HILT = "2.44"
     const val INJECT = "1"
     const val VIEWMODEL = "2.7.0"
+    const val FRAGMENT = "1.6.2"
 }
 
 object Libraries {
@@ -22,4 +23,5 @@ object Libraries {
     const val hiltCompiler = "com.google.dagger:hilt-compiler:${Versions.HILT}"
     const val inject = "javax.inject:javax.inject:${Versions.INJECT}"
     const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
+    const val fragment = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT}"
 }
