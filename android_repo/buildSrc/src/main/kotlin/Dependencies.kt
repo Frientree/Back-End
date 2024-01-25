@@ -10,6 +10,8 @@ object Versions {
     const val INJECT = "1"
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.10.0"
+    const val NAV_FRAGMENT = "2.7.6"
+    const val NAV_UI = "2.7.6"
 }
 
 object Libraries{
@@ -26,4 +28,6 @@ object Libraries{
     const val retrofitGson = "com.squareup.retrofit2:converter-gson:${Versions.RETROFIT}"
     const val okhttp = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
     const val okhttpLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
+    const val navigationFragment = "androidx.navigation:navigation-fragment-ktx:${Versions.NAV_FRAGMENT}"
+    const val navigationUi = "androidx.navigation:navigation-ui-ktx:${Versions.NAV_UI}"
 }

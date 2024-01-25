@@ -3,7 +3,7 @@
 
     <application android:theme="@style/Theme.Frientree">
         <activity
-            android:name=".MainActivity"
+            android:name=".main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />

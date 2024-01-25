@@ -55,4 +55,8 @@ dependencies {
     // Hilt
     implementation(Libraries.hiltAndroid)
     kapt(Libraries.hiltCompiler)
+
+    // Navigation
+    implementation(Libraries.navigationFragment)
+    implementation(Libraries.navigationUi)
 }
