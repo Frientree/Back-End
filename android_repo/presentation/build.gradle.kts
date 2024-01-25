@@ -65,4 +65,7 @@ dependencies {
 
     // Fragment
     implementation(Libraries.fragment)
+
+    // Lottie
+    implementation(Libraries.lottie)
 }
