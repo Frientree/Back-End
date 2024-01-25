@@ -18,14 +18,14 @@ public class LeafController {
     private final LeafService leafService;
 
     @GetMapping("/{category}")
-    private ResponseEntity<?> leafConfirmation(@PathVariable String category){
+    private ResponseEntity<LeafReadResponseDTO> leafConfirmation(@PathVariable String category){
         LeafReadResponseDTO readByLeafCategory = leafService.readByLeafCategory(category);
         return ResponseEntity.status(HttpStatus.OK).body(readByLeafCategory);
     }
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<?> leafGeneration(@RequestBody LeafCreateRequestDTO leafCreateRequestDTO) {
+    public ResponseEntity<LeafCreateResponseDTO> leafGeneration(@RequestBody LeafCreateRequestDTO leafCreateRequestDTO) {
         LeafCreateResponseDTO createdLeaf = leafService.createLeaf(leafCreateRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdLeaf);
     }

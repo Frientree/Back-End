@@ -31,7 +31,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "(message : \"해당 유저가 존재하지 않습니다.\", code : 404)\n")
     })
     @GetMapping("/{id}")
-    private ResponseEntity<?> userConfirmation(@PathVariable Long id){
+    private ResponseEntity<UserConfirmationRequestDTO> userConfirmation(@PathVariable Long id){
         UserConfirmationRequestDTO user = userService.getUser(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
@@ -43,7 +43,7 @@ public class UserController {
                     content = @Content(schema = @Schema(implementation = UserConfirmationRequestDTO.class))),
     })
     @GetMapping("/entirety")
-    private ResponseEntity<List<?>> userListConfirmation() {
+    private ResponseEntity<List<UserConfirmationRequestDTO>> userListConfirmation() {
         List<UserConfirmationRequestDTO> allUsers = userService.getAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(allUsers);
     }
@@ -55,7 +55,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "(message : \"입력 정보를 다시 확인해 주세요.\", code : 400)\n")
     })
     @PostMapping("/create")
-    public ResponseEntity<?> userGeneration(@Valid @RequestBody UserCreateRequestDTO userCreateRequestDTO) {
+    public ResponseEntity<UserCreateResponseDTO> userGeneration(@Valid @RequestBody UserCreateRequestDTO userCreateRequestDTO) {
         UserCreateResponseDTO createdUser = userService.createUser(userCreateRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
@@ -69,7 +69,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "(message : \"해당 유저는 존재하지 않습니다.\", code : 404)\n")
     })
     @PostMapping("/sign-in")
-    public ResponseEntity<?> signIn(@RequestBody UserSignInRequestDTO userSignInRequestDTO) {
+    public ResponseEntity<UserSignInResponseDTO> signIn(@RequestBody UserSignInRequestDTO userSignInRequestDTO) {
         UserSignInResponseDTO tokenData = userService.signIn(userSignInRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(tokenData);
     }
@@ -81,14 +81,14 @@ public class UserController {
                     content = @Content(schema = @Schema(implementation = UserSignInResponseDTO.class)))
     })
     @PostMapping("/tokens-refresh")
-    public ResponseEntity<?> tokenRefresh(@RequestBody UserTokenRefreshRequestDTO userTokenRefreshRequestDTO) {
+    public ResponseEntity<UserTokenRefreshResponseDTO> tokenRefresh(@RequestBody UserTokenRefreshRequestDTO userTokenRefreshRequestDTO) {
         UserTokenRefreshResponseDTO userTokenRefreshResponseDTO = userService.tokenRefresh(userTokenRefreshRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(userTokenRefreshResponseDTO);
     }
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping
-    public ResponseEntity<?> userNicknameModification(@RequestBody UserChangeNicknameRequestDTO userChangeNicknameRequestDTO) {
+    public ResponseEntity<UserChangeNicknameResponseDTO> userNicknameModification(@RequestBody UserChangeNicknameRequestDTO userChangeNicknameRequestDTO) {
         UserChangeNicknameResponseDTO newNickname = userService.changeUserNickname(userChangeNicknameRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(newNickname);
     }
