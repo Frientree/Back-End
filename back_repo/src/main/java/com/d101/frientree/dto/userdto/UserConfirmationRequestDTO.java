@@ -1,5 +1,6 @@
 package com.d101.frientree.dto.userdto;
 
+import com.d101.frientree.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,14 @@ public class UserConfirmationRequestDTO {
     private Date userCreateDate;
 
     private String userEmail;
+
+    public static UserConfirmationRequestDTO createUserConfirmationRequestDTO(User user){
+        return UserConfirmationRequestDTO.builder()
+                .userId(user.getUserId())
+                .userNickname(user.getUserNickname())
+                .userCreateDate(user.getUserCreateDate())
+                .userEmail(user.getUserEmail())
+                .build();
+    }
 
 }

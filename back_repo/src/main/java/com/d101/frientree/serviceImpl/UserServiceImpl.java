@@ -1,5 +1,6 @@
 package com.d101.frientree.serviceImpl;
 
+import com.d101.frientree.dto.user.response.UserConfirmationResponse;
 import com.d101.frientree.dto.userdto.*;
 import com.d101.frientree.entity.RefreshToken;
 import com.d101.frientree.entity.User;
@@ -12,6 +13,8 @@ import com.d101.frientree.util.CustomJwtException;
 import com.d101.frientree.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -141,16 +144,15 @@ public class UserServiceImpl implements UserService {
 
     // 유저 개별 조회
     @Override
-    public UserConfirmationRequestDTO getUser(Long id) {
+    public ResponseEntity<UserConfirmationResponse> getUser(Long id) {
         User currentUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
-
-        return UserConfirmationRequestDTO.builder()
-                .userId(currentUser.getUserId())
-                .userNickname(currentUser.getUserNickname())
-                .userCreateDate(currentUser.getUserCreateDate())
-                .userEmail(currentUser.getUserEmail())
-                .build();
+        UserConfirmationResponse response =
+                UserConfirmationResponse.createUserConfirmationResponse(
+                        "Success",
+                        UserConfirmationRequestDTO.createUserConfirmationRequestDTO(currentUser)
+                );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 유저 전체 조회
