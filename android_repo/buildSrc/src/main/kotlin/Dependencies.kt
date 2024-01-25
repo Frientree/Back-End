@@ -11,6 +11,7 @@ object Versions {
     const val RETROFIT = "2.9.0"
     const val OKHTTP = "4.10.0"
     const val VIEWMODEL = "2.7.0"
+    const val FRAGMENT = "1.6.2"
 }
 
 object Libraries {
@@ -28,4 +29,5 @@ object Libraries {
     const val okhttp = "com.squareup.okhttp3:okhttp:${Versions.OKHTTP}"
     const val okhttpLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
+    const val fragment = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT}"
 }
