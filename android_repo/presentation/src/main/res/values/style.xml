@@ -15,6 +15,36 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="Base.FTR.TITLE_TEXT" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.MENU_TEXT" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.MY_INFO_TEXT" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.SMALL_BUTTON_TEXT_BOLD" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.SMALL_BUTTON_TEXT" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="Base.FTR.MainButton" parent="@style/Widget.AppCompat.Button">
         <item name="android:textAppearance">@style/Base.FTR.BUTTON_TEXT</item>
         <item name="android:layout_width">wrap_content</item>
@@ -28,9 +58,11 @@
         <item name="android:background">@drawable/btn_white_green_36dp</item>
     </style>
 
-<!--    <style name="Base.FTR.Chip" parent="Widget.Material3.Chip.Filter">-->
-<!--        <item name="chipBackgroundColor">@drawable/chip_bg</item>-->
-<!--        <item name="android:textColor">@drawable/chip_text_color</item>-->
-<!--    </style>-->
+    <style name="Base.FTR.ELEVATED_BUTTON" parent="@style/Widget.AppCompat.Button">
+        <item name="fontFamily">@font/binggrae</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:gravity">center</item>
+    </style>
 
 </resources>
