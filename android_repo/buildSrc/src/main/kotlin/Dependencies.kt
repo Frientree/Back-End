@@ -8,9 +8,10 @@ object Versions {
     const val ESPRESSO_CORE = "3.5.1"
     const val HILT = "2.44"
     const val INJECT = "1"
+    const val VIEWMODEL = "2.7.0"
 }
 
-object Libraries{
+object Libraries {
     const val coreKtx = "androidx.core:core-ktx:${Versions.KOTLIN_VERSION}"
     const val appCompat = "androidx.appcompat:appcompat:${Versions.APP_COMPAT}"
     const val material = "com.google.android.material:material:${Versions.MATERIAL}"
@@ -20,4 +21,5 @@ object Libraries{
     const val hiltAndroid = "com.google.dagger:hilt-android:${Versions.HILT}"
     const val hiltCompiler = "com.google.dagger:hilt-compiler:${Versions.HILT}"
     const val inject = "javax.inject:javax.inject:${Versions.INJECT}"
+    const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
 }
