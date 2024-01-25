@@ -45,6 +45,24 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="Base.FTR.SMALL_DIALOG_TITLE" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.APP_BAR_TITLE_TEXT" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.DIALOG_TEXT" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="Base.FTR.MainButton" parent="@style/Widget.AppCompat.Button">
         <item name="android:textAppearance">@style/Base.FTR.BUTTON_TEXT</item>
         <item name="android:layout_width">wrap_content</item>

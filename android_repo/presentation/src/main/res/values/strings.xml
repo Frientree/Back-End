@@ -13,4 +13,6 @@
     <string name="terms">약관 및 개인정보 처리 방침</string>
     <string name="change_password">비밀번호 변경</string>
     <string name="log_out">로그아웃</string>
+    <string name="juice_name_example">선셋 오렌지</string>
+    <string name="juice_collection">주스 도감</string>
 </resources>
