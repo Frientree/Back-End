@@ -10,13 +10,13 @@ sealed interface ApiResult<out T> {
         ) : Failure
 
         data class NetworkError(val throwable: Throwable) : Failure
-        data class UnknownApiError(val throwable: Throwable) : Failure
+        data class UnexpectedError(val throwable: Throwable) : Failure
 
         fun getThrowable(): Throwable =
             when (this) {
                 is HttpError -> Throwable(message)
                 is NetworkError -> throwable
-                is UnknownApiError -> throwable
+                is UnexpectedError -> throwable
             }
     }
 
