@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_weight="1"
-            android:background="null"
+            android:background="@null"
             android:enabled="false"
             android:text="@string/nickname_example" />
 
