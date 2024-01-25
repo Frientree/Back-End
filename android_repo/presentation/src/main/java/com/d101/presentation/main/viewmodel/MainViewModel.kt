@@ -21,8 +21,6 @@ class MainViewModel @Inject constructor(
     private val getTodayFruitUseCase: GetTodayFruitUseCase,
     private val makeFruitBySpeechUseCase: MakeFruitBySpeechUseCase,
     private val makeFruitByTextUseCase: MakeFruitByTextUseCase,
-    private val sendMyLeafUseCase: SendMyLeafUseCase
-) : ViewModel(){
-
-
+    private val sendMyLeafUseCase: SendMyLeafUseCase,
+) : ViewModel() {
 }
