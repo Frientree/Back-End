@@ -16,10 +16,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  data:
-    redis:
-      host: localhost
-      port: 6379
 ---
 spring:
   config:
@@ -35,12 +31,11 @@ spring:
   config:
     activate:
       on-profile: redis_database
-  datasource:
-    #    url: jdbc:mysql://common-project-database.crcie0cgjdrg.ap-northeast-2.rds.amazonaws.com:3306/frientree?serverTimezone=Asia/Seoul&useSSL=false
-    url: jdbc:mysql://localhost:3306/frientree
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: qwer1234!
+  data:
+    redis:
+      host: ENC(Cgkhtl5xSuIYpZnuNHl9L4DX8FPC9Nmt)
+      port: 6379
+      password: ENC(DOf5N+J7yOd9alJSOQpnznXVO5finZ3Rf0xjPNyo4lQ=)
 ---
 spring:
   config:
