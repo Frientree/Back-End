@@ -3,6 +3,7 @@ package com.d101.frientree.controller;
 import com.d101.frientree.dto.user.request.*;
 import com.d101.frientree.dto.user.response.UserChangeNicknameResponse;
 import com.d101.frientree.dto.user.response.UserConfirmationResponse;
+import com.d101.frientree.dto.user.response.UserSignInResponse;
 import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "(message : \"해당 유저가 존재하지 않습니다.\", code : 404)\n")
     })
     @GetMapping("/{id}")
-    private ResponseEntity<UserConfirmationResponse> userConfirmation(@PathVariable Long id){
+    private ResponseEntity<UserConfirmationResponse> userConfirmation(@PathVariable Long id) {
         return userService.confirm(id);
     }
 
@@ -73,9 +74,8 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "(message : \"해당 유저는 존재하지 않습니다.\", code : 404)\n")
     })
     @PostMapping("/sign-in")
-    public ResponseEntity<UserSignInResponseDTO> signIn(@RequestBody UserSignInRequestDTO userSignInRequestDTO) {
-        UserSignInResponseDTO tokenData = userService.signIn(userSignInRequestDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(tokenData);
+    public ResponseEntity<UserSignInResponse> signIn(@RequestBody UserSignInRequest userSignInRequest) {
+        return userService.signIn(userSignInRequest);
     }
 
     // 토큰 재발급

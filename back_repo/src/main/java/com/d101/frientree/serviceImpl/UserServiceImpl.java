@@ -4,9 +4,11 @@ import com.d101.frientree.dto.user.UserDTO;
 import com.d101.frientree.dto.user.request.*;
 import com.d101.frientree.dto.user.response.UserChangeNicknameResponse;
 import com.d101.frientree.dto.user.response.UserConfirmationResponse;
+import com.d101.frientree.dto.user.response.UserSignInResponse;
 import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.entity.RefreshToken;
 import com.d101.frientree.entity.User;
+import com.d101.frientree.exception.PasswordNotMatchingException;
 import com.d101.frientree.exception.UserNotFoundException;
 import com.d101.frientree.repository.RefreshTokenRepository;
 import com.d101.frientree.repository.UserRepository;
@@ -42,16 +44,15 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    public UserSignInResponseDTO signIn(UserSignInRequestDTO userSignInRequestDTO) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequestDTO.getUserEmail());
-        System.out.println(userDetails);
+    public ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequest.getUserEmail());
 
-        System.out.println(userSignInRequestDTO.getUserPw());
-        System.out.println(userDetails.getPassword());
+        if (userDetails == null) {
+            throw new UserNotFoundException();
+        }
 
-        if (!passwordEncoder.matches(userSignInRequestDTO.getUserPw(), userDetails.getPassword())) {
-            // TODO: 비밀번호 불일치 커스텀 에러 처리 추가해야 합니다.
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        if (!passwordEncoder.matches(userSignInRequest.getUserPw(), userDetails.getPassword())) {
+            throw new PasswordNotMatchingException();
         }
 
         Map<String, Object> claims = new HashMap<>();
@@ -76,7 +77,11 @@ public class UserServiceImpl implements UserService {
                 .build();
         refreshTokenRepository.save(refreshTokenEntity);
 
-        return new UserSignInResponseDTO(accessToken, refreshToken);
+        UserSignInResponse response = UserSignInResponse.createUserConfirmationResponse(
+                "Login Success",
+                UserSignInResponseDTO.createUserSignInResponseDTO(accessToken, refreshToken));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     @Override
@@ -154,7 +159,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<UserConfirmationResponse> confirm(Long id) {
         User currentUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
+                .orElseThrow(UserNotFoundException::new);
         UserConfirmationResponse response = UserConfirmationResponse.createUserConfirmationResponse(
                 "Success",
                 UserConfirmationResponseDTO.createUserConfirmationResponseDTO(currentUser)
