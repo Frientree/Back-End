@@ -52,6 +52,9 @@ dependencies {
 
 	// 유효성 검사 로직
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	testImplementation 'com.h2database:h2'
+
 }
 
 tasks.named('bootBuildImage') {
@@ -61,3 +64,5 @@ tasks.named('bootBuildImage') {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+
