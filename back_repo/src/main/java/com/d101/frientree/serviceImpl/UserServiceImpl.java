@@ -44,10 +44,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserSignInResponseDTO signIn(UserSignInRequestDTO userSignInRequestDTO) {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequestDTO.getUserEmail());
-        System.out.println(userDetails);
-
-        System.out.println(userSignInRequestDTO.getUserPw());
-        System.out.println(userDetails.getPassword());
 
         if (!passwordEncoder.matches(userSignInRequestDTO.getUserPw(), userDetails.getPassword())) {
             // TODO: 비밀번호 불일치 커스텀 에러 처리 추가해야 합니다.

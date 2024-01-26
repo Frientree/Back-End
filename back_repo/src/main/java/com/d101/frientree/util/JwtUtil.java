@@ -6,13 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("deprecation")
 public class JwtUtil {
 
     private static final String key = "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
@@ -45,11 +45,11 @@ public class JwtUtil {
 
             SecretKey key = Keys.hmacShaKeyFor(JwtUtil.key.getBytes("UTF-8"));
 
-            claim = Jwts.parser()
-                    .verifyWith(key) // 수정된 부분
-                    .build() // JwtParserBuilder에서 JwtParser를 빌드
-                    .parseSignedClaims(token)
-                    .getPayload();
+            claim = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token) // 파싱 및 검증, 실패 시 에러
+                    .getBody();
 
         } catch (MalformedJwtException malformedJwtException) {
             throw new CustomJwtException("MalFormed");
@@ -66,12 +66,11 @@ public class JwtUtil {
     }
 
     public static Long getExpirationDateFromToken(String token) {
-        SecretKey key = new SecretKeySpec(JwtUtil.key.getBytes(), SignatureAlgorithm.HS256.getJcaName());
+        SecretKey key = Keys.hmacShaKeyFor(JwtUtil.key.getBytes());
         Claims claims = Jwts.parser()
-                .verifyWith(key) // 수정된 부분
-                .build() // JwtParserBuilder에서 JwtParser를 빌드
-                .parseSignedClaims(token)
-                .getPayload();
+                .setSigningKey(key)
+                .parseClaimsJws(token)
+                .getBody();
 
         return claims.getExpiration().getTime();
     }
