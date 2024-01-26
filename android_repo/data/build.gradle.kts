@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
+    id("com.google.protobuf") version "0.9.1"
 }
 
 android {
@@ -38,6 +39,21 @@ android {
     }
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.19.4"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     implementation(project(":domain"))
 
@@ -63,4 +79,9 @@ dependencies {
     // RoomDB
     implementation(Libraries.roomRuntime)
     kapt(Libraries.roomCompiler)
+
+    // DataStore
+    implementation(Libraries.dataStore)
+    implementation(Libraries.dataStoreCore)
+    implementation(Libraries.protoBuf)
 }

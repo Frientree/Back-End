@@ -81,4 +81,9 @@ dependencies {
 
     implementation(Libraries.roomRuntime)
     kapt(Libraries.roomCompiler)
+
+    // DataStore
+    implementation(Libraries.dataStore)
+    implementation(Libraries.dataStoreCore)
+    implementation(Libraries.protoBuf)
 }
