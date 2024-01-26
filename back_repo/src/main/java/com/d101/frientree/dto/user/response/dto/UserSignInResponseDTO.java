@@ -1,4 +1,4 @@
-package com.d101.frientree.dto.userdto;
+package com.d101.frientree.dto.user.response.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserSignInRequestDTO {
+public class UserSignInResponseDTO {
 
-    private String userEmail;
+    private String accessToken;
 
-    private String userPw;
+    private String refreshToken;
 }

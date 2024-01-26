@@ -1,13 +1,11 @@
 package com.d101.frientree.security;
 
-import com.d101.frientree.dto.userdto.UserDTO;
+import com.d101.frientree.dto.user.UserDTO;
 import com.d101.frientree.entity.User;
 import com.d101.frientree.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -35,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         List<String> roles = Collections.singletonList("USER");
-        return new UserDTO(user.getUserEmail(), user.getUserPassword(), roles);
+        return new UserDTO(String.valueOf(user.getUserId()), user.getUserPassword(), roles);
     }
 
 }

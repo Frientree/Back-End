@@ -1,15 +1,15 @@
-package com.d101.frientree.dto.userdto;
+package com.d101.frientree.dto.user.response.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class UserSignInResponseDTO {
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+public class UserTokenRefreshResponseDTO {
 
     private String accessToken;
 

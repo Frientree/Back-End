@@ -1,12 +1,8 @@
-package com.d101.frientree.dto.userdto;
+package com.d101.frientree.dto.user;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +11,7 @@ public class UserDTO extends User {
 
     public UserDTO(String username, String password, List<String> roleNames) {
         super(
-                username,
+                String.valueOf(username),
                 password,
                 roleNames.stream().map(str -> new SimpleGrantedAuthority("ROLE_" + str)).collect(Collectors.toList()));
     }

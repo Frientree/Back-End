@@ -1,8 +1,8 @@
 package com.d101.frientree.service;
 
-import com.d101.frientree.dto.leafdto.LeafCreateRequestDTO;
-import com.d101.frientree.dto.leafdto.LeafCreateResponseDTO;
-import com.d101.frientree.dto.leafdto.LeafReadResponseDTO;
+import com.d101.frientree.dto.leaf.response.dto.LeafCreateRequestDTO;
+import com.d101.frientree.dto.leaf.response.dto.LeafCreateResponseDTO;
+import com.d101.frientree.dto.leaf.response.dto.LeafReadResponseDTO;
 
 public interface LeafService {
 

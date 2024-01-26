@@ -1,8 +1,8 @@
 package com.d101.frientree.serviceImpl;
 
-import com.d101.frientree.dto.leafdto.LeafCreateRequestDTO;
-import com.d101.frientree.dto.leafdto.LeafCreateResponseDTO;
-import com.d101.frientree.dto.leafdto.LeafReadResponseDTO;
+import com.d101.frientree.dto.leaf.response.dto.LeafCreateRequestDTO;
+import com.d101.frientree.dto.leaf.response.dto.LeafCreateResponseDTO;
+import com.d101.frientree.dto.leaf.response.dto.LeafReadResponseDTO;
 import com.d101.frientree.entity.LeafCategory;
 import com.d101.frientree.entity.LeafDetail;
 import com.d101.frientree.repository.LeafRepository;
@@ -15,7 +15,6 @@ import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor

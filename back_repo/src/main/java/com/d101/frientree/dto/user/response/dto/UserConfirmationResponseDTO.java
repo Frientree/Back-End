@@ -1,18 +1,14 @@
-package com.d101.frientree.dto.userdto;
+package com.d101.frientree.dto.user.response.dto;
 
 import com.d101.frientree.entity.User;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserConfirmationRequestDTO {
+public class UserConfirmationResponseDTO {
 
     private Long userId;
 
@@ -22,8 +18,8 @@ public class UserConfirmationRequestDTO {
 
     private String userEmail;
 
-    public static UserConfirmationRequestDTO createUserConfirmationRequestDTO(User user){
-        return UserConfirmationRequestDTO.builder()
+    public static UserConfirmationResponseDTO createUserConfirmationResponseDTO(User user) {
+        return UserConfirmationResponseDTO.builder()
                 .userId(user.getUserId())
                 .userNickname(user.getUserNickname())
                 .userCreateDate(user.getUserCreateDate())

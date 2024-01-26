@@ -1,7 +1,10 @@
 package com.d101.frientree.serviceImpl;
 
+import com.d101.frientree.dto.user.UserDTO;
+import com.d101.frientree.dto.user.request.*;
+import com.d101.frientree.dto.user.response.UserChangeNicknameResponse;
 import com.d101.frientree.dto.user.response.UserConfirmationResponse;
-import com.d101.frientree.dto.userdto.*;
+import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.entity.RefreshToken;
 import com.d101.frientree.entity.User;
 import com.d101.frientree.exception.UserNotFoundException;
@@ -13,6 +16,7 @@ import com.d101.frientree.util.CustomJwtException;
 import com.d101.frientree.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -26,10 +30,10 @@ import org.springframework.stereotype.Service;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -39,7 +43,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserSignInResponseDTO signIn(UserSignInRequestDTO userSignInRequestDTO) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequestDTO.getUserPw());
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequestDTO.getUserEmail());
+        System.out.println(userDetails);
 
         System.out.println(userSignInRequestDTO.getUserPw());
         System.out.println(userDetails.getPassword());
@@ -76,14 +81,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserTokenRefreshResponseDTO tokenRefresh(UserTokenRefreshRequestDTO userTokenRefreshRequestDTO) {
+
         String clientRefreshToken = userTokenRefreshRequestDTO.getRefreshToken();
 
-        // If the refresh token does not exist in the request, throw an exception.
         if (clientRefreshToken == null) {
             throw new CustomJwtException("NULL_REFRESH");
         }
 
-        // Check if the refresh token exists in the Redis store
         Optional<RefreshToken> refreshTokenOptional =
                 refreshTokenRepository.findById(clientRefreshToken);
 
@@ -94,7 +98,6 @@ public class UserServiceImpl implements UserService {
         RefreshToken serverRefreshToken = refreshTokenOptional.get();
         String username = serverRefreshToken.getUsername();
 
-        // If the refresh token is valid, generate new access token
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", username);
 
@@ -102,8 +105,6 @@ public class UserServiceImpl implements UserService {
         claims.put("roleNames", userDetails.getAuthorities());
         String newAccessToken = JwtUtil.generateToken(claims, 5);
 
-        // Generate new refresh token if it is less than an hour until the expiration of the
-        // refresh token, and save it in the Redis store.
         if (checkTime(serverRefreshToken.getExpiryDate())) {
             String newRefreshToken = JwtUtil.generateToken(claims, 10);
             Long newRefreshTokenExpiry = JwtUtil.getExpirationDateFromToken(newRefreshToken);
@@ -118,62 +119,53 @@ public class UserServiceImpl implements UserService {
                     .refreshToken(newRefreshToken)
                     .build();
         }
-        // If it is more than an hour until the expiration of the refresh token, return the existing refresh token.
+
         return UserTokenRefreshResponseDTO.builder()
                 .accessToken(newAccessToken)
                 .refreshToken(serverRefreshToken.getRefreshToken())
                 .build();
     }
 
+    // 유저 닉네임 변경
     @Override
     @Transactional
-    public UserChangeNicknameResponseDTO changeUserNickname(UserChangeNicknameRequestDTO userChangeNicknameRequestDTO) {
+    public ResponseEntity<UserChangeNicknameResponse> modifyNickname(UserChangeNicknameRequest userChangeNicknameRequest) {
 
+        // 현재 접속한 유저 정보
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-
-        User currentUser = userRepository.findByUserEmail(userEmail)
+        // jwt에서 가져온 유저 정보의 username에는 String으로 묶어놓은 userId가 들어가 있습니다.
+        String userId = authentication.getName();
+        // 유저 정보를 찾을때는 findById에서 userId를 Long으로 바꿔줘야 합니다.
+        User currentUser = userRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
 
-        currentUser.setUserNickname(userChangeNicknameRequestDTO.getUserNickname());
+        currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
 
-        return UserChangeNicknameResponseDTO.builder()
-                .userNickname(userChangeNicknameRequestDTO.getUserNickname())
-                .build();
+        UserChangeNicknameResponse response = UserChangeNicknameResponse.createUserChangeNicknameResponse(
+                "Success",
+                UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(
+                        UserChangeNicknameRequest.createUserChangeNicknameRequest(currentUser)
+                ));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 유저 개별 조회
     @Override
-    public ResponseEntity<UserConfirmationResponse> getUser(Long id) {
+    public ResponseEntity<UserConfirmationResponse> confirm(Long id) {
         User currentUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("해당 유저가 존재하지 않습니다."));
-        UserConfirmationResponse response =
-                UserConfirmationResponse.createUserConfirmationResponse(
-                        "Success",
-                        UserConfirmationRequestDTO.createUserConfirmationRequestDTO(currentUser)
-                );
+        UserConfirmationResponse response = UserConfirmationResponse.createUserConfirmationResponse(
+                "Success",
+                UserConfirmationResponseDTO.createUserConfirmationResponseDTO(currentUser)
+        );
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 유저 전체 조회
     @Override
-    public List<UserConfirmationRequestDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-
-        return users.stream()
-                .map(this::convertToReadResponseDTO)
-                .collect(Collectors.toList());
-    }
-
-
-    private UserConfirmationRequestDTO convertToReadResponseDTO(User user) {
-        return UserConfirmationRequestDTO.builder()
-                .userId(user.getUserId())
-                .userNickname(user.getUserNickname())
-                .userCreateDate(user.getUserCreateDate())
-                .userEmail(user.getUserEmail())
-                // 나머지 필드들도 추가
-                .build();
+    public List<UserConfirmationResponseDTO> listConfirm() {
+        return null;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.d101.frientree.dto.userdto;
+package com.d101.frientree.dto.user.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

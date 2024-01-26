@@ -1,7 +1,9 @@
 package com.d101.frientree.controller;
 
+import com.d101.frientree.dto.user.request.*;
+import com.d101.frientree.dto.user.response.UserChangeNicknameResponse;
 import com.d101.frientree.dto.user.response.UserConfirmationResponse;
-import com.d101.frientree.dto.userdto.*;
+import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
+@Log4j2
 public class UserController {
 
     private final UserService userService;
@@ -28,23 +32,23 @@ public class UserController {
     @Operation(summary = "단일 유저 조회", description = "개별 유저를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserConfirmationRequestDTO.class))),
+                    content = @Content(schema = @Schema(implementation = UserConfirmationResponseDTO.class))),
             @ApiResponse(responseCode = "404", description = "(message : \"해당 유저가 존재하지 않습니다.\", code : 404)\n")
     })
     @GetMapping("/{id}")
     private ResponseEntity<UserConfirmationResponse> userConfirmation(@PathVariable Long id){
-        return userService.getUser(id);
+        return userService.confirm(id);
     }
 
     // 유저 전체 조회
     @Operation(summary = "전체 유저 조회", description = "전체 유저를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserConfirmationRequestDTO.class))),
+                    content = @Content(schema = @Schema(implementation = UserConfirmationResponseDTO.class))),
     })
     @GetMapping("/entirety")
-    private ResponseEntity<List<UserConfirmationRequestDTO>> userListConfirmation() {
-        List<UserConfirmationRequestDTO> allUsers = userService.getAllUsers();
+    private ResponseEntity<List<UserConfirmationResponseDTO>> userListConfirmation() {
+        List<UserConfirmationResponseDTO> allUsers = userService.listConfirm();
         return ResponseEntity.status(HttpStatus.OK).body(allUsers);
     }
 
@@ -88,9 +92,8 @@ public class UserController {
 
     @PreAuthorize("isAuthenticated()")
     @PutMapping
-    public ResponseEntity<UserChangeNicknameResponseDTO> userNicknameModification(@RequestBody UserChangeNicknameRequestDTO userChangeNicknameRequestDTO) {
-        UserChangeNicknameResponseDTO newNickname = userService.changeUserNickname(userChangeNicknameRequestDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(newNickname);
+    public ResponseEntity<UserChangeNicknameResponse> userNicknameModification(@RequestBody UserChangeNicknameRequest userChangeNicknameRequest) {
+        return userService.modifyNickname(userChangeNicknameRequest);
     }
 
 }
