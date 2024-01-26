@@ -44,12 +44,8 @@ public class UserServiceImpl implements UserService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    public UserSignInResponseDTO signIn(UserSignInRequestDTO userSignInRequestDTO) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequestDTO.getUserEmail());
-        System.out.println(userDetails);
-
-        System.out.println(userSignInRequestDTO.getUserPw());
-        System.out.println(userDetails.getPassword());
+    public ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest) {
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequest.getUserEmail());
 
         if (!passwordEncoder.matches(userSignInRequest.getUserPw(), userDetails.getPassword())) {
             throw new PasswordNotMatchingException();
