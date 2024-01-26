@@ -1,0 +1,98 @@
+package com.d101.frientree.security.filter;
+
+import com.d101.frientree.dto.user.UserDTO;
+import com.d101.frientree.util.JwtUtil;
+import com.google.gson.Gson;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Log4j2
+public class JwtCheckFilter extends OncePerRequestFilter {
+
+    // 해당 경로들은 jwt 토큰 체크를 진행하지 않고 통과시킨다
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+
+        // Preflight요청은 체크하지 않음
+        if (request.getMethod().equals("OPTIONS")) {
+            return true;
+        }
+
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/users/sign-in")) {
+            return true;
+        }
+
+        if (path.startsWith("/users/create")) {
+            return true;
+        }
+
+        if (path.startsWith("/v3/api-docs")) {
+            return true;
+        }
+
+        if (path.startsWith("/swagger-ui")) {
+            return true;
+        }
+
+        if (path.startsWith("/swagger-resources")) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws IOException {
+
+        String authHeaderStr = request.getHeader("Authorization");
+        // Bearer // 7 Jwt 문자열
+        try {
+            String accessToken = authHeaderStr.substring(7);
+            Map<String, Object> claims = JwtUtil.validateToken(accessToken);
+
+            String username = (String) claims.get("username");
+
+            List<LinkedHashMap<String, String>> authorityClaims = (List<LinkedHashMap<String, String>>) claims.get("roleNames");
+            List<String> roleNames = authorityClaims.stream()
+                    .map(authMap -> authMap.get("authority"))
+                    .collect(Collectors.toList());
+
+            UserDTO userDTO = new UserDTO(username, "", roleNames);
+
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDTO, "", userDTO.getAuthorities());
+
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+            filterChain.doFilter(request, response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Gson gson = new Gson();
+            String msg = gson.toJson(Map.of("error", "ERROR_ACCESS_TOKEN"));
+
+            response.setContentType("application/json");
+            PrintWriter printWriter = response.getWriter();
+            printWriter.println(msg);
+            printWriter.close();
+        }
+
+    }
+
+}

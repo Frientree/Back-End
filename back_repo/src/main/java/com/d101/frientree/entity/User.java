@@ -1,11 +1,9 @@
 package com.d101.frientree.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -17,8 +15,9 @@ import java.util.Date;
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private String userId;
+    private Long userId;
 
     @Column(name = "user_password")
     private String userPassword;
@@ -26,8 +25,12 @@ public class User {
     @Column(name = "user_nickname")
     private String userNickname;
 
+    @Column(name = "user_email", unique = true)
+    private String userEmail;
+
+    @Builder.Default
     @Column(name = "user_disabled")
-    private Boolean userDisabled;
+    private Boolean userDisabled = false;
 
     @Column(name = "user_create_date")
     private Date userCreateDate;
@@ -35,13 +38,16 @@ public class User {
     @Column(name = "user_login_type")
     private Long userLoginType;
 
+    @Builder.Default
     @Column(name = "user_leaf_status")
-    private Boolean userLeafStatus;
+    private Boolean userLeafStatus = true;
 
+    @Builder.Default
     @Column(name = "user_notification")
-    private Boolean userNotification;
+    private Boolean userNotification = false;
 
+    @Builder.Default
     @Column(name = "user_fruit_status")
-    private Boolean userFruitStatus;
+    private Boolean userFruitStatus = true;
 
 }

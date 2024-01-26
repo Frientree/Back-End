@@ -1,17 +1,3 @@
-server:
-  port: 8080
-
-spring:
-  datasource:
-    url: jdbc:mysql://common-project-database.crcie0cgjdrg.ap-northeast-2.rds.amazonaws.com:3306/frientree?serverTimezone=Asia/Seoul&useSSL=false
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: developer101project
-
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
 ---
 spring:
   profiles:
@@ -19,45 +5,37 @@ spring:
       development:
         - common
         - development_database
+        - redis_database
         - port_8080
-      production-set1:
-        - common
-        - production_database
-        - port_9001
-      production-set2:
-        - common
-        - production_database
-        - port_9002
 ---
 spring:
   config:
     activate:
       on-profile: common
-  datasource:
-    url: jdbc:mysql://common-project-database.crcie0cgjdrg.ap-northeast-2.rds.amazonaws.com:3306/frientree?serverTimezone=Asia/Seoul&useSSL=false
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: developer101project
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
 ---
 spring:
   config:
     activate:
       on-profile: development_database
   datasource:
-    url: jdbc:mysql://common-project-database.crcie0cgjdrg.ap-northeast-2.rds.amazonaws.com:3306/frientree?serverTimezone=Asia/Seoul&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: developer101project
+    url: ENC(5VmlmJzwK8Wl0YZ+08bElqi4AmerTFbfqCle6s/ucKDAiR2ckXXbWsXi7hfXkoe7MbwGk6SLi9UgJerCcws7Oq18eC3Co71RodeVBajFtL0l0Eb7yPEBUVsYM9PCm+vPjRHZ6MZ0DrTwb69PwqVzXRgMKH6BaAS4LI789qkO/S2gKdbMNKVWGa+Ne8D7z6sW)
+    username: ENC(Wmdoe6sX+spc2raHZtOCtw==)
+    password: ENC(IUVsZMmnF+rgf67lv+IS7Yi+lSWjjABmtHjsjcfIgho=)
 ---
 spring:
   config:
     activate:
-      on-profile: production_database
-  datasource:
-    url: jdbc:mysql://common-project-database.crcie0cgjdrg.ap-northeast-2.rds.amazonaws.com:3306/frientree?serverTimezone=Asia/Seoul&useSSL=false
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: developer101project
+      on-profile: redis_database
+  data:
+    redis:
+      host: ENC(Cgkhtl5xSuIYpZnuNHl9L4DX8FPC9Nmt)
+      port: 6379
+      password: ENC(DOf5N+J7yOd9alJSOQpnznXVO5finZ3Rf0xjPNyo4lQ=)
 ---
 spring:
   config:
@@ -66,23 +44,10 @@ spring:
 server:
   port: 8080
 ---
-spring:
-  config:
-    activate:
-      on-profile: port_9001
-server:
-  port: 9001
----
-spring:
-  config:
-    activate:
-      on-profile: port_9002
-server:
-  port: 9002
----
-
-
 
 logging:
   level:
-    com.project.awesomegroup : info
+    com.d101.frientree : info
+    org.hibernate.SQL: trace
+    org.springframework.security: trace
+    com.example.demo.JwtCheckFilter: DEBUG
