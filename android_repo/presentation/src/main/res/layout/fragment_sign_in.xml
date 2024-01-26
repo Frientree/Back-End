@@ -70,19 +70,32 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/find_password"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
         app:layout_constraintEnd_toEndOf="@+id/input_password_edit_text"
         app:layout_constraintStart_toEndOf="@id/divider_text_view"
         app:layout_constraintTop_toBottomOf="@+id/input_password_edit_text" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/sign_in_button"
+        style="@style/Base.FTR.MainButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/sign_in"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/find_password_text_view" />
 
     <ImageButton
         android:id="@+id/kakao_login_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="@android:color/transparent"
         android:src="@drawable/kakao_login_medium_narrow"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/find_password_text_view" />
+        app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>
