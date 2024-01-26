@@ -56,6 +56,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException {
@@ -82,7 +83,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("An error occurred during sign-in process", e);
 
             Gson gson = new Gson();
             String msg = gson.toJson(Map.of("error", "ERROR_ACCESS_TOKEN"));
