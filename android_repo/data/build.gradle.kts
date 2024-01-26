@@ -59,4 +59,8 @@ dependencies {
     // Okhttp
     implementation(Libraries.okhttp)
     implementation(Libraries.okhttpLogging)
+
+    // RoomDB
+    implementation(Libraries.roomRuntime)
+    implementation(Libraries.roomCompiler)
 }

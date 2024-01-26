@@ -12,6 +12,7 @@ object Versions {
     const val OKHTTP = "4.10.0"
     const val VIEWMODEL = "2.7.0"
     const val FRAGMENT = "1.6.2"
+    const val ROOM_DB = "2.5.0"
 }
 
 object Libraries {
@@ -30,4 +31,6 @@ object Libraries {
     const val okhttpLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.OKHTTP}"
     const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.VIEWMODEL}"
     const val fragment = "androidx.fragment:fragment-ktx:${Versions.FRAGMENT}"
+    const val roomRuntime = "androidx.room:room-runtime:${Versions.ROOM_DB}"
+    const val roomCompiler = "androidx.room:room-compiler:${Versions.ROOM_DB}"
 }
