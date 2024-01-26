@@ -1,6 +1,7 @@
 package com.d101.frientree.di
 
 import com.d101.data.api.UserService
+import com.d101.data.network.ResultCallAdapter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,6 +24,7 @@ object ApiModule {
         .baseUrl("")
         .client(okHttpClient)
         .addConverterFactory(gsonConverterFactory)
+        .addCallAdapterFactory(ResultCallAdapter.Factory())
         .build()
 
     @Singleton
