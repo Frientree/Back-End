@@ -26,15 +26,16 @@ sealed interface ApiResult<out T> {
     val isFailure: Boolean
         get() = this is Failure
 
-    fun getOrDefault(default: @UnsafeVariance T): T =
-        when (this) {
-            is Success -> data
-            is Failure -> default
-        }
-
     fun getOrThrow(): T =
         when (this) {
             is Success -> data
             is Failure -> throw handleThrowable()
         }
+}
+
+fun <T> ApiResult<T>.getOrDefault(
+    defaultValue: T,
+): T = when (this) {
+    is ApiResult.Success -> data
+    is ApiResult.Failure -> defaultValue
 }
