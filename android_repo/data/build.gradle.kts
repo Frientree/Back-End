@@ -62,5 +62,5 @@ dependencies {
 
     // RoomDB
     implementation(Libraries.roomRuntime)
-    implementation(Libraries.roomCompiler)
+    annotationProcessor(Libraries.roomCompiler)
 }
