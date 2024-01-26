@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Base.FTR.TITLE_TEXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/my_info" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/leaf1_rotated" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Base.FTR.MENU_TEXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="@string/id" />
+
+        <TextView
+            android:id="@+id/id_text_view"
+            style="@style/Base.FTR.MY_INFO_TEXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/email_example" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Base.FTR.MENU_TEXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="@string/nickname" />
+
+        <EditText
+            android:id="@+id/nickname_edit_text"
+            style="@style/Base.FTR.MY_INFO_TEXT"
+            android:layout_width="0dp"
+            android:inputType="text"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:enabled="false"
+            android:text="@string/nickname_example" />
+
+        <ImageView
+            android:id="@+id/nickname_edit_button_image_view"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="32dp"
+            android:src="@drawable/pencil" />
+
+        <TextView
+            android:id="@+id/nickname_confirm_button_text_view"
+            style="@style/Base.FTR.SMALL_BUTTON_TEXT_BOLD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/btn_small_confirm"
+            android:text="@string/confirm"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Base.FTR.MENU_TEXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="@string/set_alarm" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/alarm_on_button_text_view"
+            style="@style/Base.FTR.SMALL_BUTTON_TEXT_BOLD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_small_confirm_green"
+            android:gravity="center"
+            android:text="@string/on" />
+
+        <TextView
+            android:id="@+id/alarm_off_button_text_view"
+            style="@style/Base.FTR.SMALL_BUTTON_TEXT_BOLD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/btn_small_confirm"
+            android:text="@string/off" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/Base.FTR.MENU_TEXT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="@string/background_music" />
+
+        <TextView
+            android:id="@+id/music_text_view"
+            style="@style/Base.FTR.MY_INFO_TEXT"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="@string/music_example" />
+
+        <ImageView
+            android:id="@+id/background_music_on_off_button_image_view"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/sound" />
+
+
+        <TextView
+            android:id="@+id/background_music_change_button_text_view"
+            style="@style/Base.FTR.SMALL_BUTTON_TEXT_BOLD"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/btn_small_confirm_green"
+            android:gravity="center"
+            android:text="@string/background_music" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/terms_button_text_view"
+        style="@style/Base.FTR.ELEVATED_BUTTON"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/btn_white_green_36dp"
+        android:text="@string/terms"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="32dp">
+
+        <TextView
+            android:id="@+id/change_password_button_text_view"
+            style="@style/Base.FTR.ELEVATED_BUTTON"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_white_lightgray_36dp"
+            android:text="@string/change_password"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/log_out_button_text_view"
+            style="@style/Base.FTR.ELEVATED_BUTTON"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_white_lightgray_36dp"
+            android:text="@string/log_out"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/tree1" />
+
+
+</androidx.appcompat.widget.LinearLayoutCompat>

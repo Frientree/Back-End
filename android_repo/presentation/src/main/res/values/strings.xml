@@ -1,1 +1,22 @@
-<resources></resources>
+<resources>
+    <string name="my_info">내 정보</string>
+    <string name="id">아이디</string>
+    <string name="nickname">닉네임</string>
+    <string name="email_example">frientree@gmail.com</string>
+    <string name="nickname_example">프렌트리</string>
+    <string name="confirm">확인</string>
+    <string name="set_alarm">알림 설정</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="background_music">BGM</string>
+    <string name="music_example">듣기 좋은 음악</string>
+    <string name="terms">약관 및 개인정보 처리 방침</string>
+    <string name="change_password">비밀번호 변경</string>
+    <string name="log_out">로그아웃</string>
+    <string name="juice_name_example">선셋 오렌지</string>
+    <string name="juice_collection">주스 도감</string>
+    <string name="base_tree_message">안녕 나는 프렌트리야!</string>
+    <string name="base_fruit_status_message">오늘의 열매가 아직 열리지 않았어요!</string>
+    <string name="create_fruit_button_text">오늘의 열매 만들기</string>
+    <string name="frientree">Frientree</string>
+</resources>
