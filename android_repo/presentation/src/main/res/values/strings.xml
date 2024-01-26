@@ -19,4 +19,9 @@
     <string name="base_fruit_status_message">오늘의 열매가 아직 열리지 않았어요!</string>
     <string name="create_fruit_button_text">오늘의 열매 만들기</string>
     <string name="frientree">Frientree</string>
+    <string name="input_id">ID 입력</string>
+    <string name="input_password">PW 입력</string>
+    <string name="sign_up">회원가입</string>
+    <string name="text_divider">|</string>
+    <string name="find_password">비밀번호 찾기</string>
 </resources>

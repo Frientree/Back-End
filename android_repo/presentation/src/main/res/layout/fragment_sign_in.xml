@@ -1,13 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".welcome.fragments.SignInFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="로그인" />
+    <ImageView
+        android:id="@+id/logo_image_view"
+        android:layout_width="200dp"
+        android:layout_height="0dp"
+        android:src="@drawable/tree1"
+        app:layout_constraintBottom_toTopOf="@id/input_id_edit_text"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/input_id_edit_text"
+        style="@style/Base.FTR.EDIT_TEXT"
+        android:layout_marginTop="16dp"
+        android:hint="@string/input_id"
+        android:inputType="textEmailAddress"
+        app:layout_constraintBottom_toTopOf="@id/input_password_edit_text"
+        app:layout_constraintEnd_toEndOf="@+id/logo_image_view"
+        app:layout_constraintStart_toStartOf="@+id/logo_image_view"
+        app:layout_constraintTop_toBottomOf="@id/logo_image_view" />
+
+    <EditText
+        android:id="@+id/input_password_edit_text"
+        style="@style/Base.FTR.EDIT_TEXT"
+        android:layout_marginTop="16dp"
+        android:hint="@string/input_password"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@id/find_password_text_view"
+        app:layout_constraintEnd_toEndOf="@+id/input_id_edit_text"
+        app:layout_constraintStart_toStartOf="@+id/input_id_edit_text"
+        app:layout_constraintTop_toBottomOf="@id/input_id_edit_text" />
+
+    <TextView
+        android:id="@+id/sign_up_text_view"
+        style="@style/Base.FTR.Text.SMALL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sign_up"
+        app:layout_constraintEnd_toStartOf="@id/divider_text_view"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@id/input_password_edit_text"
+        app:layout_constraintTop_toTopOf="@+id/divider_text_view" />
+
+    <TextView
+        android:id="@+id/divider_text_view"
+        style="@style/Base.FTR.Text.SMALL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="4dp"
+        android:text="@string/text_divider"
+        app:layout_constraintEnd_toStartOf="@id/find_password_text_view"
+        app:layout_constraintStart_toEndOf="@id/sign_up_text_view"
+        app:layout_constraintTop_toTopOf="@id/find_password_text_view" />
+
+    <TextView
+        android:id="@+id/find_password_text_view"
+        style="@style/Base.FTR.Text.SMALL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/find_password"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/input_password_edit_text"
+        app:layout_constraintStart_toEndOf="@id/divider_text_view"
+        app:layout_constraintTop_toBottomOf="@+id/input_password_edit_text" />
+
+    <ImageButton
+        android:id="@+id/kakao_login_image_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:backgroundTint="@android:color/transparent"
+        android:src="@drawable/kakao_login_medium_narrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/find_password_text_view" />
+</androidx.constraintlayout.widget.ConstraintLayout>
