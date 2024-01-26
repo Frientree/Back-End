@@ -9,5 +9,5 @@ class UserDataSourceImpl @Inject constructor(
 ) : UserDataSource {
     override suspend fun signIn(userId: String, userPw: String) = userService.signIn(
         SignInRequest(userId, userPw),
-    )
+    ).getOrThrow()
 }
