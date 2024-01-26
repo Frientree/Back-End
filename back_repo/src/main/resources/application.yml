@@ -48,6 +48,4 @@ server:
 logging:
   level:
     com.d101.frientree : info
-    org.hibernate.SQL: trace
-    org.springframework.security: trace
-    com.example.demo.JwtCheckFilter: DEBUG
+
