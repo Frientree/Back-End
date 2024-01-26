@@ -10,7 +10,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainFragmentViewModel @Inject constructor() : ViewModel() {
 
     private val _todayDate: MutableStateFlow<String> = MutableStateFlow("year / month / day")
     val todayDate: StateFlow<String> = _todayDate.asStateFlow()
