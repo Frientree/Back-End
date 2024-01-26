@@ -15,4 +15,8 @@
     <string name="log_out">로그아웃</string>
     <string name="juice_name_example">선셋 오렌지</string>
     <string name="juice_collection">주스 도감</string>
+    <string name="base_tree_message">안녕 나는 프렌트리야!</string>
+    <string name="base_fruit_status_message">오늘의 열매가 아직 열리지 않았어요!</string>
+    <string name="create_fruit_button_text">오늘의 열매 만들기</string>
+
 </resources>

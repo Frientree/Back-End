@@ -9,10 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentMainBinding
-import com.d101.presentation.main.viewmodel.MainViewModel
+import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 
 class MainFragment : Fragment() {
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainFragmentViewModel by viewModels()
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 

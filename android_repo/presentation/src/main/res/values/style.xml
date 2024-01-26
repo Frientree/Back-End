@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Base.FTR" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Base.FTR" parent="Theme.Frientree" />
 
-    <style name="Base.FTR.TEXT" parent="Base.FTR">
+    <style name="Base.FTR.Text" parent="Base.FTR">
         <item name="fontFamily">@font/nanum_barun_gothic</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="Base.FTR.BUTTON_TEXT" parent="Base.FTR">
+    <style name="Base.FTR.MainTitleText" parent="Base.FTR.Text">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontWeight">800</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Base.FTR.ButtonText" parent="Base.FTR">
         <item name="fontFamily">@font/binggrae_bold</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/black</item>
@@ -64,7 +72,7 @@
     </style>
 
     <style name="Base.FTR.MainButton" parent="@style/Widget.AppCompat.Button">
-        <item name="android:textAppearance">@style/Base.FTR.BUTTON_TEXT</item>
+        <item name="android:textAppearance">@style/Base.FTR.ButtonText</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">60dp</item>
         <item name="android:paddingStart">28dp</item>
