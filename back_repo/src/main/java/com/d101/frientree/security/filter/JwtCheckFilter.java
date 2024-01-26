@@ -53,7 +53,6 @@ public class JwtCheckFilter extends OncePerRequestFilter {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws IOException {
@@ -71,8 +70,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
 
             if (roleNamesObj instanceof List<?>) {
                 for (Object item : (List<?>) roleNamesObj) {
-                    if (item instanceof Map<?, ?>) {
-                        Map<?, ?> authMap = (Map<?, ?>) item;
+                    if (item instanceof Map<?, ?> authMap) {
                         Object authority = authMap.get("authority");
                         if (authority instanceof String) {
                             roleNames.add((String) authority);

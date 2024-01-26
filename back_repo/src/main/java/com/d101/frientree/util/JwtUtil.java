@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-@SuppressWarnings("deprecation")
+
 public class JwtUtil {
 
     private static final String key = "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
@@ -30,12 +30,12 @@ public class JwtUtil {
         }
 
         return Jwts.builder()
-                .setHeader(Map.of("typ", "JWT"))
-                .setClaims(valueMap)
-                .setIssuedAt(Date.from(ZonedDateTime.now().toInstant()))
-                .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(min).toInstant()))
-                .signWith(key)
-                .compact();
+                .claim("typ", "JWT") // 헤더 설정
+                .claims(valueMap) // 클레임 설정
+                .issuedAt(Date.from(ZonedDateTime.now().toInstant())) // 발행 시간 설정
+                .expiration(Date.from(ZonedDateTime.now().plusMinutes(min).toInstant())) // 만료 시간 설정
+                .signWith(key) // 서명 설정
+                .compact(); // 토큰 생성
     }
 
     public static Map<String, Object> validateToken(String token) {
@@ -46,11 +46,11 @@ public class JwtUtil {
 
             SecretKey key = Keys.hmacShaKeyFor(JwtUtil.key.getBytes("UTF-8"));
 
-            claim = Jwts.parserBuilder()
-                    .setSigningKey(key)
+            claim = Jwts.parser()
+                    .verifyWith(key)
                     .build()
-                    .parseClaimsJws(token) // 파싱 및 검증, 실패 시 에러
-                    .getBody();
+                    .parseSignedClaims(token) // 파싱 및 검증, 실패 시 에러
+                    .getPayload();
 
         } catch (MalformedJwtException malformedJwtException) {
             throw new CustomJwtException("MalFormed");
@@ -68,11 +68,11 @@ public class JwtUtil {
 
     public static Long getExpirationDateFromToken(String token) {
         SecretKey key = Keys.hmacShaKeyFor(JwtUtil.key.getBytes(StandardCharsets.UTF_8)); // UTF-8 인코딩 명시
-        Claims claims = Jwts.parserBuilder() // parserBuilder() 사용으로 업데이트
-                .setSigningKey(key)
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
 
         return claims.getExpiration().getTime();
     }
