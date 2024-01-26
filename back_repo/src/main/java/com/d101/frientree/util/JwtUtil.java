@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
@@ -66,9 +67,10 @@ public class JwtUtil {
     }
 
     public static Long getExpirationDateFromToken(String token) {
-        SecretKey key = Keys.hmacShaKeyFor(JwtUtil.key.getBytes());
-        Claims claims = Jwts.parser()
+        SecretKey key = Keys.hmacShaKeyFor(JwtUtil.key.getBytes(StandardCharsets.UTF_8)); // UTF-8 인코딩 명시
+        Claims claims = Jwts.parserBuilder() // parserBuilder() 사용으로 업데이트
                 .setSigningKey(key)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
 

@@ -3,6 +3,7 @@ package com.d101.frientree.service;
 import com.d101.frientree.dto.user.request.*;
 import com.d101.frientree.dto.user.response.UserChangeNicknameResponse;
 import com.d101.frientree.dto.user.response.UserConfirmationResponse;
+import com.d101.frientree.dto.user.response.UserSignInResponse;
 import com.d101.frientree.dto.user.response.dto.*;
 import org.springframework.http.ResponseEntity;
 
@@ -16,7 +17,7 @@ public interface UserService {
 
     UserCreateResponseDTO createUser(UserCreateRequestDTO userCreateRequestDTO);
 
-    UserSignInResponseDTO signIn(UserSignInRequestDTO userSignInRequestDTO);
+    ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest);
 
     UserTokenRefreshResponseDTO tokenRefresh(UserTokenRefreshRequestDTO userTokenRefreshRequestDTO);
 

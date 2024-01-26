@@ -13,10 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Log4j2
 public class JwtCheckFilter extends OncePerRequestFilter {
@@ -69,24 +66,34 @@ public class JwtCheckFilter extends OncePerRequestFilter {
 
             String username = (String) claims.get("username");
 
-            List<LinkedHashMap<String, String>> authorityClaims = (List<LinkedHashMap<String, String>>) claims.get("roleNames");
-            List<String> roleNames = authorityClaims.stream()
-                    .map(authMap -> authMap.get("authority"))
-                    .collect(Collectors.toList());
+            Object roleNamesObj = claims.get("roleNames");
+            List<String> roleNames = new ArrayList<>();
+
+            if (roleNamesObj instanceof List<?>) {
+                for (Object item : (List<?>) roleNamesObj) {
+                    if (item instanceof Map<?, ?>) {
+                        Map<?, ?> authMap = (Map<?, ?>) item;
+                        Object authority = authMap.get("authority");
+                        if (authority instanceof String) {
+                            roleNames.add((String) authority);
+                        }
+                    }
+                }
+            }
 
             UserDTO userDTO = new UserDTO(username, "", roleNames);
 
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDTO, "", userDTO.getAuthorities());
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDTO, null, userDTO.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             filterChain.doFilter(request, response);
-
         } catch (Exception e) {
             log.error("An error occurred during sign-in process", e);
 
             Gson gson = new Gson();
-            String msg = gson.toJson(Map.of("error", "ERROR_ACCESS_TOKEN"));
+            String msg = gson.toJson(Collections.singletonMap("error", "ERROR_ACCESS_TOKEN"));
 
             response.setContentType("application/json");
             PrintWriter printWriter = response.getWriter();
