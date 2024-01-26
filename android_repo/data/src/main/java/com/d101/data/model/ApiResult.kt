@@ -1,6 +1,6 @@
 package com.d101.data.model
 
-sealed interface ApiResult<out T> {
+sealed interface ApiResult<T> {
     data class Success<T>(val data: T) : ApiResult<T>
 
     sealed interface Failure : ApiResult<Nothing> {
@@ -26,10 +26,10 @@ sealed interface ApiResult<out T> {
     val isFailure: Boolean
         get() = this is Failure
 
-    fun getOrNull(): T? =
+    fun getOrDefault(default: T): T =
         when (this) {
             is Success -> data
-            is Failure -> null
+            is Failure -> default
         }
 
     fun getOrThrow(): T =
