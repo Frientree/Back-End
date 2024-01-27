@@ -14,4 +14,12 @@ sealed class MyPageViewState {
         override val alarmStatus: AlarmStatus = AlarmStatus.ON,
         override val backgroundMusic: String = "테스트",
     ) : MyPageViewState()
+
+    data class NicknameEditState(
+        override val id: String,
+        override val nickname: String,
+        override val backgroundMusicStatus: BackgroundMusicStatus,
+        override val alarmStatus: AlarmStatus,
+        override val backgroundMusic: String,
+    ) : MyPageViewState()
 }

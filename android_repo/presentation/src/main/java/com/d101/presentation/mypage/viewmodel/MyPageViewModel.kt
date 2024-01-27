@@ -2,6 +2,8 @@ package com.d101.presentation.mypage.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.d101.presentation.mypage.event.MyPageViewEvent
+import com.d101.presentation.mypage.state.AlarmStatus
+import com.d101.presentation.mypage.state.BackgroundMusicStatus
 import com.d101.presentation.mypage.state.MyPageViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,15 +25,23 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
         onReceiveEvent(event)
     }
 
-// TODO("구현해야 함")
+    // TODO("구현해야 함")
     private fun onReceiveEvent(event: MyPageViewEvent) {
         when (event) {
             MyPageViewEvent.Init -> initViewState()
-            is MyPageViewEvent.OnChangeNickname -> {}
-            is MyPageViewEvent.onChangeBackgroundMusic -> {}
+            MyPageViewEvent.onTapNicknameEditButton -> setEditNicknameState()
+            MyPageViewEvent.onCancelNicknameEdit -> rollBackToDefaultState()
             is MyPageViewEvent.onChangeNickname -> {}
             is MyPageViewEvent.onNicknameChanged -> {}
-            is MyPageViewEvent.onSetAlarmStatus -> {}
+            is MyPageViewEvent.onSetAlarmStatus -> {
+                setAlarmStatus(event.alarmStatus)
+            }
+
+            is MyPageViewEvent.onSetBackgroundMusicStatus -> {
+                setBackgroundMusicStatus()
+            }
+
+            is MyPageViewEvent.onChangeBackgroundMusic -> {}
             is MyPageViewEvent.onShowTerms -> {}
             MyPageViewEvent.onTapChangePasswordButton -> {}
             MyPageViewEvent.onTapLogOutButton -> {}
@@ -39,8 +49,58 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-// TODO(" 서버에서 유저 정보 가져오는 것으로 수정해야 함")
+    // TODO(" 서버에서 유저 정보 가져오는 것으로 수정해야 함")
     private fun initViewState() {
         _myPageViewState.value = MyPageViewState.Default(id = "테스트1")
+    }
+
+    private fun setEditNicknameState() {
+        _myPageViewState.value.let {
+            _myPageViewState.value = MyPageViewState.NicknameEditState(
+                it.id,
+                it.nickname,
+                it.backgroundMusicStatus,
+                it.alarmStatus,
+                it.backgroundMusic,
+            )
+        }
+    }
+
+    private fun rollBackToDefaultState() {
+        _myPageViewState.value.let {
+            _myPageViewState.value = MyPageViewState.Default(
+                it.id,
+                it.nickname,
+                it.backgroundMusicStatus,
+                it.alarmStatus,
+                it.backgroundMusic,
+            )
+        }
+    }
+
+    private fun setAlarmStatus(alarmStatus: AlarmStatus) {
+        when (val currentState = _myPageViewState.value) {
+            is MyPageViewState.Default ->
+                _myPageViewState.value =
+                    currentState.copy(alarmStatus = alarmStatus)
+
+            is MyPageViewState.NicknameEditState -> {}
+        }
+    }
+
+    private fun setBackgroundMusicStatus() {
+        when (val currentState = _myPageViewState.value) {
+            is MyPageViewState.Default -> {
+                val newStatus =
+                    if (currentState.backgroundMusicStatus == BackgroundMusicStatus.ON) {
+                        BackgroundMusicStatus.OFF
+                    } else {
+                        BackgroundMusicStatus.ON
+                    }
+                _myPageViewState.value = currentState.copy(backgroundMusicStatus = newStatus)
+            }
+
+            is MyPageViewState.NicknameEditState -> {}
+        }
     }
 }

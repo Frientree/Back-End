@@ -82,15 +82,25 @@
                 android:background="@null"
                 android:enabled="false"
                 android:inputType="text"
+                android:cursorVisible="true"
                 android:text="@{myPageViewModel.myPageViewState.nickname}" />
 
             <ImageView
-                android:id="@+id/nickname_edit_button_image_view"
+                android:id="@+id/pencil_button_image_view"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="32dp"
                 android:src="@drawable/pencil" />
+
+            <ImageView
+                android:id="@+id/cancel_button_image_view"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/baseline_close_24"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/nickname_confirm_button_text_view"
@@ -172,7 +182,7 @@
                 android:id="@+id/background_music_on_off_button_image_view"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/sound" />
+                android:src="@drawable/sound_on" />
 
 
             <TextView
