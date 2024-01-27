@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreateRequestDTO {
+public class UserCreateRequest {
 
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     private String userEmail;

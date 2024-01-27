@@ -2,11 +2,9 @@ package com.d101.frientree.serviceImpl;
 
 import com.d101.frientree.dto.user.UserDTO;
 import com.d101.frientree.dto.user.request.*;
-import com.d101.frientree.dto.user.response.UserChangeNicknameResponse;
-import com.d101.frientree.dto.user.response.UserConfirmationResponse;
-import com.d101.frientree.dto.user.response.UserSignInResponse;
-import com.d101.frientree.dto.user.response.UserTokenRefreshResponse;
+import com.d101.frientree.dto.user.response.*;
 import com.d101.frientree.dto.user.response.dto.*;
+import com.d101.frientree.dto.user.response.UserListConfirmationResponse;
 import com.d101.frientree.entity.RefreshToken;
 import com.d101.frientree.entity.User;
 import com.d101.frientree.exception.PasswordNotMatchingException;
@@ -44,13 +42,16 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    // 로그인 + 토큰 발급 로직
     @Override
     public ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest) {
 
         // 유저 정보를 가져오고, 이메일 불일치시 404 예외처리
         UserDetails userDetails;
         try {
-            userDetails = customUserDetailsService.loadUserByUsername(userSignInRequest.getUserEmail());
+            User currentUser = userRepository.findByUserEmail(userSignInRequest.getUserEmail())
+                    .orElseThrow();
+            userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(currentUser.getUserId()));
         } catch (UsernameNotFoundException e) {
             throw new UserNotFoundException();
         }
@@ -90,6 +91,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 토큰 재발급 로직
     @Override
     public ResponseEntity<UserTokenRefreshResponse> tokenRefresh(UserTokenRefreshRequest userTokenRefreshRequest) {
 
@@ -117,7 +119,7 @@ public class UserServiceImpl implements UserService {
         String newAccessToken = JwtUtil.generateToken(claims, 10);
 
         if (checkTime(serverRefreshToken.getExpiryDate())) {
-            String newRefreshToken = JwtUtil.generateToken(claims, 60*24);
+            String newRefreshToken = JwtUtil.generateToken(claims, 60 * 24);
             Long newRefreshTokenExpiry = JwtUtil.getExpirationDateFromToken(newRefreshToken);
             Instant newRefreshTokenExpiryDate = Instant.ofEpochMilli(newRefreshTokenExpiry);
             DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
@@ -144,13 +146,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<UserChangeNicknameResponse> modifyNickname(UserChangeNicknameRequest userChangeNicknameRequest) {
 
-        // 현재 접속한 유저 정보
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // jwt에서 가져온 유저 정보의 username에는 String으로 묶어놓은 userId가 들어가 있습니다.
-        String userId = authentication.getName();
-        // 유저 정보를 찾을때는 findById에서 userId를 Long으로 바꿔줘야 합니다.
-        User currentUser = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
+        User currentUser = getUser();
 
         currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
 
@@ -161,44 +157,90 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 유저 프로필 조회
+    @Override
+    @Transactional
+    public ResponseEntity<UserProfileConfirmationResponse> profileConfirm() {
+
+        User currentUser = getUser();
+
+        UserProfileConfirmationResponse response = UserProfileConfirmationResponse.createUserProfileConfirmationResponse(
+                "Success",
+                UserProfileConfirmationResponseDTO.createUserProfileConfirmationResponseDTO(currentUser)
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 유저 알림 설정
+    @Override
+    @Transactional
+    public ResponseEntity<UserChangeAlamResponse> modifyAlam(UserChangeAlamRequest userChangeAlamRequest) {
+
+        User currentUser = getUser();
+        currentUser.setUserNotification(userChangeAlamRequest.isNotification());
+
+        UserChangeAlamResponse response = UserChangeAlamResponse.createUserChangeAlamResponse(
+                "Success",
+                true
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     // 유저 개별 조회
     @Override
     public ResponseEntity<UserConfirmationResponse> confirm(Long id) {
+
         User currentUser = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+
         UserConfirmationResponse response = UserConfirmationResponse.createUserConfirmationResponse(
                 "Success",
                 UserConfirmationResponseDTO.createUserConfirmationResponseDTO(currentUser)
         );
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 유저 전체 조회
     @Override
-    public List<UserConfirmationResponseDTO> listConfirm() {
-        return null;
+    public ResponseEntity<UserListConfirmationResponse> listConfirm() {
+
+        List<User> users = userRepository.findAll();
+        UserListConfirmationResponse response = UserListConfirmationResponse.createUserListConfirmationResponse(
+                "Success",
+                users
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 유저 가입
     @Override
-    public UserCreateResponseDTO createUser(UserCreateRequestDTO userCreateRequestDTO) {
+    public ResponseEntity<UserCreateResponse> generateUser(UserCreateRequest userCreateRequest) {
 
         LocalDateTime userCreateDate = LocalDateTime.now();
-
         User newUser = User.builder()
-                .userNickname(userCreateRequestDTO.getUserNickname())
-                .userPassword(passwordEncoder.encode(userCreateRequestDTO.getUserPw()))
-                .userEmail(userCreateRequestDTO.getUserEmail())
+                .userNickname(userCreateRequest.getUserNickname())
+                .userPassword(passwordEncoder.encode(userCreateRequest.getUserPw()))
+                .userEmail(userCreateRequest.getUserEmail())
                 .userCreateDate(Date.from(userCreateDate.atZone(ZoneId.systemDefault()).toInstant()))
                 .build();
 
         userRepository.save(newUser);
 
-        return UserCreateResponseDTO.builder()
-                .isCreated(true)
-                .build();
+        UserCreateResponse result = UserCreateResponse.createUserCreateResponse(
+                "Sign-up Success",
+                true
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    // refresh 토큰의 유효기간 체크
     private boolean checkTime(String exp) {
+
         // JWT exp를 Instant로 파싱
         Instant expInstant = Instant.parse(exp);
 
@@ -215,6 +257,12 @@ public class UserServiceImpl implements UserService {
         return leftMin <= 60 && !duration.isNegative();
     }
 
+    private User getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+        return userRepository.findById(Long.valueOf(userId))
+                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
+    }
 }
 
 

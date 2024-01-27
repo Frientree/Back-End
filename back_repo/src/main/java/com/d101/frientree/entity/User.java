@@ -1,10 +1,12 @@
 package com.d101.frientree.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Entity
@@ -49,5 +51,23 @@ public class User {
     @Builder.Default
     @Column(name = "user_fruit_status")
     private Boolean userFruitStatus = true;
+
+//    @Builder.Default
+//    @Column(name = "user_enabled")
+//    private Boolean userEnabled = true;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "leaf_send",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "leaf_num"))
+    private Set<LeafDetail> leafSend = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "leaf_receive",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "leaf_num"))
+    private Set<LeafDetail> leafReceive = new HashSet<>();
 
 }

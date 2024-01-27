@@ -1,10 +1,7 @@
 package com.d101.frientree.controller;
 
 import com.d101.frientree.dto.user.request.*;
-import com.d101.frientree.dto.user.response.UserChangeNicknameResponse;
-import com.d101.frientree.dto.user.response.UserConfirmationResponse;
-import com.d101.frientree.dto.user.response.UserSignInResponse;
-import com.d101.frientree.dto.user.response.UserTokenRefreshResponse;
+import com.d101.frientree.dto.user.response.*;
 import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,12 +12,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,8 +24,6 @@ public class UserController {
 
     private final UserService userService;
 
-    // TODO:유저 개별조회, 전체조회, 가입부분은 다 뜯어고쳐야 됩니다.
-
     // 유저 개별 조회
     @Operation(summary = "단일 유저 조회", description = "개별 유저를 조회합니다.")
     @ApiResponses({
@@ -40,7 +32,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "(message : \"해당 유저가 존재하지 않습니다.\", code : 404)\n")
     })
     @GetMapping("/{userId}")
-    private ResponseEntity<UserConfirmationResponse> userConfirmation(@PathVariable Long userId) {
+    public ResponseEntity<UserConfirmationResponse> userConfirmation(@PathVariable Long userId) {
         return userService.confirm(userId);
     }
 
@@ -51,21 +43,19 @@ public class UserController {
                     content = @Content(schema = @Schema(implementation = UserConfirmationResponseDTO.class))),
     })
     @GetMapping("/entirety")
-    private ResponseEntity<List<UserConfirmationResponseDTO>> userListConfirmation() {
-        List<UserConfirmationResponseDTO> allUsers = userService.listConfirm();
-        return ResponseEntity.status(HttpStatus.OK).body(allUsers);
+    public ResponseEntity<UserListConfirmationResponse> userListConfirmation() {
+        return userService.listConfirm();
     }
 
     // 유저 생성
     @Operation(summary = "신규 유저 생성", description = "새로운 유저를 생성합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "(message : \"Success\", code : 201)", content = @Content(schema = @Schema(implementation = UserCreateResponseDTO.class))),
+            @ApiResponse(responseCode = "201", description = "(message : \"Success\", code : 201)", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
             @ApiResponse(responseCode = "400", description = "(message : \"입력 정보를 다시 확인해 주세요.\", code : 400)\n")
     })
     @PostMapping("/create")
-    public ResponseEntity<UserCreateResponseDTO> userGeneration(@Valid @RequestBody UserCreateRequestDTO userCreateRequestDTO) {
-        UserCreateResponseDTO createdUser = userService.createUser(userCreateRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    public ResponseEntity<UserCreateResponse> userGeneration(@Valid @RequestBody UserCreateRequest userCreateRequest) {
+        return userService.generateUser(userCreateRequest);
     }
 
     // 로그인
@@ -101,6 +91,28 @@ public class UserController {
     @PutMapping
     public ResponseEntity<UserChangeNicknameResponse> userNicknameModification(@RequestBody UserChangeNicknameRequest userChangeNicknameRequest) {
         return userService.modifyNickname(userChangeNicknameRequest);
+    }
+
+    @Operation(summary = "개인 정보 조회", description = "접속한 유저의 개인정보를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = UserProfileConfirmationResponse.class)))
+    })
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping
+    public ResponseEntity<UserProfileConfirmationResponse> profileConfirmation() {
+        return userService.profileConfirm();
+    }
+
+    @Operation(summary = "알람 설정", description = "유저 알람 활성화 or 비활성화 처리합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = UserChangeAlamResponse.class)))
+    })
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/notification")
+    public ResponseEntity<UserChangeAlamResponse> userAlamModification(@RequestBody UserChangeAlamRequest userChangeAlamRequest) {
+        return userService.modifyAlam(userChangeAlamRequest);
     }
 
 }

@@ -29,11 +29,11 @@ public class JwtCheckFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (path.startsWith("/users/sign-in")) {
+        if (path.equals("/users/sign-in")) {
             return true;
         }
 
-        if (path.startsWith("/users/create")) {
+        if (path.equals("/users/create")) {
             return true;
         }
 
@@ -49,7 +49,15 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
-        if (path.startsWith("/users/tokens-refresh")) {
+        if (path.equals("/users/tokens-refresh")) {
+            return true;
+        }
+
+        if (path.equals("/users/entirety")) {
+            return true;
+        }
+
+        if (path.matches("/users/\\d+")) {
             return true;
         }
 

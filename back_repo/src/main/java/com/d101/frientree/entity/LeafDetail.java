@@ -3,7 +3,9 @@ package com.d101.frientree.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Builder
 @Data
@@ -33,5 +35,12 @@ public class LeafDetail {
 
     @Column(name = "leaf_create_date")
     private Date leafCreateDate;
+
+    @ManyToMany(mappedBy = "leafSend")
+    private List<User> sentByUsers = new ArrayList<>();
+
+    // LeafDetail 클래스에 List 필드 추가
+    @ManyToMany(mappedBy = "leafReceive")
+    private List<User> receivedByUsers = new ArrayList<>();
 
 }

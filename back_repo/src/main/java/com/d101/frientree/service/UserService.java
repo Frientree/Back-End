@@ -1,22 +1,16 @@
 package com.d101.frientree.service;
 
 import com.d101.frientree.dto.user.request.*;
-import com.d101.frientree.dto.user.response.UserChangeNicknameResponse;
-import com.d101.frientree.dto.user.response.UserConfirmationResponse;
-import com.d101.frientree.dto.user.response.UserSignInResponse;
-import com.d101.frientree.dto.user.response.UserTokenRefreshResponse;
-import com.d101.frientree.dto.user.response.dto.*;
+import com.d101.frientree.dto.user.response.*;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 public interface UserService {
 
     ResponseEntity<UserConfirmationResponse> confirm(Long id);
 
-    List<UserConfirmationResponseDTO> listConfirm();
+    ResponseEntity<UserListConfirmationResponse> listConfirm();
 
-    UserCreateResponseDTO createUser(UserCreateRequestDTO userCreateRequestDTO);
+    ResponseEntity<UserCreateResponse> generateUser(UserCreateRequest userCreateRequest);
 
     ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest);
 
@@ -24,4 +18,7 @@ public interface UserService {
 
     ResponseEntity<UserChangeNicknameResponse> modifyNickname(UserChangeNicknameRequest userChangeNicknameRequest);
 
+    ResponseEntity<UserProfileConfirmationResponse> profileConfirm();
+
+    ResponseEntity<UserChangeAlamResponse> modifyAlam(UserChangeAlamRequest userChangeAlamRequest);
 }

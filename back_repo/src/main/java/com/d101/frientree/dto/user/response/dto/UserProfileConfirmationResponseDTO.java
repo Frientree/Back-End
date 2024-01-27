@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Builder
-public class UserConfirmationResponseDTO {
+public class UserProfileConfirmationResponseDTO {
 
     private Long userId;
 
@@ -26,8 +26,8 @@ public class UserConfirmationResponseDTO {
 
     private boolean userFruitStatus;
 
-    public static UserConfirmationResponseDTO createUserConfirmationResponseDTO(User user) {
-        return UserConfirmationResponseDTO.builder()
+    public static UserProfileConfirmationResponseDTO createUserProfileConfirmationResponseDTO(User user) {
+        return UserProfileConfirmationResponseDTO.builder()
                 .userId(user.getUserId())
                 .userNickname(user.getUserNickname())
                 .userDisabled(user.getUserDisabled())
@@ -38,5 +38,4 @@ public class UserConfirmationResponseDTO {
                 .userEmail(user.getUserEmail())
                 .build();
     }
-
 }

@@ -13,7 +13,6 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-
 public class JwtUtil {
 
     private static final String key = "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890";
