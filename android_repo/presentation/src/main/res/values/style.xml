@@ -85,6 +85,7 @@
     </style>
 
     <style name="Base.FTR.ELEVATED_BUTTON" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textColor">@color/black</item>
         <item name="fontFamily">@font/binggrae</item>
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">16dp</item>

@@ -20,4 +20,6 @@ sealed class MyPageViewEvent {
     data object onTapChangePasswordButton : MyPageViewEvent()
 
     data object onTapLogOutButton : MyPageViewEvent()
+
+    data object Init : MyPageViewEvent()
 }
