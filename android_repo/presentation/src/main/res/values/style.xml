@@ -13,6 +13,11 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="Base.FTR.Text.BIG" parent="Base.FTR.Text">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+
     <style name="Base.FTR.MainTitleText" parent="Base.FTR.Text">
         <item name="android:textColor">@color/gray</item>
         <item name="android:textStyle">bold</item>
@@ -102,6 +107,41 @@
         <item name="android:textSize">12sp</item>
         <item name="android:paddingHorizontal">12dp</item>
         <item name="android:background">@drawable/bg_white_radius_16dp</item>
+    </style>
+
+    <style name="Base.FTR.EDIT_TEXT.EXPENDED" parent="Base.FTR.EDIT_TEXT">
+        <item name="android:layout_width">0dp</item>
+    </style>
+
+    <style name="Base.FTR.TextView" parent="@style/Widget.AppCompat.TextView">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Base.FTR.TextView.LABEL" parent="Base.FTR.TextView">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Base.FTR.TextView.WELCOME_TITLE" parent="Base.FTR.TextView">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Base.FTR.Button" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+    </style>
+
+    <style name="Base.FTR.Button.CONFIRM" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textAppearance">@style/Base.FTR.Text.SMALL</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/btn_small_confirm</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
+
+    <style name="Base.FTR.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+
     </style>
 
 
