@@ -22,4 +22,7 @@
     <string name="start">START</string>
     <string name="or">or</string>
     <string name="create_fruit_input_method_text">텍스트로 말하기</string>
+    <string name="input_by_text_title">나무가 듣고 있어요!</string>
+    <string name="input_by_text_hint">텍스트를 입력해보세요!</string>
+    <string name="create_fruit_text">열매 저장하기</string>
 </resources>
