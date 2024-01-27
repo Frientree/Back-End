@@ -49,6 +49,10 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if (path.startsWith("/users/tokens-refresh")) {
+            return true;
+        }
+
         return false;
     }
 
