@@ -48,4 +48,5 @@ server:
 logging:
   level:
     com.d101.frientree : info
+    org.springframework.security: trace
 

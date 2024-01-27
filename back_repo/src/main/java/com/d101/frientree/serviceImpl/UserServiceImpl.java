@@ -5,6 +5,7 @@ import com.d101.frientree.dto.user.request.*;
 import com.d101.frientree.dto.user.response.UserChangeNicknameResponse;
 import com.d101.frientree.dto.user.response.UserConfirmationResponse;
 import com.d101.frientree.dto.user.response.UserSignInResponse;
+import com.d101.frientree.dto.user.response.UserTokenRefreshResponse;
 import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.entity.RefreshToken;
 import com.d101.frientree.entity.User;
@@ -45,12 +46,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest) {
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userSignInRequest.getUserEmail());
 
+        // 유저 정보를 가져오고, 이메일 불일치시 404 예외처리
+        UserDetails userDetails;
+        try {
+            userDetails = customUserDetailsService.loadUserByUsername(userSignInRequest.getUserEmail());
+        } catch (UsernameNotFoundException e) {
+            throw new UserNotFoundException();
+        }
+
+        // 패스워드 불일치시 401 예외처리
         if (!passwordEncoder.matches(userSignInRequest.getUserPw(), userDetails.getPassword())) {
             throw new PasswordNotMatchingException();
         }
 
+        // Jwt 토큰 발급 로직
         Map<String, Object> claims = new HashMap<>();
         UserDTO userDTO = (UserDTO) userDetails;
         Collection<GrantedAuthority> roleNames = userDTO.getAuthorities();
@@ -81,9 +91,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserTokenRefreshResponseDTO tokenRefresh(UserTokenRefreshRequestDTO userTokenRefreshRequestDTO) {
+    public ResponseEntity<UserTokenRefreshResponse> tokenRefresh(UserTokenRefreshRequest userTokenRefreshRequest) {
 
-        String clientRefreshToken = userTokenRefreshRequestDTO.getRefreshToken();
+        String clientRefreshToken = userTokenRefreshRequest.getRefreshToken();
 
         if (clientRefreshToken == null) {
             throw new CustomJwtException("NULL_REFRESH");
@@ -104,10 +114,10 @@ public class UserServiceImpl implements UserService {
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
         claims.put("roleNames", userDetails.getAuthorities());
-        String newAccessToken = JwtUtil.generateToken(claims, 5);
+        String newAccessToken = JwtUtil.generateToken(claims, 10);
 
         if (checkTime(serverRefreshToken.getExpiryDate())) {
-            String newRefreshToken = JwtUtil.generateToken(claims, 10);
+            String newRefreshToken = JwtUtil.generateToken(claims, 60*24);
             Long newRefreshTokenExpiry = JwtUtil.getExpirationDateFromToken(newRefreshToken);
             Instant newRefreshTokenExpiryDate = Instant.ofEpochMilli(newRefreshTokenExpiry);
             DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
@@ -115,16 +125,18 @@ public class UserServiceImpl implements UserService {
             serverRefreshToken.setRefreshToken(newRefreshToken);
             serverRefreshToken.setExpiryDate(formattedExpiryDate);
             refreshTokenRepository.save(serverRefreshToken);
-            return UserTokenRefreshResponseDTO.builder()
-                    .accessToken(newAccessToken)
-                    .refreshToken(newRefreshToken)
-                    .build();
+            UserTokenRefreshResponse response = UserTokenRefreshResponse.createUserTokenRefreshResponse(
+                    "Success",
+                    UserTokenRefreshResponseDTO.createUserTokenRefreshResponseDTO(newAccessToken, newRefreshToken)
+            );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
-        return UserTokenRefreshResponseDTO.builder()
-                .accessToken(newAccessToken)
-                .refreshToken(serverRefreshToken.getRefreshToken())
-                .build();
+        UserTokenRefreshResponse response = UserTokenRefreshResponse.createUserTokenRefreshResponse(
+                "Success",
+                UserTokenRefreshResponseDTO.createUserTokenRefreshResponseDTO(newAccessToken, serverRefreshToken.getRefreshToken())
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 유저 닉네임 변경
@@ -144,9 +156,7 @@ public class UserServiceImpl implements UserService {
 
         UserChangeNicknameResponse response = UserChangeNicknameResponse.createUserChangeNicknameResponse(
                 "Success",
-                UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(
-                        UserChangeNicknameRequest.createUserChangeNicknameRequest(currentUser)
-                ));
+                UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(currentUser));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
