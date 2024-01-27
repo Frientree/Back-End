@@ -14,9 +14,4 @@ public class UserChangeNicknameRequest {
 
     private String userNickname;
 
-    public static UserChangeNicknameRequest createUserChangeNicknameRequest(User user) {
-        return UserChangeNicknameRequest.builder()
-                .userNickname(user.getUserNickname())
-                .build();
-    }
 }
