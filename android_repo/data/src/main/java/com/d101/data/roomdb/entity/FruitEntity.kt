@@ -5,8 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Fruit(
-    @PrimaryKey val id: Long,
+data class FruitEntity(
+    @ColumnInfo(name = "id") val id: Long,
     @PrimaryKey val date: Long,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "description") val description: String,

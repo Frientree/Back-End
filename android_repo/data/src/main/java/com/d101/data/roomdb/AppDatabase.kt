@@ -3,12 +3,9 @@ package com.d101.data.roomdb
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.d101.data.roomdb.dao.FruitDao
-import com.d101.data.roomdb.dao.JuiceDao
-import com.d101.data.roomdb.entity.Fruit
-import com.d101.data.roomdb.entity.Juice
+import com.d101.data.roomdb.entity.FruitEntity
 
-@Database(entities = [Fruit::class, Juice::class], version = 1)
+@Database(entities = [FruitEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun fruitDao(): FruitDao
-    abstract fun juiceDao(): JuiceDao
 }

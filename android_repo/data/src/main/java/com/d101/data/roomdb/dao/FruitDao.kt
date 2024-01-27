@@ -1,9 +1,15 @@
 package com.d101.data.roomdb.dao
 
-import com.d101.data.roomdb.entity.Fruit
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import com.d101.data.roomdb.entity.FruitEntity
 
+@Dao
 interface FruitDao {
-    fun getFruit(date: Long): Fruit
+    @Query("SELECT * FROM FruitEntity WHERE date = :date")
+    fun getFruit(date: Long): FruitEntity
 
-    fun insertFruit(fruit: Fruit)
+    @Insert
+    fun insertFruit(fruitEntity: FruitEntity)
 }

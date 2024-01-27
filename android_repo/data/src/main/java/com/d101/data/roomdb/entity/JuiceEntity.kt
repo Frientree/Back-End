@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Juice(
+data class JuiceEntity(
     @PrimaryKey val weekDate: Long,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "description") val description: String,

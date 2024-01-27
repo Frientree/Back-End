@@ -1,11 +1,14 @@
 package com.d101.data.roomdb.dao
 
-import com.d101.data.roomdb.entity.Juice
+import androidx.room.Dao
+import com.d101.data.roomdb.entity.JuiceEntity
 
+@Dao
 interface JuiceDao {
-    fun getJuice(weekDate: Long): Juice
 
-    fun insertJuice(juice: Juice)
+    fun getJuice(weekDate: Long): JuiceEntity
 
-    fun updateJuice(juice: Juice)
+    fun insertJuice(juiceEntity: JuiceEntity)
+
+    fun updateJuice(juiceEntity: JuiceEntity)
 }

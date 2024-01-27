@@ -62,5 +62,5 @@ dependencies {
 
     // RoomDB
     implementation(Libraries.roomRuntime)
-    annotationProcessor(Libraries.roomCompiler)
+    kapt(Libraries.roomCompiler)
 }

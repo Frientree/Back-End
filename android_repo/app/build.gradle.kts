@@ -69,4 +69,7 @@ dependencies {
     // Okhttp
     implementation(Libraries.okhttp)
     implementation(Libraries.okhttpLogging)
+
+    implementation(Libraries.roomRuntime)
+    kapt(Libraries.roomCompiler)
 }
