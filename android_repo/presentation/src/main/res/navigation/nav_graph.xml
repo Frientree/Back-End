@@ -13,7 +13,7 @@
     </fragment>
     <fragment
         android:id="@+id/myPageFragment"
-        android:name="com.d101.presentation.main.fragments.MyPageTmpFragment"
+        android:name="com.d101.presentation.main.fragments.MyPageFragment"
         android:label="fragment_my_page_tmp"
         tools:layout="@layout/fragment_my_page_tmp" >
     </fragment>
