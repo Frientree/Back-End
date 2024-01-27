@@ -38,7 +38,10 @@ class SignInFragment : Fragment() {
         }
 
         binding.signUpTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_signInFragment_to_termsAgreeFragment)
+            // 약관화면이 아직 디자인 완성 되지않아 우선 회원가입 화면으로 이동
+            findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
+
+//            findNavController().navigate(R.id.action_signInFragment_to_termsAgreeFragment)
         }
 
         binding.findPasswordTextView.setOnClickListener {
