@@ -36,5 +36,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-/src/main/java/com/d101/frientree/config/JasyptConfig.java
