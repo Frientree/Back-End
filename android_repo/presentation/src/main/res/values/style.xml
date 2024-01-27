@@ -91,4 +91,13 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="Base.FTR.EDIT_TEXT" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@android:color/transparent</item>
+<!--        <item name="android:textCursorDrawable">@drawable/bg_text_cursor</item>-->
+<!--        <item name="android:textColorHighlight">@drawable/bg_text_cursor</item>-->
+<!--        <item name="android:textSelectHandle">@drawable/bg_text_cursor</item>-->
+        <item name="fontFamily">@font/nanum_barun_gothic</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>
