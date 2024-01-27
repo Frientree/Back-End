@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/leaf")
+@CrossOrigin("*")
 public class LeafController {
 
     private final LeafService leafService;

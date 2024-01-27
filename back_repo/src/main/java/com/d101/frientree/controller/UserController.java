@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @Log4j2
+@CrossOrigin("*")
 public class UserController {
 
     private final UserService userService;
