@@ -1,5 +1,6 @@
 package com.d101.frientree.entity.leaf;
 
+import com.d101.frientree.dto.leaf.request.LeafGenerationRequest;
 import com.d101.frientree.entity.LeafCategory;
 import com.d101.frientree.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -51,6 +52,4 @@ public class LeafDetail {
                 .leafContent(leafGenerationRequest.getLeafContent())
                 .build();
     }
-
 }
-Override
