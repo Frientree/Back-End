@@ -1,6 +1,5 @@
 package com.d101.frientree.dto.leaf.response.dto;
 
-import com.d101.frientree.entity.LeafDetail;
 import lombok.Builder;
 import lombok.Data;
 
