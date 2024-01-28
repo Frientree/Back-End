@@ -5,7 +5,7 @@
     android:layout_width="360dp"
     android:layout_height="500dp"
     android:background="@color/white"
-    tools:context=".main.fragments.dialogs.FruitCreateByTextFragment">
+    tools:context=".main.fragments.dialogs.FruitCreationByTextFragment">
 
     <TextView
         android:id="@+id/title_text_view"
@@ -32,6 +32,7 @@
         app:layout_constraintTop_toBottomOf="@id/title_text_view">
 
         <EditText
+            android:id="@+id/input_by_text_edit_text"
             style="@style/Base.FTR.EDIT_TEXT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,6 +49,7 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/create_fruit_by_text_button"
         style="@style/Base.FTR.ELEVATED_BUTTON"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

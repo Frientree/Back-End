@@ -1,5 +1,6 @@
 package com.d101.frientree.di
 
+import com.d101.data.api.FruitCreateService
 import com.d101.data.api.UserService
 import com.d101.data.network.ResultCallAdapter
 import com.d101.frientree.BuildConfig
@@ -33,4 +34,10 @@ object ApiModule {
     fun provideUserApi(
         retrofit: Retrofit,
     ): UserService = retrofit.create((UserService::class.java))
+
+    @Singleton
+    @Provides
+    fun provideFruitCreateApi(
+        retrofit: Retrofit,
+    ): FruitCreateService = retrofit.create((FruitCreateService::class.java))
 }

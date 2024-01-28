@@ -7,24 +7,26 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.d101.presentation.R
-import com.d101.presentation.databinding.FragmentSelectCreateFruitMethodBinding
+import com.d101.presentation.databinding.FragmentSelectInputTypeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-class SelectCreateFruitMethodFragment : Fragment() {
-    private var _binding: FragmentSelectCreateFruitMethodBinding? = null
+@AndroidEntryPoint
+class SelectInputTypeFragment : Fragment() {
+    private var _binding: FragmentSelectInputTypeBinding? = null
     private val binding get() = _binding!!
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_select_create_fruit_method, container, false)
-//        _binding = FragmentSelectCreateFruitMethodBinding.inflate(inflater)
-//        return binding.root
+        return inflater.inflate(R.layout.fragment_select_input_type, container, false)
+        /**
+         * view Binding을 사용하고 싶었으나 다이얼로그 크기가 원하는대로 지정되지 않아 일단 findviewbyid사용하는 방식으로 지정
+         * 추후 리팩토링 예정
+         * */
+        //        _binding = FragmentSelectInputTypeBinding.inflate(inflater)
+        //        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,10 +34,14 @@ class SelectCreateFruitMethodFragment : Fragment() {
 
         view.findViewById<TextView>(R.id.text_text_view).setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .add(R.id.before_fragment_container_view, FruitCreateByTextFragment())
+                .add(R.id.before_fragment_container_view, FruitCreationByTextFragment())
                 .addToBackStack("")
                 .commit()
         }
+        /**
+         * view Binding을 사용하고 싶었으나 다이얼로그 크기가 원하는대로 지정되지 않아 일단 findviewbyid사용하는 방식으로 지정
+         * 추후 리팩토링 예정
+         * */
 //        binding.textTextView.setOnClickListener {
 //            parentFragmentManager.beginTransaction()
 //                .add(R.id.before_fragment_container_view, FruitCreateByTextFragment())

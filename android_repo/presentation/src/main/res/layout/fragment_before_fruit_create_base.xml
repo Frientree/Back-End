@@ -12,7 +12,6 @@
         app:cardBackgroundColor="@color/white"
         app:strokeColor="@color/black"
         app:strokeWidth="1dp">
-
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/before_fragment_container_view"
             android:layout_width="wrap_content"
