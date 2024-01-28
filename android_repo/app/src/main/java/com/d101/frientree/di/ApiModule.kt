@@ -2,6 +2,7 @@ package com.d101.frientree.di
 
 import com.d101.data.api.UserService
 import com.d101.data.network.ResultCallAdapter
+import com.d101.frientree.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +22,7 @@ object ApiModule {
         okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory,
     ): Retrofit = Retrofit.Builder()
-        .baseUrl("")
+        .baseUrl(BuildConfig.BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(gsonConverterFactory)
         .addCallAdapterFactory(ResultCallAdapter.Factory())
