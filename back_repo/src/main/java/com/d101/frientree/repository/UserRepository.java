@@ -1,6 +1,6 @@
 package com.d101.frientree.repository;
 
-import com.d101.frientree.entity.User;
+import com.d101.frientree.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

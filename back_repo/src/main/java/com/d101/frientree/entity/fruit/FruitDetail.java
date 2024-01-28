@@ -1,4 +1,4 @@
-package com.d101.frientree.entity;
+package com.d101.frientree.entity.fruit;
 
 import jakarta.persistence.*;
 import lombok.*;

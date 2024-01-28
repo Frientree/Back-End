@@ -1,11 +1,8 @@
 package com.d101.frientree.dto.user.response.dto;
 
-import com.d101.frientree.dto.user.request.UserChangeNicknameRequest;
-import com.d101.frientree.entity.User;
-import lombok.AllArgsConstructor;
+import com.d101.frientree.entity.user.User;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder

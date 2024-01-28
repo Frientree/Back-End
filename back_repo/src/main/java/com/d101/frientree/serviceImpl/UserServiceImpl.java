@@ -6,7 +6,7 @@ import com.d101.frientree.dto.user.response.*;
 import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.dto.user.response.UserListConfirmationResponse;
 import com.d101.frientree.entity.RefreshToken;
-import com.d101.frientree.entity.User;
+import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.PasswordNotMatchingException;
 import com.d101.frientree.exception.UserNotFoundException;
 import com.d101.frientree.repository.RefreshTokenRepository;

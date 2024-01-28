@@ -1,7 +1,7 @@
 package com.d101.frientree.security;
 
 import com.d101.frientree.dto.user.UserDTO;
-import com.d101.frientree.entity.User;
+import com.d101.frientree.entity.user.User;
 import com.d101.frientree.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

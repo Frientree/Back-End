@@ -1,12 +1,15 @@
-package com.d101.frientree.entity;
+package com.d101.frientree.entity.user;
 
+import com.d101.frientree.entity.fruit.UserFruit;
+import com.d101.frientree.entity.juice.UserJuice;
+import com.d101.frientree.entity.leaf.LeafReceive;
+import com.d101.frientree.entity.leaf.LeafSend;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @Entity
@@ -57,17 +60,18 @@ public class User {
 //    private Boolean userEnabled = true;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "leaf_send",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "leaf_num"))
-    private Set<LeafDetail> leafSend = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private List<UserFruit> userFruits;
 
     @JsonIgnore
-    @ManyToMany
-    @JoinTable(name = "leaf_receive",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "leaf_num"))
-    private Set<LeafDetail> leafReceive = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private List<UserJuice> userJuices;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<LeafSend> leafSends;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<LeafReceive> leafReceives;
 }

@@ -1,7 +1,7 @@
 package com.d101.frientree.repository;
 
 import com.d101.frientree.entity.LeafCategory;
-import com.d101.frientree.entity.LeafDetail;
+import com.d101.frientree.entity.leaf.LeafDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

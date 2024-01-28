@@ -4,7 +4,7 @@ import com.d101.frientree.dto.leaf.response.dto.LeafCreateRequestDTO;
 import com.d101.frientree.dto.leaf.response.dto.LeafCreateResponseDTO;
 import com.d101.frientree.dto.leaf.response.dto.LeafReadResponseDTO;
 import com.d101.frientree.entity.LeafCategory;
-import com.d101.frientree.entity.LeafDetail;
+import com.d101.frientree.entity.leaf.LeafDetail;
 import com.d101.frientree.repository.LeafRepository;
 import com.d101.frientree.service.LeafService;
 import lombok.RequiredArgsConstructor;

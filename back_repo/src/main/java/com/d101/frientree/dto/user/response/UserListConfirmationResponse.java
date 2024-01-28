@@ -1,6 +1,6 @@
 package com.d101.frientree.dto.user.response;
 
-import com.d101.frientree.entity.User;
+import com.d101.frientree.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

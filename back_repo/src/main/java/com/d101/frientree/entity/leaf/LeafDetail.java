@@ -1,5 +1,8 @@
-package com.d101.frientree.entity;
+package com.d101.frientree.entity.leaf;
 
+import com.d101.frientree.entity.LeafCategory;
+import com.d101.frientree.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,11 +39,12 @@ public class LeafDetail {
     @Column(name = "leaf_create_date")
     private Date leafCreateDate;
 
-    @ManyToMany(mappedBy = "leafSend")
-    private List<User> sentByUsers = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "leafDetail")
+    private List<LeafReceive> leafReceives;
 
-    // LeafDetail 클래스에 List 필드 추가
-    @ManyToMany(mappedBy = "leafReceive")
-    private List<User> receivedByUsers = new ArrayList<>();
+    @JsonIgnore
+    @OneToMany(mappedBy = "leafDetail")
+    private List<LeafSend> leafSends;
 
 }
