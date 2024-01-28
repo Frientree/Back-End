@@ -1,5 +1,6 @@
 package com.d101.presentation.main.fragments
 
+import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +11,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
+import com.d101.presentation.databinding.DialogBackgroundMusicSelectBinding
 import com.d101.presentation.databinding.FragmentMypageBinding
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
@@ -66,6 +69,10 @@ class MyPageFragment : Fragment() {
         binding.backgroundMusicOnOffButtonImageView.setOnClickListener {
             viewModel.onEventOccurred(MyPageViewEvent.onSetBackgroundMusicStatus)
         }
+
+        binding.backgroundMusicChangeButtonTextView.setOnClickListener {
+            viewModel.onEventOccurred(MyPageViewEvent.onTapBackgroundMusicChangeButton)
+        }
     }
 
     private fun setBinding() {
@@ -96,6 +103,9 @@ class MyPageFragment : Fragment() {
                             setAlarmStatusUI(state)
                             binding.musicTextView.text = state.backgroundMusic
                             setDefaultUI(inputMethodManager)
+//                            TODO: Marquee 효과 적용이 안되는 중..
+                            binding.musicTextView.requestFocus()
+                            binding.musicTextView.isSelected = true
                         }
 
                         is MyPageViewState.NicknameEditState -> {
@@ -103,6 +113,12 @@ class MyPageFragment : Fragment() {
                             setAlarmStatusUI(state)
                             binding.musicTextView.text = state.backgroundMusic
                             setNicknameEditUI(inputMethodManager)
+                            binding.musicTextView.requestFocus()
+                            binding.musicTextView.isSelected = true
+                        }
+
+                        is MyPageViewState.BackgroundMusicSelectState -> {
+                            showBackgroundMusicSelectDialog()
                         }
                     }
                 }
@@ -129,11 +145,15 @@ class MyPageFragment : Fragment() {
 
     private fun setBackgroundMusicStatusUI(state: MyPageViewState) {
         when (state.backgroundMusicStatus) {
-            BackgroundMusicStatus.ON ->
+            BackgroundMusicStatus.ON -> {
                 binding.backgroundMusicOnOffButtonImageView.setImageResource(R.drawable.sound_on)
+                BackgroundMusicPlayer.resumeMusic()
+            }
 
-            BackgroundMusicStatus.OFF ->
+            BackgroundMusicStatus.OFF -> {
                 binding.backgroundMusicOnOffButtonImageView.setImageResource(R.drawable.sound_off)
+                BackgroundMusicPlayer.stopMusic()
+            }
         }
     }
 
@@ -151,6 +171,48 @@ class MyPageFragment : Fragment() {
                 binding.alarmOffButtonTextView.setBackgroundResource(
                     R.drawable.btn_small_confirm_green,
                 )
+            }
+        }
+    }
+
+    private fun showBackgroundMusicSelectDialog() {
+        val dialog = createFullScreenDialog()
+        val dialogBinding = DialogBackgroundMusicSelectBinding.inflate(layoutInflater)
+        val musicList = BackgroundMusicPlayer.getMusicList()
+
+        dialogBinding.setMusicSelector(musicList, viewModel.myPageViewState.value.backgroundMusic)
+        dialog.setDialogDismissListener(dialogBinding, musicList[dialogBinding.musicSelector.value])
+        BackgroundMusicPlayer.resumeMusic()
+        dialog.show()
+    }
+
+    private fun createFullScreenDialog(): Dialog {
+        return Dialog(requireContext(), R.style.FullScreenDialogStyle).apply {
+            window?.setBackgroundDrawableResource(R.drawable.btn_white_green_36dp)
+        }
+    }
+
+    private fun Dialog.setDialogDismissListener(
+        dialogBinding: DialogBackgroundMusicSelectBinding,
+        musicName: String,
+    ) {
+        this.setContentView(dialogBinding.root)
+        setOnDismissListener {
+            viewModel.onEventOccurred(MyPageViewEvent.onChangeBackgroundMusic(musicName))
+        }
+    }
+
+    private fun DialogBackgroundMusicSelectBinding.setMusicSelector(
+        musicList: List<String>,
+        currentMusic: String,
+    ) {
+        this.musicSelector.apply {
+            minValue = 0
+            maxValue = musicList.size - 1
+            displayedValues = musicList.toTypedArray()
+            value = musicList.indexOf(currentMusic)
+            setOnValueChangedListener { _, _, selectedNow ->
+                BackgroundMusicPlayer.playMusic(requireContext(), musicList[selectedNow])
             }
         }
     }

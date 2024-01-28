@@ -41,7 +41,13 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
                 setBackgroundMusicStatus()
             }
 
-            is MyPageViewEvent.onChangeBackgroundMusic -> {}
+            MyPageViewEvent.onTapBackgroundMusicChangeButton -> {
+                setBackgroundMusicSelectState()
+            }
+
+            is MyPageViewEvent.onChangeBackgroundMusic -> {
+                changeBackgroundMusic(event.musicName)
+            }
             is MyPageViewEvent.onShowTerms -> {}
             MyPageViewEvent.onTapChangePasswordButton -> {}
             MyPageViewEvent.onTapLogOutButton -> {}
@@ -52,6 +58,18 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
     // TODO(" 서버에서 유저 정보 가져오는 것으로 수정해야 함")
     private fun initViewState() {
         _myPageViewState.value = MyPageViewState.Default(id = "테스트1")
+    }
+
+    private fun setBackgroundMusicSelectState() {
+        _myPageViewState.value.let {
+            _myPageViewState.value = MyPageViewState.BackgroundMusicSelectState(
+                it.id,
+                it.nickname,
+                it.backgroundMusicStatus,
+                it.alarmStatus,
+                it.backgroundMusic,
+            )
+        }
     }
 
     private fun setEditNicknameState() {
@@ -85,6 +103,7 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
                     currentState.copy(alarmStatus = alarmStatus)
 
             is MyPageViewState.NicknameEditState -> {}
+            is MyPageViewState.BackgroundMusicSelectState -> {}
         }
     }
 
@@ -101,6 +120,19 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
             }
 
             is MyPageViewState.NicknameEditState -> {}
+            is MyPageViewState.BackgroundMusicSelectState -> {}
+        }
+    }
+
+    private fun changeBackgroundMusic(newBackgroundMusic: String) {
+        _myPageViewState.value.let {
+            _myPageViewState.value = MyPageViewState.Default(
+                it.id,
+                it.nickname,
+                it.backgroundMusicStatus,
+                it.alarmStatus,
+                newBackgroundMusic,
+            )
         }
     }
 }

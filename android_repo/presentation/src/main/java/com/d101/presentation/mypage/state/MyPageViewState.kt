@@ -22,4 +22,12 @@ sealed class MyPageViewState {
         override val alarmStatus: AlarmStatus,
         override val backgroundMusic: String,
     ) : MyPageViewState()
+
+    data class BackgroundMusicSelectState(
+        override val id: String,
+        override val nickname: String,
+        override val backgroundMusicStatus: BackgroundMusicStatus,
+        override val alarmStatus: AlarmStatus,
+        override val backgroundMusic: String,
+    ) : MyPageViewState()
 }

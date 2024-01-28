@@ -16,6 +16,8 @@ sealed class MyPageViewEvent {
 
     data object onSetBackgroundMusicStatus : MyPageViewEvent()
 
+    data object onTapBackgroundMusicChangeButton : MyPageViewEvent()
+
     data class onChangeBackgroundMusic(val musicName: String) : MyPageViewEvent()
 
     data object onTapTermsButton : MyPageViewEvent()

@@ -47,6 +47,12 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="Base.FTR.SMALL_TEXT" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="Base.FTR.SMALL_BUTTON_TEXT" parent="Base.FTR">
         <item name="fontFamily">@font/binggrae</item>
         <item name="android:textSize">16sp</item>
@@ -90,6 +96,18 @@
         <item name="android:paddingTop">12dp</item>
         <item name="android:paddingBottom">16dp</item>
         <item name="android:gravity">center</item>
+    </style>
+
+    <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
+    <style name="NumberPickerStyle" >
+        <item name="android:textSize">20sp</item>
+        <item name="android:editTextColor">@color/black</item>
+        <item name="android:colorControlNormal">@color/black</item>
     </style>
 
 </resources>

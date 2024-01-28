@@ -11,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.ActivityMainBinding
 import com.d101.presentation.main.state.MainActivityViewState
@@ -23,10 +24,13 @@ class MainActivity : AppCompatActivity() {
     }
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var navController: NavController
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        BackgroundMusicPlayer.initMusicList(this)
+
+        BackgroundMusicPlayer.playMusic(this, BackgroundMusicPlayer.getMusicList()[2])
 
         initNavigationView()
 
@@ -96,5 +100,10 @@ class MainActivity : AppCompatActivity() {
                 R.id.myPageFragment -> viewModel.changeViewState(MainActivityViewState.MyPageView)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        BackgroundMusicPlayer.releaseMusicPlayer()
     }
 }

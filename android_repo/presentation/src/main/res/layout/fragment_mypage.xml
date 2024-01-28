@@ -80,9 +80,9 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:background="@null"
+                android:cursorVisible="true"
                 android:enabled="false"
                 android:inputType="text"
-                android:cursorVisible="true"
                 android:text="@{myPageViewModel.myPageViewState.nickname}" />
 
             <ImageView
@@ -100,7 +100,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:src="@drawable/baseline_close_24"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/nickname_confirm_button_text_view"
@@ -170,12 +170,18 @@
 
             <TextView
                 android:id="@+id/music_text_view"
-                style="@style/Base.FTR.MY_INFO_TEXT"
+                style="@style/Base.FTR.SMALL_TEXT"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:maxLines="1"
                 android:text="@{myPageViewModel.myPageViewState.backgroundMusic}" />
 
             <ImageView
