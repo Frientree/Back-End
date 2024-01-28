@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         BackgroundMusicPlayer.initMusicList(this)
 
-        BackgroundMusicPlayer.playMusic(this, BackgroundMusicPlayer.getMusicList()[2])
+        BackgroundMusicPlayer.playMusic(this, BackgroundMusicPlayer.getMusicList()[0])
 
         initNavigationView()
 
