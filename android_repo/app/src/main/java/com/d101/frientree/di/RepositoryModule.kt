@@ -1,6 +1,8 @@
 package com.d101.frientree.di
 
+import com.d101.data.repository.FruitCreateRepositoryImpl
 import com.d101.data.repository.UserRepositoryImpl
+import com.d101.domain.repository.FruitCreateRepository
 import com.d101.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -16,4 +18,10 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         userRepositoryImpl: UserRepositoryImpl,
     ): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFruitCreateRepository(
+        fruitCreateRepositoryImpl: FruitCreateRepositoryImpl,
+    ): FruitCreateRepository
 }

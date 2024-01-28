@@ -19,4 +19,10 @@
     <string name="base_fruit_status_message">오늘의 열매가 아직 열리지 않았어요!</string>
     <string name="create_fruit_button_text">오늘의 열매 만들기</string>
     <string name="frientree">Frientree</string>
+    <string name="start">START</string>
+    <string name="or">or</string>
+    <string name="create_fruit_input_method_text">텍스트로 말하기</string>
+    <string name="input_by_text_title">나무가 듣고 있어요!</string>
+    <string name="input_by_text_hint">텍스트를 입력해보세요!</string>
+    <string name="create_fruit_text">열매 저장하기</string>
 </resources>

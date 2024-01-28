@@ -1,5 +1,7 @@
 package com.d101.frientree.di
 
+import com.d101.data.datasource.fruitcreate.FruitCreateRemoteDataSource
+import com.d101.data.datasource.fruitcreate.FruitCreateRemoteDataSourceImpl
 import com.d101.data.datasource.user.UserDataSource
 import com.d101.data.datasource.user.UserDataSourceImpl
 import dagger.Binds
@@ -15,4 +17,10 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindUserDataSource(userDataSourceImpl: UserDataSourceImpl): UserDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindFruitCreateRemoteDataSource(
+        fruitCreateRemoteDataSourceImpl: FruitCreateRemoteDataSourceImpl,
+    ): FruitCreateRemoteDataSource
 }

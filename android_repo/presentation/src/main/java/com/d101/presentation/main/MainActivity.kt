@@ -16,8 +16,9 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.ActivityMainBinding
 import com.d101.presentation.main.state.MainActivityViewState
 import com.d101.presentation.main.viewmodel.MainActivityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -40,8 +41,9 @@ class MainActivity : AppCompatActivity() {
                     when (it) {
                         MainActivityViewState.CalendarView -> {
                             // 아이콘을 바꾼다.
-                            binding.leafFloatingActionButton.setImageDrawable(
-                                getDrawable(R.drawable.btn_apple),
+                            AppCompatResources.getDrawable(
+                                this@MainActivity,
+                                R.drawable.btn_apple,
                             )
                         }
 

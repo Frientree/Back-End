@@ -5,7 +5,9 @@
     tools:context=".main.fragments.MainFragment">
 
     <data>
-
+<variable
+    name="treeFragment"
+    type="com.d101.presentation.main.fragments.MainFragment" />
         <variable
             name="mainViewModel"
             type="com.d101.presentation.main.viewmodel.MainFragmentViewModel" />

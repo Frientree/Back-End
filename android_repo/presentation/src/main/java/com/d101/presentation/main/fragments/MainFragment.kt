@@ -9,8 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentMainBinding
+import com.d101.presentation.main.fragments.dialogs.BeforeFruitCreateBaseFragment
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
     private val viewModel: MainFragmentViewModel by viewModels()
     private var _binding: FragmentMainBinding? = null
@@ -33,7 +36,18 @@ class MainFragment : Fragment() {
         binding.mainViewModel = viewModel
 
         viewModel.initTodayDate()
+
+        binding.createFruitButton.setOnClickListener {
+            val dialog = BeforeFruitCreateBaseFragment()
+            dialog.show(childFragmentManager, "")
+        }
     }
+// 데이터 바인딩 실패  ...
+//    fun invokeDialog(view: View){
+//        Log.d("SSAFY", "들어왓슈")
+//        val dialog = BeforeFruitCreateBaseFragment()
+//        dialog.show(childFragmentManager, "")
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
