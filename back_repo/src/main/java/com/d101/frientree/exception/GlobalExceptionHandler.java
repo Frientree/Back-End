@@ -24,4 +24,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
+    @ExceptionHandler(EmailDuplicatedException.class)
+    public ResponseEntity<String> handelEmailDuplicatedException(EmailDuplicatedException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
 }

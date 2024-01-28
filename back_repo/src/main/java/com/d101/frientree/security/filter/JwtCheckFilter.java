@@ -61,6 +61,10 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if (path.equals("/users/id-duplicate")) {
+            return true;
+        }
+
         return false;
     }
 

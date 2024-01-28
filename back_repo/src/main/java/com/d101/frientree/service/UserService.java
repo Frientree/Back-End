@@ -21,4 +21,10 @@ public interface UserService {
     ResponseEntity<UserProfileConfirmationResponse> profileConfirm();
 
     ResponseEntity<UserChangeAlamResponse> modifyAlam(UserChangeAlamRequest userChangeAlamRequest);
+
+    ResponseEntity<UserDeleteResponse> removal();
+
+    ResponseEntity<UserDeactivateResponse> deactivate();
+
+    ResponseEntity<UserDuplicateCheckResponse> duplicateCheck(UserDuplicateCheckRequest userDuplicateCheckRequest);
 }
