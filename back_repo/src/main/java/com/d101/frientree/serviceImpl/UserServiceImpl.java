@@ -7,6 +7,7 @@ import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.dto.user.response.UserListConfirmationResponse;
 import com.d101.frientree.entity.RefreshToken;
 import com.d101.frientree.entity.user.User;
+import com.d101.frientree.exception.EmailDuplicatedException;
 import com.d101.frientree.exception.PasswordNotMatchingException;
 import com.d101.frientree.exception.UserNotFoundException;
 import com.d101.frientree.repository.RefreshTokenRepository;
@@ -188,6 +189,54 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 유저 삭제
+    @Override
+    @Transactional
+    public ResponseEntity<UserDeleteResponse> removal() {
+
+        User currentUser = getUser();
+        userRepository.delete(currentUser);
+
+        UserDeleteResponse response = UserDeleteResponse.createUserDeleteResponse(
+                "Success",
+                true
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 유저 비활성화
+    @Override
+    @Transactional
+    public ResponseEntity<UserDeactivateResponse> deactivate() {
+
+        User currentUser = getUser();
+        currentUser.setUserDisabled(true);
+
+        UserDeactivateResponse response = UserDeactivateResponse.createUserDeactivateResponse(
+                "Success",
+                true
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 이메일 중복체크
+    @Override
+    public ResponseEntity<UserDuplicateCheckResponse> duplicateCheck(UserDuplicateCheckRequest userDuplicateCheckRequest) {
+
+        if (userRepository.findByUserEmail(userDuplicateCheckRequest.getUserEmail()).isPresent()) {
+            throw new EmailDuplicatedException();
+        }
+
+        UserDuplicateCheckResponse response = UserDuplicateCheckResponse.createUserDuplicateCheckResponse(
+                "Success",
+                true
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     // 유저 개별 조회
     @Override
     public ResponseEntity<UserConfirmationResponse> confirm(Long id) {
@@ -257,11 +306,14 @@ public class UserServiceImpl implements UserService {
         return leftMin <= 60 && !duration.isNegative();
     }
 
+    // 현재 접속한 유저 정보를 가져오는 메서드
     private User getUser() {
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
+
         return userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new UsernameNotFoundException("해당 유저가 존재하지 않습니다."));
+                .orElseThrow(UserNotFoundException::new);
     }
 }
 
