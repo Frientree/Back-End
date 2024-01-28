@@ -2,6 +2,7 @@ package com.d101.frientree.entity.leaf;
 
 import com.d101.frientree.entity.user.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 
 @Entity
 @Table(name = "leaf_send")
@@ -18,4 +19,13 @@ public class LeafSend {
     @ManyToOne
     @JoinColumn(name = "leafNum")
     private LeafDetail leafDetail;
+
+    @Builder
+    public static LeafSend createLeafSend(LeafDetail leafDetail, User user){
+        return LeafSend.builder()
+                .leafDetail(leafDetail)
+                .user(user)
+                .build();
+    }
+
 }

@@ -1,14 +1,13 @@
 package com.d101.frientree.entity.leaf;
 
+import com.d101.frientree.dto.leaf.request.LeafGenerationRequest;
 import com.d101.frientree.entity.LeafCategory;
 import com.d101.frientree.entity.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Builder
 @Data
@@ -47,4 +46,10 @@ public class LeafDetail {
     @OneToMany(mappedBy = "leafDetail")
     private List<LeafSend> leafSends;
 
+    public static LeafDetail createLeafDetail(LeafGenerationRequest leafGenerationRequest) {
+        return LeafDetail.builder()
+                .leafCategory(leafGenerationRequest.getLeafCategory())
+                .leafContent(leafGenerationRequest.getLeafContent())
+                .build();
+    }
 }

@@ -1,13 +1,22 @@
 package com.d101.frientree.service;
 
-import com.d101.frientree.dto.leaf.response.dto.LeafCreateRequestDTO;
-import com.d101.frientree.dto.leaf.response.dto.LeafCreateResponseDTO;
-import com.d101.frientree.dto.leaf.response.dto.LeafReadResponseDTO;
+import com.d101.frientree.dto.leaf.request.LeafGenerationRequest;
+import com.d101.frientree.dto.leaf.response.LeafComplaintResponse;
+import com.d101.frientree.dto.leaf.response.LeafConfirmationResponse;
+import com.d101.frientree.dto.leaf.response.LeafGenerationResponse;
+import com.d101.frientree.dto.leaf.response.LeafViewResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface LeafService {
 
     // category 선택해서 조회하기
-    LeafReadResponseDTO readByLeafCategory(String leafCategory);
+    ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory);
 
-    LeafCreateResponseDTO createLeaf(LeafCreateRequestDTO leafCreateRequestDTO);
+    ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest);
+
+    ResponseEntity<LeafComplaintResponse> complain(Long leafId);
+
+    ResponseEntity<LeafViewResponse> view(Long leafId);
+
+//    boolean removalLeaf(Long leafNum);
 }
