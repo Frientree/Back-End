@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="viewModel"
+            type="com.d101.presentation.welcome.viewmodel.SignInViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,6 +32,7 @@
             style="@style/Base.FTR.EDIT_TEXT"
             android:layout_marginTop="16dp"
             android:hint="@string/input_id"
+            android:text="@={viewModel.id}"
             android:inputType="textEmailAddress"
             app:layout_constraintBottom_toTopOf="@id/input_password_edit_text"
             app:layout_constraintEnd_toEndOf="@+id/logo_image_view"
@@ -40,6 +44,7 @@
             style="@style/Base.FTR.EDIT_TEXT"
             android:layout_marginTop="16dp"
             android:hint="@string/input_password"
+            android:text="@={viewModel.password}"
             android:inputType="textPassword"
             app:layout_constraintBottom_toTopOf="@id/find_password_text_view"
             app:layout_constraintEnd_toEndOf="@+id/input_id_edit_text"

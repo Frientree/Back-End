@@ -1,5 +1,7 @@
 package com.d101.data.model
 
+import com.d101.data.error.FrientreeHttpError
+
 sealed interface ApiResult<out T> {
     data class Success<T>(val data: T) : ApiResult<T>
 
@@ -14,7 +16,7 @@ sealed interface ApiResult<out T> {
 
         fun handleThrowable(): Throwable =
             when (this) {
-                is HttpError -> Throwable(message)
+                is HttpError -> FrientreeHttpError.DefaultError(code, message)
                 is NetworkError -> throwable
                 is UnexpectedError -> throwable
             }
