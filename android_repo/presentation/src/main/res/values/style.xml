@@ -107,6 +107,7 @@
         <item name="android:gravity">center</item>
     </style>
 
+
     <style name="Base.FTR.EDIT_TEXT" parent="@style/Widget.AppCompat.EditText">
         <item name="android:textAppearance">@style/Base.FTR.Text</item>
         <item name="android:layout_width">240dp</item>
@@ -159,10 +160,8 @@
         <item name="android:colorControlNormal">@color/black</item>
     </style>
 
-    <style name="Base.FTR.EDIT_TEXT2" parent="Widget.AppCompat.EditText">
+    <style name="Base.FTR.EDIT_TEXT.TRANSPARENT" parent="Widget.AppCompat.EditText">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
         <item name="android:background">@android:color/transparent</item>
-        <item name="fontFamily">@font/nanum_barun_gothic</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/black</item>
     </style>
 </resources>
