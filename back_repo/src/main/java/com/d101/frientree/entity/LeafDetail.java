@@ -1,11 +1,10 @@
 package com.d101.frientree.entity;
 
+import com.d101.frientree.dto.leaf.request.LeafGenerationRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Builder
 @Data
@@ -42,5 +41,12 @@ public class LeafDetail {
     // LeafDetail 클래스에 List 필드 추가
     @ManyToMany(mappedBy = "leafReceive")
     private List<User> receivedByUsers = new ArrayList<>();
+
+    public static LeafDetail createLeafDetail(LeafGenerationRequest leafGenerationRequest) {
+        return LeafDetail.builder()
+                .leafCategory(leafGenerationRequest.getLeafCategory())
+                .leafContent(leafGenerationRequest.getLeafContent())
+                .build();
+    }
 
 }

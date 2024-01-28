@@ -1,13 +1,27 @@
 package com.d101.frientree.serviceImpl;
 
-import com.d101.frientree.dto.leaf.response.dto.LeafCreateRequestDTO;
-import com.d101.frientree.dto.leaf.response.dto.LeafCreateResponseDTO;
-import com.d101.frientree.dto.leaf.response.dto.LeafReadResponseDTO;
+import com.d101.frientree.dto.leaf.request.LeafGenerationRequest;
+import com.d101.frientree.dto.leaf.response.LeafComplaintResponse;
+import com.d101.frientree.dto.leaf.response.LeafConfirmationResponse;
+import com.d101.frientree.dto.leaf.response.LeafGenerationResponse;
+import com.d101.frientree.dto.leaf.response.LeafViewResponse;
+import com.d101.frientree.dto.leaf.response.dto.LeafComplaintResponseDTO;
+import com.d101.frientree.dto.leaf.response.dto.LeafGenerationResponseDTO;
+import com.d101.frientree.dto.leaf.response.dto.LeafConfirmationResponseDTO;
 import com.d101.frientree.entity.LeafCategory;
 import com.d101.frientree.entity.LeafDetail;
+import com.d101.frientree.entity.LeafSend;
+import com.d101.frientree.entity.User;
 import com.d101.frientree.repository.LeafRepository;
+import com.d101.frientree.repository.LeafSendRepository;
+import com.d101.frientree.repository.UserRepository;
 import com.d101.frientree.service.LeafService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,9 +35,12 @@ import java.util.List;
 public class LeafServiceImpl implements LeafService {
 
     private final LeafRepository leafRepository;
+    private final LeafSendRepository leafSendRepository;
+    private final UserRepository userRepository;
+
 
     @Override
-    public LeafReadResponseDTO readByLeafCategory(String leafCategory) {
+    public ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory) {
         List<LeafDetail> leaves = leafRepository.findByLeafCategory(LeafCategory.valueOf(leafCategory.toUpperCase()));
 
         if (!leaves.isEmpty()) {
@@ -39,12 +56,13 @@ public class LeafServiceImpl implements LeafService {
             // leaf를 업데이트
             leafRepository.save(selectedLeaf);
 
+            LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
+                    "Success",
+                    LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(selectedLeaf)
+            );
+
             // 선택된 leaf를 LeafReadResponseDTO로 변환하여 반환
-            return LeafReadResponseDTO.builder()
-                    .leafNum(selectedLeaf.getLeafNum())
-                    .leafContent(selectedLeaf.getLeafContent())
-                    .leafCategory(selectedLeaf.getLeafCategory())
-                    .build();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
         // 찾는 leaf가 없는 경우 null 반환
@@ -53,24 +71,70 @@ public class LeafServiceImpl implements LeafService {
 //   default leaf 를 던져줄 수 있게 처리...
     }
 
-
     @Override
-    public LeafCreateResponseDTO createLeaf(LeafCreateRequestDTO leafCreateRequestDTO) {
+    public ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest) {
+
+        // 혅재 접속한 정보를 contextholder 에 담아놓은 정보를 가지고 오는 것
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.valueOf(authentication.getName());
+
 
         LocalDateTime leafCreateDate = LocalDateTime.now();
 
-        LeafDetail newLeaf = LeafDetail.builder()
-                .leafCategory(leafCreateRequestDTO.getLeafCategory())
-                .leafContent(leafCreateRequestDTO.getLeafContent())
-                .leafCreateDate(Date.from(leafCreateDate.atZone(ZoneId.systemDefault()).toInstant()))
-                .build();
+        LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
+        newLeaf.setLeafCreateDate(Date.from(leafCreateDate.atZone(ZoneId.systemDefault()).toInstant()));
 
+        // LeafDetail 저장
         leafRepository.save(newLeaf);
 
-        return LeafCreateResponseDTO.builder()
-                .isCreated(true)
-                .build();
-    }
-}
+        // LeafSend 테이블에 추가할 정보 설정
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("해당하는 유저를 찾을 수 없습니다. "));
 
+        LeafSend leafSend = LeafSend.createLeafSend(newLeaf, user);
+
+        // LeafSend 테이블에 추가
+        leafSendRepository.save(leafSend);
+
+        // LeafGenerationResponse 생성
+        LeafGenerationResponse response = LeafGenerationResponse.createLeafGenerationResponse(
+                "Success",
+                true
+        );
+
+        // LeafGenerationResponse 반환
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<LeafComplaintResponse> complain(Long leafId) {
+        // TODO: 에러 처리 추가해야함
+        LeafDetail currentLeaf = leafRepository.findById(leafId)
+                .orElseThrow(() -> new RuntimeException("이파리는 존재하지 않습니다."));
+
+        currentLeaf.setLeafComplain(currentLeaf.getLeafComplain() + 1);
+
+        if (currentLeaf.getLeafComplain() >= 5) {
+            // 삭제할 LeafDetail의 leaf_send 레코드 삭제
+            leafSendRepository.deleteByLeafDetail(currentLeaf);
+
+            // LeafDetail 삭제
+            leafRepository.delete(currentLeaf);         }
+
+        LeafComplaintResponse response = LeafComplaintResponse.createLeafComplaintResponse(
+                "Success",
+                true
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Override
+    public ResponseEntity<LeafViewResponse> view(Long views) {
+        return null;
+
+    }
+
+}
 
