@@ -25,4 +25,10 @@
     <string name="input_by_text_title">나무가 듣고 있어요!</string>
     <string name="input_by_text_hint">텍스트를 입력해보세요!</string>
     <string name="create_fruit_text">열매 저장하기</string>
+    <string name="input_id">ID 입력</string>
+    <string name="input_password">PW 입력</string>
+    <string name="sign_up">회원가입</string>
+    <string name="text_divider">|</string>
+    <string name="find_password">비밀번호 찾기</string>
+    <string name="sign_in">로그인</string>
 </resources>
