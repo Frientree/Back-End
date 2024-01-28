@@ -1,6 +1,6 @@
 package com.d101.domain.model
 
-sealed class UserStatus{
+sealed class UserStatus {
     sealed class SignInStatus : UserStatus() {
         data object SignInSuccess : SignInStatus()
         data object UserNotFound : SignInStatus()
