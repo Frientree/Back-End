@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Builder
 @Data
@@ -47,4 +45,12 @@ public class LeafDetail {
     @OneToMany(mappedBy = "leafDetail")
     private List<LeafSend> leafSends;
 
+    public static LeafDetail createLeafDetail(LeafGenerationRequest leafGenerationRequest) {
+        return LeafDetail.builder()
+                .leafCategory(leafGenerationRequest.getLeafCategory())
+                .leafContent(leafGenerationRequest.getLeafContent())
+                .build();
+    }
+
 }
+Override

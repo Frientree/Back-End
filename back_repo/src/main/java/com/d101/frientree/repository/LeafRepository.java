@@ -5,9 +5,12 @@ import com.d101.frientree.entity.leaf.LeafDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LeafRepository extends JpaRepository<LeafDetail, Long> {
 
     List<LeafDetail> findByLeafCategory(LeafCategory leafCategory);
+
+    Optional<LeafDetail> findById(Long id);
 
 }

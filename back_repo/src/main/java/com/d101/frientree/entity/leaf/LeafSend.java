@@ -18,4 +18,11 @@ public class LeafSend {
     @ManyToOne
     @JoinColumn(name = "leafNum")
     private LeafDetail leafDetail;
+    public static LeafSend createLeafSend(LeafDetail leafDetail, User user){
+        return LeafSend.builder()
+                .leafDetail(leafDetail)
+                .user(user)
+                .build();
+    }
+
 }
