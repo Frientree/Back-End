@@ -2,9 +2,9 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("com.google.protobuf")
     id("com.google.dagger.hilt.android")
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
-    id("com.google.protobuf") version "0.9.1"
 }
 
 android {
@@ -41,7 +41,7 @@ android {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.19.4"
+        artifact = "com.google.protobuf:protoc:3.24.1"
     }
     generateProtoTasks {
         all().forEach { task ->
@@ -84,4 +84,7 @@ dependencies {
     implementation(Libraries.dataStore)
     implementation(Libraries.dataStoreCore)
     implementation(Libraries.protoBuf)
+}
+kapt {
+    correctErrorTypes = true
 }

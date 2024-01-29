@@ -87,3 +87,6 @@ dependencies {
     implementation(Libraries.dataStoreCore)
     implementation(Libraries.protoBuf)
 }
+kapt {
+    correctErrorTypes = true
+}

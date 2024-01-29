@@ -4,5 +4,6 @@ plugins {
     id("org.jetbrains.kotlin.android") version Versions.KOTLIN_VERSION apply false
     id("com.android.library") version Versions.ANDROID_GRADLE_PLUGIN apply false
     id("org.jetbrains.kotlin.jvm") version Versions.KOTLIN_VERSION apply false
+    id("com.google.protobuf") version "0.9.4" apply false
     id("com.google.dagger.hilt.android") version Versions.HILT apply false
 }

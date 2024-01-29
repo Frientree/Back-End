@@ -69,3 +69,6 @@ dependencies {
     // Lottie
     implementation(Libraries.lottie)
 }
+kapt {
+    correctErrorTypes = true
+}
