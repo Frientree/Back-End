@@ -1,72 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="320dp"
-    android:layout_height="320dp"
-    tools:context=".main.fragments.dialogs.SelectInputTypeFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/lottie_layout"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/bg_lottie"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        tools:context=".main.fragments.dialogs.SelectInputTypeFragment">
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/speech_lottie_view"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:layout_constraintBottom_toTopOf="@+id/start_text_view"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lottie_layout"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/bg_lottie"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/lottie_mic" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/speech_lottie_view"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:layout_constraintBottom_toTopOf="@+id/start_text_view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:lottie_rawRes="@raw/lottie_mic" />
+
+            <TextView
+                android:id="@+id/start_text_view"
+                style="@style/Base.FTR.Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/start"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/speech_lottie_view" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/start_text_view"
+            android:id="@+id/or_text_view"
             style="@style/Base.FTR.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/start"
+            android:layout_marginTop="32dp"
+            android:text="@string/or"
+            android:textSize="12sp"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@+id/text_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lottie_layout" />
+
+        <TextView
+            android:id="@+id/text_text_view"
+            style="@style/Base.FTR.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="@string/create_fruit_input_method_text"
+            android:layout_marginTop="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/speech_lottie_view" />
+            app:layout_constraintTop_toBottomOf="@+id/or_text_view" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/or_text_view"
-        style="@style/Base.FTR.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/or"
-        android:textSize="12sp"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintBottom_toTopOf="@+id/text_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lottie_layout" />
-
-    <TextView
-        android:id="@+id/text_text_view"
-        style="@style/Base.FTR.Text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:text="@string/create_fruit_input_method_text"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/or_text_view" />
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
