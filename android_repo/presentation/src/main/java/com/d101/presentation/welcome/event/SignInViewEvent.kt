@@ -1,9 +1,10 @@
 package com.d101.presentation.welcome.event
 
 sealed class SignInViewEvent {
-    data object OnSignInViewByFrientree : SignInViewEvent()
-    data object OnSignInViewByKakao : SignInViewEvent()
-    data object OnNavigateToTermsAgree : SignInViewEvent()
-    data object OnNavigateToFindPassword : SignInViewEvent()
-    data object OnNavigateToMain : SignInViewEvent()
+    data object SignInAttemptByFrientree : SignInViewEvent()
+    data object SignInAttemptByKakao : SignInViewEvent()
+    data object SignUpClicked : SignInViewEvent()
+    data object FindPasswordClicked : SignInViewEvent()
+    data object SignInSuccess : SignInViewEvent()
+    data class SignInFailed(val message: String) : SignInViewEvent()
 }
