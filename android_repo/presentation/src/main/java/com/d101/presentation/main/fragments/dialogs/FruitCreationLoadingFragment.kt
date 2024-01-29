@@ -49,9 +49,10 @@ class FruitCreationLoadingFragment : Fragment() {
             }
         }
 
+        FruitDialogInterface.dialog.isCancelable = false
+
         viewLifecycleOwner.repeatOnStarted {
             viewModel.todayFruitList.collect {
-                // UI state 변경
                 if (it.isNotEmpty()) {
                     parentFragmentManager.beginTransaction()
                         .replace(R.id.before_fragment_container_view, AfterFruitCreateFragment())

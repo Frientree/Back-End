@@ -25,8 +25,6 @@ class AfterFruitCreateFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-//        _binding = FragmentAfterFruitCreateBinding.inflate(inflater)
-//        return binding.root
         _binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_after_fruit_create,
