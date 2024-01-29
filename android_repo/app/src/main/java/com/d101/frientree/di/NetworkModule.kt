@@ -1,17 +1,21 @@
 package com.d101.frientree.di
 
 import androidx.datastore.core.DataStore
+import com.d101.data.api.UserService
 import com.d101.data.datastore.TokenPreferences
+import com.d101.data.model.user.request.TokenRefreshRequest
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Provider
 import javax.inject.Singleton
 
 @Module
@@ -22,6 +26,7 @@ object NetworkModule {
     @Provides
     fun provideFrientreeClient(
         authorizationInterceptor: Interceptor,
+        tokenAuthenticator: Authenticator,
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         val loggingInterceptor = HttpLoggingInterceptor()
@@ -29,6 +34,7 @@ object NetworkModule {
         builder.apply {
             addInterceptor(loggingInterceptor)
             addInterceptor(authorizationInterceptor)
+            authenticator(tokenAuthenticator)
         }
         return builder.build()
     }
@@ -54,5 +60,37 @@ object NetworkModule {
                 .build()
         }
         chain.proceed(request)
+    }
+
+    @Singleton
+    @Provides
+    fun provideTokenAuthenticator(
+        userService: Provider<UserService>,
+        tokenPreferencesStore: DataStore<TokenPreferences>,
+    ) = Authenticator { _, response ->
+
+        val refreshToken = runBlocking { tokenPreferencesStore.data.first() }.refreshToken
+
+        val service = userService.get()
+        if (refreshToken.isNotEmpty()) {
+            val tokenResponse = runBlocking {
+                service.refreshUserToken(TokenRefreshRequest(refreshToken))
+                    .getOrThrow().data
+            }
+
+            runBlocking {
+                tokenPreferencesStore.updateData { currentPrefs ->
+                    currentPrefs.toBuilder()
+                        .setAccessToken(tokenResponse.accessToken)
+                        .setRefreshToken(tokenResponse.refreshToken)
+                        .build()
+                }
+            }
+            response.request.newBuilder()
+                .header("Authorization", "Bearer ${tokenResponse.accessToken}")
+                .build()
+        } else {
+            null
+        }
     }
 }
