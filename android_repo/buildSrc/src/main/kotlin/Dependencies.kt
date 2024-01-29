@@ -16,7 +16,7 @@ object Versions {
     const val FRAGMENT = "1.6.2"
     const val ROOM_DB = "2.5.0"
     const val LOTTIE = "6.3.0"
-    const val DATA_STORE_CORE = "1.0.0"
+    const val DATA_STORE = "1.0.0"
     const val PROTO_BUF = "3.25.1"
 }
 
@@ -42,7 +42,8 @@ object Libraries {
     const val roomRuntime = "androidx.room:room-runtime:${Versions.ROOM_DB}"
     const val roomCompiler = "androidx.room:room-compiler:${Versions.ROOM_DB}"
     const val lottie = "com.airbnb.android:lottie:${Versions.LOTTIE}"
-    const val dataStore = "androidx.datastore:datastore:${Versions.DATA_STORE_CORE}"
-    const val dataStoreCore = "androidx.datastore:datastore-core:${Versions.DATA_STORE_CORE}"
+    const val dataStore = "androidx.datastore:datastore:${Versions.DATA_STORE}"
+    const val dataStorePrefs = "androidx.datastore:datastore-preferences:${Versions.DATA_STORE}"
+    const val dataStoreCore = "androidx.datastore:datastore-core:${Versions.DATA_STORE}"
     const val protoBuf = "com.google.protobuf:protobuf-javalite:${Versions.PROTO_BUF}"
 }
