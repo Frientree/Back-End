@@ -4,12 +4,11 @@ import com.d101.frientree.dto.user.UserDTO;
 import com.d101.frientree.dto.user.request.*;
 import com.d101.frientree.dto.user.response.*;
 import com.d101.frientree.dto.user.response.dto.*;
-import com.d101.frientree.dto.user.response.UserListConfirmationResponse;
+import com.d101.frientree.entity.EmailCode;
 import com.d101.frientree.entity.RefreshToken;
 import com.d101.frientree.entity.user.User;
-import com.d101.frientree.exception.EmailDuplicatedException;
-import com.d101.frientree.exception.PasswordNotMatchingException;
-import com.d101.frientree.exception.UserNotFoundException;
+import com.d101.frientree.exception.*;
+import com.d101.frientree.repository.EmailCodeRepository;
 import com.d101.frientree.repository.RefreshTokenRepository;
 import com.d101.frientree.repository.UserRepository;
 import com.d101.frientree.security.CustomUserDetailsService;
@@ -19,16 +18,19 @@ import com.d101.frientree.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -42,6 +44,11 @@ public class UserServiceImpl implements UserService {
     private final CustomUserDetailsService customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final JavaMailSender javaMailSender;
+    private final EmailCodeRepository emailCodeRepository;
+    private final RedisTemplate<String, String> redisTemplate;
+
+    private static final int VERIFICATION_CODE_LENGTH = 6;
 
     // 로그인 + 토큰 발급 로직
     @Override
@@ -51,15 +58,15 @@ public class UserServiceImpl implements UserService {
         UserDetails userDetails;
         try {
             User currentUser = userRepository.findByUserEmail(userSignInRequest.getUserEmail())
-                    .orElseThrow();
+                    .orElseThrow(() -> new UserNotFoundException("Fail"));
             userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(currentUser.getUserId()));
-        } catch (UsernameNotFoundException e) {
-            throw new UserNotFoundException();
+        } catch (UserNotFoundException e) {
+            throw new UserNotFoundException("Fail");
         }
 
         // 패스워드 불일치시 401 예외처리
         if (!passwordEncoder.matches(userSignInRequest.getUserPw(), userDetails.getPassword())) {
-            throw new PasswordNotMatchingException();
+            throw new PasswordNotMatchingException("Fail");
         }
 
         // Jwt 토큰 발급 로직
@@ -147,15 +154,21 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<UserChangeNicknameResponse> modifyNickname(UserChangeNicknameRequest userChangeNicknameRequest) {
 
-        User currentUser = getUser();
+        try {
+            User currentUser = getUser();
 
-        currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
+            currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
 
-        UserChangeNicknameResponse response = UserChangeNicknameResponse.createUserChangeNicknameResponse(
-                "Success",
-                UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(currentUser));
+            UserChangeNicknameResponse response = UserChangeNicknameResponse.createUserChangeNicknameResponse(
+                    "Success",
+                    UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(currentUser));
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (NicknameValidateException e) {
+            throw new NicknameValidateException("Fail");
+        } catch (JwtValidationException e) {
+            throw new JwtValidationException("Fail");
+        }
     }
 
     // 유저 프로필 조회
@@ -226,7 +239,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<UserDuplicateCheckResponse> duplicateCheck(UserDuplicateCheckRequest userDuplicateCheckRequest) {
 
         if (userRepository.findByUserEmail(userDuplicateCheckRequest.getUserEmail()).isPresent()) {
-            throw new EmailDuplicatedException();
+            throw new EmailDuplicatedException("Fail");
         }
 
         UserDuplicateCheckResponse response = UserDuplicateCheckResponse.createUserDuplicateCheckResponse(
@@ -237,12 +250,50 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 인증 이메일 발송
+    @Override
+    public ResponseEntity<UserSendEmailCertificationResponse> sendEmailCertificate(UserSendEmailCertificationRequest userSendEmailCertificationRequest) {
+
+        sendVerificationEmail(userSendEmailCertificationRequest.getUserEmail());
+
+        UserSendEmailCertificationResponse response = UserSendEmailCertificationResponse.createUserEmailCertificationResponse(
+                "Success",
+                true
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 이메일 인증 처리
+    @Override
+    public ResponseEntity<UserPassEmailCertificationResponse> passEmailCertificate(UserPassEmailCertificationRequest userPassEmailCertificationRequest) {
+
+        String userEmail = userPassEmailCertificationRequest.getUserEmail();
+        String code = userPassEmailCertificationRequest.getCode();
+
+        String redisKey = "userEmail:" + userEmail;
+
+        Object storedCodeObj = redisTemplate.opsForHash().get(redisKey, "code");
+
+        String storedCode = (storedCodeObj != null) ? storedCodeObj.toString() : null;
+
+        if (code.equals(storedCode)) {
+            UserPassEmailCertificationResponse response = UserPassEmailCertificationResponse.createUserPassEmailCertificationResponse(
+                    "Success",
+                    true
+            );
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            throw new EmailCodeNotMatchingException("Fail");
+        }
+    }
+
     // 유저 개별 조회
     @Override
     public ResponseEntity<UserConfirmationResponse> confirm(Long id) {
 
         User currentUser = userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException("Fail"));
 
         UserConfirmationResponse response = UserConfirmationResponse.createUserConfirmationResponse(
                 "Success",
@@ -313,8 +364,31 @@ public class UserServiceImpl implements UserService {
         String userId = authentication.getName();
 
         return userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(() -> new UserNotFoundException("Fail"));
     }
+
+    @Transactional
+    public void sendVerificationEmail(String email) {
+        // 생성된 토큰을 이용하여 이메일 본문에 포함시킬 URL 생성
+        String code = generateRandomCode();
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("프렌트리 이메일 인증 확인");
+        message.setText("앱에서 이메일 인증 코드를 입력하세요:\n" + code);
+
+        javaMailSender.send(message);
+
+        emailCodeRepository.save(new EmailCode(email, code));
+    }
+
+    private String generateRandomCode() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] randomBytes = new byte[VERIFICATION_CODE_LENGTH];
+        secureRandom.nextBytes(randomBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes).substring(0, VERIFICATION_CODE_LENGTH);
+    }
+
 }
 
 

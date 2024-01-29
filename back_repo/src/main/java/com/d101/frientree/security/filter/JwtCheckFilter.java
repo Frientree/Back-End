@@ -22,7 +22,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
 
-        // Preflight요청은 체크하지 않음
+        // Preflight 요청은 체크하지 않음
         if (request.getMethod().equals("OPTIONS")) {
             return true;
         }
@@ -62,6 +62,14 @@ public class JwtCheckFilter extends OncePerRequestFilter {
         }
 
         if (path.equals("/users/id-duplicate")) {
+            return true;
+        }
+
+        if (path.equals("/users/certification-send")) {
+            return true;
+        }
+
+        if (path.equals("/users/certification-pass")) {
             return true;
         }
 
@@ -107,8 +115,9 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             log.error("An error occurred during sign-in process", e);
 
             Gson gson = new Gson();
-            String msg = gson.toJson(Collections.singletonMap("error", "ERROR_ACCESS_TOKEN"));
+            String msg = gson.toJson(Collections.singletonMap("message", "Fail"));
 
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             PrintWriter printWriter = response.getWriter();
             printWriter.println(msg);

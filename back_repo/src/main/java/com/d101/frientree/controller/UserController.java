@@ -156,4 +156,16 @@ public class UserController {
         return userService.duplicateCheck(userDuplicateCheckRequest);
     }
 
+    // 인증 이메일 발송
+    @PostMapping("/certification-send")
+    public ResponseEntity<UserSendEmailCertificationResponse> userSendEmailCertification(@RequestBody UserSendEmailCertificationRequest userSendEmailCertificationRequest) {
+        return userService.sendEmailCertificate(userSendEmailCertificationRequest);
+    }
+
+    // 인증 이메일 확인
+    @PostMapping("/certification-pass")
+    public ResponseEntity<UserPassEmailCertificationResponse> userPassEmailCertification(@RequestBody UserPassEmailCertificationRequest userPassEmailCertificationRequest) {
+        return userService.passEmailCertificate(userPassEmailCertificationRequest);
+    }
+
 }

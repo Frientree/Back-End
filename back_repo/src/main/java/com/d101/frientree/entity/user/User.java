@@ -55,10 +55,6 @@ public class User {
     @Column(name = "user_fruit_status")
     private Boolean userFruitStatus = true;
 
-//    @Builder.Default
-//    @Column(name = "user_enabled")
-//    private Boolean userEnabled = true;
-
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<UserFruit> userFruits;

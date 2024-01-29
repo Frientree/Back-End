@@ -12,7 +12,7 @@ public class UserConfirmationResponse {
     private UserConfirmationResponseDTO data;
 
     public static UserConfirmationResponse createUserConfirmationResponse(String message, UserConfirmationResponseDTO dto) {
-        return com.d101.frientree.dto.user.response.UserConfirmationResponse.builder()
+        return UserConfirmationResponse.builder()
                 .message(message)
                 .data(dto)
                 .build();

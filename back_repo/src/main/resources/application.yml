@@ -50,3 +50,22 @@ logging:
     com.d101.frientree : info
     org.springframework.security: trace
 
+---
+spring:
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    username: ssafytestgcp@gmail.com
+    password: vqtoyjvgcrhapgol
+    properties:
+      mail:
+        smtp:
+         auth: true
+         starttls:
+           enable: true
+         mime:
+           charset: UTF-8
+         transport:
+           protocol: smtp
+         debug: true
