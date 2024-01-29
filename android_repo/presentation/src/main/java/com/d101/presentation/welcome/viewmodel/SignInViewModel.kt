@@ -3,7 +3,8 @@ package com.d101.presentation.welcome.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
-import com.d101.domain.model.UserStatus
+import com.d101.domain.model.status.ErrorStatus
+import com.d101.domain.model.status.SignInErrorStatus
 import com.d101.domain.usecase.usermanagement.SignInByFrientreeUseCase
 import com.d101.presentation.welcome.event.SignInViewEvent
 import com.d101.presentation.welcome.state.SignInViewState
@@ -41,18 +42,15 @@ class SignInViewModel @Inject constructor(
 
                 is Result.Failure -> {
                     _uiState.update {
-                        when (result.status) {
-                            UserStatus.SignInStatus.SignInSuccess -> SignInViewState.SignInSuccess
-                            UserStatus.SignInStatus.UserNotFound -> SignInViewState.SignInFailure(
+                        when (result.errorStatus) {
+                            ErrorStatus.NetworkError -> SignInViewState.SignInFailure("네트워크 연결 실패")
+                            SignInErrorStatus.UserNotFound -> SignInViewState.SignInFailure(
                                 "사용자 없음",
                             )
-
-                            UserStatus.SignInStatus.WrongPassword -> SignInViewState.SignInFailure(
+                            SignInErrorStatus.WrongPassword -> SignInViewState.SignInFailure(
                                 "비밀번호 틀림",
                             )
-
-                            UserStatus.NetworkError -> SignInViewState.SignInFailure("네트워크 연결 실패")
-                            UserStatus.UnknownError -> SignInViewState.SignInFailure("알 수 없는 에러")
+                            ErrorStatus.UnknownError -> SignInViewState.SignInFailure("알 수 없는 에러")
                         }
                     }
                 }

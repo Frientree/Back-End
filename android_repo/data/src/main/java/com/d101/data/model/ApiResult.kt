@@ -16,7 +16,7 @@ sealed interface ApiResult<out T> {
 
         fun handleThrowable(): Throwable =
             when (this) {
-                is HttpError -> FrientreeHttpError.DefaultError(code, message)
+                is HttpError -> FrientreeHttpError(code, message)
                 is NetworkError -> throwable
                 is UnexpectedError -> throwable
             }
