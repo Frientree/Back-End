@@ -50,6 +50,13 @@ dependencies {
 
 	testImplementation 'org.springframework.security:spring-security-test'
 
+	// Apache HttpClient
+	implementation 'org.apache.httpcomponents:httpclient:4.5.12'
+	// Apache HttpMime
+	implementation 'org.apache.httpcomponents:httpmime:4.3.1'
+	// Google Gson
+	implementation 'com.google.code.gson:gson:2.8.5'
+
 	// 유효성 검사 로직
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 

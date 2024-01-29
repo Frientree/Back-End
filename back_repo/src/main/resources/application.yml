@@ -44,6 +44,18 @@ spring:
 server:
   port: 8080
 ---
+jasypt:
+  encryptor:
+    naver:
+      clova:
+        key: ENC(/4gocWtV/BmAvU7+80AeceqYsDqVO3ij/w6vMn6dhDuzzOVg8DFsc/vmc0BJmlRC)
+        invokeurl: ENC(tRYnWsnPcp3mr7VJ8yN00HOzyigqTxhV5l2FYkifWRH2pYJdIEBDpS9B9ixXxk9wNmChPk99u6zxbhG65vEqVda5E9ICosn7tH9RsAsXwY3O0mamNC9Mv53cNGUCJGJdoUsHq2oL3fc+UMhs1XBsjDJ1/c8gpN9J3y6wM0ltqoA=)
+---
+jasypt:
+  encryptor:
+    aiurl: ENC(S5SsEvmX4X7ncHUDkHz5OJMVfy9wotQhzIz84ER28YKENkB7CNSgQw==)
+
+---
 
 logging:
   level:

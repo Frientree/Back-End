@@ -20,7 +20,6 @@ import java.util.Arrays;
 )
 @Configuration
 public class SwaggerConfig {
-
     @Bean
     public GroupedOpenApi userApi() {
         return GroupedOpenApi.builder()
@@ -34,6 +33,14 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
                 .group("leaf-api")
                 .pathsToMatch("/leaf/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi userFruitApi(){
+        return GroupedOpenApi.builder()
+                .group("userFruit-api")
+                .pathsToMatch("/user-fruit/**")
                 .build();
     }
 
