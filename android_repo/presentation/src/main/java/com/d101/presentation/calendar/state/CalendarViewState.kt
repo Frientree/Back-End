@@ -23,6 +23,7 @@ sealed class CalendarViewState {
             juiceImageUrl = "",
             juiceDescription = "",
             condolenceMessage = "",
+            fruitList = emptyList(),
         ),
         override val fruitList: List<Fruit> = emptyList(),
         override val todayFruitCreationStatus: TodayFruitCreationStatus =

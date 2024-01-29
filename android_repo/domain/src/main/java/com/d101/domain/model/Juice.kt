@@ -6,4 +6,5 @@ data class Juice(
     val juiceImageUrl: String,
     val juiceDescription: String,
     val condolenceMessage: String,
+    val fruitList: List<Fruit>,
 )

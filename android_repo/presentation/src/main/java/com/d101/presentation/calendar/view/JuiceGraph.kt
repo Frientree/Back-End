@@ -6,22 +6,31 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.d101.presentation.R
 
-class JuiceGraph(context: Context) : View(context) {
+class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : View(
+    context,
+    attrs,
+    defStyleAttr,
+) {
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
-    private val bitmap: Bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.tree1)
-    private val scaledImage = Bitmap.createScaledBitmap(bitmap, 75, 75, false)
+    private val bitmap: Bitmap = BitmapFactory.decodeResource(
+        getContext().resources,
+        R.drawable.tree1,
+    )
+    private val scaledImage = Bitmap.createScaledBitmap(bitmap, 80, 80, false)
 
     private val linePaint = Paint().apply {
-        color = Color.WHITE
+        color = Color.BLACK
         strokeWidth = 5f
     }
 
     private val textPaint = Paint().apply {
-        color = Color.WHITE
+        color = Color.BLACK
         textSize = 40f
         typeface = ResourcesCompat.getFont(context, R.font.binggrae_bold)
     }
@@ -46,24 +55,24 @@ class JuiceGraph(context: Context) : View(context) {
         canvas.drawText("low", 50f, height - 150f, textPaint)
 
         // 눈금 및 라벨 추가
-        val numberOfGridsX = 6 // X축 눈금의 수
-        val xInterval = (width - 400f) / numberOfGridsX // X축 눈금 간격
-        val yInterval = (height - 400f) / numberOfGridsX
+        val numberOfGrids = 6 // X축 눈금의 수
+        val xInterval = (width - 400f) / numberOfGrids // X축 눈금 간격
+        val yInterval = (height - 400f) / numberOfGrids
 
-        for (i in 0 until numberOfGridsX) {
-            val x1 = 100f + (i + 1) * xInterval
-            val y1 = height + 40f - 150f - (yInterval * scoreList[i]) // 이미지를 그릴 y 좌표
-            val x2 = 100f + (i + 2) * xInterval
-            val y2 = height + 40f - 150f - (yInterval * scoreList[i + 1]) // 이미지를 그릴 y 좌표
+        for (i in 0 until numberOfGrids) {
+            val x1 = 125f + (i + 1) * xInterval
+            val y1 = height + 40f - 150f - (yInterval * scoreList[i])
+            val x2 = 125f + (i + 2) * xInterval
+            val y2 = height + 40f - 150f - (yInterval * scoreList[i + 1])
             canvas.drawLine(x1, y1, x2, y2, linePaint)
         }
 
-        for (i in 0..numberOfGridsX) {
-            val x = 75f + (i + 1) * xInterval
+        for (i in 0..numberOfGrids) {
+            val x = 100f + (i + 1) * xInterval
             canvas.drawText(("25").toString(), x, height - 75f, textPaint) // X축 라벨
-            val imageX = 100f + (i + 1) * xInterval
+            val imageX = 125 + (i + 1) * xInterval
             val imageY = height - 150f - (yInterval * scoreList[i]) // 이미지를 그릴 y 좌표
-            canvas.drawBitmap(scaledImage, imageX - 32.5f, imageY, null)
+            canvas.drawBitmap(scaledImage, imageX - 40f, imageY, null)
         }
     }
 }
