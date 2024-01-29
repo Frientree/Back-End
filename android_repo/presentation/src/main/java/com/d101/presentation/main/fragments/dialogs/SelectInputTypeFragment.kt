@@ -34,8 +34,8 @@ class SelectInputTypeFragment : Fragment() {
 
         view.findViewById<TextView>(R.id.text_text_view).setOnClickListener {
             parentFragmentManager.beginTransaction()
-                .add(R.id.before_fragment_container_view, FruitCreationByTextFragment())
-                .addToBackStack("")
+                .replace(R.id.before_fragment_container_view, FruitCreationByTextFragment())
+                .addToBackStack(null)
                 .commit()
         }
         /**

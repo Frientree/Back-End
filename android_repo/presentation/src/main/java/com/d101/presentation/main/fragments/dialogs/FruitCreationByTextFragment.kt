@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentFruitCreationByTextBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import utils.repeatOnStarted
 
 @AndroidEntryPoint
 class FruitCreationByTextFragment : Fragment() {
@@ -40,21 +40,25 @@ class FruitCreationByTextFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val text = view.findViewById<EditText>(R.id.input_by_text_edit_text).text
+
         view.findViewById<Button>(R.id.create_fruit_by_text_button)
             .setOnClickListener {
-                viewModel.setTodayFruitList(
-                    view.findViewById<EditText>(R.id.input_by_text_edit_text).text.toString(),
-                )
+                if (text.isNotEmpty()) {
+                    viewModel.setText(text.toString())
+                    parentFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.before_fragment_container_view,
+                            FruitCreationLoadingFragment.newInstance(
+                                FruitCreationLoadingFragment.TEXT,
+                            ),
+                        )
+                        .addToBackStack(null)
+                        .commit()
+                } else {
+                    Toast.makeText(context, "텍스트를 채워주세요!", Toast.LENGTH_SHORT).show()
+                }
             }
-        viewLifecycleOwner.repeatOnStarted {
-            viewModel.todayFruitList.collect {
-                // TODO: 바깥 VIEWMODEL 임포트 -> ui state 변경 :: 근데 이거는 다음 프래그먼트에서 해도 되겠다.
-                parentFragmentManager.beginTransaction()
-                    .add(R.id.before_fragment_container_view, AfterFruitCreateFragment())
-                    .addToBackStack(null)
-                    .commit()
-            }
-        }
     }
 
     override fun onDestroyView() {

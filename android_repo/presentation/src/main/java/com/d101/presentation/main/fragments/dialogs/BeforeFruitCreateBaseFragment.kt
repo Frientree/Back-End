@@ -34,7 +34,7 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
 
         viewModel
         childFragmentManager.beginTransaction()
-            .add(R.id.before_fragment_container_view, SelectInputTypeFragment())
+            .replace(R.id.before_fragment_container_view, SelectInputTypeFragment())
             .addToBackStack(null)
             .commit()
     }
