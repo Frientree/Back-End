@@ -17,11 +17,18 @@ sealed class CalendarViewState {
     ) : CalendarViewState()
 
     data class JuiceAbsentState(
-        override val juice: Juice,
-        override val fruitList: List<Fruit>,
-        override val todayFruitCreationStatus: TodayFruitCreationStatus,
-        override val todayFruitStatistics: String,
-        val juiceCreationStatus: JuiceCreationStatus,
+        override val juice: Juice = Juice(
+            weekDate = 0L,
+            juiceName = "",
+            juiceImageUrl = "",
+            juiceDescription = "",
+            condolenceMessage = "",
+        ),
+        override val fruitList: List<Fruit> = emptyList(),
+        override val todayFruitCreationStatus: TodayFruitCreationStatus =
+            TodayFruitCreationStatus.NotCreated,
+        override val todayFruitStatistics: String = "",
+        val juiceCreatableStatus: JuiceCreatableStatus = JuiceCreatableStatus.JuiceUnCreatable,
     ) : CalendarViewState()
 
     data class JuiceShakeState(

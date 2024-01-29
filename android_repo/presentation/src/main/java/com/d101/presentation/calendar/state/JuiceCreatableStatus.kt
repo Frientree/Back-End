@@ -1,5 +1,5 @@
 package com.d101.presentation.calendar.state
 
-enum class JuiceCreationStatus {
+enum class JuiceCreatableStatus {
     JuiceCreatable, JuiceUnCreatable
 }
