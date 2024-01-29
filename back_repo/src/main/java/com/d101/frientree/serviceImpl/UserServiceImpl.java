@@ -254,7 +254,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<UserSendEmailCertificationResponse> sendEmailCertificate(UserSendEmailCertificationRequest userSendEmailCertificationRequest) {
 
-//        sendVerificationEmail(userSendEmailCertificationRequest.getUserEmail());
+        sendVerificationEmail(userSendEmailCertificationRequest.getUserEmail());
 
         UserSendEmailCertificationResponse response = UserSendEmailCertificationResponse.createUserEmailCertificationResponse(
                 "Success",
@@ -367,27 +367,27 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Fail"));
     }
 
-//    @Transactional
-//    public void sendVerificationEmail(String email) {
-//        // 생성된 토큰을 이용하여 이메일 본문에 포함시킬 URL 생성
-//        String code = generateRandomCode();
-//
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(email);
-//        message.setSubject("프렌트리 이메일 인증 확인");
-//        message.setText("앱에서 이메일 인증 코드를 입력하세요:\n" + code);
-//
-//        javaMailSender.send(message);
-//
-//        emailCodeRepository.save(new EmailCode(email, code));
-//    }
-//
-//    private String generateRandomCode() {
-//        SecureRandom secureRandom = new SecureRandom();
-//        byte[] randomBytes = new byte[VERIFICATION_CODE_LENGTH];
-//        secureRandom.nextBytes(randomBytes);
-//        return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes).substring(0, VERIFICATION_CODE_LENGTH);
-//    }
+    @Transactional
+    public void sendVerificationEmail(String email) {
+        // 생성된 토큰을 이용하여 이메일 본문에 포함시킬 URL 생성
+        String code = generateRandomCode();
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("프렌트리 이메일 인증 확인");
+        message.setText("앱에서 이메일 인증 코드를 입력하세요:\n" + code);
+
+        javaMailSender.send(message);
+
+        emailCodeRepository.save(new EmailCode(email, code));
+    }
+
+    private String generateRandomCode() {
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] randomBytes = new byte[VERIFICATION_CODE_LENGTH];
+        secureRandom.nextBytes(randomBytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes).substring(0, VERIFICATION_CODE_LENGTH);
+    }
 
 }
 
