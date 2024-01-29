@@ -3,9 +3,13 @@ package com.d101.frientree.entity.leaf;
 import com.d101.frientree.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "leaf_send")
+@Getter
+@Setter
 public class LeafSend {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +24,13 @@ public class LeafSend {
     @JoinColumn(name = "leafNum")
     private LeafDetail leafDetail;
 
-    @Builder
-    public static LeafSend createLeafSend(LeafDetail leafDetail, User user){
-        return LeafSend.builder()
-                .leafDetail(leafDetail)
-                .user(user)
-                .build();
+
+    public static LeafSend createLeafSend(LeafDetail leafDetail, User user) {
+        LeafSend leafSend = new LeafSend();
+        leafSend.setLeafDetail(leafDetail);
+        leafSend.setUser(user);
+        return leafSend;
     }
+
 
 }

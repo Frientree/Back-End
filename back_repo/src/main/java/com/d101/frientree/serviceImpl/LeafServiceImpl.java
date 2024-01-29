@@ -68,15 +68,14 @@ public class LeafServiceImpl implements LeafService {
 //   이파리가 없는 경우(서비스초기) default leaf -> 예비로 넣어놓기 처리할 것
 //   default leaf 를 던져줄 수 있게 처리...
     }
-
     @Override
+    @Transactional
     public ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest) {
 
         // 혅재 접속한 정보를 contextholder 에 담아놓은 정보를 가지고 오는 것
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.valueOf(authentication.getName());
-
-
         LocalDateTime leafCreateDate = LocalDateTime.now();
 
         LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
@@ -102,6 +101,7 @@ public class LeafServiceImpl implements LeafService {
 
         // LeafGenerationResponse 반환
         return ResponseEntity.status(HttpStatus.OK).body(response);
+
     }
 
     @Override
@@ -128,11 +128,21 @@ public class LeafServiceImpl implements LeafService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Override
-    public ResponseEntity<LeafViewResponse> view(Long views) {
-        return null;
 
+    @Override
+    @Transactional
+    public ResponseEntity<LeafViewResponse> view(Long userId) {
+
+        // userId를 기준으로 leaf_view 합계를 조회
+        Long totalLeafView = leafSendRepository.getTotalLeafView(userId);
+
+        LeafViewResponse response = LeafViewResponse.createLeafViewResponse(
+                "Success",
+                totalLeafView
+        );
+        response.setUserId(userId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }
-

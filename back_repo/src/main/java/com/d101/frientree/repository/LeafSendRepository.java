@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface LeafSendRepository extends JpaRepository<LeafSend, Long> {
     void deleteByLeafDetail(LeafDetail leafDetail);
 
-
+    Long getTotalLeafView(Long userId);
 }

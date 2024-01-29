@@ -18,5 +18,4 @@ public interface LeafService {
 
     ResponseEntity<LeafViewResponse> view(Long leafId);
 
-//    boolean removalLeaf(Long leafNum);
 }
