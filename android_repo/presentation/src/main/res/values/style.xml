@@ -4,9 +4,13 @@
     <style name="Base.FTR" parent="Theme.Frientree" />
 
     <style name="Base.FTR.Text" parent="Base.FTR">
-        <item name="fontFamily">@font/nanum_barun_gothic</item>
+        <item name="android:fontFamily">@font/nanum_barun_gothic</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.Text.BOLD" parent="Base.FTR.Text">
+        <item name="android:fontFamily">@font/nanum_barun_gothic_bold</item>
     </style>
 
     <style name="Base.FTR.Text.SMALL" parent="Base.FTR.Text">
@@ -147,6 +151,12 @@
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
     </style>
+    <style name="Base.FTR.Button.DIALOG_BUTTON" parent="@style/Base.FTR.Button.CONFIRM">
+        <item name="android:background">@drawable/btn_white_with_stroke_36dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingHorizontal">20dp</item>
+        <item name="android:paddingVertical">10dp</item>
+    </style>
 
     <style name="FullScreenDialogStyle" parent="Theme.AppCompat.Dialog">
         <item name="windowNoTitle">true</item>
@@ -163,5 +173,13 @@
     <style name="Base.FTR.EDIT_TEXT.TRANSPARENT" parent="Widget.AppCompat.EditText">
         <item name="android:textAppearance">@style/Base.FTR.Text</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Base.FTR.CHIP" parent="Widget.Material3.Chip.Assist">
+        <item name="android:textAppearance">@style/Base.FTR.SMALL_BUTTON_TEXT</item>
+        <item name="chipBackgroundColor">@color/bg_fruit_chip_selector</item>
+        <item name="chipStrokeColor">@color/gray</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 </resources>

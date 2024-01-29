@@ -24,4 +24,6 @@
     <color name="fruit_cherry">#D60057</color>
     <color name="fruit_blue">#479FFF</color>
     <color name="fruit_navy">#1033B2</color>
+
+    <color name="fruit_chip_selected">#FEFFD5</color>
 </resources>

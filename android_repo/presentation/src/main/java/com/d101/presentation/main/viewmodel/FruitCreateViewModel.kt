@@ -23,8 +23,15 @@ class FruitCreateViewModel @Inject constructor(
 
     private lateinit var inputText: String
 
+    private val _selectedFruit: MutableStateFlow<FruitCreated> = MutableStateFlow(FruitCreated())
+    val selectedFruit: StateFlow<FruitCreated> = _selectedFruit.asStateFlow()
+
     fun setText(text: String) {
         inputText = text
+    }
+
+    fun setSelectedFruit(fruit: FruitCreated) {
+        _selectedFruit.update { fruit }
     }
 
     fun setTodayFruitListByText() {

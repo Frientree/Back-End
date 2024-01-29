@@ -1,30 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="360dp"
-    android:layout_height="500dp"
-    android:background="@color/white">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/fruit_image_view"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:src="@drawable/img_lemon"
-        android:layout_marginTop="28dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-    <TextView
-        style="@style/Base.FTR.ButtonText"
-        android:gravity="center"
-        android:id="@+id/fruit_name_text_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textSize="30sp"
-        android:text="신나는 레몬"
-        app:layout_constraintTop_toBottomOf="@id/fruit_image_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.d101.presentation.main.viewmodel.FruitCreateViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="360dp"
+        android:layout_height="500dp"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/fruit_image_view"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/img_lemon"
+            android:layout_marginTop="28dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            style="@style/Base.FTR.ButtonText"
+            android:gravity="center"
+            android:id="@+id/fruit_name_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="30sp"
+            android:text="@{viewModel.selectedFruit.fruitName}"
+            tools:text="신나는 레몬"
+            app:layout_constraintTop_toBottomOf="@id/fruit_image_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/fruit_description_text_view"
+            style="@style/Base.FTR.Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="20dp"
+            android:text="@{viewModel.selectedFruit.fruitDescription}"
+            app:layout_constraintTop_toBottomOf="@id/fruit_name_text_view"
+            tools:text="과일 설명이 들어갑니다." />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/fruits_chip_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/fruit_description_text_view"
+            app:layout_constraintBottom_toTopOf="@id/save_fruit_button">
+
+            <com.google.android.material.chip.Chip
+                style="@style/Base.FTR.CHIP"
+                android:id="@+id/fisrt_fruit_chip"
+                android:checked="true"
+                android:checkable="true" />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Base.FTR.CHIP"
+                android:id="@+id/second_fruit_chip"
+                android:checkable="true" />
+
+            <com.google.android.material.chip.Chip
+                style="@style/Base.FTR.CHIP"
+                android:id="@+id/third_fruit_chip"
+                android:checkable="true" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/save_fruit_button"
+            style="@style/Base.FTR.Button.DIALOG_BUTTON"
+            android:text="@string/save_fruit_text"
+            android:layout_marginBottom="28dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

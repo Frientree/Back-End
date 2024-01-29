@@ -50,14 +50,9 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/create_fruit_by_text_button"
-        style="@style/Base.FTR.ELEVATED_BUTTON"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Base.FTR.Button.DIALOG_BUTTON"
         android:layout_marginBottom="32dp"
-        android:background="@drawable/btn_white_with_stroke_36dp"
-        android:paddingHorizontal="20dp"
         android:text="@string/create_fruit_text"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

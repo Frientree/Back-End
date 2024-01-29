@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentMainBinding
 import com.d101.presentation.main.fragments.dialogs.BeforeFruitCreateBaseFragment
+import com.d101.presentation.main.fragments.dialogs.FruitDialogInterface
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,6 +40,7 @@ class MainFragment : Fragment() {
 
         binding.createFruitButton.setOnClickListener {
             val dialog = BeforeFruitCreateBaseFragment()
+            FruitDialogInterface.dialog = dialog
             dialog.show(childFragmentManager, "")
         }
     }
