@@ -11,7 +11,10 @@ import java.io.InputStream
 import java.io.OutputStream
 
 object TokenPreferencesSerializer : Serializer<TokenPreferences> {
-    override val defaultValue: TokenPreferences = TokenPreferences.getDefaultInstance()
+    override val defaultValue: TokenPreferences = TokenPreferences.newBuilder()
+        .setAccessToken("NEED_LOGIN")
+        .setRefreshToken("NEED_LOGIN")
+        .build()
 
     override suspend fun readFrom(input: InputStream): TokenPreferences {
         try {
