@@ -1,5 +1,6 @@
 package com.d101.frientree.di
 
+import com.d101.data.api.AuthService
 import com.d101.data.api.FruitCreateService
 import com.d101.data.api.UserService
 import com.d101.data.network.ResultCallAdapter
@@ -52,7 +53,6 @@ object ApiModule {
         .addConverterFactory(gsonConverterFactory)
         .build()
 
-
     @Singleton
     @Provides
     fun provideUserApi(
@@ -65,7 +65,7 @@ object ApiModule {
     fun provideAuthApi(
         @AuthRetrofit
         retrofit: Retrofit,
-    ): UserService = retrofit.create((UserService::class.java))
+    ): AuthService = retrofit.create((AuthService::class.java))
 
     @Singleton
     @Provides

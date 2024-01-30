@@ -1,21 +1,17 @@
 package com.d101.frientree.di
 
 import androidx.datastore.core.DataStore
-import com.d101.data.api.UserService
+import com.d101.data.api.AuthService
 import com.d101.data.datastore.TokenPreferences
-import com.d101.data.model.user.request.TokenRefreshRequest
+import com.d101.data.utils.AuthAuthenticator
+import com.d101.data.utils.AuthInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.runBlocking
-import okhttp3.Authenticator
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Provider
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -35,14 +31,16 @@ object NetworkModule {
     @Provides
     @FrientreeClient
     fun provideFrientreeClient(
-        tokenAuthenticator: Authenticator,
+        authInterceptor: AuthInterceptor,
+        authAuthenticator: AuthAuthenticator,
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         builder.apply {
             addInterceptor(loggingInterceptor)
-            authenticator(tokenAuthenticator)
+            addInterceptor(authInterceptor)
+            authenticator(authAuthenticator)
         }
         return builder.build()
     }
@@ -51,16 +49,14 @@ object NetworkModule {
     @Provides
     @AuthClient
     fun provideAuthClient(
-        authAuthenticator: Authenticator,
-        tokenAuthenticator: Authenticator,
+        authInterceptor: AuthInterceptor,
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         builder.apply {
             addInterceptor(loggingInterceptor)
-            authenticator(tokenAuthenticator)
-            authenticator(authAuthenticator)
+            addInterceptor(authInterceptor)
         }
         return builder.build()
     }
@@ -73,50 +69,13 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun providesAuthorizationInterceptor(
-        tokenPreferencesStore: DataStore<TokenPreferences>,
-    ) = Interceptor { chain ->
-        var request = chain.request()
-
-        val accessToken = runBlocking { tokenPreferencesStore.data.first() }.accessToken
-
-        if (accessToken.isNotEmpty()) {
-            request = chain.request().newBuilder()
-                .addHeader("Authorization", "Bearer $accessToken")
-                .build()
-        }
-        chain.proceed(request)
-    }
+    fun providesAuthorizationInterceptor(dataStore: DataStore<TokenPreferences>): AuthInterceptor =
+        AuthInterceptor(dataStore)
 
     @Singleton
     @Provides
     fun provideTokenAuthenticator(
-        userService: Provider<UserService>,
+        authService: AuthService,
         tokenPreferencesStore: DataStore<TokenPreferences>,
-    ) = Authenticator { _, response ->
-
-        val refreshToken = runBlocking { tokenPreferencesStore.data.first() }.refreshToken
-
-        val service = userService.get()
-        if (refreshToken.isNotEmpty()) {
-            val tokenResponse = runBlocking {
-                service.refreshUserToken(TokenRefreshRequest(refreshToken))
-                    .getOrThrow().data
-            }
-
-            runBlocking {
-                tokenPreferencesStore.updateData { currentPrefs ->
-                    currentPrefs.toBuilder()
-                        .setAccessToken(tokenResponse.accessToken)
-                        .setRefreshToken(tokenResponse.refreshToken)
-                        .build()
-                }
-            }
-            response.request.newBuilder()
-                .header("Authorization", "Bearer ${tokenResponse.accessToken}")
-                .build()
-        } else {
-            null
-        }
-    }
+    ): AuthAuthenticator = AuthAuthenticator(authService, tokenPreferencesStore)
 }
