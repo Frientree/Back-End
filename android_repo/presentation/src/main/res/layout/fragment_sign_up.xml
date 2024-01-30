@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="viewModel"
+            type="com.d101.presentation.welcome.viewmodel.SignUpViewModel" />
 
     </data>
 
@@ -17,13 +20,13 @@
             style="@style/Base.FTR.TextView.WELCOME_TITLE"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintVertical_bias="0"
             android:text="@string/sign_up"
             app:layout_constraintBottom_toTopOf="@id/id_input_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <include
             android:id="@+id/id_input_layout"
@@ -31,10 +34,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
-            app:layout_constraintBottom_toTopOf="@id/nickname_input_layout"
+            app:layout_constraintBottom_toTopOf="@id/email_check_input_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sign_up_title_text_view" />
+
+        <include
+            android:id="@+id/email_check_input_layout"
+            layout="@layout/layout_input_text_in_welcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toTopOf="@id/nickname_input_layout"
+            app:layout_constraintStart_toStartOf="@id/password_check_input_layout"
+            app:layout_constraintTop_toBottomOf="@id/id_input_layout" />
 
         <include
             android:id="@+id/nickname_input_layout"
@@ -45,7 +58,7 @@
             app:layout_constraintBottom_toTopOf="@id/password_input_layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/id_input_layout" />
+            app:layout_constraintTop_toBottomOf="@+id/email_check_input_layout" />
 
         <include
             android:id="@+id/password_input_layout"
@@ -74,13 +87,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:text="@string/confirm"
             android:paddingVertical="16dp"
+            android:text="@string/confirm"
             android:textAppearance="@style/Base.FTR.Text.BIG"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
