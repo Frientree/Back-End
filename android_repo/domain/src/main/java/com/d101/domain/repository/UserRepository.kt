@@ -7,4 +7,6 @@ interface UserRepository {
     suspend fun signIn(userId: String, userPw: String): Result<Unit>
 
     suspend fun getUserInfo(): Result<User>
+
+    suspend fun checkSignInStatus(): Result<Unit>
 }

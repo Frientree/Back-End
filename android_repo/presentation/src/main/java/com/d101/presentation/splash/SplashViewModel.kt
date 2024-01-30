@@ -3,7 +3,7 @@ package com.d101.presentation.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
-import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
+import com.d101.domain.usecase.usermanagement.CheckSignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val checkSignInUseCase: CheckSignInUseCase,
 ) : ViewModel() {
 
     private val _eventFlow = MutableEventFlow<SplashViewEvent>()
@@ -25,13 +25,13 @@ class SplashViewModel @Inject constructor(
     fun showSplash() {
         viewModelScope.launch {
             delay(3_000L)
-            getUserInfo()
+            checkSignInStatus()
         }
     }
 
-    private fun getUserInfo() {
+    private fun checkSignInStatus() {
         viewModelScope.launch {
-            when (getUserInfoUseCase()) {
+            when (checkSignInUseCase()) {
                 is Result.Success -> onSignInSuccess()
                 is Result.Failure -> onSignInFailed()
             }

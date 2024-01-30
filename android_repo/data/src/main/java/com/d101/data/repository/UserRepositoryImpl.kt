@@ -31,12 +31,23 @@ class UserRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getUserInfo(): Result<User> {
-        val localUserInfo = userDataStore.data.first()
+        var localUserInfo = userDataStore.data.first()
 
-        if (localUserInfo.userEmail.isNotEmpty()) {
-            return Result.Success(localUserInfo.toUser())
+        return if (localUserInfo.userEmail.isNotEmpty()) {
+            Result.Success(localUserInfo.toUser())
+        } else {
+            when (val result = checkSignInStatus()) {
+                is Result.Success -> {
+                    localUserInfo = userDataStore.data.first()
+                    Result.Success(localUserInfo.toUser())
+                }
+
+                is Result.Failure -> Result.Failure(result.errorStatus)
+            }
         }
+    }
 
+    override suspend fun checkSignInStatus(): Result<Unit> {
         return when (val result = userDataSource.getUserInfo()) {
             is Result.Success -> {
                 userDataStore.updateData {
@@ -50,7 +61,7 @@ class UserRepositoryImpl @Inject constructor(
                             .build()
                     }
                 }
-                Result.Success(result.data.toUser())
+                Result.Success(Unit)
             }
 
             is Result.Failure -> Result.Failure(result.errorStatus)
