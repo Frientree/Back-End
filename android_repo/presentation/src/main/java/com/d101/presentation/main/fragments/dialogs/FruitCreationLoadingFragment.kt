@@ -46,6 +46,7 @@ class FruitCreationLoadingFragment : Fragment() {
 
             SPEECH -> {
                 // 뷰모델에서 STT 함수 호출
+                viewModel.setTodayFruitListBySpeech()
             }
         }
 
@@ -56,8 +57,7 @@ class FruitCreationLoadingFragment : Fragment() {
                 if (it.isNotEmpty()) {
                     parentFragmentManager.beginTransaction()
                         .replace(R.id.before_fragment_container_view, AfterFruitCreateFragment())
-                        .addToBackStack(null)
-                        .commit()
+                        .addToBackStack(null).commit()
                 }
             }
         }
@@ -66,12 +66,11 @@ class FruitCreationLoadingFragment : Fragment() {
     companion object {
 
         @JvmStatic
-        fun newInstance(inputType: String) =
-            FruitCreationLoadingFragment().apply {
-                arguments = Bundle().apply {
-                    putString(INPUT_TYPE, inputType)
-                }
+        fun newInstance(inputType: String) = FruitCreationLoadingFragment().apply {
+            arguments = Bundle().apply {
+                putString(INPUT_TYPE, inputType)
             }
+        }
 
         const val TEXT = "text"
         const val SPEECH = "speech"
