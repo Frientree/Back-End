@@ -5,6 +5,7 @@ import com.d101.data.api.AuthService
 import com.d101.data.datastore.TokenPreferences
 import com.d101.data.utils.AuthAuthenticator
 import com.d101.data.utils.AuthInterceptor
+import com.d101.data.utils.TokenManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -76,6 +77,7 @@ object NetworkModule {
     @Provides
     fun provideTokenAuthenticator(
         authService: AuthService,
+        tokenManager: TokenManager,
         tokenPreferencesStore: DataStore<TokenPreferences>,
-    ): AuthAuthenticator = AuthAuthenticator(authService, tokenPreferencesStore)
+    ): AuthAuthenticator = AuthAuthenticator(authService, tokenManager, tokenPreferencesStore)
 }

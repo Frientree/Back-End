@@ -3,9 +3,11 @@ package com.d101.data.utils
 import androidx.datastore.core.DataStore
 import com.d101.data.api.AuthService
 import com.d101.data.datastore.TokenPreferences
-import com.d101.data.error.RefreshTokenFailedException
 import com.d101.data.model.user.request.TokenRefreshRequest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Request
@@ -15,6 +17,7 @@ import javax.inject.Inject
 
 class AuthAuthenticator @Inject constructor(
     private val authService: AuthService,
+    private val tokenManager: TokenManager,
     private val dataStore: DataStore<TokenPreferences>,
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
@@ -22,14 +25,16 @@ class AuthAuthenticator @Inject constructor(
 
         if (refreshToken != "NEED_LOGIN") {
             val res = authService.refreshUserToken(TokenRefreshRequest(refreshToken)).execute()
+            val body = res.body()
 
-            if (!res.isSuccessful) {
-                throw RefreshTokenFailedException()
+            if (!res.isSuccessful || body == null) {
+                emitRefreshTokenExpired()
+                return null
             }
-            val tokenResponse =
-                res.body()?.data ?: throw NullPointerException("token response is null")
 
-            runBlocking {
+            val tokenResponse = body.data
+
+            CoroutineScope(Dispatchers.IO).launch {
                 dataStore.updateData { currentPrefs ->
                     currentPrefs.toBuilder()
                         .setAccessToken(tokenResponse.accessToken)
@@ -40,8 +45,15 @@ class AuthAuthenticator @Inject constructor(
             return response.request.newBuilder()
                 .header("Authorization", "Bearer ${tokenResponse.accessToken}")
                 .build()
+        } else {
+            emitRefreshTokenExpired()
         }
         return null
     }
 
+    private fun emitRefreshTokenExpired() {
+        CoroutineScope(Dispatchers.IO).launch {
+            tokenManager.notifyTokenExpired()
+        }
+    }
 }
