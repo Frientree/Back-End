@@ -8,12 +8,14 @@ sealed class CalendarViewState {
     abstract val fruitList: List<Fruit>
     abstract val todayFruitCreationStatus: TodayFruitCreationStatus
     abstract val todayFruitStatistics: String
+    abstract val juiceCreatableStatus: JuiceCreatableStatus
 
     data class JuicePresentState(
         override val juice: Juice,
-        override val todayFruitCreationStatus: TodayFruitCreationStatus,
         override val fruitList: List<Fruit>,
+        override val todayFruitCreationStatus: TodayFruitCreationStatus,
         override val todayFruitStatistics: String,
+        override val juiceCreatableStatus: JuiceCreatableStatus,
     ) : CalendarViewState()
 
     data class JuiceAbsentState(
@@ -29,7 +31,8 @@ sealed class CalendarViewState {
         override val todayFruitCreationStatus: TodayFruitCreationStatus =
             TodayFruitCreationStatus.NotCreated,
         override val todayFruitStatistics: String = "",
-        val juiceCreatableStatus: JuiceCreatableStatus = JuiceCreatableStatus.JuiceUnCreatable,
+        override val juiceCreatableStatus: JuiceCreatableStatus =
+            JuiceCreatableStatus.JuiceCreatable,
     ) : CalendarViewState()
 
     data class JuiceShakeState(
@@ -37,5 +40,6 @@ sealed class CalendarViewState {
         override val fruitList: List<Fruit>,
         override val todayFruitCreationStatus: TodayFruitCreationStatus,
         override val todayFruitStatistics: String,
+        override val juiceCreatableStatus: JuiceCreatableStatus,
     ) : CalendarViewState()
 }
