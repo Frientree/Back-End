@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.FruitCreated
 import com.d101.domain.usecase.main.MakeFruitBySpeechUseCase
 import com.d101.domain.usecase.main.MakeFruitByTextUseCase
+import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,6 +26,8 @@ class FruitCreateViewModel @Inject constructor(
 
     private lateinit var inputText: String
     private lateinit var audioFile: File
+
+    var isTextInput = true
 
     private val _selectedFruit: MutableStateFlow<FruitCreated> = MutableStateFlow(FruitCreated())
     val selectedFruit: StateFlow<FruitCreated> = _selectedFruit.asStateFlow()
@@ -56,5 +59,13 @@ class FruitCreateViewModel @Inject constructor(
             // 성공 실패 로직 추가
             _todayFruitList.update { result }
         }
+    }
+
+    private val _currentViewState: MutableStateFlow<CreateFruitDialogViewEvent> =
+        MutableStateFlow(CreateFruitDialogViewEvent.SelectInputTypeViewEvent)
+    val currentViewState: StateFlow<CreateFruitDialogViewEvent> = _currentViewState.asStateFlow()
+
+    fun changeViewState(state: CreateFruitDialogViewEvent) {
+        _currentViewState.update { state }
     }
 }

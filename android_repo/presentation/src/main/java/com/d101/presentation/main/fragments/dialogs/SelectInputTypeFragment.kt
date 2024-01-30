@@ -16,9 +16,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentSelectInputTypeBinding
 import com.d101.presentation.main.MainActivity
+import com.d101.presentation.main.state.CreateFruitDialogViewEvent
+import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,6 +29,10 @@ class SelectInputTypeFragment : Fragment() {
     private var _binding: FragmentSelectInputTypeBinding? = null
     private val binding get() = _binding!!
     private lateinit var activity: MainActivity
+
+    private var isTextInput = true
+
+    private val viewModel: FruitCreateViewModel by viewModels({ requireParentFragment() })
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -53,7 +60,16 @@ class SelectInputTypeFragment : Fragment() {
             requestAudioPermission()
         }
         binding.textTextView.setOnClickListener {
-            moveToFragment(FruitCreationByTextFragment())
+            isTextInput = true
+            moveToFragment()
+        }
+    }
+
+    private fun moveToFragment() {
+        if (isTextInput) {
+            viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationByTextViewEvent)
+        } else {
+            viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationBySpeechViewEvent)
         }
     }
 
@@ -67,7 +83,8 @@ class SelectInputTypeFragment : Fragment() {
             val permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
             requestPermissionLauncher.launch(permissions)
         } else {
-            moveToFragment(FruitCreationBySpeechFragment())
+            isTextInput = false
+            moveToFragment()
         }
     }
 
@@ -77,7 +94,8 @@ class SelectInputTypeFragment : Fragment() {
         permissions.entries.forEach { (permission, granted) ->
             if (granted) {
                 // 권한이 허용된 경우
-                moveToFragment(FruitCreationBySpeechFragment())
+                isTextInput = false
+                moveToFragment()
             } else {
                 // 권한이 거부된 경우
                 if (shouldShowRequestPermissionRationale(permission)) {
@@ -95,13 +113,6 @@ class SelectInputTypeFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun moveToFragment(destinationFragment: Fragment) {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.before_fragment_container_view, destinationFragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     override fun onDestroyView() {

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentFruitCreationBySpeechBinding
+import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import java.io.File
 import java.io.IOException
@@ -48,19 +49,14 @@ class FruitCreationBySpeechFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.isTextInput = false
         startRecording()
 
         // 버튼을 누르거나 30초가 끝나면 그만
         binding.createFruitBySpeechButton.setOnClickListener {
             stopRecording()
             viewModel.setAudioFile(audioFile)
-            parentFragmentManager.beginTransaction()
-                .replace(
-                    R.id.before_fragment_container_view,
-                    FruitCreationLoadingFragment.newInstance(FruitCreationLoadingFragment.SPEECH),
-                )
-                .addToBackStack(null)
-                .commit()
+            viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
         }
     }
 
@@ -94,7 +90,6 @@ class FruitCreationBySpeechFragment : Fragment() {
         recorder?.apply {
             stop()
             release()
-            // 서버로 전송.
         }
         recorder = null
     }
