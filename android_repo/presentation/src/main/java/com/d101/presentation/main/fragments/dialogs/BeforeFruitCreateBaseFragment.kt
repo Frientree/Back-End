@@ -92,7 +92,7 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
         _binding = null
     }
 
-    companion object{
+    companion object {
         const val SPEECH = "speech"
         const val TEXT = "text"
     }

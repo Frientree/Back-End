@@ -19,6 +19,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.Timer
 
 class FruitCreationBySpeechFragment : Fragment() {
 
@@ -29,6 +30,7 @@ class FruitCreationBySpeechFragment : Fragment() {
     private lateinit var audioFile: File
 
     private var recorder: MediaRecorder? = null
+    private lateinit var timerTask: Timer
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,10 +56,15 @@ class FruitCreationBySpeechFragment : Fragment() {
 
         // 버튼을 누르거나 30초가 끝나면 그만
         binding.createFruitBySpeechButton.setOnClickListener {
-            stopRecording()
-            viewModel.setAudioFile(audioFile)
-            viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
+            createFruitBySpeech()
         }
+    }
+
+    private fun createFruitBySpeech() {
+        timerTask.cancel()
+        stopRecording()
+        viewModel.setAudioFile(audioFile)
+        viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -75,6 +82,24 @@ class FruitCreationBySpeechFragment : Fragment() {
                 // 에러 처리
             }
             start()
+            startTimer()
+        }
+    }
+
+    private fun startTimer() {
+        var time = 0
+        timerTask = kotlin.concurrent.timer(period = 10) {
+            time++ // period = 10 : 0.01초마다 time 을 1씩 증가
+            val sec = time / 100 // 나눗셈의 몫 : 초 부분
+
+            // UI 조작을 위한 메서드
+            activity?.runOnUiThread {
+                binding.speechProgressBar.progress = time
+                binding.speechSecondTextView.text = "$sec/30초"
+            }
+            if (sec >= 30) {
+                createFruitBySpeech()
+            }
         }
     }
 
@@ -98,5 +123,7 @@ class FruitCreationBySpeechFragment : Fragment() {
         super.onStop()
         recorder?.release()
         recorder = null
+
+        timerTask.cancel()
     }
 }

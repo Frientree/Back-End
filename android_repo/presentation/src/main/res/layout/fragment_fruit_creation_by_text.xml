@@ -42,7 +42,7 @@
                 android:layout_margin="20dp"
                 android:autofillHints="name"
                 android:hint="@string/input_by_text_hint"
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:scrollbars="vertical"
                 android:textColorHighlight="@color/main_green"
                 android:textCursorDrawable="@drawable/bg_text_cursor" />

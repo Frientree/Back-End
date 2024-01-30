@@ -33,25 +33,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/listening_lottie_view" />
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        <ProgressBar
             android:id="@+id/speech_progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="12dp"
             android:layout_marginHorizontal="48dp"
             android:layout_marginTop="12dp"
-            app:indicatorColor="@color/main_green"
+            android:progressDrawable="@drawable/bg_progress_bar"
             app:layout_constraintBottom_toTopOf="@+id/create_fruit_by_speech_button"
             app:layout_constraintCircleRadius="40dp"
             app:layout_constraintTop_toBottomOf="@+id/listening_text_view"
-            app:trackCornerRadius="40dp"
-            tools:layout_editor_absoluteX="48dp"
-            tools:progress="50" />
+            android:max="3000" />
 
         <TextView
             android:id="@+id/speech_second_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:textAppearance="@style/Base.FTR.Text.SMALL"
             android:textColor="@color/gray"
             app:layout_constraintEnd_toEndOf="@id/speech_progress_bar"
@@ -63,7 +62,7 @@
             style="@style/Base.FTR.MainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="28dp"
             android:background="@drawable/btn_green_green_36dp"
             android:drawableStart="@drawable/btn_apple"
             android:text="@string/create_fruit_by_speech_button_text"
@@ -71,6 +70,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/speech_progress_bar" />
+            app:layout_constraintTop_toBottomOf="@+id/speech_second_text_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
