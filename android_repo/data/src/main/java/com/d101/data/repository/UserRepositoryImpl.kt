@@ -30,11 +30,10 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserInfo(): Result<Unit> =
         when (val result = userDataSource.getUserInfo()) {
             is Result.Success -> {
-                //유저정보 저장
+                // 유저정보 저장
                 Result.Success(Unit)
             }
 
             is Result.Failure -> Result.Failure(result.errorStatus)
         }
-
 }
