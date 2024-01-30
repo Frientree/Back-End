@@ -6,6 +6,7 @@ spring:
         - common
         - development_database
         - redis_database
+        - mongo_database
         - port_8080
 ---
 spring:
@@ -36,6 +37,19 @@ spring:
       host: ENC(Cgkhtl5xSuIYpZnuNHl9L4DX8FPC9Nmt)
       port: 6379
       password: ENC(DOf5N+J7yOd9alJSOQpnznXVO5finZ3Rf0xjPNyo4lQ=)
+---
+spring:
+  config:
+    activate:
+      on-profile: mongo_database
+  data:
+    mongodb:
+      host: ENC(KBrZKlr9InMEm8d7jyt7nHk30/9EU2nlLRcqxaMZEu4=)
+      port: 27017
+      database: ENC(C3tpIZlYiC8I7crNUf5mAA==)
+      username: ENC(TBH7CAtg639UJAR2SOEIOQ==)
+      password: ENC(ol8kpyq+EI8yu1NyrKqowHVDfef1+6BmIkqg7Cs5HF0=)
+      authentication-database: ENC(naViBM7D1MZn95JdhBiJrw==)
 ---
 spring:
   config:

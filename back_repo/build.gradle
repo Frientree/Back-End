@@ -33,6 +33,9 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-actuator"
 	// jasypt 의존성 추가
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+	// Spring Boot Starter Data MongoDB
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
