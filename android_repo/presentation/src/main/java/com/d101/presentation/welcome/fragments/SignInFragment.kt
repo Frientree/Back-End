@@ -50,7 +50,7 @@ class SignInFragment : Fragment() {
         }
 
         binding.signUpTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_signInFragment_to_termsAgreeFragment)
+            findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
         }
 
         binding.findPasswordTextView.setOnClickListener {
