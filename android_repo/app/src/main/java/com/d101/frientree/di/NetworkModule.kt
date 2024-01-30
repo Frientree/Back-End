@@ -75,6 +75,6 @@ object NetworkModule {
     @Provides
     fun provideTokenAuthenticator(
         authService: AuthService,
-        tokenManager: TokenManager
+        tokenManager: TokenManager,
     ): AuthAuthenticator = AuthAuthenticator(authService, tokenManager)
 }
