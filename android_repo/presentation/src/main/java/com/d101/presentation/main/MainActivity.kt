@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun collectTokenExpired() {
         repeatOnStarted {
-            tokenManager.notifyTokenExpired().collect{
+            tokenManager.notifyTokenExpired().collect {
                 val intent = Intent(this@MainActivity, WelcomeActivity::class.java)
                     .apply {
                         addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
