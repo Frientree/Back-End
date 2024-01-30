@@ -1,6 +1,7 @@
 package com.d101.presentation.mypage.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
@@ -9,7 +10,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,7 +22,8 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
         MutableStateFlow(MyPageViewState.Default())
     val myPageViewState: StateFlow<MyPageViewState> = _myPageViewState.asStateFlow()
 
-    val event = MutableSharedFlow<MyPageViewEvent>()
+    private val _eventFlow = MutableSharedFlow<MyPageViewEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     fun onEventOccurred(event: MyPageViewEvent) {
         onReceiveEvent(event)
@@ -133,6 +137,12 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
                 it.alarmStatus,
                 newBackgroundMusic,
             )
+        }
+    }
+
+    fun eventOccurred(event: MyPageViewEvent) {
+        viewModelScope.launch {
+            _eventFlow.emit(event)
         }
     }
 }
