@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -22,12 +23,16 @@ class FruitCreateViewModel @Inject constructor(
     val todayFruitList: StateFlow<List<FruitCreated>> = _todayFruitList.asStateFlow()
 
     private lateinit var inputText: String
+    private lateinit var audioFile: File
 
     private val _selectedFruit: MutableStateFlow<FruitCreated> = MutableStateFlow(FruitCreated())
     val selectedFruit: StateFlow<FruitCreated> = _selectedFruit.asStateFlow()
 
     fun setText(text: String) {
         inputText = text
+    }
+    fun setAudioFile(file: File) {
+        audioFile = file
     }
 
     fun setSelectedFruit(fruit: FruitCreated) {
