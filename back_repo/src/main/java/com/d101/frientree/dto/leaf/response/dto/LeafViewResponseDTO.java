@@ -14,11 +14,13 @@ import lombok.NoArgsConstructor;
 public class LeafViewResponseDTO {
 
     private Long views;
+    private Long totalLeafView;
 
 
-    public static LeafViewResponseDTO createLeafViewDTO(LeafDetail leafDetail) {
+    public static LeafViewResponseDTO createLeafViewResponseDTO(LeafDetail leafDetail) {
         return LeafViewResponseDTO.builder()
-                .views(null)
+                .views(leafDetail.getLeafView()) // LeafDetail에서 조회수 정보를 가져와 설정
                 .build();
     }
+
 }

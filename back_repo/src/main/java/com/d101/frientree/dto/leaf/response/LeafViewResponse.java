@@ -8,14 +8,22 @@ import lombok.Data;
 @Data
 public class LeafViewResponse {
 
-    private Long userId;
     private String message;
-    private Long totalLeafViews;
+    private Long data;
 
-    public static LeafViewResponse createLeafViewResponse(String message, Long totalLeafViews) {
+
+    public static LeafViewResponse createLeafViewResponse(String message, Long data) {
         return LeafViewResponse.builder()
                 .message(message)
-                .totalLeafViews(totalLeafViews)
+                .data(data)
                 .build();
     }
+
+    public static LeafViewResponse createLeafViewErrorResponse(String message) {
+        return LeafViewResponse.builder()
+                .message(message)
+                .build();
+    }
+
+
 }

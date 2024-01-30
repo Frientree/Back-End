@@ -13,11 +13,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/leaf")
@@ -63,7 +61,7 @@ public class LeafController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "이파리 신고", description = "이파리의 신고 횟수를 증가 시킵니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "이파리 신고 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafViewResponse.class))),
+            @ApiResponse(responseCode = "200", description = "이파리 신고 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafComplaintResponse.class))),
             @ApiResponse(responseCode = "404", description = "이파리 신고 실패 (message : \"Leaf not Found\", code : 400, data : null)", content = @Content),
             @ApiResponse(responseCode = "500", description = "이파리 신고 실패 (message : \"Server Error\", code : 500, data : null)", content = @Content)
     })    @PostMapping("/{leafId}")
@@ -71,14 +69,15 @@ public class LeafController {
         return leafService.complain(leafId);
     }
 
+
     @Operation(summary = "이파리 조회수 확인", description = "이파리의 전체 조회수를 확인합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "이파리 조회 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafViewResponse.class))),
-            @ApiResponse(responseCode = "404", description = "이파리 조회 실패 (message : \"Leaf not Found\", code : 400, data : null)", content = @Content),
+            @ApiResponse(responseCode = "200", description = "조회수 확인 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafViewResponse.class))),
+            @ApiResponse(responseCode = "404", description = "조회수 확인 실패 (message : \"User not Found\", code : 400, data : null)", content = @Content),
     })
     @GetMapping("/view")
-    public ResponseEntity<LeafViewResponse> leafView(Long userId){
-        return leafService.view(userId);
+    public ResponseEntity<LeafViewResponse> leafView() {
+        return leafService.view();
     }
 
 }
