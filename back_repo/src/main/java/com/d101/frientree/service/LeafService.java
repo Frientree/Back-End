@@ -5,6 +5,7 @@ import com.d101.frientree.dto.leaf.response.LeafComplaintResponse;
 import com.d101.frientree.dto.leaf.response.LeafConfirmationResponse;
 import com.d101.frientree.dto.leaf.response.LeafGenerationResponse;
 import com.d101.frientree.dto.leaf.response.LeafViewResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 
 public interface LeafService {
@@ -16,7 +17,5 @@ public interface LeafService {
 
     ResponseEntity<LeafComplaintResponse> complain(Long leafId);
 
-    ResponseEntity<LeafViewResponse> view(Long leafId);
-
-//    boolean removalLeaf(Long leafNum);
+    ResponseEntity<LeafViewResponse> view();
 }

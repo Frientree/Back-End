@@ -6,10 +6,12 @@ import com.d101.frientree.dto.leaf.response.LeafConfirmationResponse;
 import com.d101.frientree.dto.leaf.response.LeafGenerationResponse;
 import com.d101.frientree.dto.leaf.response.LeafViewResponse;
 import com.d101.frientree.dto.leaf.response.dto.LeafConfirmationResponseDTO;
+import com.d101.frientree.dto.leaf.response.dto.LeafViewResponseDTO;
 import com.d101.frientree.entity.LeafCategory;
 import com.d101.frientree.entity.leaf.LeafDetail;
 import com.d101.frientree.entity.leaf.LeafSend;
 import com.d101.frientree.entity.user.User;
+import com.d101.frientree.repository.LeafDetailRepository;
 import com.d101.frientree.repository.LeafRepository;
 import com.d101.frientree.repository.LeafSendRepository;
 import com.d101.frientree.repository.UserRepository;
@@ -27,6 +29,7 @@ import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +38,7 @@ public class LeafServiceImpl implements LeafService {
     private final LeafRepository leafRepository;
     private final LeafSendRepository leafSendRepository;
     private final UserRepository userRepository;
+    private final LeafDetailRepository leafDetailRepository;
 
 
     @Override
@@ -46,7 +50,8 @@ public class LeafServiceImpl implements LeafService {
             leaves.sort(Comparator.comparing(LeafDetail::getLeafView));
 
             // 정렬된 leaves 중에서 가장 낮은 leaf_view를 가진 leaf 선택
-            LeafDetail selectedLeaf = leaves.get(0);
+            LeafDetail
+                    selectedLeaf = leaves.get(0);
 
             // 선택된 leaf의 leaf_view 값을 1 증가시킴
             selectedLeaf.setLeafView(selectedLeaf.getLeafView() + 1);
@@ -70,13 +75,13 @@ public class LeafServiceImpl implements LeafService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest) {
 
         // 혅재 접속한 정보를 contextholder 에 담아놓은 정보를 가지고 오는 것
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.valueOf(authentication.getName());
-
-
         LocalDateTime leafCreateDate = LocalDateTime.now();
 
         LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
@@ -102,12 +107,13 @@ public class LeafServiceImpl implements LeafService {
 
         // LeafGenerationResponse 반환
         return ResponseEntity.status(HttpStatus.OK).body(response);
+
     }
 
     @Override
     @Transactional
     public ResponseEntity<LeafComplaintResponse> complain(Long leafId) {
-        // TODO: 에러 처리 추가해야함
+        // TODO: 에러 처리 작업할 것
         LeafDetail currentLeaf = leafRepository.findById(leafId)
                 .orElseThrow(() -> new RuntimeException("이파리는 존재하지 않습니다."));
 
@@ -118,7 +124,8 @@ public class LeafServiceImpl implements LeafService {
             leafSendRepository.deleteByLeafDetail(currentLeaf);
 
             // LeafDetail 삭제
-            leafRepository.delete(currentLeaf);         }
+            leafRepository.delete(currentLeaf);
+        }
 
         LeafComplaintResponse response = LeafComplaintResponse.createLeafComplaintResponse(
                 "Success",
@@ -128,11 +135,52 @@ public class LeafServiceImpl implements LeafService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @Override
-    public ResponseEntity<LeafViewResponse> view(Long views) {
-        return null;
 
+    @Override
+    @Transactional
+    public ResponseEntity<LeafViewResponse> view() {
+        // security를 이용해 로그인 정보를 받아옴
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 로그인이 되어있지 않으면 에러 발생 -> 로그인 요청
+        if (!isUserLoggedIn(authentication)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(LeafViewResponse.createLeafViewErrorResponse(
+                            "User not Logged In"
+                    ));
+        }
+
+        try {
+            Long authenticatedUserId = Long.parseLong(authentication.getName());
+
+            // 1. leaf_send 테이블에서 user_id를 기준으로 leaf_num을 가져오기
+            List<Long> leafNumList = leafSendRepository.findLeafNumsByUser(authenticatedUserId);
+
+            // 2. leaf_detail 테이블에서 leaf_num에 해당하는 leaf_view 값 모두 더하기
+            long totalLeafView = leafNumList.stream()
+                    .mapToLong(leafNum -> {
+                        LeafDetail leafDetail = leafDetailRepository.findByLeafNum(leafNum);
+                        return leafDetail != null ? leafDetail.getLeafView() : 0;
+                    })
+                    .sum();
+
+            // LeafViewResponse를 생성하고 반환 (에러 처리 없이 성공 응답만)
+            LeafViewResponse response = LeafViewResponse.createLeafViewResponse("Success", Long.valueOf(totalLeafView));
+
+            // response 반환
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            // 예외 발생 시 에러 응답
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    LeafViewResponse.createLeafViewErrorResponse("Internal Server Error")
+            );
+        }
+    }
+
+    // 유저가 로그인이 되어있는지 확인
+    private boolean isUserLoggedIn(Authentication authentication) {
+        return authentication != null && authentication.isAuthenticated();
     }
 
 }
-
