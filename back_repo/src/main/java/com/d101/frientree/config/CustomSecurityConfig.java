@@ -27,8 +27,6 @@ import java.util.Arrays;
 @EnableMethodSecurity(securedEnabled = true)
 public class CustomSecurityConfig {
 
-    private final CustomUserDetailsService customUserDetailsService;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -53,13 +51,6 @@ public class CustomSecurityConfig {
                     config.authenticationEntryPoint((request, response, authException) ->
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED));
                 });
-
-        http.rememberMe(config -> {
-            config.rememberMeParameter("remember");
-            config.tokenValiditySeconds(604800);
-            config.alwaysRemember(false);
-            config.userDetailsService(customUserDetailsService);
-        });
 
         // 생성한 JwtCheckFilter를 적용
         http.addFilterBefore(new JwtCheckFilter(), UsernamePasswordAuthenticationFilter.class);

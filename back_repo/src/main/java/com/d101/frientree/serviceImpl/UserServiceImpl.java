@@ -13,7 +13,6 @@ import com.d101.frientree.repository.RefreshTokenRepository;
 import com.d101.frientree.repository.UserRepository;
 import com.d101.frientree.security.CustomUserDetailsService;
 import com.d101.frientree.service.UserService;
-import com.d101.frientree.util.CustomJwtException;
 import com.d101.frientree.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -76,8 +75,8 @@ public class UserServiceImpl implements UserService {
         claims.put("roleNames", roleNames);
         claims.put("username", userDetails.getUsername());
 
-        String accessToken = JwtUtil.generateToken(claims, 10);
-        String refreshToken = JwtUtil.generateToken(claims, 60 * 24);
+        String accessToken = JwtUtil.generateToken(claims, 5);
+        String refreshToken = JwtUtil.generateToken(claims, 10);
 
         Long refreshTokenExpiry = JwtUtil.getExpirationDateFromToken(refreshToken);
 
@@ -91,6 +90,7 @@ public class UserServiceImpl implements UserService {
                 .expiryDate(formattedExpiryDate)
                 .build();
         refreshTokenRepository.save(refreshTokenEntity);
+        System.out.println(refreshTokenEntity);
 
         UserSignInResponse response = UserSignInResponse.createUserConfirmationResponse(
                 "Login Success",
@@ -101,19 +101,15 @@ public class UserServiceImpl implements UserService {
 
     // 토큰 재발급 로직
     @Override
-    public ResponseEntity<UserTokenRefreshResponse> tokenRefresh(UserTokenRefreshRequest userTokenRefreshRequest) {
+    public ResponseEntity<UserTokenRefreshResponse> tokenRefreshGenerate(UserTokenRefreshRequest userTokenRefreshRequest) {
 
         String clientRefreshToken = userTokenRefreshRequest.getRefreshToken();
-
-        if (clientRefreshToken == null) {
-            throw new CustomJwtException("NULL_REFRESH");
-        }
 
         Optional<RefreshToken> refreshTokenOptional =
                 refreshTokenRepository.findById(clientRefreshToken);
 
         if (refreshTokenOptional.isEmpty()) {
-            throw new CustomJwtException("INVALID_REFRESH");
+            throw new RefreshTokenNotFoundException("Fail");
         }
 
         RefreshToken serverRefreshToken = refreshTokenOptional.get();
@@ -124,10 +120,10 @@ public class UserServiceImpl implements UserService {
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
         claims.put("roleNames", userDetails.getAuthorities());
-        String newAccessToken = JwtUtil.generateToken(claims, 10);
+        String newAccessToken = JwtUtil.generateToken(claims, 5);
 
         if (checkTime(serverRefreshToken.getExpiryDate())) {
-            String newRefreshToken = JwtUtil.generateToken(claims, 60 * 24);
+            String newRefreshToken = JwtUtil.generateToken(claims, 10);
             Long newRefreshTokenExpiry = JwtUtil.getExpirationDateFromToken(newRefreshToken);
             Instant newRefreshTokenExpiryDate = Instant.ofEpochMilli(newRefreshTokenExpiry);
             DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
@@ -154,21 +150,24 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<UserChangeNicknameResponse> modifyNickname(UserChangeNicknameRequest userChangeNicknameRequest) {
 
-        try {
-            User currentUser = getUser();
+        User currentUser = getUser();
 
-            currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
-
-            UserChangeNicknameResponse response = UserChangeNicknameResponse.createUserChangeNicknameResponse(
-                    "Success",
-                    UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(currentUser));
-
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (NicknameValidateException e) {
+        if (userChangeNicknameRequest.getUserNickname() == null || userChangeNicknameRequest.getUserNickname().isEmpty()) {
             throw new NicknameValidateException("Fail");
-        } catch (JwtValidationException e) {
-            throw new JwtValidationException("Fail");
         }
+
+        if (userChangeNicknameRequest.getUserNickname().length() > 8) {
+            throw new NicknameValidateException("Fail");
+        }
+
+        currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
+
+        UserChangeNicknameResponse response = UserChangeNicknameResponse.createUserChangeNicknameResponse(
+                "Success",
+                UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(currentUser));
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
     }
 
     // 유저 프로필 조회
@@ -252,6 +251,7 @@ public class UserServiceImpl implements UserService {
 
     // 인증 이메일 발송
     @Override
+    @Transactional
     public ResponseEntity<UserSendEmailCertificationResponse> sendEmailCertificate(UserSendEmailCertificationRequest userSendEmailCertificationRequest) {
 
         sendVerificationEmail(userSendEmailCertificationRequest.getUserEmail());
@@ -288,6 +288,65 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    // 패스워드 변경
+    @Transactional
+    @Override
+    public ResponseEntity<UserChangePasswordResponse> passwordModify(UserChangePasswordRequest userChangePasswordRequest) {
+
+        User currentUser = getUser();
+
+        if (!passwordEncoder.matches(userChangePasswordRequest.getUserPw(), currentUser.getUserPassword())) {
+            throw new CustomValidationException("Fail");
+        }
+
+        if (!userChangePasswordRequest.getNewPw().matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$")) {
+            throw new CustomValidationException("Fail");
+        }
+
+        currentUser.setUserPassword(passwordEncoder.encode(userChangePasswordRequest.getNewPw()));
+
+        UserChangePasswordResponse response = UserChangePasswordResponse.createUserChangePasswordResponse(
+                "Success",
+                true
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    // 임시 비밀번호 이메일로 발송
+    @Override
+    @Transactional
+    public ResponseEntity<UserTemporaryPasswordSendResponse> temporaryPasswordSend(UserTemporaryPasswordSendRequest userTemporaryPasswordSendRequest) {
+
+        User currentUser = userRepository.findByUserEmail(userTemporaryPasswordSendRequest.getUserEmail())
+                .orElseThrow(() -> new UserNotFoundException("Fail"));
+
+        // 임시 비밀번호 생성
+        String temporaryPassword = generatePassword();
+        sendTemporaryPasswordEmail(userTemporaryPasswordSendRequest.getUserEmail(), temporaryPassword);
+
+        currentUser.setUserPassword(passwordEncoder.encode(temporaryPassword));
+
+        UserTemporaryPasswordSendResponse response = UserTemporaryPasswordSendResponse.createUserTemporaryPasswordSendResponse(
+                "Success",
+                true
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @Override
+    public ResponseEntity<UserCreateStatusResponse> createStatusConfirm() {
+
+        User currentUser = getUser();
+
+        UserCreateStatusResponse result = UserCreateStatusResponse.createUserCreateStatusResponse(
+                "Success",
+                UserCreateStatusResponseDTO.createUserCreateStatusResponseDTO(currentUser)
+        );
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
     // 유저 개별 조회
     @Override
     public ResponseEntity<UserConfirmationResponse> confirm(Long id) {
@@ -318,8 +377,11 @@ public class UserServiceImpl implements UserService {
 
     // 유저 가입
     @Override
-    public ResponseEntity<UserCreateResponse> generateUser(UserCreateRequest userCreateRequest) {
+    public ResponseEntity<UserCreateResponse> generateUser(UserCreateRequest userCreateRequest) throws CustomValidationException {
+        // 입력 정보의 유효성 검증
+        validateUserCreateRequest(userCreateRequest);
 
+        // 유저 정보 생성
         LocalDateTime userCreateDate = LocalDateTime.now();
         User newUser = User.builder()
                 .userNickname(userCreateRequest.getUserNickname())
@@ -367,8 +429,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("Fail"));
     }
 
-    @Transactional
-    public void sendVerificationEmail(String email) {
+    private void sendVerificationEmail(String email) {
         // 생성된 토큰을 이용하여 이메일 본문에 포함시킬 URL 생성
         String code = generateRandomCode();
 
@@ -382,11 +443,69 @@ public class UserServiceImpl implements UserService {
         emailCodeRepository.save(new EmailCode(email, code));
     }
 
+    private void sendTemporaryPasswordEmail(String email, String newPassword) {
+        // 생성된 토큰을 이용하여 이메일 본문에 포함시킬 URL 생성
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("프렌트리 임시 비밀번호 발급");
+        message.setText("새로운 임시 비밀번호 입니다 ㅎㅎ\n" + newPassword);
+
+        javaMailSender.send(message);
+    }
+
     private String generateRandomCode() {
         SecureRandom secureRandom = new SecureRandom();
         byte[] randomBytes = new byte[VERIFICATION_CODE_LENGTH];
         secureRandom.nextBytes(randomBytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes).substring(0, VERIFICATION_CODE_LENGTH);
+    }
+
+    private void validateUserCreateRequest(UserCreateRequest userCreateRequest) {
+        if (userCreateRequest.getUserNickname() == null || userCreateRequest.getUserNickname().isEmpty()) {
+            throw new CustomValidationException("Fail");
+        }
+
+        if (!userCreateRequest.getUserEmail().matches("\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b")) {
+            throw new CustomValidationException("Fail");
+        }
+
+        if (!userCreateRequest.getUserPw().matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$")) {
+            throw new CustomValidationException("Fail");
+        }
+
+        if (userCreateRequest.getUserNickname().length() > 8) {
+            throw new CustomValidationException("Fail");
+        }
+    }
+
+    private String generatePassword() {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!~#$%^&*?";
+        Random rnd = new Random();
+        StringBuilder sb = new StringBuilder(16);
+
+        // 숫자 1개, 대문자 1개, 소문자 1개, 특수 문자 1개를 먼저 추가합니다.
+        sb.append("Aa1!");
+
+        // 나머지 12개의 문자를 랜덤하게 생성합니다.
+        for (int i = 0; i < 12; i++) {
+            sb.append(characters.charAt(rnd.nextInt(characters.length())));
+        }
+
+        // 생성된 문자열을 무작위로 섞습니다.
+        List<Character> charList = new ArrayList<>();
+        for (char c : sb.toString().toCharArray()) {
+            charList.add(c);
+        }
+        Collections.shuffle(charList);
+
+        // 셔플된 문자열을 다시 합칩니다.
+        StringBuilder shuffledString = new StringBuilder();
+        for (char c : charList) {
+            shuffledString.append(c);
+        }
+
+        return shuffledString.toString();
     }
 
 }

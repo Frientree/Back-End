@@ -73,6 +73,10 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if (path.equals("/users/temporary-password")) {
+            return true;
+        }
+
         return false;
     }
 

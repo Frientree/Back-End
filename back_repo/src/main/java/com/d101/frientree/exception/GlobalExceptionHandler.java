@@ -1,5 +1,6 @@
 package com.d101.frientree.exception;
 
+import com.d101.frientree.util.CustomJwtException;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -48,8 +49,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(headers).body(msg);
     }
 
-    @ExceptionHandler(JwtValidationException.class)
-    public ResponseEntity<String> handleJwtValidationException(JwtValidationException e) {
+    @ExceptionHandler(CustomJwtException.class)
+    public ResponseEntity<String> handleCustomJwtException(CustomJwtException e) {
         String msg = gson.toJson(Collections.singletonMap("message", e.getMessage()));
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
@@ -58,6 +59,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailCodeNotMatchingException.class)
     public ResponseEntity<String> handleEmailCodeNotMatchingException(EmailCodeNotMatchingException e) {
+        String msg = gson.toJson(Collections.singletonMap("message", e.getMessage()));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(headers).body(msg);
+    }
+
+    @ExceptionHandler(CustomValidationException.class)
+    public ResponseEntity<String> handleCustomValidationException(CustomValidationException e) {
+        String msg = gson.toJson(Collections.singletonMap("message", e.getMessage()));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(headers).body(msg);
+    }
+
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public ResponseEntity<String> handleRefreshTokenNotFoundException(RefreshTokenNotFoundException e) {
         String msg = gson.toJson(Collections.singletonMap("message", e.getMessage()));
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");

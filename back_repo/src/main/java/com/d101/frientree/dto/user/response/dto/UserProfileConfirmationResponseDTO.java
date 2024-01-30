@@ -14,15 +14,9 @@ public class UserProfileConfirmationResponseDTO {
 
     private String userNickname;
 
-    private boolean userDisabled;
-
-    private Date userCreateDate;
-
     private boolean userLeafStatus;
 
     private String userEmail;
-
-    private boolean userNotification;
 
     private boolean userFruitStatus;
 
@@ -30,11 +24,8 @@ public class UserProfileConfirmationResponseDTO {
         return UserProfileConfirmationResponseDTO.builder()
                 .userId(user.getUserId())
                 .userNickname(user.getUserNickname())
-                .userDisabled(user.getUserDisabled())
                 .userLeafStatus(user.getUserLeafStatus())
-                .userNotification(user.getUserNotification())
                 .userFruitStatus(user.getUserFruitStatus())
-                .userCreateDate(user.getUserCreateDate())
                 .userEmail(user.getUserEmail())
                 .build();
     }
