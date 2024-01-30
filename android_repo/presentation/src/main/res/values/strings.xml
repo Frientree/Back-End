@@ -54,4 +54,10 @@
     <string name="juice_shake_guide">흔들어서 주스를 만들어보세요!</string>
     <string name="juice_requirements">주스를 만들기 위해선 주간 열매가 4개 이상 필요해요!</string>
     <string name="not_enough_fruits">열매를 모으는 중이에요!</string>
+    <string name="password_check">비밀번호 확인</string>
+    <string name="password">비밀번호</string>
+    <string name="input_auth_number">인증번호입력</string>
+    <string name="please_input_auth_number">이메일로 전달된 인증 번호를 입력하세요</string>
+    <string name="example_nickname">닉네임 예시</string>
+    <string name="example_password">비밀번호 예시</string>
 </resources>
