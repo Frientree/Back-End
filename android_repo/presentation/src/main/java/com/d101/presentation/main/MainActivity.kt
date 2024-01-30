@@ -1,5 +1,6 @@
 package com.d101.presentation.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -11,16 +12,23 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import com.d101.domain.utils.TokenManager
 import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.ActivityMainBinding
 import com.d101.presentation.main.state.MainActivityViewState
 import com.d101.presentation.main.viewmodel.MainActivityViewModel
+import com.d101.presentation.welcome.WelcomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import utils.repeatOnStarted
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject lateinit var tokenManager: TokenManager
+
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -35,6 +43,8 @@ class MainActivity : AppCompatActivity() {
         BackgroundMusicPlayer.playMusic(this, BackgroundMusicPlayer.getMusicList()[0])
 
         initNavigationView()
+
+        collectTokenExpired()
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -85,6 +95,18 @@ class MainActivity : AppCompatActivity() {
                     binding.bottomNavigationView.selectedItemId = R.id.treeFragment
                     viewModel.changeViewState(MainActivityViewState.TreeView)
                 }
+            }
+        }
+    }
+
+    private fun collectTokenExpired() {
+        repeatOnStarted {
+            tokenManager.notifyTokenExpired().collect{
+                val intent = Intent(this@MainActivity, WelcomeActivity::class.java)
+                    .apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    }
+                startActivity(intent)
             }
         }
     }
