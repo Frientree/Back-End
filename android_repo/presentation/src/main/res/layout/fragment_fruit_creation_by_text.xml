@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.d101.presentation.main.viewmodel.FruitCreateViewModel" />
+    </data>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="360dp"
@@ -42,6 +48,7 @@
                 android:layout_margin="20dp"
                 android:autofillHints="name"
                 android:hint="@string/input_by_text_hint"
+                android:text="@={viewModel.inputText}"
                 android:inputType="textMultiLine"
                 android:scrollbars="vertical"
                 android:textColorHighlight="@color/main_green"

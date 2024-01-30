@@ -24,7 +24,7 @@ class FruitCreateViewModel @Inject constructor(
     private val _todayFruitList: MutableStateFlow<List<FruitCreated>> = MutableStateFlow(listOf())
     val todayFruitList: StateFlow<List<FruitCreated>> = _todayFruitList.asStateFlow()
 
-    private lateinit var inputText: String
+    val inputText = MutableStateFlow("")
     private lateinit var audioFile: File
 
     var isTextInput = true
@@ -32,9 +32,6 @@ class FruitCreateViewModel @Inject constructor(
     private val _selectedFruit: MutableStateFlow<FruitCreated> = MutableStateFlow(FruitCreated())
     val selectedFruit: StateFlow<FruitCreated> = _selectedFruit.asStateFlow()
 
-    fun setText(text: String) {
-        inputText = text
-    }
     fun setAudioFile(file: File) {
         audioFile = file
     }
@@ -46,7 +43,7 @@ class FruitCreateViewModel @Inject constructor(
     fun setTodayFruitListByText() {
         viewModelScope.launch {
             delay(3_500L)
-            val result = makeFruitByTextUseCase(inputText)
+            val result = makeFruitByTextUseCase(inputText.value)
             // 성공 실패 로직 추가
             _todayFruitList.update { result }
         }

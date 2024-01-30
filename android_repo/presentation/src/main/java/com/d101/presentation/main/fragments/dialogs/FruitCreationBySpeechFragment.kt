@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -47,7 +46,6 @@ class FruitCreationBySpeechFragment : Fragment() {
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -67,10 +65,14 @@ class FruitCreationBySpeechFragment : Fragment() {
         viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
     private fun startRecording() {
         audioFile = createAudioFile()
-        recorder = MediaRecorder(requireContext()).apply {
+        recorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            MediaRecorder(requireContext())
+        } else {
+            MediaRecorder()
+        }
+        recorder?.apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             setOutputFile(audioFile.absolutePath)
@@ -95,7 +97,7 @@ class FruitCreationBySpeechFragment : Fragment() {
             // UI 조작을 위한 메서드
             activity?.runOnUiThread {
                 binding.speechProgressBar.progress = time
-                binding.speechSecondTextView.text = "$sec/30초"
+                binding.speechSecondTextView.text = getString(R.string.speech_second_text, sec)
             }
             if (sec >= 30) {
                 createFruitBySpeech()

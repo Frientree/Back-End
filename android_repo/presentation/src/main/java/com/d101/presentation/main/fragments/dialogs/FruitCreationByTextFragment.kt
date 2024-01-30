@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -39,11 +38,12 @@ class FruitCreationByTextFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val text = view.findViewById<EditText>(R.id.input_by_text_edit_text).text
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
         binding.createFruitByTextButton
             .setOnClickListener {
-                if (text.isNotEmpty()) {
-                    viewModel.setText(text.toString())
+                if (viewModel.inputText.value.isNotEmpty()) {
                     viewModel.changeViewState(
                         CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent,
                     )
