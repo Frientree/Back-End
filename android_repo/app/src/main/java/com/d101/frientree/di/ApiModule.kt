@@ -11,15 +11,25 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class FrientreeRetrofit
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthRetrofit
 
     @Singleton
     @Provides
+    @FrientreeRetrofit
     fun provideFrientreeRetrofit(
+        @NetworkModule.FrientreeClient
         okHttpClient: OkHttpClient,
         gsonConverterFactory: GsonConverterFactory,
     ): Retrofit = Retrofit.Builder()
@@ -31,13 +41,36 @@ object ApiModule {
 
     @Singleton
     @Provides
+    @AuthRetrofit
+    fun provideAuthRetrofit(
+        @NetworkModule.AuthClient
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory,
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(BuildConfig.BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(gsonConverterFactory)
+        .build()
+
+
+    @Singleton
+    @Provides
     fun provideUserApi(
+        @FrientreeRetrofit
+        retrofit: Retrofit,
+    ): UserService = retrofit.create((UserService::class.java))
+
+    @Singleton
+    @Provides
+    fun provideAuthApi(
+        @AuthRetrofit
         retrofit: Retrofit,
     ): UserService = retrofit.create((UserService::class.java))
 
     @Singleton
     @Provides
     fun provideFruitCreateApi(
+        @FrientreeRetrofit
         retrofit: Retrofit,
     ): FruitCreateService = retrofit.create((FruitCreateService::class.java))
 }

@@ -16,16 +16,25 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Provider
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class FrientreeClient
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class AuthClient
+
     @Singleton
     @Provides
+    @FrientreeClient
     fun provideFrientreeClient(
-        authorizationInterceptor: Interceptor,
         tokenAuthenticator: Authenticator,
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
@@ -33,8 +42,25 @@ object NetworkModule {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         builder.apply {
             addInterceptor(loggingInterceptor)
-            addInterceptor(authorizationInterceptor)
             authenticator(tokenAuthenticator)
+        }
+        return builder.build()
+    }
+
+    @Singleton
+    @Provides
+    @AuthClient
+    fun provideAuthClient(
+        authAuthenticator: Authenticator,
+        tokenAuthenticator: Authenticator,
+    ): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        builder.apply {
+            addInterceptor(loggingInterceptor)
+            authenticator(tokenAuthenticator)
+            authenticator(authAuthenticator)
         }
         return builder.build()
     }
