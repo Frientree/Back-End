@@ -75,8 +75,8 @@ public class UserServiceImpl implements UserService {
         claims.put("roleNames", roleNames);
         claims.put("username", userDetails.getUsername());
 
-        String accessToken = JwtUtil.generateToken(claims, 5);
-        String refreshToken = JwtUtil.generateToken(claims, 10);
+        String accessToken = JwtUtil.generateToken(claims, 60 * 24);
+        String refreshToken = JwtUtil.generateToken(claims, 43200);
 
         Long refreshTokenExpiry = JwtUtil.getExpirationDateFromToken(refreshToken);
 
@@ -120,10 +120,10 @@ public class UserServiceImpl implements UserService {
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
         claims.put("roleNames", userDetails.getAuthorities());
-        String newAccessToken = JwtUtil.generateToken(claims, 5);
+        String newAccessToken = JwtUtil.generateToken(claims, 60 * 24);
 
         if (checkTime(serverRefreshToken.getExpiryDate())) {
-            String newRefreshToken = JwtUtil.generateToken(claims, 10);
+            String newRefreshToken = JwtUtil.generateToken(claims, 43200);
             Long newRefreshTokenExpiry = JwtUtil.getExpirationDateFromToken(newRefreshToken);
             Instant newRefreshTokenExpiryDate = Instant.ofEpochMilli(newRefreshTokenExpiry);
             DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
@@ -415,8 +415,8 @@ public class UserServiceImpl implements UserService {
         // 분 단위 계산
         long leftMin = duration.toMinutes();
 
-        // 1시간 이하로 남았으면 true 반환
-        return leftMin <= 60 && !duration.isNegative();
+        // 하루 이하로 남았으면 true 반환
+        return leftMin <= 1440 && !duration.isNegative();
     }
 
     // 현재 접속한 유저 정보를 가져오는 메서드
