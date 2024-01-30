@@ -1,11 +1,15 @@
 package com.d101.frientree.serviceImpl.userfruit;
 
 import com.d101.frientree.dto.userfruit.request.UserFruitTextRequest;
+import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
+import com.d101.frientree.entity.fruit.FruitDetail;
+import com.d101.frientree.repository.FruitDetailRepository;
 import com.d101.frientree.service.UserFruitService;
 import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechClient;
 import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechResponse;
 import com.d101.frientree.serviceImpl.userfruit.fastapi.HttpPostAIRequest;
 import com.google.gson.Gson;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,7 +31,7 @@ public class UserFruitServiceImpl implements UserFruitService {
     }
 
     @Override
-    public ResponseEntity<?> speechToTextAudio(MultipartFile file) throws Exception {
+    public ResponseEntity<UserFruitSaveResponse> speechToTextAudio(MultipartFile file) throws Exception {
 
        log.info("filename ,{}", file.getOriginalFilename());
 
@@ -74,15 +78,11 @@ public class UserFruitServiceImpl implements UserFruitService {
         log.info("음성 Text : {}", response.getFullText());
 
         //Python 감정 분석 API 호출
-        httpPostAIRequest.sendPostRequest(fullText);
-
-        return ResponseEntity.ok(fullText);
+        return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(fullText));
     }
     @Override
-    public ResponseEntity<?> speechToTextText(UserFruitTextRequest textFile) throws Exception {
+    public ResponseEntity<UserFruitSaveResponse> speechToTextText(UserFruitTextRequest textFile) throws Exception {
         //Python 감정 분석 API 호출
-        httpPostAIRequest.sendPostRequest(textFile.getContent());
-
-        return ResponseEntity.ok(textFile.getContent());
+        return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(textFile.getContent()));
     }
 }
