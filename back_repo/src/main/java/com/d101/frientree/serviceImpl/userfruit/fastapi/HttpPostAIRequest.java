@@ -4,11 +4,18 @@ package com.d101.frientree.serviceImpl.userfruit.fastapi;
 import com.d101.frientree.dto.userfruit.dto.UserFruitSaveDTO;
 import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
 import com.d101.frientree.entity.fruit.FruitDetail;
+import com.d101.frientree.entity.user.User;
 import com.d101.frientree.repository.FruitDetailRepository;
+import com.d101.frientree.repository.UserRepository;
+import com.d101.frientree.service.mongo.MongoEmotionService;
+import com.d101.frientree.serviceImpl.mongo.MongoEmotionServiceImpl;
 import com.google.gson.Gson;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -23,6 +30,11 @@ import java.util.Optional;
 public class HttpPostAIRequest {
     @Autowired
     private FruitDetailRepository fruitDetailRepository;
+    @Autowired
+    private MongoEmotionService mongoEmotionService;
+    @Autowired
+    private UserRepository userRepository;
+
 
     // URL 설정 (수동 빈 등록 시 값이 등록된다.)
     private String aiUrlString;
@@ -55,17 +67,23 @@ public class HttpPostAIRequest {
                 response.append(responseLine.trim());
             }
             //System.out.println(response.toString());
-            return parseAndProcessResponse(response.toString());
+            return parseAndProcessResponse(response.toString(), sentence);
         }
     }
     // 응답 파싱 및 처리 메소드
-    private UserFruitSaveResponse parseAndProcessResponse(String jsonResponse) {
+    private UserFruitSaveResponse parseAndProcessResponse(String jsonResponse, String sentence) {
         Gson gson = new Gson();
         AIResponse response = gson.fromJson(jsonResponse, AIResponse.class);
 
         List<String> resultList = response.getResult();
         //감정 결과 출력
         log.info("Result: {}", resultList);
+
+        //사용자 정보 가져오기 (PK 값)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //감정 1순위 결과 NoSQL 저장 (text : sentence)
+        mongoEmotionService.createEmotion(authentication.getName(), sentence, resultList.get(0));
 
         ArrayList<UserFruitSaveDTO> fruitDetailList = new ArrayList<>();
 
