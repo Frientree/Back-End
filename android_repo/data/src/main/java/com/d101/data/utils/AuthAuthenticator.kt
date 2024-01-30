@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import com.d101.data.api.AuthService
 import com.d101.data.datastore.TokenPreferences
 import com.d101.data.model.user.request.TokenRefreshRequest
+import com.d101.domain.utils.TokenManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -28,7 +29,7 @@ class AuthAuthenticator @Inject constructor(
             val body = res.body()
 
             if (!res.isSuccessful || body == null) {
-                emitRefreshTokenExpired()
+                tokenManager.notifyTokenExpired()
                 return null
             }
 
@@ -46,14 +47,8 @@ class AuthAuthenticator @Inject constructor(
                 .header("Authorization", "Bearer ${tokenResponse.accessToken}")
                 .build()
         } else {
-            emitRefreshTokenExpired()
-        }
-        return null
-    }
-
-    private fun emitRefreshTokenExpired() {
-        CoroutineScope(Dispatchers.IO).launch {
             tokenManager.notifyTokenExpired()
         }
+        return null
     }
 }

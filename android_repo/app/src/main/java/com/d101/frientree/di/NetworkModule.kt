@@ -5,7 +5,7 @@ import com.d101.data.api.AuthService
 import com.d101.data.datastore.TokenPreferences
 import com.d101.data.utils.AuthAuthenticator
 import com.d101.data.utils.AuthInterceptor
-import com.d101.data.utils.TokenManager
+import com.d101.domain.utils.TokenManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
