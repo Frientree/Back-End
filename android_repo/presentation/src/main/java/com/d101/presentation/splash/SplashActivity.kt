@@ -1,10 +1,11 @@
-package com.d101.presentation
+package com.d101.presentation.splash
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import com.d101.presentation.R
 import com.d101.presentation.welcome.WelcomeActivity
 
 class SplashActivity : AppCompatActivity() {
