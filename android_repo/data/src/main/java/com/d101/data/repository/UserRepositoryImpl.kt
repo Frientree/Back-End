@@ -21,9 +21,20 @@ class UserRepositoryImpl @Inject constructor(
                         .build()
                 }
 
-                Result.Success(true)
+                Result.Success(Unit)
             }
 
             is Result.Failure -> Result.Failure(result.errorStatus)
         }
+
+    override suspend fun getUserInfo(): Result<Unit> =
+        when (val result = userDataSource.getUserInfo()) {
+            is Result.Success -> {
+                //유저정보 저장
+                Result.Success(Unit)
+            }
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
+
 }
