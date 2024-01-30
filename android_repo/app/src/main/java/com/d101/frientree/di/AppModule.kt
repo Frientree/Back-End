@@ -1,5 +1,7 @@
 package com.d101.frientree.di
 
+import androidx.datastore.core.DataStore
+import com.d101.data.datastore.TokenPreferences
 import com.d101.data.utils.TokenManagerImpl
 import com.d101.domain.utils.TokenManager
 import dagger.Module
@@ -14,5 +16,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideTokenManager(): TokenManager = TokenManagerImpl()
+    fun provideTokenManager(
+        dataStore: DataStore<TokenPreferences>,
+    ): TokenManager = TokenManagerImpl(dataStore)
 }

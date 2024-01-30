@@ -1,7 +1,6 @@
 package com.d101.data.utils
 
-import androidx.datastore.core.DataStore
-import com.d101.data.datastore.TokenPreferences
+import com.d101.domain.utils.TokenManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -9,12 +8,12 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
-    private val dataStore: DataStore<TokenPreferences>,
+    private val tokenManager: TokenManager,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
 
-        val accessToken = runBlocking { dataStore.data.first() }.accessToken
+        val accessToken = runBlocking { tokenManager.getAccessToken().first() }
 
         if (accessToken != "NEED_LOGIN") {
             request = chain.request().newBuilder()
