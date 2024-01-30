@@ -5,15 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentSignUpBinding
+import com.d101.presentation.welcome.viewmodel.SignUpViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpFragment : Fragment() {
 
     private var _binding: FragmentSignUpBinding? = null
     private val binding
         get() = _binding!!
+
+    private val viewModel: SignUpViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +40,7 @@ class SignUpFragment : Fragment() {
     }
 
     private fun setBinding() {
+        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
     }
 
