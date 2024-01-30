@@ -18,6 +18,7 @@ object Versions {
     const val LOTTIE = "6.3.0"
     const val DATA_STORE = "1.0.0"
     const val PROTO_BUF = "3.25.1"
+    const val COROUTINES_CORE = "1.7.1"
 }
 
 object Libraries {
@@ -46,4 +47,5 @@ object Libraries {
     const val dataStorePrefs = "androidx.datastore:datastore-preferences:${Versions.DATA_STORE}"
     const val dataStoreCore = "androidx.datastore:datastore-core:${Versions.DATA_STORE}"
     const val protoBuf = "com.google.protobuf:protobuf-javalite:${Versions.PROTO_BUF}"
+    const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINES_CORE}"
 }
