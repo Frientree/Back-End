@@ -14,7 +14,7 @@ public interface UserService {
 
     ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest);
 
-    ResponseEntity<UserTokenRefreshResponse> tokenRefresh(UserTokenRefreshRequest userTokenRefreshRequest);
+    ResponseEntity<UserTokenRefreshResponse> tokenRefreshGenerate(UserTokenRefreshRequest userTokenRefreshRequest);
 
     ResponseEntity<UserChangeNicknameResponse> modifyNickname(UserChangeNicknameRequest userChangeNicknameRequest);
 
@@ -27,4 +27,14 @@ public interface UserService {
     ResponseEntity<UserDeactivateResponse> deactivate();
 
     ResponseEntity<UserDuplicateCheckResponse> duplicateCheck(UserDuplicateCheckRequest userDuplicateCheckRequest);
+
+    ResponseEntity<UserSendEmailCertificationResponse> sendEmailCertificate(UserSendEmailCertificationRequest userSendEmailCertificationRequest);
+
+    ResponseEntity<UserPassEmailCertificationResponse> passEmailCertificate(UserPassEmailCertificationRequest userPassEmailCertificationRequest);
+
+    ResponseEntity<UserChangePasswordResponse> passwordModify(UserChangePasswordRequest userChangePasswordRequest);
+
+    ResponseEntity<UserTemporaryPasswordSendResponse> temporaryPasswordSend(UserTemporaryPasswordSendRequest userTemporaryPasswordSendRequest);
+
+    ResponseEntity<UserCreateStatusResponse> createStatusConfirm();
 }

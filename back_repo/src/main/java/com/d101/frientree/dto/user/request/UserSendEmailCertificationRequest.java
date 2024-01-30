@@ -5,16 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
-public class UserCreateRequest {
+@AllArgsConstructor
+public class UserSendEmailCertificationRequest {
 
     private String userEmail;
-
-    private String userPw;
-
-    private String userNickname;
-
 }
