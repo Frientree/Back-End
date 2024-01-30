@@ -36,6 +36,7 @@
         <com.d101.presentation.welcome.layout.FrientreeInputLayout
             android:id="@+id/id_input_layout"
             android:layout_width="match_parent"
+            app:label="@string/id_upper_case"
             android:layout_height="wrap_content"
             android:layout_marginTop="100dp"
             app:layout_constraintBottom_toTopOf="@id/email_check_input_layout"
