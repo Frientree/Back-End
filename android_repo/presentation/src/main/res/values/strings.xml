@@ -38,7 +38,7 @@
     <string name="save_fruit_text">열매 저장하기</string>
     <string name="listening_text">나무가 듣고 있어요!</string>
     <string name="create_fruit_by_speech_button_text">다 이야기 했어요</string>
-    <string name="speech_second_text">%d / 30초</string>
+    <string name="speech_second_text">/ 30초</string>
     <string name="emotion_calendar">감정 캘린더</string>
     <string name="today_fruit_statistics_example">오늘 나와 같은 감정을 느낀 사람이 20%예요!</string>
     <string name="fruit_list">열매 리스트</string>
