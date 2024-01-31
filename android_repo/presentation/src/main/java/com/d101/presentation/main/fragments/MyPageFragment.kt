@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.DialogBackgroundMusicSelectBinding
@@ -19,6 +20,7 @@ import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
 import com.d101.presentation.mypage.state.MyPageViewState
 import com.d101.presentation.mypage.viewmodel.MyPageViewModel
+import kotlinx.coroutines.launch
 import utils.repeatOnStarted
 
 class MyPageFragment : Fragment() {
@@ -41,36 +43,8 @@ class MyPageFragment : Fragment() {
 
         setBinding()
         subscribeEvent()
-        subscribeViewState()
-        viewModel.eventOccurred(MyPageViewEvent.Init)
-
-        setOnClickListener()
-    }
-
-    private fun setOnClickListener() {
-        binding.pencilButtonImageView.setOnClickListener {
-            viewModel.eventOccurred(MyPageViewEvent.onTapNicknameEditButton)
-        }
-
-        binding.cancelButtonImageView.setOnClickListener {
-            viewModel.eventOccurred(MyPageViewEvent.onCancelNicknameEdit)
-        }
-
-        binding.alarmOnButtonTextView.setOnClickListener {
-            viewModel.eventOccurred(MyPageViewEvent.onSetAlarmStatus(AlarmStatus.ON))
-        }
-
-        binding.alarmOffButtonTextView.setOnClickListener {
-            viewModel.eventOccurred(MyPageViewEvent.onSetAlarmStatus(AlarmStatus.OFF))
-        }
-
-        binding.backgroundMusicOnOffButtonImageView.setOnClickListener {
-            viewModel.eventOccurred(MyPageViewEvent.onSetBackgroundMusicStatus)
-        }
-
-        binding.backgroundMusicChangeButtonTextView.setOnClickListener {
-            viewModel.eventOccurred(MyPageViewEvent.onTapBackgroundMusicChangeButton)
-        }
+        subScribeViewState()
+        viewModel.init()
     }
 
     private fun setBinding() {
@@ -79,50 +53,75 @@ class MyPageFragment : Fragment() {
     }
 
     private fun subscribeEvent() {
-        viewLifecycleOwner.repeatOnStarted {
-            viewModel.eventFlow.collect {
-                viewModel.onEventOccurred(it)
+        lifecycleScope.launch {
+            repeatOnStarted {
+                viewModel.eventFlow.collect { event ->
+                    when (event) {
+                        is MyPageViewEvent.Init -> viewModel.onInitOccurred()
+
+                        is MyPageViewEvent.OnTapNicknameEditButton ->
+                            viewModel.onTapNicknameEditButtonOccurred()
+
+                        is MyPageViewEvent.OnTapNicknameEditCancelButton ->
+                            viewModel.onTapNicknameEditCancelButtonOccurred()
+
+                        is MyPageViewEvent.OnChangeNickname ->
+                            viewModel.onChangeNicknameOccurred(event.nicknameInput)
+
+                        is MyPageViewEvent.OnNicknameChanged ->
+                            viewModel.onNicknameChangedOccurred(event.newNickname)
+
+                        is MyPageViewEvent.OnTapAlarmStatusButton ->
+                            viewModel.onTapAlarmStatusButtonOccurred(event.alarmStatus)
+
+                        is MyPageViewEvent.OnTapBackgroundMusicStatusButton ->
+                            viewModel.onTapBackgroundMusicStatusButtonOccurred()
+
+                        is MyPageViewEvent.OnTapBackgroundMusicChangeButton ->
+                            viewModel.onTapBackgroundMusicChangeButtonOccurred()
+
+                        is MyPageViewEvent.OnBackgroundMusicChanged ->
+                            viewModel.onBackgroundMusicChangedOccurred(event.musicName)
+
+                        is MyPageViewEvent.OnTapChangePasswordButton -> {}
+                        is MyPageViewEvent.OnTapLogOutButton -> {}
+                        is MyPageViewEvent.OnTapTermsButton -> {}
+                    }
+                }
             }
         }
     }
 
-    private fun subscribeViewState() {
-        viewLifecycleOwner.repeatOnStarted {
-            val inputMethodManager = requireContext().getSystemService(
-                Context.INPUT_METHOD_SERVICE,
-            ) as InputMethodManager
-            viewModel.myPageViewState.collect { state ->
-                updateUI(state, inputMethodManager)
-            }
-        }
-    }
+    private fun subScribeViewState() {
+        lifecycleScope.launch {
+            repeatOnStarted {
+                val inputMethodManager = requireContext().getSystemService(
+                    Context.INPUT_METHOD_SERVICE,
+                ) as InputMethodManager
+                viewModel.uiState.collect { state ->
+                    when (state) {
+                        is MyPageViewState.Default -> {
+                            setBackgroundMusicStatusUI(state)
+                            setAlarmStatusUI(state)
+                            setDefaultUI(inputMethodManager)
+//                            TODO: Marquee 효과 적용이 안되는 중..
+                            binding.musicTextView.requestFocus()
+                            binding.musicTextView.isSelected = true
+                        }
 
-    private fun updateUI(
-        state: MyPageViewState,
-        inputMethodManager: InputMethodManager,
-    ) {
-        when (state) {
-            is MyPageViewState.Default -> {
-                setBackgroundMusicStatusUI(state)
-                setAlarmStatusUI(state)
-                binding.musicTextView.text = state.backgroundMusic
-                setDefaultUI(inputMethodManager)
-                //                            TODO: Marquee 효과 적용이 안되는 중..
-                binding.musicTextView.requestFocus()
-                binding.musicTextView.isSelected = true
-            }
+                        is MyPageViewState.NicknameEditState -> {
+                            setBackgroundMusicStatusUI(state)
+                            setAlarmStatusUI(state)
+                            setNicknameEditUI(inputMethodManager)
+                            binding.musicTextView.requestFocus()
+                            binding.musicTextView.isSelected = true
+                        }
 
-            is MyPageViewState.NicknameEditState -> {
-                setBackgroundMusicStatusUI(state)
-                setAlarmStatusUI(state)
-                binding.musicTextView.text = state.backgroundMusic
-                setNicknameEditUI(inputMethodManager)
-                binding.musicTextView.requestFocus()
-                binding.musicTextView.isSelected = true
-            }
-
-            is MyPageViewState.BackgroundMusicSelectState -> {
-                showBackgroundMusicSelectDialog()
+                        is MyPageViewState.BackgroundMusicSelectState -> {
+                            showBackgroundMusicSelectDialog()
+                        }
+                    }
+                }
             }
         }
     }
@@ -181,8 +180,11 @@ class MyPageFragment : Fragment() {
         val dialogBinding = DialogBackgroundMusicSelectBinding.inflate(layoutInflater)
         val musicList = BackgroundMusicPlayer.getMusicList()
 
-        dialogBinding.setMusicSelector(musicList, viewModel.myPageViewState.value.backgroundMusic)
-        dialog.setDialogDismissListener(dialogBinding, musicList[dialogBinding.musicSelector.value])
+        dialogBinding.setMusicSelector(musicList, viewModel.uiState.value.backgroundMusic)
+        dialog.setContentView(dialogBinding.root)
+        dialog.setOnDismissListener {
+            viewModel.onBackgroundMusicChanged(musicList[dialogBinding.musicSelector.value])
+        }
         BackgroundMusicPlayer.resumeMusic()
         dialog.show()
     }
@@ -190,16 +192,6 @@ class MyPageFragment : Fragment() {
     private fun createFullScreenDialog(): Dialog {
         return Dialog(requireContext(), R.style.Base_FTR_FullScreenDialog).apply {
             window?.setBackgroundDrawableResource(R.drawable.btn_white_green_36dp)
-        }
-    }
-
-    private fun Dialog.setDialogDismissListener(
-        dialogBinding: DialogBackgroundMusicSelectBinding,
-        musicName: String,
-    ) {
-        this.setContentView(dialogBinding.root)
-        setOnDismissListener {
-            viewModel.onEventOccurred(MyPageViewEvent.onChangeBackgroundMusic(musicName))
         }
     }
 
