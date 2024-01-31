@@ -1,5 +1,6 @@
 package com.d101.frientree.exception;
 
+import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,6 +28,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EmailDuplicatedException.class)
     public ResponseEntity<String> handelEmailDuplicatedException(EmailDuplicatedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NaverClovaAPIException.class)
+    public ResponseEntity<String> handleNaverClovaAPIException(NaverClovaAPIException e){
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
     }
 
 }

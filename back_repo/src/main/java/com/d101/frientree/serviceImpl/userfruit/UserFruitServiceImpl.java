@@ -3,6 +3,7 @@ package com.d101.frientree.serviceImpl.userfruit;
 import com.d101.frientree.dto.userfruit.request.UserFruitTextRequest;
 import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
 import com.d101.frientree.entity.fruit.FruitDetail;
+import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import com.d101.frientree.repository.FruitDetailRepository;
 import com.d101.frientree.service.UserFruitService;
 import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechClient;
@@ -20,7 +21,11 @@ import java.io.File;
 @Service
 @Log4j2
 public class UserFruitServiceImpl implements UserFruitService {
-    private static final String FILE_DIRECTORY = "C:/Users/SSAFY/Desktop/project/S10P12D101/back_repo/src/storge/";
+    //로컬
+    // private static final String FILE_DIRECTORY = "C:/Users/SSAFY/Desktop/project/S10P12D101/back_repo/src/storge/";
+    //서버
+    private static final String FILE_DIRECTORY = "/home/ubuntu/audio";
+
     //naver clova speech to text class
     private final ClovaSpeechClient clovaSpeechClient;
     private final HttpPostAIRequest httpPostAIRequest;
@@ -62,9 +67,13 @@ public class UserFruitServiceImpl implements UserFruitService {
         sed.setEnable(false); // 이벤트 탐지 활성화
         requestEntity.setSed(sed);
 
-        // 2. 파일 업로드 및 인식 요청
-        String result = clovaSpeechClient.upload(new File(filePath), requestEntity);
-
+        String result = "";
+        try{
+            // 2. 파일 업로드 및 인식 요청
+            result = clovaSpeechClient.upload(new File(filePath), requestEntity);
+        }catch (NaverClovaAPIException e){
+            throw new NaverClovaAPIException("Naver API Error");
+        }
         // 3. 파일 삭제
         new File(filePath).delete();
 
