@@ -82,8 +82,6 @@ public class HttpPostAIRequest {
         //사용자 정보 가져오기 (PK 값)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        log.info("사용자 정보 확인하기 : {}",authentication.getName());
-
         //감정 1순위 결과 NoSQL 저장 (text : sentence)
         mongoEmotionService.createEmotion(authentication.getName(), sentence, resultList.get(0));
 

@@ -3,6 +3,7 @@ package com.d101.frientree.serviceImpl.userfruit;
 import com.d101.frientree.dto.userfruit.request.UserFruitTextRequest;
 import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
 import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
+import com.d101.frientree.exception.userfruit.PythonAPIException;
 import com.d101.frientree.service.UserFruitService;
 import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechClient;
 import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechResponse;
@@ -77,13 +78,20 @@ public class UserFruitServiceImpl implements UserFruitService {
         String fullText = response.getFullText();
 
         log.info("음성 Text : {}", response.getFullText());
-
-        //Python 감정 분석 API 호출
-        return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(fullText));
+        try {
+            //Python 감정 분석 API 호출
+            return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(fullText));
+        }catch (PythonAPIException e){
+            throw new PythonAPIException("Python AI API Error");
+        }
     }
     @Override
     public ResponseEntity<UserFruitSaveResponse> speechToTextText(UserFruitTextRequest textFile) throws Exception {
-        //Python 감정 분석 API 호출
-        return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(textFile.getContent()));
+        try {
+            //Python 감정 분석 API 호출
+            return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(textFile.getContent()));
+        }catch (PythonAPIException e){
+            throw new PythonAPIException("Python AI API Error");
+        }
     }
 }
