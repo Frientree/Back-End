@@ -2,6 +2,7 @@ package com.d101.frientree.serviceImpl.userfruit.clova;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -81,25 +83,31 @@ public class ClovaSpeechClient {
     }
 
     /**
-     *
-     * recognize media using a file
-     * @param file required, the media file
+     * recognize media using URL
+     * @param url required, the media URL
      * @param nestRequestEntity optional
      * @return string
      */
-    public String upload(File file, NestRequestEntity nestRequestEntity) {
-        HttpPost httpPost = new HttpPost(INVOKE_URL + "/recognizer/upload");
-
-        Header[] HEADERS = new Header[] {
+    public String url(String url, NestRequestEntity nestRequestEntity) {
+        HttpPost httpPost = new HttpPost(INVOKE_URL + "/recognizer/url");
+                Header[] HEADERS = new Header[] {
                 new BasicHeader("Accept", "application/json"),
                 new BasicHeader("X-CLOVASPEECH-API-KEY", SECRET),
         };
-
         httpPost.setHeaders(HEADERS);
-        HttpEntity httpEntity = MultipartEntityBuilder.create()
-                .addTextBody("params", gson.toJson(nestRequestEntity), ContentType.APPLICATION_JSON)
-                .addBinaryBody("media", file, ContentType.MULTIPART_FORM_DATA, file.getName())
-                .build();
+        Map<String, Object> body = new HashMap<>();
+        body.put("url", url);
+        body.put("language", nestRequestEntity.getLanguage());
+        body.put("completion", nestRequestEntity.getCompletion());
+        body.put("callback", nestRequestEntity.getCallback());
+        body.put("userdata", nestRequestEntity.getCallback());
+        body.put("wordAlignment", nestRequestEntity.getWordAlignment());
+        body.put("fullText", nestRequestEntity.getFullText());
+        body.put("forbiddens", nestRequestEntity.getForbiddens());
+        body.put("boostings", nestRequestEntity.getBoostings());
+        body.put("diarization", nestRequestEntity.getDiarization());
+        body.put("sed", nestRequestEntity.getSed());
+        HttpEntity httpEntity = new StringEntity(gson.toJson(body), ContentType.APPLICATION_JSON);
         httpPost.setEntity(httpEntity);
         return execute(httpPost);
     }
@@ -111,15 +119,5 @@ public class ClovaSpeechClient {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static void main(String[] args) {
-        final ClovaSpeechClient clovaSpeechClient = new ClovaSpeechClient();
-        NestRequestEntity requestEntity = new NestRequestEntity();
-        final String result =
-                clovaSpeechClient.upload(new File("/data/sample.mp4"), requestEntity);
-        //final String result = clovaSpeechClient.url("file URL", requestEntity);
-        //final String result = clovaSpeechClient.objectStorage("Object Storage key", requestEntity);
-        System.out.println(result);
     }
 }

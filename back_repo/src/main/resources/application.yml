@@ -72,10 +72,10 @@ jasypt:
 cloud:
   aws:
     s3:
-      bucket: frientreebuckit
+      bucket: ENC(UPXLV475FTxy+qaL4JpyCHO/oxzrFepz)
     credentials:
-      access-key: AKIAQOGCCN5ZYWEZ7FNR
-      secret-key: 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
+      access-key: ENC(Dxhdvpc6TZaCwug4ytpOBrpGUkS3TYkCJm4G4emtVig=)
+      secret-key: ENC(jPqz3lNrAKBn2gX24FwSKF7EEyTREF17Zq0zMBgwsSkLu3TXTCJI6SYfoaCdVceLKDnDYYqpVM4=)
     region:
       static: ap-northeast-2
       auto: false

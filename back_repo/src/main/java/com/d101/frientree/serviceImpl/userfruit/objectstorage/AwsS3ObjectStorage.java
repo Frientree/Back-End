@@ -11,11 +11,11 @@ import java.io.IOException;
 
 @Log4j2
 @Data
-public class AwsS3ObjectStorageUpload {
+public class AwsS3ObjectStorage {
     private AmazonS3 amazonS3; //AmazonS3 config 미리 빈 주입
 
     private String bucket; //빈 주입 시 setter
-    public AwsS3ObjectStorageUpload(AmazonS3 amazonS3) {
+    public AwsS3ObjectStorage(AmazonS3 amazonS3) {
         this.amazonS3 = amazonS3;
     }
 
@@ -28,5 +28,8 @@ public class AwsS3ObjectStorageUpload {
 
         amazonS3.putObject(bucket, originalFilename, multipartFile.getInputStream(), metadata);
         return amazonS3.getUrl(bucket, originalFilename).toString();
+    }
+    public void deleteImage(String originalFilename)  {
+        amazonS3.deleteObject(bucket, originalFilename);
     }
 }
