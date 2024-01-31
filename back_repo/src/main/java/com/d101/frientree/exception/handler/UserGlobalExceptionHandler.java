@@ -1,5 +1,6 @@
-package com.d101.frientree.exception;
+package com.d101.frientree.exception.handler;
 
+import com.d101.frientree.exception.user.*;
 import com.d101.frientree.util.CustomJwtException;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,7 +15,7 @@ import java.util.Collections;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
-public class GlobalExceptionHandler {
+public class UserGlobalExceptionHandler {
 
     private final Gson gson;
 

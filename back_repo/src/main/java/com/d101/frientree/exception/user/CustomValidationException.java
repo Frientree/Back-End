@@ -1,4 +1,4 @@
-package com.d101.frientree.exception;
+package com.d101.frientree.exception.user;
 
 public class CustomValidationException extends RuntimeException {
 

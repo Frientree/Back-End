@@ -7,7 +7,7 @@ import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.entity.EmailCode;
 import com.d101.frientree.entity.RefreshToken;
 import com.d101.frientree.entity.user.User;
-import com.d101.frientree.exception.*;
+import com.d101.frientree.exception.user.*;
 import com.d101.frientree.repository.EmailCodeRepository;
 import com.d101.frientree.repository.RefreshTokenRepository;
 import com.d101.frientree.repository.UserRepository;

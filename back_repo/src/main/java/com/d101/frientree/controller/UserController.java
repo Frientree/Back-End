@@ -2,8 +2,6 @@ package com.d101.frientree.controller;
 
 import com.d101.frientree.dto.user.request.*;
 import com.d101.frientree.dto.user.response.*;
-import com.d101.frientree.dto.user.response.dto.*;
-import com.d101.frientree.exception.UserNotFoundException;
 import com.d101.frientree.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
