@@ -3,6 +3,7 @@ package com.d101.frientree.entity.fruit;
 import com.d101.frientree.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "USER_FRUIT")
@@ -29,6 +31,15 @@ public class UserFruit {
     @Temporal(TemporalType.DATE)
     private Date userFruitCreateDate;
 
-    private BigInteger userFruitScore;
+    private Long userFruitScore;
+
+    public static UserFruit createUserFruit(User user, FruitDetail fruitDetail, Date userFruitCreateDate, Long userFruitScore){
+        return UserFruit.builder()
+                .user(user)
+                .fruitDetail(fruitDetail)
+                .userFruitCreateDate(userFruitCreateDate)
+                .userFruitScore(userFruitScore)
+                .build();
+    }
 
 }

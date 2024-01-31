@@ -6,21 +6,19 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserFruitSaveDTO {
-    private Boolean isApple;
+public class UserFruitCreateDTO {
+    private Long fruitNum;
     private String fruitName;
     private String fruitDescription;
     private String fruitImageUrl;
-    private String fruitCalendarImageUrl;
     private String fruitFeel;
 
-    public static UserFruitSaveDTO createUserFruitSaveDTO(Boolean isApple, FruitDetail fruitDetail){
-        return UserFruitSaveDTO.builder()
-                .isApple(isApple)
+    public static UserFruitCreateDTO createUserFruitSaveDTO(FruitDetail fruitDetail){
+        return UserFruitCreateDTO.builder()
+                .fruitNum(fruitDetail.getFruitNum())
                 .fruitName(fruitDetail.getFruitName())
                 .fruitDescription(fruitDetail.getFruitDescription())
                 .fruitImageUrl(fruitDetail.getFruitImageUrl())
-                .fruitCalendarImageUrl(fruitDetail.getFruitCalendarUrl())
                 .fruitFeel(fruitDetail.getFruitFeel())
                 .build();
     }

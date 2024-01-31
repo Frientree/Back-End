@@ -1,17 +1,14 @@
 package com.d101.frientree.serviceImpl.userfruit.fastapi;
 
 
-import com.d101.frientree.dto.userfruit.dto.UserFruitSaveDTO;
-import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
+import com.d101.frientree.dto.userfruit.dto.UserFruitCreateDTO;
+import com.d101.frientree.dto.userfruit.response.UserFruitCreateResponse;
 import com.d101.frientree.entity.fruit.FruitDetail;
-import com.d101.frientree.entity.user.User;
 import com.d101.frientree.repository.FruitDetailRepository;
 import com.d101.frientree.repository.UserRepository;
 import com.d101.frientree.service.mongo.MongoEmotionService;
-import com.d101.frientree.serviceImpl.mongo.MongoEmotionServiceImpl;
 import com.google.gson.Gson;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -39,7 +36,7 @@ public class HttpPostAIRequest {
     // URL 설정 (수동 빈 등록 시 값이 등록된다.)
     private String aiUrlString;
 
-    public UserFruitSaveResponse sendPostRequest(String sentence) throws Exception {
+    public UserFruitCreateResponse sendPostRequest(String sentence) throws Exception {
         URL url = new URL(aiUrlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -71,7 +68,7 @@ public class HttpPostAIRequest {
         }
     }
     // 응답 파싱 및 처리 메소드
-    private UserFruitSaveResponse parseAndProcessResponse(String jsonResponse, String sentence) {
+    private UserFruitCreateResponse parseAndProcessResponse(String jsonResponse, String sentence) {
         Gson gson = new Gson();
         AIResponse response = gson.fromJson(jsonResponse, AIResponse.class);
 
@@ -85,15 +82,15 @@ public class HttpPostAIRequest {
         //감정 1순위 결과 NoSQL 저장 (text : sentence)
         mongoEmotionService.createEmotion(authentication.getName(), sentence, resultList.get(0));
 
-        ArrayList<UserFruitSaveDTO> fruitDetailList = new ArrayList<>();
+        ArrayList<UserFruitCreateDTO> fruitDetailList = new ArrayList<>();
 
         //3가지 감정 List 요소 FruitDetail 정보 가져오기
         for(int i=0;i<3;i++){
             Optional<FruitDetail> fruit = fruitDetailRepository.findByFruitFeel(resultList.get(i));
             if(fruit.isPresent()){
-                fruitDetailList.add(UserFruitSaveDTO.createUserFruitSaveDTO(fruit.get()));
+                fruitDetailList.add(UserFruitCreateDTO.createUserFruitSaveDTO(fruit.get()));
             }
         }
-        return UserFruitSaveResponse.createUserFruitSaveResponse("Success", fruitDetailList);
+        return UserFruitCreateResponse.createUserFruitSaveResponse("Success", fruitDetailList);
     }
 }
