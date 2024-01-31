@@ -69,18 +69,18 @@ jasypt:
   encryptor:
     aiurl: ENC(S5SsEvmX4X7ncHUDkHz5OJMVfy9wotQhzIz84ER28YKENkB7CNSgQw==)
 ---
-naver:
-  objectstorage:
+cloud:
+  aws:
+    s3:
+      bucket: frientreebuckit
     credentials:
-      access-key: CXuwQnnuYYz9N0Gs7Emw
-      secret-key: dgKWEZNEnAK1u0p5ovroyVOl1corDDqZMoR12kVc
-    stack:
-      auto: false
+      access-key: AKIAQOGCCN5ZYWEZ7FNR
+      secret-key: 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
     region:
       static: ap-northeast-2
-    s3:
-      endpoint: https://kr.object.ncloudstorage.com
-      bucket: commonprojecthabin
+      auto: false
+    stack:
+      auto: false
 ---
 
 logging:
