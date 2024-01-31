@@ -45,6 +45,7 @@
             android:text="@string/juice_shake_guide" />
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/shake_progress_bar_linear_progress_indicator"
             style="@style/Widget.Material3.LinearProgressIndicator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
