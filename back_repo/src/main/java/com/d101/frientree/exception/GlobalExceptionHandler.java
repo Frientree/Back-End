@@ -4,8 +4,10 @@ import com.d101.frientree.util.CustomJwtException;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -79,6 +81,11 @@ public class GlobalExceptionHandler {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(headers).body(msg);
+    }
+
+    @ExceptionHandler(NaverClovaAPIException.class)
+    public ResponseEntity<String> handleNaverClovaAPIException(NaverClovaAPIException e){
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
     }
 
 }

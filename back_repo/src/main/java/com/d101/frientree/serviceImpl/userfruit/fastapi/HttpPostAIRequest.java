@@ -1,23 +1,45 @@
 package com.d101.frientree.serviceImpl.userfruit.fastapi;
 
 
+import com.d101.frientree.dto.userfruit.dto.UserFruitSaveDTO;
+import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
+import com.d101.frientree.entity.fruit.FruitDetail;
+import com.d101.frientree.entity.user.User;
+import com.d101.frientree.repository.FruitDetailRepository;
+import com.d101.frientree.repository.UserRepository;
+import com.d101.frientree.service.mongo.MongoEmotionService;
+import com.d101.frientree.serviceImpl.mongo.MongoEmotionServiceImpl;
 import com.google.gson.Gson;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Data
+@Log4j2
 public class HttpPostAIRequest {
+    @Autowired
+    private FruitDetailRepository fruitDetailRepository;
+    @Autowired
+    private MongoEmotionService mongoEmotionService;
+    @Autowired
+    private UserRepository userRepository;
+
+
     // URL 설정 (수동 빈 등록 시 값이 등록된다.)
     private String aiUrlString;
 
-    public void sendPostRequest(String sentence) throws Exception {
+    public UserFruitSaveResponse sendPostRequest(String sentence) throws Exception {
         URL url = new URL(aiUrlString);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -45,27 +67,33 @@ public class HttpPostAIRequest {
                 response.append(responseLine.trim());
             }
             //System.out.println(response.toString());
-            parseAndProcessResponse(response.toString());
+            return parseAndProcessResponse(response.toString(), sentence);
         }
     }
     // 응답 파싱 및 처리 메소드
-    private static void parseAndProcessResponse(String jsonResponse) {
+    private UserFruitSaveResponse parseAndProcessResponse(String jsonResponse, String sentence) {
         Gson gson = new Gson();
         AIResponse response = gson.fromJson(jsonResponse, AIResponse.class);
 
         List<String> resultList = response.getResult();
-        System.out.println("Result: " + resultList);
-        // resultList를 기반으로 추가 처리를 수행할 수 있습니다.
-    }
+        //감정 결과 출력
+        log.info("Result: {}", resultList);
 
-    public static void main(String[] args) {
-        // HttpPostAIRequest의 인스턴스 생성
-        HttpPostAIRequest httpPostAIRequest = new HttpPostAIRequest();
-        // 비정적 메소드 호출을 위해 인스턴스 사용
-        try {
-            httpPostAIRequest.sendPostRequest("string");
-        } catch (Exception e) {
-            e.printStackTrace();
+        //사용자 정보 가져오기 (PK 값)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //감정 1순위 결과 NoSQL 저장 (text : sentence)
+        mongoEmotionService.createEmotion(authentication.getName(), sentence, resultList.get(0));
+
+        ArrayList<UserFruitSaveDTO> fruitDetailList = new ArrayList<>();
+
+        //3가지 감정 List 요소 FruitDetail 정보 가져오기
+        for(int i=0;i<3;i++){
+            Optional<FruitDetail> fruit = fruitDetailRepository.findByFruitFeel(resultList.get(i));
+            if(fruit.isPresent()){
+                fruitDetailList.add(UserFruitSaveDTO.createUserFruitSaveDTO(fruit.get()));
+            }
         }
+        return UserFruitSaveResponse.createUserFruitSaveResponse("Success", fruitDetailList);
     }
 }
