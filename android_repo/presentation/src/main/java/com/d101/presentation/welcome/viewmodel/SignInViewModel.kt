@@ -35,7 +35,7 @@ class SignInViewModel @Inject constructor(
                         ErrorStatus.NetworkError -> onSignInFailed("네트워크 연결 실패")
                         SignInErrorStatus.UserNotFound -> onSignInFailed("존재하지 않는 사용자")
                         SignInErrorStatus.WrongPassword -> onSignInFailed("잘못된 비밀번호")
-                        ErrorStatus.UnknownError -> onSignInFailed("알 수 없는 에러")
+                        else -> onSignInFailed("알 수 없는 에러")
                     }
                 }
             }

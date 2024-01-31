@@ -1,8 +1,6 @@
 package com.d101.frientree.di
 
-import androidx.datastore.core.DataStore
 import com.d101.data.api.AuthService
-import com.d101.data.datastore.TokenPreferences
 import com.d101.data.utils.AuthAuthenticator
 import com.d101.data.utils.AuthInterceptor
 import com.d101.domain.utils.TokenManager
@@ -70,14 +68,13 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun providesAuthorizationInterceptor(dataStore: DataStore<TokenPreferences>): AuthInterceptor =
-        AuthInterceptor(dataStore)
+    fun providesAuthorizationInterceptor(tokenManager: TokenManager): AuthInterceptor =
+        AuthInterceptor(tokenManager)
 
     @Singleton
     @Provides
     fun provideTokenAuthenticator(
         authService: AuthService,
         tokenManager: TokenManager,
-        tokenPreferencesStore: DataStore<TokenPreferences>,
-    ): AuthAuthenticator = AuthAuthenticator(authService, tokenManager, tokenPreferencesStore)
+    ): AuthAuthenticator = AuthAuthenticator(authService, tokenManager)
 }

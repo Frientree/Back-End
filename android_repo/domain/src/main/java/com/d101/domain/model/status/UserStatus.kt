@@ -4,3 +4,7 @@ sealed class SignInErrorStatus : ErrorStatus {
     data object UserNotFound : SignInErrorStatus()
     data object WrongPassword : SignInErrorStatus()
 }
+
+sealed class GetUserErrorStatus : ErrorStatus {
+    data object UserNotFound : GetUserErrorStatus()
+}
