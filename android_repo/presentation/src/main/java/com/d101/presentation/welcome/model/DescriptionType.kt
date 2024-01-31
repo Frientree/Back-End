@@ -1,5 +1,11 @@
 package com.d101.presentation.welcome.model
 
-enum class DescriptionType {
-    DEFAULT, ERROR, NONE
+import androidx.annotation.ColorRes
+import com.d101.presentation.R
+
+enum class DescriptionType(
+    @ColorRes
+    val colorRes: Int,
+) {
+    DEFAULT(R.color.black), ERROR(R.color.fruit_red)
 }

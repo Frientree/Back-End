@@ -39,21 +39,6 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
         collectEvent()
-        // 임시 화면이동 로직 추후 재정의 후 제거
-        binding.signInButton.setOnClickListener {
-//            val intent = Intent(requireContext(), MainActivity::class.java)
-//            startActivity(intent)
-//            requireActivity().finish()
-            viewModel.event(SignInViewEvent.OnSignInViewByFrientree)
-        }
-
-        binding.signUpTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
-        }
-
-        binding.findPasswordTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_signInFragment_to_findPasswordFragment)
-        }
     }
 
     private fun setBinding() {
@@ -86,7 +71,7 @@ class SignInFragment : Fragment() {
     }
 
     private fun navigateToTermsAgree() =
-        findNavController().navigate(R.id.action_signInFragment_to_termsAgreeFragment)
+        findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
 
     private fun navigateToFindPassword() =
         findNavController().navigate(R.id.action_signInFragment_to_findPasswordFragment)

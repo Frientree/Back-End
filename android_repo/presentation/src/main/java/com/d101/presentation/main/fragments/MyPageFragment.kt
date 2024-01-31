@@ -99,7 +99,7 @@ class MyPageFragment : Fragment() {
 
     private fun updateUI(
         state: MyPageViewState,
-        inputMethodManager: InputMethodManager
+        inputMethodManager: InputMethodManager,
     ) {
         when (state) {
             is MyPageViewState.Default -> {
