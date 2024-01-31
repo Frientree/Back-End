@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.DialogBackgroundMusicSelectBinding
@@ -20,7 +19,6 @@ import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
 import com.d101.presentation.mypage.state.MyPageViewState
 import com.d101.presentation.mypage.viewmodel.MyPageViewModel
-import kotlinx.coroutines.launch
 import utils.repeatOnStarted
 
 class MyPageFragment : Fragment() {
@@ -43,35 +41,35 @@ class MyPageFragment : Fragment() {
 
         setBinding()
         subscribeEvent()
-        subScribeViewState()
-        viewModel.onEventOccurred(MyPageViewEvent.Init)
+        subscribeViewState()
+        viewModel.eventOccurred(MyPageViewEvent.Init)
 
         setOnClickListener()
     }
 
     private fun setOnClickListener() {
         binding.pencilButtonImageView.setOnClickListener {
-            viewModel.onEventOccurred(MyPageViewEvent.onTapNicknameEditButton)
+            viewModel.eventOccurred(MyPageViewEvent.onTapNicknameEditButton)
         }
 
         binding.cancelButtonImageView.setOnClickListener {
-            viewModel.onEventOccurred(MyPageViewEvent.onCancelNicknameEdit)
+            viewModel.eventOccurred(MyPageViewEvent.onCancelNicknameEdit)
         }
 
         binding.alarmOnButtonTextView.setOnClickListener {
-            viewModel.onEventOccurred(MyPageViewEvent.onSetAlarmStatus(AlarmStatus.ON))
+            viewModel.eventOccurred(MyPageViewEvent.onSetAlarmStatus(AlarmStatus.ON))
         }
 
         binding.alarmOffButtonTextView.setOnClickListener {
-            viewModel.onEventOccurred(MyPageViewEvent.onSetAlarmStatus(AlarmStatus.OFF))
+            viewModel.eventOccurred(MyPageViewEvent.onSetAlarmStatus(AlarmStatus.OFF))
         }
 
         binding.backgroundMusicOnOffButtonImageView.setOnClickListener {
-            viewModel.onEventOccurred(MyPageViewEvent.onSetBackgroundMusicStatus)
+            viewModel.eventOccurred(MyPageViewEvent.onSetBackgroundMusicStatus)
         }
 
         binding.backgroundMusicChangeButtonTextView.setOnClickListener {
-            viewModel.onEventOccurred(MyPageViewEvent.onTapBackgroundMusicChangeButton)
+            viewModel.eventOccurred(MyPageViewEvent.onTapBackgroundMusicChangeButton)
         }
     }
 
@@ -81,47 +79,50 @@ class MyPageFragment : Fragment() {
     }
 
     private fun subscribeEvent() {
-        lifecycleScope.launch {
-            repeatOnStarted {
-                viewModel.event.collect {
-                    viewModel.onEventOccurred(it)
-                }
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.eventFlow.collect {
+                viewModel.onEventOccurred(it)
             }
         }
     }
 
-    private fun subScribeViewState() {
-        lifecycleScope.launch {
-            repeatOnStarted {
-                val inputMethodManager = requireContext().getSystemService(
-                    Context.INPUT_METHOD_SERVICE,
-                ) as InputMethodManager
-                viewModel.myPageViewState.collect { state ->
-                    when (state) {
-                        is MyPageViewState.Default -> {
-                            setBackgroundMusicStatusUI(state)
-                            setAlarmStatusUI(state)
-                            binding.musicTextView.text = state.backgroundMusic
-                            setDefaultUI(inputMethodManager)
-//                            TODO: Marquee 효과 적용이 안되는 중..
-                            binding.musicTextView.requestFocus()
-                            binding.musicTextView.isSelected = true
-                        }
+    private fun subscribeViewState() {
+        viewLifecycleOwner.repeatOnStarted {
+            val inputMethodManager = requireContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE,
+            ) as InputMethodManager
+            viewModel.myPageViewState.collect { state ->
+                updateUI(state, inputMethodManager)
+            }
+        }
+    }
 
-                        is MyPageViewState.NicknameEditState -> {
-                            setBackgroundMusicStatusUI(state)
-                            setAlarmStatusUI(state)
-                            binding.musicTextView.text = state.backgroundMusic
-                            setNicknameEditUI(inputMethodManager)
-                            binding.musicTextView.requestFocus()
-                            binding.musicTextView.isSelected = true
-                        }
+    private fun updateUI(
+        state: MyPageViewState,
+        inputMethodManager: InputMethodManager
+    ) {
+        when (state) {
+            is MyPageViewState.Default -> {
+                setBackgroundMusicStatusUI(state)
+                setAlarmStatusUI(state)
+                binding.musicTextView.text = state.backgroundMusic
+                setDefaultUI(inputMethodManager)
+                //                            TODO: Marquee 효과 적용이 안되는 중..
+                binding.musicTextView.requestFocus()
+                binding.musicTextView.isSelected = true
+            }
 
-                        is MyPageViewState.BackgroundMusicSelectState -> {
-                            showBackgroundMusicSelectDialog()
-                        }
-                    }
-                }
+            is MyPageViewState.NicknameEditState -> {
+                setBackgroundMusicStatusUI(state)
+                setAlarmStatusUI(state)
+                binding.musicTextView.text = state.backgroundMusic
+                setNicknameEditUI(inputMethodManager)
+                binding.musicTextView.requestFocus()
+                binding.musicTextView.isSelected = true
+            }
+
+            is MyPageViewState.BackgroundMusicSelectState -> {
+                showBackgroundMusicSelectDialog()
             }
         }
     }
