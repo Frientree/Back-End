@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -66,11 +67,8 @@ class MyPageFragment : Fragment() {
                     is MyPageViewEvent.OnTapNicknameEditCancelButton ->
                         viewModel.onTapNicknameEditCancelButtonOccurred()
 
-                    is MyPageViewEvent.OnChangeNickname ->
-                        viewModel.onChangeNicknameOccurred(event.nicknameInput)
-
-                    is MyPageViewEvent.OnNicknameChanged ->
-                        viewModel.onNicknameChangedOccurred(event.newNickname)
+                    is MyPageViewEvent.OnTapNicknameConfirmButton ->
+                        viewModel.onChangeNicknameOccurred(binding.nicknameEditText.text.toString())
 
                     is MyPageViewEvent.OnTapAlarmStatusButton ->
                         viewModel.onTapAlarmStatusButtonOccurred(event.alarmStatus)
@@ -87,6 +85,9 @@ class MyPageFragment : Fragment() {
                     is MyPageViewEvent.OnTapChangePasswordButton -> {}
                     is MyPageViewEvent.OnTapLogOutButton -> {}
                     is MyPageViewEvent.OnTapTermsButton -> {}
+                    is MyPageViewEvent.OnShowToast -> {
+                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

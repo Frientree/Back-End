@@ -67,4 +67,19 @@ class UserRepositoryImpl @Inject constructor(
             is Result.Failure -> Result.Failure(result.errorStatus)
         }
     }
+
+    override suspend fun changeUserNickname(nickname: String): Result<String> {
+        return when (val result = userDataSource.changeUserNickname(nickname)) {
+            is Result.Success -> {
+                userDataStore.updateData {
+                    it.toBuilder()
+                        .setUserNickname(result.data.userNickname)
+                        .build()
+                }
+                Result.Success(nickname)
+            }
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
+    }
 }

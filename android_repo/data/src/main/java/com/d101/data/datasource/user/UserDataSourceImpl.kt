@@ -2,7 +2,9 @@ package com.d101.data.datasource.user
 
 import com.d101.data.api.UserService
 import com.d101.data.error.FrientreeHttpError
+import com.d101.data.model.user.request.NicknameChangeRequest
 import com.d101.data.model.user.request.SignInRequest
+import com.d101.data.model.user.response.NicknameChangeResponse
 import com.d101.data.model.user.response.TokenResponse
 import com.d101.data.model.user.response.UserResponse
 import com.d101.domain.model.Result
@@ -62,4 +64,28 @@ class UserDataSourceImpl @Inject constructor(
             }
         },
     )
+
+    override suspend fun changeUserNickname(userNickname: String): Result<NicknameChangeResponse> =
+        runCatching {
+            userService.changeUserNickname(NicknameChangeRequest(userNickname)).getOrThrow().data
+        }.fold(
+            onSuccess = {
+                Result.Success(it)
+            },
+            onFailure = { e ->
+                if (e is FrientreeHttpError) {
+                    when (e.code) {
+                        400 -> Result.Failure(ErrorStatus.BadRequest)
+                        401 -> Result.Failure(GetUserErrorStatus.UserNotFound)
+                        else -> Result.Failure(ErrorStatus.UnknownError)
+                    }
+                } else {
+                    if (e is IOException) {
+                        Result.Failure(ErrorStatus.NetworkError)
+                    } else {
+                        Result.Failure(ErrorStatus.UnknownError)
+                    }
+                }
+            },
+        )
 }

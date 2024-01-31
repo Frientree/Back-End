@@ -3,6 +3,8 @@ package com.d101.presentation.mypage.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
+import com.d101.domain.model.status.ErrorStatus
+import com.d101.domain.usecase.mypage.ChangeUserNicknameUseCase
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
@@ -21,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
     val getUserInfoUseCase: GetUserInfoUseCase,
+    val changeUserNicknameUseCase: ChangeUserNicknameUseCase,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<MyPageViewState> =
@@ -42,12 +45,8 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapNicknameEditCancelButton) }
     }
 
-    fun onChangeNickname(nicknameInput: String) {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnChangeNickname(nicknameInput)) }
-    }
-
-    fun onNicknameChanged(newNickname: String) {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnNicknameChanged(newNickname)) }
+    fun onTapNicknameConfirmButton() {
+        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapNicknameConfirmButton) }
     }
 
     fun onTapAlarmStatusButton(alarmStatus: AlarmStatus) {
@@ -91,10 +90,32 @@ class MyPageViewModel @Inject constructor(
     }
 
     fun onChangeNicknameOccurred(nicknameInput: String) {
+        viewModelScope.launch {
+            when (val result = changeUserNicknameUseCase(nicknameInput)) {
+                is Result.Success -> onNicknameChanged(result.data)
+                is Result.Failure -> when (result.errorStatus) {
+                    is ErrorStatus.BadRequest -> {
+                        _eventFlow.emit(MyPageViewEvent.OnShowToast("닉네임은 1글자 이상 8글자 이하로 입력해주세요"))
+                    }
+
+                    else -> {
+                        _eventFlow.emit(MyPageViewEvent.OnShowToast("네트워크 에러"))
+                    }
+                }
+            }
+        }
     }
 
-    fun onNicknameChangedOccurred(newNickname: String) {
-        _uiState.update { MyPageViewState.Default(nickname = newNickname) }
+    private fun onNicknameChanged(newNickname: String) {
+        _uiState.update {
+            MyPageViewState.Default(
+                id = it.id,
+                nickname = newNickname,
+                backgroundMusicStatus = it.backgroundMusicStatus,
+                alarmStatus = it.alarmStatus,
+                backgroundMusic = it.backgroundMusic,
+            )
+        }
     }
 
     fun onTapAlarmStatusButtonOccurred(alarmStatus: AlarmStatus) {

@@ -114,7 +114,9 @@
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/btn_small_confirm"
                 android:text="@string/confirm"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:onClick="@{() -> myPageViewModel.onTapNicknameConfirmButton()}"
+                />
 
         </LinearLayout>
 
