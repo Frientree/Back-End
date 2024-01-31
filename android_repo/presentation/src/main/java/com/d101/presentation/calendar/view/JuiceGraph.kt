@@ -41,9 +41,13 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
         // 더 많은 커스텀 로직을 추가할 수 있습니다
 
         val scoreList = ArrayList<Int>()
-        for (i in 0..6) {
-            scoreList.add(((Math.random() * 6) + 1).toInt())
-        }
+        scoreList.add(((Math.random() * 21) + 1).toInt())
+        scoreList.add(((Math.random() * 21) + 1).toInt())
+        scoreList.add(((Math.random() * 21) + 1).toInt())
+        scoreList.add(((Math.random() * 21) + 1).toInt())
+        scoreList.add(((Math.random() * 21) + 1).toInt())
+        scoreList.add((1).toInt())
+        scoreList.add((22).toInt())
 
         // X축 그리기
         canvas.drawLine(150f, height - 150f, width - 150f, height - 150f, linePaint)
@@ -56,14 +60,15 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
 
         // 눈금 및 라벨 추가
         val numberOfGrids = 6 // X축 눈금의 수
+        val numberOfGridsY = 21
         val xInterval = (width - 400f) / numberOfGrids // X축 눈금 간격
-        val yInterval = (height - 400f) / numberOfGrids
+        val yInterval = (height - 400f) / numberOfGridsY
 
         for (i in 0 until numberOfGrids) {
             val x1 = 125f + (i + 1) * xInterval
-            val y1 = height + 40f - 150f - (yInterval * scoreList[i])
+            val y1 = height + 40f - 200f - (yInterval * scoreList[i])
             val x2 = 125f + (i + 2) * xInterval
-            val y2 = height + 40f - 150f - (yInterval * scoreList[i + 1])
+            val y2 = height + 40f - 200f - (yInterval * scoreList[i + 1])
             canvas.drawLine(x1, y1, x2, y2, linePaint)
         }
 
@@ -71,7 +76,7 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
             val x = 100f + (i + 1) * xInterval
             canvas.drawText(("25").toString(), x, height - 75f, textPaint) // X축 라벨
             val imageX = 125 + (i + 1) * xInterval
-            val imageY = height - 150f - (yInterval * scoreList[i]) // 이미지를 그릴 y 좌표
+            val imageY = height - 200f - (yInterval * scoreList[i]) // 이미지를 그릴 y 좌표
             canvas.drawBitmap(scaledImage, imageX - 40f, imageY, null)
         }
     }
