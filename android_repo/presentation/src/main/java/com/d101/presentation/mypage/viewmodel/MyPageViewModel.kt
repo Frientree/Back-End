@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.usecase.mypage.ChangeUserNicknameUseCase
+import com.d101.domain.usecase.mypage.LogOutUseCase
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
@@ -22,8 +23,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    val getUserInfoUseCase: GetUserInfoUseCase,
-    val changeUserNicknameUseCase: ChangeUserNicknameUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val changeUserNicknameUseCase: ChangeUserNicknameUseCase,
+    private val logOutUseCase: LogOutUseCase,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<MyPageViewState> =
@@ -141,6 +143,12 @@ class MyPageViewModel @Inject constructor(
     }
 
     fun onTapLogOutButtonOccurred() {
+        viewModelScope.launch {
+            when (logOutUseCase()) {
+                is Result.Success -> _eventFlow.emit(MyPageViewEvent.OnLogOut)
+                is Result.Failure -> _eventFlow.emit(MyPageViewEvent.OnShowToast("로그아웃 실패"))
+            }
+        }
     }
 
     fun onInitOccurred() {
