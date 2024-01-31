@@ -60,18 +60,18 @@
             app:layout_constraintBottom_toTopOf="@id/save_fruit_button">
 
             <com.google.android.material.chip.Chip
-                style="@style/Base.FTR.CHIP"
+                style="@style/Base.FTR.Chip"
                 android:id="@+id/fisrt_fruit_chip"
                 android:checked="true"
                 android:checkable="true" />
 
             <com.google.android.material.chip.Chip
-                style="@style/Base.FTR.CHIP"
+                style="@style/Base.FTR.Chip"
                 android:id="@+id/second_fruit_chip"
                 android:checkable="true" />
 
             <com.google.android.material.chip.Chip
-                style="@style/Base.FTR.CHIP"
+                style="@style/Base.FTR.Chip"
                 android:id="@+id/third_fruit_chip"
                 android:checkable="true" />
 

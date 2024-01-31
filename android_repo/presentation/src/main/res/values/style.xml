@@ -159,16 +159,21 @@
         <item name="android:colorControlNormal">@color/black</item>
     </style>
 
-    <style name="Base.FTR.EDIT_TEXT.TRANSPARENT" parent="Widget.AppCompat.EditText">
+    <style name="Base.FTR.EditText.Transparent" parent="Widget.AppCompat.EditText">
         <item name="android:textAppearance">@style/Base.FTR.Text</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <style name="Base.FTR.CHIP" parent="Widget.Material3.Chip.Assist">
+    <style name="Base.FTR.Chip" parent="Widget.Material3.Chip.Assist">
         <item name="android:textAppearance">@style/Base.FTR.Text</item>
         <item name="chipBackgroundColor">@color/bg_fruit_chip_selector</item>
         <item name="chipStrokeColor">@color/gray</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Base.FTR.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/bg_progress_bar</item>
+        <item name="layout_constraintCircleRadius">40dp</item>
     </style>
 </resources>

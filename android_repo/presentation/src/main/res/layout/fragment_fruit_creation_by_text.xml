@@ -42,7 +42,7 @@
 
             <EditText
                 android:id="@+id/input_by_text_edit_text"
-                style="@style/Base.FTR.EDIT_TEXT.TRANSPARENT"
+                style="@style/Base.FTR.EditText.Transparent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
