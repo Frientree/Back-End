@@ -20,6 +20,12 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     private val _eventFlow = MutableEventFlow<SignUpEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
+    val id = MutableStateFlow("")
+    val authNumber = MutableStateFlow("")
+    val nickname = MutableStateFlow("")
+    val password = MutableStateFlow("")
+    val passwordAgain = MutableStateFlow("")
+
     private fun emitEvent(event: SignUpEvent) {
         viewModelScope.launch {
             _eventFlow.emit(event)

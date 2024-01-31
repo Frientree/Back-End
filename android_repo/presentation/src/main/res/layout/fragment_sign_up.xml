@@ -10,6 +10,9 @@
             name="viewModel"
             type="com.d101.presentation.welcome.viewmodel.SignUpViewModel" />
 
+        <variable
+            name="lifecycleOwner"
+            type="androidx.lifecycle.LifecycleOwner" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +48,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sign_up_title_text_view"
             app:passwordInputType="@{viewModel.uiState.idInputState.isPasswordInputType}"
-            bind:onConfirmClick="@{() -> viewModel.onEmailCheck()}" />
+            bind:onConfirmClick="@{() -> viewModel.onEmailCheck()}"
+            bind:text="@{viewModel.id}"
+            bind:lifecycleOwner="@{lifecycleOwner}"/>
 
         <com.d101.presentation.welcome.layout.FrientreeInputLayout
             android:id="@+id/email_check_input_layout"
@@ -61,7 +66,9 @@
             app:layout_constraintStart_toStartOf="@id/password_check_input_layout"
             app:layout_constraintTop_toBottomOf="@id/id_input_layout"
             app:passwordInputType="@{viewModel.uiState.authNumberInputState.isPasswordInputType}"
-            bind:onConfirmClick="@{() -> viewModel.onAuthNumberCheck()}" />
+            bind:onConfirmClick="@{() -> viewModel.onAuthNumberCheck()}"
+            bind:text="@{viewModel.authNumber}"
+            bind:lifecycleOwner="@{lifecycleOwner}" />
 
         <com.d101.presentation.welcome.layout.FrientreeInputLayout
             android:id="@+id/nickname_input_layout"
@@ -78,7 +85,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/email_check_input_layout"
             app:passwordInputType="@{viewModel.uiState.nickNameInputState.isPasswordInputType}"
-            bind:onConfirmClick="@{() -> viewModel.onNicknameCheck()}" />
+            bind:onConfirmClick="@{() -> viewModel.onNicknameCheck()}"
+            bind:text="@{viewModel.nickname}"
+            bind:lifecycleOwner="@{lifecycleOwner}" />
 
         <com.d101.presentation.welcome.layout.FrientreeInputLayout
             android:id="@+id/password_input_layout"
@@ -94,7 +103,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nickname_input_layout"
-            app:passwordInputType="@{viewModel.uiState.passwordInputState.isPasswordInputType}" />
+            app:passwordInputType="@{viewModel.uiState.passwordInputState.isPasswordInputType}"
+            bind:text="@{viewModel.password}"
+            bind:lifecycleOwner="@{lifecycleOwner}"/>
 
         <com.d101.presentation.welcome.layout.FrientreeInputLayout
             android:id="@+id/password_check_input_layout"
@@ -110,7 +121,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/password_input_layout"
-            app:passwordInputType="@{viewModel.uiState.passwordCheckInputState.isPasswordInputType}" />
+            app:passwordInputType="@{viewModel.uiState.passwordCheckInputState.isPasswordInputType}"
+            bind:text="@{viewModel.passwordAgain}"
+            bind:lifecycleOwner="@{lifecycleOwner}"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/sign_up_button"

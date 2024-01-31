@@ -45,6 +45,7 @@ class SignUpFragment : Fragment() {
     private fun setBinding() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        binding.idInputLayout.bindTextFlow(viewLifecycleOwner, viewModel.id)
     }
 
     private fun collectEvent() {
