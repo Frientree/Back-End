@@ -150,23 +150,23 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<UserChangeNicknameResponse> modifyNickname(UserChangeNicknameRequest userChangeNicknameRequest) {
 
-            User currentUser = getUser();
+        User currentUser = getUser();
 
-            if (userChangeNicknameRequest.getUserNickname() == null || userChangeNicknameRequest.getUserNickname().isEmpty()) {
-                throw new NicknameValidateException("Fail");
-            }
+        if (userChangeNicknameRequest.getUserNickname() == null || userChangeNicknameRequest.getUserNickname().isEmpty()) {
+            throw new NicknameValidateException("Fail");
+        }
 
-            if (userChangeNicknameRequest.getUserNickname().length() > 8) {
-                throw new NicknameValidateException("Fail");
-            }
+        if (userChangeNicknameRequest.getUserNickname().length() > 8) {
+            throw new NicknameValidateException("Fail");
+        }
 
-            currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
+        currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
 
-            UserChangeNicknameResponse response = UserChangeNicknameResponse.createUserChangeNicknameResponse(
-                    "Success",
-                    UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(currentUser));
+        UserChangeNicknameResponse response = UserChangeNicknameResponse.createUserChangeNicknameResponse(
+                "Success",
+                UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(currentUser));
 
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     // 유저 프로필 조회
