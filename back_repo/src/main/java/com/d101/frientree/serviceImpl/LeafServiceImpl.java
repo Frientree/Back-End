@@ -43,7 +43,20 @@ public class LeafServiceImpl implements LeafService {
 
     @Override
     public ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory) {
-        List<LeafDetail> leaves = leafRepository.findByLeafCategory(LeafCategory.valueOf(leafCategory.toUpperCase()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 현재 로그인한 사용자의 userId를 받아오기
+        Long authenticatedUserId = Long.parseLong(authentication.getName());
+
+
+        // 1. leaf_send 테이블에서 현재 로그인한 사용자가 보낸 leaf_num 가져오기
+        List<Long> sentLeafNums = leafSendRepository.findSentLeafNumsByUserId(authenticatedUserId);
+
+        // 2. leaf_detail 테이블에서 leaf_category에 해당하는 이파리 중에서
+        //    로그인한 사용자가 보낸 leaf를 제외한 이파리들 가져오기
+        List<LeafDetail> leaves = leafRepository.findByLeafCategoryAndLeafNumNotIn(
+                LeafCategory.valueOf(leafCategory.toUpperCase()), sentLeafNums);
+
 
         if (!leaves.isEmpty()) {
             // leaf_view 값을 낮은 순서로 정렬
