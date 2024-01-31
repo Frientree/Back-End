@@ -39,4 +39,19 @@
     <string name="listening_text">나무가 듣고 있어요!</string>
     <string name="create_fruit_by_speech_button_text">다 이야기 했어요</string>
     <string name="speech_second_text">%d / 30초</string>
+    <string name="emotion_calendar">감정 캘린더</string>
+    <string name="today_fruit_statistics_example">오늘 나와 같은 감정을 느낀 사람이 20%예요!</string>
+    <string name="fruit_list">열매 리스트</string>
+    <string name="make_juice">주스 만들기</string>
+    <string name="juice_of_week">이주의 주스</string>
+    <string name="juice_condolence_example">이 주는 우울한 주간이었네요. \n 다음 주는 더 좋은 주가 되길 바래요!</string>
+    <string name="juice_description">주스 설명</string>
+    <string name="juice_ready">주스 만들 준비가 되었어요!</string>
+    <string name="fruit_name">행복한 사과</string>
+    <string name="emotion">기쁨</string>
+    <string name="date">01.20</string>
+    <string name="juice_graph">주스 그래프</string>
+    <string name="juice_shake_guide">흔들어서 주스를 만들어보세요!</string>
+    <string name="juice_requirements">주스를 만들기 위해선 주간 열매가 4개 이상 필요해요!</string>
+    <string name="not_enough_fruits">열매를 모으는 중이에요!</string>
 </resources>

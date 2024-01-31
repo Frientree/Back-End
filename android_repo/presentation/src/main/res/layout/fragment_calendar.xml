@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".main.fragments.CalendarFragment">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.d101.presentation.calendar.viewmodel.CalendarViewModel" />
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:text="@string/emotion_calendar" />
+
+            <!--        캘린더 영역-->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="280dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="24dp" />
+
+            <TextView
+                android:id="@+id/today_fruit_statistics_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_main_radius"
+                android:fontFamily="@font/binggrae_bold"
+                android:gravity="center"
+                android:maxLines="2"
+                android:minLines="2"
+                android:paddingHorizontal="48dp"
+                android:paddingVertical="8dp"
+                android:text="@string/today_fruit_statistics_example"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="20dp"
+                android:background="@color/light_gray" />
+
+            <TextView
+                android:id="@+id/not_enough_fruits_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/binggrae_bold"
+                android:gravity="center"
+                android:text="@string/not_enough_fruits"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/juice_requirements_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/binggrae_bold"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
+                android:text="@string/juice_requirements"
+                android:textSize="12sp"
+                android:drawablePadding="3dp"
+                android:layout_marginTop="4dp"
+                app:drawableLeftCompat="@drawable/outline_info_24"
+                />
+
+            <TextView
+                android:id="@+id/juice_ready_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/binggrae_bold"
+                android:gravity="center"
+                android:text="@string/juice_ready"
+                android:textSize="16sp" />
+
+            <LinearLayout
+                android:id="@+id/juice_making_button_linear_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/btn_white_green_36dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingHorizontal="32dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="12dp"
+                android:onClick="@{() -> viewModel.onClickJuiceMakingButton()}"
+                >
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/juice" />
+
+                <TextView
+                    android:id="@+id/juice_making_button_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/binggrae_bold"
+                    android:text="@string/make_juice"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/juice_of_week_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:text="@string/juice_of_week" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/juice_of_week_info_constraint_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_white_with_stroke_36dp">
+
+                <ImageView
+                    android:id="@+id/juice_image_image_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="32dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/bg_lightgray_stroke_20dp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="16dp"
+                    android:src="@drawable/juice"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintWidth_percent="0.33" />
+
+                <TextView
+                    android:id="@+id/juice_name_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/juice_name_example"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/juice_image_image_view"
+                    app:layout_constraintTop_toTopOf="@id/juice_image_image_view" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginVertical="12dp"
+                    android:gravity="center_horizontal"
+                    android:text="@string/juice_description"
+                    app:layout_constraintBottom_toBottomOf="@id/juice_image_image_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/juice_image_image_view"
+                    app:layout_constraintTop_toBottomOf="@id/juice_name_text_view" />
+
+                <View
+                    android:id="@+id/dash_divider_1_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/dash_line"
+                    android:hardwareAccelerated="false"
+                    android:layerType="software"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/juice_image_image_view" />
+
+                <TextView
+                    android:id="@+id/juice_condolence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_main_radius"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:minLines="2"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp"
+                    android:text="@string/juice_condolence_example"
+                    app:layout_constraintTop_toBottomOf="@id/dash_divider_1_view" />
+
+                <View
+                    android:id="@+id/dash_divider_2_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginHorizontal="20dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/dash_line"
+                    android:hardwareAccelerated="false"
+                    android:layerType="software"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/juice_condolence" />
+
+                <TextView
+                    android:id="@+id/juice_graph_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/juice_graph"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/dash_divider_2_view" />
+
+                <com.d101.presentation.calendar.view.JuiceGraph
+                    android:id="@+id/juiceGraph"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/juice_graph_text_view" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/light_gray" />
+
+            <LinearLayout
+                android:id="@+id/fruit_list_linear_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/binggrae_bold"
+                    android:text="@string/fruit_list"
+                    android:textSize="16sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/little_fruit_list_recycler_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:orientation="horizontal"
+                    />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/fruit_list_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="20dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

@@ -118,7 +118,7 @@
         <item name="android:layout_height">32dp</item>
         <item name="android:textSize">12sp</item>
         <item name="android:paddingHorizontal">12dp</item>
-        <item name="android:background">@drawable/bg_white_radius_16dp</item>
+        <item name="android:background">@drawable/bg_white_radius_16dp_with_stroke</item>
     </style>
 
     <style name="Base.FTR.EDIT_TEXT.EXPENDED" parent="Base.FTR.EDIT_TEXT">
