@@ -1,7 +1,5 @@
 package com.d101.frientree.config;
 
-import com.d101.frientree.repository.UserRepository;
-import com.d101.frientree.security.CustomUserDetailsService;
 import com.d101.frientree.security.filter.JwtCheckFilter;
 import com.d101.frientree.security.handler.CustomAccessDeniedHandler;
 import jakarta.servlet.http.HttpServletResponse;

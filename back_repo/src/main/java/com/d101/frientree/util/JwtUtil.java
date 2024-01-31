@@ -1,5 +1,6 @@
 package com.d101.frientree.util;
 
+import com.d101.frientree.exception.user.CustomJwtException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;

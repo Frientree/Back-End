@@ -86,6 +86,8 @@ public class JwtCheckFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws IOException {
 
         String authHeaderStr = request.getHeader("Authorization");
+
+        System.out.println(authHeaderStr);
         // Bearer // 7 Jwt 문자열
         try {
             String accessToken = authHeaderStr.substring(7);
