@@ -20,12 +20,18 @@ import com.d101.presentation.calendar.state.TodayFruitCreationStatus
 import com.d101.presentation.calendar.viewmodel.CalendarViewModel
 import com.d101.presentation.databinding.DialogJuiceShakeBinding
 import com.d101.presentation.databinding.FragmentCalendarBinding
+import utils.ShakeEventListener
+import utils.ShakeSensorModule
 import utils.repeatOnStarted
 
 class CalendarFragment : Fragment() {
     private val viewModel: CalendarViewModel by viewModels()
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var shakeSensor: ShakeSensorModule
+
+    private lateinit var dialog: Dialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -96,8 +102,10 @@ class CalendarFragment : Fragment() {
                     }
 
                     is CalendarViewState.JuicePresentState -> {
+                        if (::dialog.isInitialized && dialog.isShowing) dialog.dismiss()
                         binding.juiceOfWeekTextView.visibility = View.VISIBLE
                         binding.juiceOfWeekInfoConstraintLayout.visibility = View.VISIBLE
+                        binding.juiceMakingButtonLinearLayout.visibility = View.GONE
                         binding.juiceReadyTextView.visibility = View.GONE
                         binding.notEnoughFruitsTextView.visibility = View.GONE
                         binding.juiceRequirementsTextView.visibility = View.GONE
@@ -179,12 +187,41 @@ class CalendarFragment : Fragment() {
     }
 
     private fun showShakeJuiceDialog() {
-        val dialog = createFullScreenDialog()
+        dialog = createFullScreenDialog()
         val dialogBinding = DialogJuiceShakeBinding.inflate(layoutInflater)
         dialog.setContentView(dialogBinding.root)
+
+        val progressBar =
+            dialogBinding.shakeProgressBarLinearProgressIndicator
+
+        shakeSensor = ShakeSensorModule(
+            requireContext(),
+            object : ShakeEventListener {
+                override fun onShakeSensed() {
+                    if (progressBar.progress < progressBar.max) {
+                        progressBar.incrementProgressBy(
+                            10,
+                        )
+                    }
+                    if (progressBar.progress >= progressBar.max) {
+                        progressBar.progress = progressBar.max
+                        shakeSensor.stop()
+                        viewModel.onCompleteJuiceShakeOccurred()
+                    }
+                }
+            },
+        )
+
+        shakeSensor.start()
+
         dialog.setOnCancelListener {
             viewModel.onCancelJuiceShakeDialog()
         }
+
+        dialog.setOnDismissListener {
+            shakeSensor.stop()
+        }
+
         dialog.show()
     }
 
@@ -205,8 +242,13 @@ class CalendarFragment : Fragment() {
         return counts.map { (key, count) -> Pair(key, count) }
     }
 
-    override fun onDestroy() {
+    override fun onStop() {
+        super.onStop()
+        if (::shakeSensor.isInitialized) shakeSensor.stop()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
-        super.onDestroy()
     }
 }
