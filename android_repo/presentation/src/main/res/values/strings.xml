@@ -34,4 +34,9 @@
     <string name="id_upper_case">ID</string>
     <string name="id_example">ex) frientree@gmail.com</string>
     <string name="usable_id">사용가능한 ID입니다.</string>
+    <string name="loading_text">열매가 만들어지는\n중이에요!</string>
+    <string name="save_fruit_text">열매 저장하기</string>
+    <string name="listening_text">나무가 듣고 있어요!</string>
+    <string name="create_fruit_by_speech_button_text">다 이야기 했어요</string>
+    <string name="speech_second_text">%d / 30초</string>
 </resources>
