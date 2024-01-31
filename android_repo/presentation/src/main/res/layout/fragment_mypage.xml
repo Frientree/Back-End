@@ -23,7 +23,7 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/Base.FTR.TITLE_TEXT"
+                style="@style/Base.FTR.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/my_info" />
@@ -42,7 +42,7 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/Base.FTR.MENU_TEXT"
+                style="@style/Base.FTR.MenuText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -50,7 +50,7 @@
 
             <TextView
                 android:id="@+id/id_text_view"
-                style="@style/Base.FTR.MY_INFO_TEXT"
+                style="@style/Base.FTR.MyInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -66,7 +66,7 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/Base.FTR.MENU_TEXT"
+                style="@style/Base.FTR.MenuText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -74,7 +74,7 @@
 
             <EditText
                 android:id="@+id/nickname_edit_text"
-                style="@style/Base.FTR.MY_INFO_TEXT"
+                style="@style/Base.FTR.MyInfo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -104,7 +104,7 @@
 
             <TextView
                 android:id="@+id/nickname_confirm_button_text_view"
-                style="@style/Base.FTR.SMALL_BUTTON_TEXT_BOLD"
+                style="@style/Base.FTR.SmallButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
@@ -122,7 +122,7 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/Base.FTR.MENU_TEXT"
+                style="@style/Base.FTR.MenuText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -135,7 +135,7 @@
 
             <TextView
                 android:id="@+id/alarm_on_button_text_view"
-                style="@style/Base.FTR.SMALL_BUTTON_TEXT_BOLD"
+                style="@style/Base.FTR.SmallButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_small_confirm_green"
@@ -144,7 +144,7 @@
 
             <TextView
                 android:id="@+id/alarm_off_button_text_view"
-                style="@style/Base.FTR.SMALL_BUTTON_TEXT_BOLD"
+                style="@style/Base.FTR.SmallButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -162,7 +162,7 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/Base.FTR.MENU_TEXT"
+                style="@style/Base.FTR.MenuText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -170,7 +170,7 @@
 
             <TextView
                 android:id="@+id/music_text_view"
-                style="@style/Base.FTR.SMALL_TEXT"
+                style="@style/Base.FTR.Text.Small"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -193,7 +193,7 @@
 
             <TextView
                 android:id="@+id/background_music_change_button_text_view"
-                style="@style/Base.FTR.SMALL_BUTTON_TEXT_BOLD"
+                style="@style/Base.FTR.SmallButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -204,9 +204,9 @@
 
         </LinearLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/terms_button_text_view"
-            style="@style/Base.FTR.ELEVATED_BUTTON"
+            style="@style/Base.FTR.ElevatedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="32dp"
@@ -222,20 +222,20 @@
             android:orientation="horizontal"
             android:paddingHorizontal="32dp">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/change_password_button_text_view"
-                style="@style/Base.FTR.ELEVATED_BUTTON"
+                style="@style/Base.FTR.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_white_lightgray_36dp"
                 android:text="@string/change_password"
-                android:textSize="16sp" />
+                />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/log_out_button_text_view"
-                style="@style/Base.FTR.ELEVATED_BUTTON"
+                style="@style/Base.FTR.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

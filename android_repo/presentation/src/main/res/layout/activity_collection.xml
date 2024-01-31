@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/juice_collection_text_view"
-        style="@style/Base.FTR.APP_BAR_TITLE_TEXT"
+        style="@style/Base.FTR.AppBarTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

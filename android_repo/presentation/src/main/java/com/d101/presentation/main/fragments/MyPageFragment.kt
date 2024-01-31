@@ -99,7 +99,7 @@ class MyPageFragment : Fragment() {
 
     private fun updateUI(
         state: MyPageViewState,
-        inputMethodManager: InputMethodManager
+        inputMethodManager: InputMethodManager,
     ) {
         when (state) {
             is MyPageViewState.Default -> {
@@ -188,7 +188,7 @@ class MyPageFragment : Fragment() {
     }
 
     private fun createFullScreenDialog(): Dialog {
-        return Dialog(requireContext(), R.style.FullScreenDialogStyle).apply {
+        return Dialog(requireContext(), R.style.Base_FTR_FullScreenDialog).apply {
             window?.setBackgroundDrawableResource(R.drawable.btn_white_green_36dp)
         }
     }

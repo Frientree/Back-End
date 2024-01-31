@@ -60,7 +60,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/create_fruit_by_text_button"
-            style="@style/Base.FTR.Button.DIALOG_BUTTON"
+            style="@style/Base.FTR.Button.DialogButton"
             android:layout_marginBottom="32dp"
             android:text="@string/create_fruit_text"
             app:layout_constraintBottom_toBottomOf="parent"

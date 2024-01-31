@@ -189,7 +189,7 @@ class CalendarFragment : Fragment() {
     }
 
     private fun createFullScreenDialog(): Dialog {
-        return Dialog(requireContext(), R.style.FullScreenDialogStyle).apply {
+        return Dialog(requireContext(), R.style.Base_FTR_FullScreenDialog).apply {
             window?.setBackgroundDrawableResource(R.drawable.bg_white_radius_30dp)
         }
     }
