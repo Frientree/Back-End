@@ -2,6 +2,7 @@ package com.d101.presentation.main.fragments
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
 import com.d101.presentation.mypage.state.MyPageViewState
 import com.d101.presentation.mypage.viewmodel.MyPageViewModel
+import com.d101.presentation.welcome.WelcomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
 
@@ -83,14 +85,26 @@ class MyPageFragment : Fragment() {
                         viewModel.onBackgroundMusicChangedOccurred(event.musicName)
 
                     is MyPageViewEvent.OnTapChangePasswordButton -> {}
-                    is MyPageViewEvent.OnTapLogOutButton -> {}
+                    is MyPageViewEvent.OnTapLogOutButton -> {
+                        viewModel.onTapLogOutButtonOccurred()
+                    }
                     is MyPageViewEvent.OnTapTermsButton -> {}
                     is MyPageViewEvent.OnShowToast -> {
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                     }
+
+                    MyPageViewEvent.OnLogOut -> {
+                        navigateToWelcomeActivity()
+                    }
                 }
             }
         }
+    }
+
+    private fun navigateToWelcomeActivity() {
+        val intent = Intent(requireContext(), WelcomeActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun subScribeViewState() {

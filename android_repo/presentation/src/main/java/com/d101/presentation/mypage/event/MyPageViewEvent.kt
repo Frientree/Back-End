@@ -26,5 +26,7 @@ sealed class MyPageViewEvent {
 
     data object Init : MyPageViewEvent()
 
+    data object OnLogOut : MyPageViewEvent()
+
     data class OnShowToast(val message: String) : MyPageViewEvent()
 }
