@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/today_date_textview"
-            style="@style/Base.FTR.MainTitleText"
+            style="@style/Base.FTR.MainTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/tree_name_textview"
-            style="@style/Base.FTR.MainTitleText"
+            style="@style/Base.FTR.MainTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"

@@ -14,7 +14,7 @@
 
         <TextView
             android:id="@+id/sign_up_title_text_view"
-            style="@style/Base.FTR.TextView.WELCOME_TITLE"
+            style="@style/Base.FTR.TextView.WelcomeTitle"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             app:layout_constraintVertical_chainStyle="packed"
@@ -76,7 +76,7 @@
             android:background="@android:color/transparent"
             android:text="@string/confirm"
             android:paddingVertical="16dp"
-            android:textAppearance="@style/Base.FTR.Text.BIG"
+            android:textAppearance="@style/Base.FTR.Text.Big"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

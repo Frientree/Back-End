@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/listening_text_view"
-            style="@style/Base.FTR.ButtonText"
+            style="@style/Base.FTR.Bold_20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/listening_text"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textAppearance="@style/Base.FTR.Text.SMALL"
+            android:textAppearance="@style/Base.FTR.Text.Small"
             android:textColor="@color/gray"
             app:layout_constraintEnd_toEndOf="@id/speech_progress_bar"
             app:layout_constraintTop_toBottomOf="@id/speech_progress_bar"

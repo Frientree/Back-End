@@ -29,7 +29,7 @@
 
         <EditText
             android:id="@+id/input_id_edit_text"
-            style="@style/Base.FTR.EDIT_TEXT"
+            style="@style/Base.FTR.EditTextInput"
             android:layout_marginTop="16dp"
             android:hint="@string/input_id"
             android:inputType="textEmailAddress"
@@ -41,7 +41,7 @@
 
         <EditText
             android:id="@+id/input_password_edit_text"
-            style="@style/Base.FTR.EDIT_TEXT"
+            style="@style/Base.FTR.EditTextInput"
             android:layout_marginTop="16dp"
             android:hint="@string/input_password"
             android:inputType="textPassword"
@@ -53,7 +53,7 @@
 
         <TextView
             android:id="@+id/sign_up_text_view"
-            style="@style/Base.FTR.Text.SMALL"
+            style="@style/Base.FTR.Text.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="@{() -> viewModel.onSignUpClicked()}"
@@ -66,7 +66,7 @@
 
         <TextView
             android:id="@+id/divider_text_view"
-            style="@style/Base.FTR.Text.SMALL"
+            style="@style/Base.FTR.Text.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="4dp"
@@ -77,7 +77,7 @@
 
         <TextView
             android:id="@+id/find_password_text_view"
-            style="@style/Base.FTR.Text.SMALL"
+            style="@style/Base.FTR.Text.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
