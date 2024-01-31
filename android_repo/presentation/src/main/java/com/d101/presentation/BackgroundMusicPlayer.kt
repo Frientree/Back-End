@@ -10,10 +10,6 @@ object BackgroundMusicPlayer {
     private val prefixPattern = Regex("^$prefix")
 
     fun playMusic(context: Context, musicName: String) {
-        if (::mediaPlayer.isInitialized) {
-            mediaPlayer.stop()
-            mediaPlayer.release()
-        }
         mediaPlayer = MediaPlayer.create(
             context,
             R.raw::class.java.getField(prefix + musicName).getInt(null),
