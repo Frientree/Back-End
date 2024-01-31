@@ -45,6 +45,14 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi juiceApi(){
+        return GroupedOpenApi.builder()
+                .group("juice-api")
+                .pathsToMatch("/juice/**")
+                .build();
+    }
+
+    @Bean
     public OpenAPI openAPI(){
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")

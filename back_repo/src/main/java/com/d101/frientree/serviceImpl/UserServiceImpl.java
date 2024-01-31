@@ -167,7 +167,6 @@ public class UserServiceImpl implements UserService {
                 UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(currentUser));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
-
     }
 
     // 유저 프로필 조회
@@ -425,8 +424,14 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 
-        return userRepository.findById(Long.valueOf(userId))
+        User currentUser = userRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new UserNotFoundException("Fail"));
+
+        if (currentUser.getUserDisabled()) {
+            throw new UserNotFoundException("Fail");
+        }
+
+        return currentUser;
     }
 
     private void sendVerificationEmail(String email) {
