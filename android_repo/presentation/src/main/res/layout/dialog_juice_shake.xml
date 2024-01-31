@@ -44,11 +44,11 @@
             android:gravity="center"
             android:text="@string/juice_shake_guide" />
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        <ProgressBar
             android:id="@+id/shake_progress_bar_linear_progress_indicator"
-            style="@style/Widget.Material3.LinearProgressIndicator"
+            style="@style/Base.FTR.ProgressBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="12dp"
             android:layout_marginHorizontal="60dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="24dp"
