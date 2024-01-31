@@ -68,7 +68,19 @@ jasypt:
 jasypt:
   encryptor:
     aiurl: ENC(S5SsEvmX4X7ncHUDkHz5OJMVfy9wotQhzIz84ER28YKENkB7CNSgQw==)
-
+---
+naver:
+  objectstorage:
+    credentials:
+      access-key: CXuwQnnuYYz9N0Gs7Emw
+      secret-key: dgKWEZNEnAK1u0p5ovroyVOl1corDDqZMoR12kVc
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+    s3:
+      endpoint: https://kr.object.ncloudstorage.com
+      bucket: commonprojecthabin
 ---
 
 logging:
@@ -82,8 +94,8 @@ spring:
     default-encoding: UTF-8
     host: smtp.gmail.com
     port: 587
-    username: ssafytestgcp@gmail.com
-    password: vqtoyjvgcrhapgol
+    username: ENC(z1j1Nk1W56xl4DmPRzueB7l/dVzCcNQYkaDFYhWklH8=)
+    password: ENC(NFoW/7TREdbJ07Lvgu2y9G+i2+Lc+ztu1K9a3+7gFG8=)
     properties:
       mail:
         smtp:

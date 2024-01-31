@@ -9,6 +9,7 @@ import com.d101.frientree.service.UserFruitService;
 import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechClient;
 import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechResponse;
 import com.d101.frientree.serviceImpl.userfruit.fastapi.HttpPostAIRequest;
+import com.d101.frientree.serviceImpl.userfruit.objectstorage.NaverObjectStorageUpload;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,17 +23,19 @@ import java.io.File;
 @Log4j2
 public class UserFruitServiceImpl implements UserFruitService {
     //로컬
-    // private static final String FILE_DIRECTORY = "C:/Users/SSAFY/Desktop/project/S10P12D101/back_repo/src/storge/";
+//     private static final String FILE_DIRECTORY = "/audio/";
     //서버
     private static final String FILE_DIRECTORY = "/home/ubuntu/audio/";
 
     //naver clova speech to text class
     private final ClovaSpeechClient clovaSpeechClient;
     private final HttpPostAIRequest httpPostAIRequest;
+    private final NaverObjectStorageUpload naverObjectStorageUpload;
     // 생성자를 통한 의존성 주입
-    public UserFruitServiceImpl(ClovaSpeechClient clovaSpeechClient, HttpPostAIRequest httpPostAIRequest) {
+    public UserFruitServiceImpl(ClovaSpeechClient clovaSpeechClient, HttpPostAIRequest httpPostAIRequest, NaverObjectStorageUpload naverObjectStorageUpload) {
         this.clovaSpeechClient = clovaSpeechClient;
         this.httpPostAIRequest = httpPostAIRequest;
+        this.naverObjectStorageUpload = naverObjectStorageUpload;
     }
 
     @Override
@@ -43,6 +46,7 @@ public class UserFruitServiceImpl implements UserFruitService {
         // 1. 음성 파일 저장
         String filePath = FILE_DIRECTORY + file.getOriginalFilename();
         file.transferTo(new File(filePath));
+        //naverObjectStorageUpload.uploadFile(file.getOriginalFilename(), filePath);
 
         // NestRequestEntity 설정 (옵션)
         ClovaSpeechClient.NestRequestEntity requestEntity = new ClovaSpeechClient.NestRequestEntity();
@@ -85,6 +89,8 @@ public class UserFruitServiceImpl implements UserFruitService {
         String fullText = response.getFullText();
 
         log.info("음성 Text : {}", response.getFullText());
+
+//        String fullText = "테스트입니다.";
 
         //Python 감정 분석 API 호출
         return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(fullText));
