@@ -1,6 +1,6 @@
-package com.d101.data.model.user.response
+package com.d101.domain.model
 
-data class UserResponse(
+data class User(
     val userEmail: String,
     val userNickname: String,
     val userLeafStatus: Boolean,

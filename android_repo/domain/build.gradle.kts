@@ -16,4 +16,5 @@ java {
 dependencies {
     // Inject
     implementation(Libraries.inject)
+    implementation(Libraries.coroutinesCore)
 }

@@ -13,7 +13,6 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentSignInBinding
 import com.d101.presentation.main.MainActivity
 import com.d101.presentation.welcome.event.SignInViewEvent
-import com.d101.presentation.welcome.state.SignInViewState
 import com.d101.presentation.welcome.viewmodel.SignInViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
@@ -40,22 +39,6 @@ class SignInFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
         collectEvent()
-        collectUiState()
-        // 임시 화면이동 로직 추후 재정의 후 제거
-        binding.signInButton.setOnClickListener {
-//            val intent = Intent(requireContext(), MainActivity::class.java)
-//            startActivity(intent)
-//            requireActivity().finish()
-            viewModel.event(SignInViewEvent.OnSignInViewByFrientree)
-        }
-
-        binding.signUpTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_signInFragment_to_termsAgreeFragment)
-        }
-
-        binding.findPasswordTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_signInFragment_to_findPasswordFragment)
-        }
     }
 
     private fun setBinding() {
@@ -63,52 +46,38 @@ class SignInFragment : Fragment() {
         binding.viewModel = viewModel
     }
 
-    private fun collectUiState() {
-        viewLifecycleOwner.repeatOnStarted {
-            viewModel.uiState.collect { state ->
-                when (state) {
-                    SignInViewState.Default -> {
-                        Unit
-                    }
-
-                    is SignInViewState.SignInFailure -> {
-                        Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
-                    }
-
-                    SignInViewState.SignInSuccess -> {
-                        viewModel.event(SignInViewEvent.OnNavigateToMain)
-                    }
-                }
-            }
-        }
-    }
-
     private fun collectEvent() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.eventFlow.collect { event ->
                 when (event) {
-                    is SignInViewEvent.OnSignInViewByFrientree -> viewModel.signInByFrientree()
-                    SignInViewEvent.OnNavigateToFindPassword -> {
-                        findNavController().navigate(
-                            R.id.action_signInFragment_to_findPasswordFragment,
-                        )
+                    SignInViewEvent.FindPasswordClicked -> navigateToFindPassword()
+                    SignInViewEvent.SignInAttemptByFrientree -> viewModel.signInByFrientree()
+                    SignInViewEvent.SignInAttemptByKakao -> {
+                        // 카카오 로그인
+                        showToast("현재 카카오 로그인 기능 미 구현")
                     }
-
-                    SignInViewEvent.OnNavigateToTermsAgree -> {
-                    }
-
-                    SignInViewEvent.OnSignInViewByKakao -> {
-                    }
-
-                    SignInViewEvent.OnNavigateToMain -> {
-                        val intent = Intent(requireContext(), MainActivity::class.java)
-                        startActivity(intent)
-                        requireActivity().finish()
-                    }
+                    is SignInViewEvent.SignInFailed -> showToast(event.message)
+                    SignInViewEvent.SignInSuccess -> navigateToMainScreen()
+                    SignInViewEvent.SignUpClicked -> navigateToTermsAgree()
                 }
             }
         }
     }
+
+    private fun navigateToMainScreen() {
+        val intent = Intent(requireContext(), MainActivity::class.java)
+        startActivity(intent)
+        requireActivity().finish()
+    }
+
+    private fun navigateToTermsAgree() =
+        findNavController().navigate(R.id.action_signInFragment_to_termsAgreeFragment)
+
+    private fun navigateToFindPassword() =
+        findNavController().navigate(R.id.action_signInFragment_to_findPasswordFragment)
+
+    private fun showToast(message: String) =
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
     override fun onDestroyView() {
         super.onDestroyView()
