@@ -24,7 +24,7 @@ public class UserFruitServiceImpl implements UserFruitService {
     //로컬
     // private static final String FILE_DIRECTORY = "C:/Users/SSAFY/Desktop/project/S10P12D101/back_repo/src/storge/";
     //서버
-    private static final String FILE_DIRECTORY = "/home/ubuntu/audio";
+    private static final String FILE_DIRECTORY = "/home/ubuntu/audio/";
 
     //naver clova speech to text class
     private final ClovaSpeechClient clovaSpeechClient;
