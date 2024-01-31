@@ -8,9 +8,7 @@ sealed class MyPageViewEvent {
 
     data object OnTapNicknameEditCancelButton : MyPageViewEvent()
 
-    data class OnChangeNickname(val nicknameInput: String) : MyPageViewEvent()
-
-    data class OnNicknameChanged(val newNickname: String) : MyPageViewEvent()
+    data object OnTapNicknameConfirmButton : MyPageViewEvent()
 
     data class OnTapAlarmStatusButton(val alarmStatus: AlarmStatus) : MyPageViewEvent()
 
@@ -27,4 +25,6 @@ sealed class MyPageViewEvent {
     data object OnTapLogOutButton : MyPageViewEvent()
 
     data object Init : MyPageViewEvent()
+
+    data class OnShowToast(val message: String) : MyPageViewEvent()
 }
