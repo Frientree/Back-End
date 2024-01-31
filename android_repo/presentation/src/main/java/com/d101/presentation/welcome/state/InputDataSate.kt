@@ -34,8 +34,8 @@ sealed class InputDataSate {
         @StringRes override val label: Int = R.string.nickname,
         @StringRes override val hint: Int = R.string.example_nickname,
         override val confirmVisible: Boolean = true,
-        @StringRes override val description: Int = R.string.unusable_nickname,
-        override val descriptionType: DescriptionType = DescriptionType.ERROR,
+        @StringRes override val description: Int = R.string.empty_text,
+        override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
         override val isPasswordInputType: Boolean = false,
     ) : InputDataSate()
 

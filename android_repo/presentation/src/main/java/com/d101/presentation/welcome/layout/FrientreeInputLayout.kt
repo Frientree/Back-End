@@ -19,6 +19,10 @@ class FrientreeInputLayout @JvmOverloads constructor(
     defStyle: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyle) {
 
+    interface OnConfirmClickListener {
+        fun setOnClickConfirm()
+    }
+
     private val binding: LayoutInputTextInWelcomeBinding =
         DataBindingUtil.inflate(
             LayoutInflater.from(context),

@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentSignUpBinding
+import com.d101.presentation.welcome.event.SignUpEvent
 import com.d101.presentation.welcome.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.repeatOnStarted
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
@@ -33,7 +36,7 @@ class SignUpFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
-
+        collectEvent()
         binding.signUpButton.setOnClickListener {
             findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
         }
@@ -42,6 +45,45 @@ class SignUpFragment : Fragment() {
     private fun setBinding() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+    }
+
+    private fun collectEvent() {
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.eventFlow.collect { evnet ->
+                when (evnet) {
+                    SignUpEvent.EmailCheckAttempt -> Toast.makeText(
+                        requireContext(),
+                        "id",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    SignUpEvent.AuthNumberCheckAttempt -> Toast.makeText(
+                        requireContext(),
+                        "인증번호",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    SignUpEvent.NickNameCheckAttempt -> Toast.makeText(
+                        requireContext(),
+                        "닉네임",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    SignUpEvent.PasswordFormCheck -> Toast.makeText(
+                        requireContext(),
+                        "비밀번호",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    SignUpEvent.PasswordMatchCheck -> Toast.makeText(
+                        requireContext(),
+                        "비밀번호 확인",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                    SignUpEvent.SignUpAttempt -> Toast.makeText(
+                        requireContext(),
+                        "회원가입 시도",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {

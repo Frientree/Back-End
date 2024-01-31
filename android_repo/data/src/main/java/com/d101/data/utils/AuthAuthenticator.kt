@@ -21,14 +21,19 @@ class AuthAuthenticator @Inject constructor(
         if (refreshToken == "NEED_LOGIN") return null
 
         return runBlocking {
-            val tokenResponse = authService.refreshUserToken(TokenRefreshRequest(refreshToken))
+            val tokenResponse = authService.refreshUserToken(
+                TokenRefreshRequest(refreshToken),
+            ).execute()
 
             if (tokenResponse.isSuccessful.not() || tokenResponse.body() == null) {
                 tokenManager.deleteTokens()
                 null
             } else {
                 response.request.newBuilder()
-                    .header("Authorization", "Bearer ${tokenResponse.body()!!.data.accessToken}")
+                    .header(
+                        "Authorization",
+                        "Bearer ${tokenResponse.body()!!.data.accessToken}",
+                    )
                     .build()
             }
         }
