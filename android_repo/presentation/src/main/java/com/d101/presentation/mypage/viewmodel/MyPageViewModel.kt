@@ -2,31 +2,35 @@ package com.d101.presentation.mypage.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.d101.domain.model.Result
+import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
 import com.d101.presentation.mypage.state.MyPageViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import utils.MutableEventFlow
+import utils.asEventFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class MyPageViewModel @Inject constructor() : ViewModel() {
+class MyPageViewModel @Inject constructor(
+    val getUserInfoUseCase: GetUserInfoUseCase,
+) : ViewModel() {
 
     private val _uiState: MutableStateFlow<MyPageViewState> =
         MutableStateFlow(MyPageViewState.Default())
     val uiState: StateFlow<MyPageViewState> = _uiState.asStateFlow()
 
-    private val _eventFlow = MutableSharedFlow<MyPageViewEvent>()
-    val eventFlow = _eventFlow.asSharedFlow()
+    private val _eventFlow = MutableEventFlow<MyPageViewEvent>()
+    val eventFlow = _eventFlow.asEventFlow()
 
-    fun init() {
+    init {
         viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.Init) }
     }
 
@@ -119,7 +123,23 @@ class MyPageViewModel @Inject constructor() : ViewModel() {
     }
 
     fun onInitOccurred() {
-        _uiState.update { MyPageViewState.Default(id = "테스트1") }
+        viewModelScope.launch {
+            when (val result = getUserInfoUseCase()) {
+                is Result.Success -> {
+                    _uiState.update {
+                        MyPageViewState.Default(
+                            id = result.data.userEmail,
+                            nickname = result.data.userNickname,
+                            backgroundMusicStatus = BackgroundMusicStatus.ON,
+                            alarmStatus = AlarmStatus.ON,
+                            backgroundMusic = "봄날",
+                        )
+                    }
+                }
+
+                is Result.Failure -> {}
+            }
+        }
     }
 
     private fun setBackgroundMusicSelectState() {

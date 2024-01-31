@@ -10,7 +10,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.DialogBackgroundMusicSelectBinding
@@ -20,9 +19,10 @@ import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
 import com.d101.presentation.mypage.state.MyPageViewState
 import com.d101.presentation.mypage.viewmodel.MyPageViewModel
-import kotlinx.coroutines.launch
+import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
 
+@AndroidEntryPoint
 class MyPageFragment : Fragment() {
     private val viewModel: MyPageViewModel by viewModels()
     private var _binding: FragmentMypageBinding? = null
@@ -44,7 +44,6 @@ class MyPageFragment : Fragment() {
         setBinding()
         subscribeEvent()
         subScribeViewState()
-        viewModel.init()
     }
 
     private fun setBinding() {
@@ -53,73 +52,72 @@ class MyPageFragment : Fragment() {
     }
 
     private fun subscribeEvent() {
-        lifecycleScope.launch {
-            repeatOnStarted {
-                viewModel.eventFlow.collect { event ->
-                    when (event) {
-                        is MyPageViewEvent.Init -> viewModel.onInitOccurred()
-
-                        is MyPageViewEvent.OnTapNicknameEditButton ->
-                            viewModel.onTapNicknameEditButtonOccurred()
-
-                        is MyPageViewEvent.OnTapNicknameEditCancelButton ->
-                            viewModel.onTapNicknameEditCancelButtonOccurred()
-
-                        is MyPageViewEvent.OnChangeNickname ->
-                            viewModel.onChangeNicknameOccurred(event.nicknameInput)
-
-                        is MyPageViewEvent.OnNicknameChanged ->
-                            viewModel.onNicknameChangedOccurred(event.newNickname)
-
-                        is MyPageViewEvent.OnTapAlarmStatusButton ->
-                            viewModel.onTapAlarmStatusButtonOccurred(event.alarmStatus)
-
-                        is MyPageViewEvent.OnTapBackgroundMusicStatusButton ->
-                            viewModel.onTapBackgroundMusicStatusButtonOccurred()
-
-                        is MyPageViewEvent.OnTapBackgroundMusicChangeButton ->
-                            viewModel.onTapBackgroundMusicChangeButtonOccurred()
-
-                        is MyPageViewEvent.OnBackgroundMusicChanged ->
-                            viewModel.onBackgroundMusicChangedOccurred(event.musicName)
-
-                        is MyPageViewEvent.OnTapChangePasswordButton -> {}
-                        is MyPageViewEvent.OnTapLogOutButton -> {}
-                        is MyPageViewEvent.OnTapTermsButton -> {}
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.eventFlow.collect { event ->
+                when (event) {
+                    is MyPageViewEvent.Init -> {
+                        viewModel.onInitOccurred()
                     }
+
+                    is MyPageViewEvent.OnTapNicknameEditButton -> {
+                        viewModel.onTapNicknameEditButtonOccurred()
+                    }
+
+                    is MyPageViewEvent.OnTapNicknameEditCancelButton ->
+                        viewModel.onTapNicknameEditCancelButtonOccurred()
+
+                    is MyPageViewEvent.OnChangeNickname ->
+                        viewModel.onChangeNicknameOccurred(event.nicknameInput)
+
+                    is MyPageViewEvent.OnNicknameChanged ->
+                        viewModel.onNicknameChangedOccurred(event.newNickname)
+
+                    is MyPageViewEvent.OnTapAlarmStatusButton ->
+                        viewModel.onTapAlarmStatusButtonOccurred(event.alarmStatus)
+
+                    is MyPageViewEvent.OnTapBackgroundMusicStatusButton ->
+                        viewModel.onTapBackgroundMusicStatusButtonOccurred()
+
+                    is MyPageViewEvent.OnTapBackgroundMusicChangeButton ->
+                        viewModel.onTapBackgroundMusicChangeButtonOccurred()
+
+                    is MyPageViewEvent.OnBackgroundMusicChanged ->
+                        viewModel.onBackgroundMusicChangedOccurred(event.musicName)
+
+                    is MyPageViewEvent.OnTapChangePasswordButton -> {}
+                    is MyPageViewEvent.OnTapLogOutButton -> {}
+                    is MyPageViewEvent.OnTapTermsButton -> {}
                 }
             }
         }
     }
 
     private fun subScribeViewState() {
-        lifecycleScope.launch {
-            repeatOnStarted {
-                val inputMethodManager = requireContext().getSystemService(
-                    Context.INPUT_METHOD_SERVICE,
-                ) as InputMethodManager
-                viewModel.uiState.collect { state ->
-                    when (state) {
-                        is MyPageViewState.Default -> {
-                            setBackgroundMusicStatusUI(state)
-                            setAlarmStatusUI(state)
-                            setDefaultUI(inputMethodManager)
+        viewLifecycleOwner.repeatOnStarted {
+            val inputMethodManager = requireContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE,
+            ) as InputMethodManager
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is MyPageViewState.Default -> {
+                        setBackgroundMusicStatusUI(state)
+                        setAlarmStatusUI(state)
+                        setDefaultUI(inputMethodManager)
 //                            TODO: Marquee 효과 적용이 안되는 중..
-                            binding.musicTextView.requestFocus()
-                            binding.musicTextView.isSelected = true
-                        }
+                        binding.musicTextView.requestFocus()
+                        binding.musicTextView.isSelected = true
+                    }
 
-                        is MyPageViewState.NicknameEditState -> {
-                            setBackgroundMusicStatusUI(state)
-                            setAlarmStatusUI(state)
-                            setNicknameEditUI(inputMethodManager)
-                            binding.musicTextView.requestFocus()
-                            binding.musicTextView.isSelected = true
-                        }
+                    is MyPageViewState.NicknameEditState -> {
+                        setBackgroundMusicStatusUI(state)
+                        setAlarmStatusUI(state)
+                        setNicknameEditUI(inputMethodManager)
+                        binding.musicTextView.requestFocus()
+                        binding.musicTextView.isSelected = true
+                    }
 
-                        is MyPageViewState.BackgroundMusicSelectState -> {
-                            showBackgroundMusicSelectDialog()
-                        }
+                    is MyPageViewState.BackgroundMusicSelectState -> {
+                        showBackgroundMusicSelectDialog()
                     }
                 }
             }
