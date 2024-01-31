@@ -42,7 +42,7 @@ class FruitCreateViewModel @Inject constructor(
 
     fun setTodayFruitListByText() {
         viewModelScope.launch {
-            delay(3_500L)
+            delay(3_000L)
             val result = makeFruitByTextUseCase(inputText.value)
             // 성공 실패 로직 추가
             _todayFruitList.update { result }
@@ -51,7 +51,7 @@ class FruitCreateViewModel @Inject constructor(
 
     fun setTodayFruitListBySpeech() {
         viewModelScope.launch {
-            delay(3_500L)
+            delay(3_000L)
             val result = makeFruitBySpeechUseCase(audioFile)
             // 성공 실패 로직 추가
             _todayFruitList.update { result }

@@ -27,7 +27,7 @@ class FruitCreationBySpeechFragment : Fragment() {
 
     private val viewModel: FruitCreateViewModel by viewModels({ requireParentFragment() })
     private lateinit var audioFile: File
-    private lateinit var secText : String
+    private lateinit var secText: String
 
     private var recorder: MediaRecorder? = null
     private lateinit var timerTask: Timer

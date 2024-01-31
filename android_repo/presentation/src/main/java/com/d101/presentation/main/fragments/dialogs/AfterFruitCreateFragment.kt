@@ -1,17 +1,27 @@
 package com.d101.presentation.main.fragments.dialogs
 
+import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentAfterFruitCreateBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
+import kotlinx.coroutines.launch
+import utils.repeatOnStarted
 
 class AfterFruitCreateFragment : Fragment() {
 
@@ -33,6 +43,7 @@ class AfterFruitCreateFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -42,35 +53,59 @@ class AfterFruitCreateFragment : Fragment() {
         val fruitList = viewModel.todayFruitList.value
 
         viewModel.setSelectedFruit(fruitList[0])
+        binding.imageUrl = viewModel.selectedFruit.value.fruitImageUrl
 
-        val fruitChipGroup = view.findViewById<ChipGroup>(R.id.fruits_chip_group)
-
+        lifecycleScope.launch {
+            repeatOnStarted {
+                viewModel.selectedFruit.collect {
+                    binding.fruitDescriptionTextView.setBackgroundResource(
+                        FruitColors.values()[(it.fruitNum - 1).toInt()].color,
+                    )
+                }
+            }
+        }
         for (idx in 0..2) {
-            val chip = fruitChipGroup.getChildAt(idx)
+            val chip = binding.fruitsChipGroup.getChildAt(idx)
             if (chip is Chip) {
-                // TODO :: 칩 아이콘으로 이미지 글라이드로 주입 필요
-                chip.text = fruitList[idx].fruitFeel
+                Glide.with(binding.root.context).load(fruitList[idx].fruitImageUrl)
+                    .apply(RequestOptions().override(Target.SIZE_ORIGINAL))
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(
+                            chipImg: Drawable,
+                            a_transition: Transition<in Drawable>?,
+                        ) {
+                            chip.chipIcon = chipImg
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+                    })
+                chip.text = changeChipName(fruitList[idx].fruitFeel)
             }
         }
 
-        var lastCheckedId = fruitChipGroup.checkedChipId
-        fruitChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+        var lastCheckedId = binding.fruitsChipGroup.checkedChipId
+        binding.fruitsChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             if (checkedIds.isEmpty()) {
-                fruitChipGroup.check(lastCheckedId)
+                binding.fruitsChipGroup.check(lastCheckedId)
+                Log.d("DEBUG:::", "${fruitList[0]}")
             } else {
                 when (checkedIds[0]) {
                     R.id.fisrt_fruit_chip -> {
                         viewModel.setSelectedFruit(fruitList[0])
+                        binding.imageUrl = viewModel.selectedFruit.value.fruitImageUrl
                         lastCheckedId = checkedIds[0]
                     }
 
                     R.id.second_fruit_chip -> {
                         viewModel.setSelectedFruit(fruitList[1])
+                        binding.imageUrl = viewModel.selectedFruit.value.fruitImageUrl
                         lastCheckedId = checkedIds[0]
                     }
 
                     R.id.third_fruit_chip -> {
                         viewModel.setSelectedFruit(fruitList[2])
+                        binding.imageUrl = viewModel.selectedFruit.value.fruitImageUrl
                         lastCheckedId = checkedIds[0]
                     }
                 }
@@ -79,6 +114,20 @@ class AfterFruitCreateFragment : Fragment() {
 
         binding.saveFruitButton.setOnClickListener {
             FruitDialogInterface.dialog.dismiss()
+        }
+    }
+
+    private fun changeChipName(feelEng: String): String {
+        return when (feelEng) {
+            "luck" -> "행운"
+            "happy" -> "행복"
+            "exciting" -> "신남"
+            "soso" -> "쏘쏘"
+            "sad" -> "우울"
+            "annoying" -> "짜증"
+            "tired" -> "피곤"
+            "worried" -> "걱정"
+            else -> ""
         }
     }
 

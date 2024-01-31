@@ -10,7 +10,7 @@ object FruitCreatedMapper {
             fruitNum = this.fruitNum,
             fruitDescription = this.fruitDescription,
             fruitName = this.fruitName,
-            fruitImageUrl = this.fruitFeel,
+            fruitImageUrl = this.fruitImageUrl,
             fruitFeel = this.fruitFeel,
         )
     }

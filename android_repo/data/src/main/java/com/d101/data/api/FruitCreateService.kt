@@ -12,14 +12,14 @@ import retrofit2.http.Part
 
 interface FruitCreateService {
 
-    @POST("/fruits/create-text")
+    @POST("/user-fruit/speech-to-text-text")
     suspend fun sendText(
         @Body fruitCreateionByTextRequest: FruitCreationByTextRequest,
     ): ApiResult<ApiListResponse<FruitCreationResponse>>
 
     @Multipart
-    @POST("/fruits/create-audio")
+    @POST("/user-fruit/speech-to-text-audio")
     suspend fun sendFile(
-        @Part audioFile: MultipartBody.Part,
+        @Part file: MultipartBody.Part,
     ): ApiResult<ApiListResponse<FruitCreationResponse>>
 }
