@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="FrientreeInputLayout">
         <attr name="label" format="integer" />
-        <attr name="text" format="integer" />
+        <attr name="text" format="string" />
         <attr name="hint" format="integer" />
         <attr name="description" format="integer" />
         <attr name="descriptionColor" format="integer" />
