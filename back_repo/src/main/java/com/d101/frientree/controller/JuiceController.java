@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 @RestController
 @RequestMapping("/juice")
 @CrossOrigin("*")
@@ -16,6 +18,11 @@ import org.springframework.web.bind.annotation.*;
 public class JuiceController {
 
     private final JuiceService juiceService;
+
+    @PostMapping
+    public ResponseEntity<JuiceGenerationResponse> juiceGeneration(JuiceGenerationRequest juiceGenerationRequest) throws ParseException {
+        return juiceService.generate(juiceGenerationRequest);
+    }
 
     @GetMapping("/entirety")
     public ResponseEntity<JuiceListConfirmationResponse> juiceListConfirmation() {
