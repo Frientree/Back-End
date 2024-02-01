@@ -16,7 +16,14 @@ class MainActivityViewModel @Inject constructor() : ViewModel() {
         MutableStateFlow(MainActivityViewState.TreeView)
     val currentViewState: StateFlow<MainActivityViewState> = _currentViewState.asStateFlow()
 
+    private val _visibility: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val visibility: StateFlow<Boolean> = _visibility.asStateFlow()
+
     fun changeViewState(state: MainActivityViewState) {
         _currentViewState.update { state }
+    }
+
+    fun finishAnimation(add: Boolean) {
+        _visibility.update { add }
     }
 }

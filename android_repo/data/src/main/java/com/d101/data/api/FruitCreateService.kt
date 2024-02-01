@@ -14,7 +14,7 @@ interface FruitCreateService {
 
     @POST("/fruits/create-text")
     suspend fun sendText(
-        @Body fruitCreateionByTextRequest: FruitCreationByTextRequest,
+        @Body fruitCreationByTextRequest: FruitCreationByTextRequest,
     ): ApiResult<ApiListResponse<FruitCreationResponse>>
 
     @Multipart

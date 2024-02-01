@@ -54,4 +54,6 @@
     <string name="juice_shake_guide">흔들어서 주스를 만들어보세요!</string>
     <string name="juice_requirements">주스를 만들기 위해선 주간 열매가 4개 이상 필요해요!</string>
     <string name="not_enough_fruits">열매를 모으는 중이에요!</string>
+    <string name="receive_leaf_text">이파리 받기</string>
+    <string name="send_leaf_text">이파리 날리기</string>
 </resources>

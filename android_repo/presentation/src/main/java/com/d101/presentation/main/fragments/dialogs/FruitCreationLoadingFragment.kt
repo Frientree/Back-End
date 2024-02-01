@@ -46,7 +46,6 @@ class FruitCreationLoadingFragment : Fragment() {
             }
 
             SPEECH -> {
-                // 뷰모델에서 STT 함수 호출
                 viewModel.setTodayFruitListBySpeech()
             }
         }
