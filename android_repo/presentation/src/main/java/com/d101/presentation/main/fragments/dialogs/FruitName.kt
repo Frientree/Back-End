@@ -4,7 +4,7 @@ enum class FruitName(val feelEng: String, val feelKor: String) {
 
     LUCK("luck", "행운"),
     HAPPY("happy", "행복"),
-    EXCITING("excited", "신남"),
+    EXCITING("exciting", "신남"),
     SOSO("soso", "쏘쏘"),
     SAD("sad", "우울"),
     ANNOYING("annoying", "짜증"),
