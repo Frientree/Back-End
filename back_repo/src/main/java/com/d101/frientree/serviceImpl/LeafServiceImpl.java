@@ -12,7 +12,7 @@ import com.d101.frientree.entity.leaf.LeafReceive;
 import com.d101.frientree.entity.leaf.LeafSend;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
-import com.d101.frientree.exception.UserNotFoundException;
+import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.*;
 import com.d101.frientree.service.LeafService;
 import jakarta.transaction.Transactional;
