@@ -2,6 +2,7 @@ package com.d101.frientree.exception.handler;
 
 import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import com.d101.frientree.exception.userfruit.PythonAPIException;
+import com.d101.frientree.exception.fruit.FruitNotFoundException;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +33,13 @@ public class UserFruitGlobalExceptionHandler {
     @ExceptionHandler(PythonAPIException.class)
     public ResponseEntity<String> handlePythonAPIException(PythonAPIException e){
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .headers(JSON_HEADERS)
+                .body(stringToGson(e.getMessage()));
+    }
+
+    @ExceptionHandler(FruitNotFoundException.class)
+    public ResponseEntity<String> handleUserFruitNotFoundException(FruitNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .headers(JSON_HEADERS)
                 .body(stringToGson(e.getMessage()));
     }

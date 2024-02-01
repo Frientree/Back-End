@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Collections;
 
+import static com.d101.frientree.exception.handler.UserFruitGlobalExceptionHandler.JSON_HEADERS;
+
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class UserGlobalExceptionHandler {
@@ -83,9 +85,11 @@ public class UserGlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).headers(headers).body(msg);
     }
 
-    @ExceptionHandler(NaverClovaAPIException.class)
-    public ResponseEntity<String> handleNaverClovaAPIException(NaverClovaAPIException e){
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
+    @ExceptionHandler(UserModifyException.class)
+    public ResponseEntity<String> handleUserModifyException(UserModifyException e){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .headers(JSON_HEADERS)
+                .body(stringToGson(e.getMessage()));
     }
 
 }

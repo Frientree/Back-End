@@ -8,8 +8,10 @@ import com.d101.frientree.entity.fruit.FruitDetail;
 import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.mongo.emotion.Emotion;
 import com.d101.frientree.entity.user.User;
+import com.d101.frientree.exception.user.UserModifyException;
 import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import com.d101.frientree.exception.userfruit.PythonAPIException;
+import com.d101.frientree.exception.fruit.FruitNotFoundException;
 import com.d101.frientree.repository.FruitDetailRepository;
 import com.d101.frientree.repository.UserFruitRepository;
 import com.d101.frientree.repository.UserRepository;
@@ -20,8 +22,6 @@ import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechResponse;
 import com.d101.frientree.serviceImpl.userfruit.fastapi.HttpPostAIRequest;
 import com.d101.frientree.serviceImpl.userfruit.objectstorage.AwsS3ObjectStorage;
 import com.google.gson.Gson;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -32,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @Log4j2
@@ -140,7 +139,7 @@ public class UserFruitServiceImpl implements UserFruitService {
         if(optionalFruitDetail.isPresent()){
             fruitDetail = optionalFruitDetail.get();
         }else{ //열매 디테일 정보 없음
-
+            throw new FruitNotFoundException("Fruit Not Found");
         }
         //사용자 정보 가져오기 (PK 값)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -185,8 +184,8 @@ public class UserFruitServiceImpl implements UserFruitService {
                 if(isChange>0){ //수정 성공
                     newUserFruit = UserFruit.createUserFruit(user.get(), fruitDetail, Date.from(Instant.now()), userScore);
                 }
-            }catch (Exception e){
-                //수정 실패
+            }catch (UserModifyException e){ //수정 실패
+                throw new UserModifyException("User Modify Exception");
             }
         }
         //UserFruit Table 정보 저장
