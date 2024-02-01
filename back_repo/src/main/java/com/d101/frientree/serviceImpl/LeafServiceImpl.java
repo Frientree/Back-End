@@ -13,6 +13,7 @@ import com.d101.frientree.entity.leaf.LeafReceive;
 import com.d101.frientree.entity.leaf.LeafSend;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
+import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.*;
 import com.d101.frientree.service.LeafService;
 import com.d101.frientree.service.MessageService;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -43,8 +45,14 @@ public class LeafServiceImpl implements LeafService {
     public ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+        // orElseThrow 는 Optional에서만 사용 가능, getcontext는 객체를 반환함..
+        if (authentication == null) {
+            throw new UserNotFoundException("해당하는 유저를 찾을 수 없습니다.");
+        }
+
         // 현재 로그인한 사용자의 userId를 받아오기
         Long userId = Long.parseLong(authentication.getName());
+
 
         // 1. leaf_send와 leaf_receive 테이블에서 현재 로그인한 사용자가 보낸 및 받은 leaf_num 가져오기
         List<Long> sentAndReceivedLeafNums = new ArrayList<>();
@@ -53,8 +61,8 @@ public class LeafServiceImpl implements LeafService {
 
         // 2. leaf_detail 테이블에서 leaf_category에 해당하는 이파리 중에서
         //    로그인한 사용자가 보낸 및 받은 leaf를 제외한 이파리들 가져오기
-        List<LeafDetail> leaves = leafRepository.findByLeafCategoryAndLeafNumNotIn(
-                LeafCategory.valueOf(leafCategory.toUpperCase()), sentAndReceivedLeafNums);
+        LeafCategory selectedCategory = LeafCategory.valueOf(leafCategory.toUpperCase());
+        List<LeafDetail> leaves = leafRepository.findByLeafCategoryAndLeafNumNotIn(selectedCategory, sentAndReceivedLeafNums);
 
         if (!leaves.isEmpty()) {
             // leaf_view 값을 낮은 순서로 정렬
@@ -71,7 +79,7 @@ public class LeafServiceImpl implements LeafService {
 
             // 현재 로그인된 정보를 받아온 후 조회한 이파리를 leaf_receive테이블에 추가하기
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new RuntimeException("해당하는 유저를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
 
             // LeafReceive 테이블에 중복 체크를 위한 existsByUserAndLeafDetail 메서드 사용
             boolean leafExists = leafReceiveRepository.existsByUserAndLeafDetail(user, selectedLeaf);
@@ -104,8 +112,6 @@ public class LeafServiceImpl implements LeafService {
             );
             return ResponseEntity.ok(response);
         }
-
-        // 예외 처리 또는 다른 로직을 추가하십시오.
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
@@ -127,7 +133,7 @@ public class LeafServiceImpl implements LeafService {
 
         // LeafSend 테이블에 추가할 정보 설정
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당하는 유저를 찾을 수 없습니다. "));
+                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다. "));
 
         LeafSend leafSend = LeafSend.createLeafSend(newLeaf, user);
 
@@ -149,7 +155,7 @@ public class LeafServiceImpl implements LeafService {
     @Transactional
     public ResponseEntity<LeafComplaintResponse> complain(Long leafId) {
         LeafDetail currentLeaf = leafRepository.findById(leafId)
-                .orElseThrow(() -> new LeafNotFoundException("이파리는 존재하지 않습니다."));
+                .orElseThrow(() -> new LeafNotFoundException("이파리가 존재하지 않습니다."));
 
         currentLeaf.setLeafComplain(currentLeaf.getLeafComplain() + 1);
 
@@ -182,14 +188,6 @@ public class LeafServiceImpl implements LeafService {
         // security를 이용해 로그인 정보를 받아옴
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // 로그인이 되어있지 않으면 에러 발생 -> 로그인 요청
-        if (!isUserLoggedIn(authentication)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(LeafViewResponse.createLeafViewErrorResponse(
-                            "User not Logged In"
-                    ));
-        }
-
         try {
             Long authenticatedUserId = Long.parseLong(authentication.getName());
 
@@ -214,15 +212,10 @@ public class LeafServiceImpl implements LeafService {
 
         } catch (Exception e) {
             // 예외 발생 시 에러 응답
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    LeafViewResponse.createLeafViewErrorResponse("Internal Server Error")
-            );
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "예기치 못한 오류가 발생했습니다.", e);
+
         }
     }
 
-    // 유저가 로그인이 되어있는지 확인
-    private boolean isUserLoggedIn(Authentication authentication) {
-        return authentication != null && authentication.isAuthenticated();
-    }
 
 }
