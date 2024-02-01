@@ -17,4 +17,7 @@ public interface LeafSendRepository extends JpaRepository<LeafSend, Long> {
     @Query("SELECT ls.leafDetail.leafNum FROM LeafSend ls WHERE ls.user.userId = :userId")
     List<Long> findLeafNumsByUser(@Param("userId") Long userId);
 
+    @Query("SELECT ls.leafDetail.leafNum FROM LeafSend ls WHERE ls.user.userId = :userId")
+    List<Long> findSentLeafNumsByUserId(@Param("userId") Long userId);
+
 }

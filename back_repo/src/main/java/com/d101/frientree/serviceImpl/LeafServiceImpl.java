@@ -6,15 +6,14 @@ import com.d101.frientree.dto.leaf.response.LeafConfirmationResponse;
 import com.d101.frientree.dto.leaf.response.LeafGenerationResponse;
 import com.d101.frientree.dto.leaf.response.LeafViewResponse;
 import com.d101.frientree.dto.leaf.response.dto.LeafConfirmationResponseDTO;
-import com.d101.frientree.dto.leaf.response.dto.LeafViewResponseDTO;
 import com.d101.frientree.entity.LeafCategory;
 import com.d101.frientree.entity.leaf.LeafDetail;
+import com.d101.frientree.entity.leaf.LeafReceive;
 import com.d101.frientree.entity.leaf.LeafSend;
 import com.d101.frientree.entity.user.User;
-import com.d101.frientree.repository.LeafDetailRepository;
-import com.d101.frientree.repository.LeafRepository;
-import com.d101.frientree.repository.LeafSendRepository;
-import com.d101.frientree.repository.UserRepository;
+import com.d101.frientree.exception.leaf.LeafNotFoundException;
+import com.d101.frientree.exception.UserNotFoundException;
+import com.d101.frientree.repository.*;
 import com.d101.frientree.service.LeafService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,21 +33,34 @@ public class LeafServiceImpl implements LeafService {
 
     private final LeafRepository leafRepository;
     private final LeafSendRepository leafSendRepository;
+    private final LeafReceiveRepository leafReceiveRepository;
     private final UserRepository userRepository;
     private final LeafDetailRepository leafDetailRepository;
 
 
     @Override
     public ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory) {
-        List<LeafDetail> leaves = leafRepository.findByLeafCategory(LeafCategory.valueOf(leafCategory.toUpperCase()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        // 현재 로그인한 사용자의 userId를 받아오기
+        Long userId = Long.parseLong(authentication.getName());
+
+        // 1. leaf_send와 leaf_receive 테이블에서 현재 로그인한 사용자가 보낸 및 받은 leaf_num 가져오기
+        List<Long> sentAndReceivedLeafNums = new ArrayList<>();
+        sentAndReceivedLeafNums.addAll(leafSendRepository.findSentLeafNumsByUserId(userId));
+        sentAndReceivedLeafNums.addAll(leafReceiveRepository.findReceivedLeafNumsByUserId(userId));
+
+        // 2. leaf_detail 테이블에서 leaf_category에 해당하는 이파리 중에서
+        //    로그인한 사용자가 보낸 및 받은 leaf를 제외한 이파리들 가져오기
+        List<LeafDetail> leaves = leafRepository.findByLeafCategoryAndLeafNumNotIn(
+                LeafCategory.valueOf(leafCategory.toUpperCase()), sentAndReceivedLeafNums);
 
         if (!leaves.isEmpty()) {
             // leaf_view 값을 낮은 순서로 정렬
             leaves.sort(Comparator.comparing(LeafDetail::getLeafView));
 
             // 정렬된 leaves 중에서 가장 낮은 leaf_view를 가진 leaf 선택
-            LeafDetail
-                    selectedLeaf = leaves.get(0);
+            LeafDetail selectedLeaf = leaves.get(0);
 
             // 선택된 leaf의 leaf_view 값을 1 증가시킴
             selectedLeaf.setLeafView(selectedLeaf.getLeafView() + 1);
@@ -59,19 +68,31 @@ public class LeafServiceImpl implements LeafService {
             // leaf를 업데이트
             leafRepository.save(selectedLeaf);
 
+            // 현재 로그인된 정보를 받아온 후 조회한 이파리를 leaf_receive테이블에 추가하기,
+            // 로그인된 유저를 찾을 수 없으면 예외처리
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+
+            // LeafReceive 테이블에 중복 체크를 위한 existsByUserAndLeafDetail 메서드 사용
+            boolean leafExists = leafReceiveRepository.existsByUserAndLeafDetail(user, selectedLeaf);
+
+            if (!leafExists) {
+                // 중복되지 않으면 LeafReceive 테이블에 추가
+                LeafReceive leafReceive = LeafReceive.createLeafReceive(selectedLeaf, user);
+                leafReceiveRepository.save(leafReceive);
+            }
+
+            // LeafConfirmationResponse 객체 생성
             LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
                     "Success",
                     LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(selectedLeaf)
             );
 
-            // 선택된 leaf를 LeafReadResponseDTO로 변환하여 반환
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.ok(response);
         }
 
-        // 찾는 leaf가 없는 경우 null 반환
+        // 위로 나무 이파리 넣을 것...
         return null;
-//   이파리가 없는 경우(서비스초기) default leaf -> 예비로 넣어놓기 처리할 것
-//   default leaf 를 던져줄 수 있게 처리...
     }
 
     @Override
@@ -92,7 +113,7 @@ public class LeafServiceImpl implements LeafService {
 
         // LeafSend 테이블에 추가할 정보 설정
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("해당하는 유저를 찾을 수 없습니다. "));
+                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다. "));
 
         LeafSend leafSend = LeafSend.createLeafSend(newLeaf, user);
 
@@ -106,24 +127,29 @@ public class LeafServiceImpl implements LeafService {
         );
 
         // LeafGenerationResponse 반환
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok(response);
 
     }
 
     @Override
     @Transactional
     public ResponseEntity<LeafComplaintResponse> complain(Long leafId) {
-        // TODO: 에러 처리 작업할 것
         LeafDetail currentLeaf = leafRepository.findById(leafId)
-                .orElseThrow(() -> new RuntimeException("이파리는 존재하지 않습니다."));
+                .orElseThrow(() -> new LeafNotFoundException("이파리가 존재하지 않습니다."));
 
         currentLeaf.setLeafComplain(currentLeaf.getLeafComplain() + 1);
 
+        // 누적된 complain(신고)수가 5를 충족하면 이파리를 삭제합니다.
+
         if (currentLeaf.getLeafComplain() >= 5) {
-            // 삭제할 LeafDetail의 leaf_send 레코드 삭제
+            // 삭제할 LeafDetail의 leaf_send 에 저장된 이파리 삭제
             leafSendRepository.deleteByLeafDetail(currentLeaf);
 
-            // LeafDetail 삭제
+            // leaf_receive 에 저장된 이파리 삭제
+            List<LeafReceive> relatedReceives = leafReceiveRepository.findByLeafDetail(currentLeaf);
+            leafReceiveRepository.deleteAll(relatedReceives);
+
+            // LeafDetail에 저장된 이파리 삭제
             leafRepository.delete(currentLeaf);
         }
 
@@ -132,7 +158,7 @@ public class LeafServiceImpl implements LeafService {
                 true
         );
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok(response);
     }
 
 
@@ -164,7 +190,7 @@ public class LeafServiceImpl implements LeafService {
                     })
                     .sum();
 
-            // LeafViewResponse를 생성하고 반환 (에러 처리 없이 성공 응답만)
+            // LeafViewResponse를 생성하고 반환
             LeafViewResponse response = LeafViewResponse.createLeafViewResponse("Success", Long.valueOf(totalLeafView));
 
             // response 반환

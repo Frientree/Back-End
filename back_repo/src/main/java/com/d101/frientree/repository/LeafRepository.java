@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface LeafRepository extends JpaRepository<LeafDetail, Long> {
 
-    List<LeafDetail> findByLeafCategory(LeafCategory leafCategory);
+    List<LeafDetail> findByLeafCategoryAndLeafNumNotIn(LeafCategory leafCategory, List<Long> sentLeafNums);
 
     Optional<LeafDetail> findById(Long id);
 
