@@ -5,9 +5,6 @@
 
     <data>
         <variable
-            name="imageUrl"
-            type="String" />
-        <variable
             name="viewModel"
             type="com.d101.presentation.main.viewmodel.FruitCreateViewModel" />
     </data>
@@ -22,7 +19,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="28dp"
-            app:imageUrl="@{imageUrl}"
+            app:imageUrl="@{viewModel.selectedFruit.fruitImageUrl}"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />

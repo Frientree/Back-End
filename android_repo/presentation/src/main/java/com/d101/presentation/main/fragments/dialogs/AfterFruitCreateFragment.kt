@@ -51,7 +51,6 @@ class AfterFruitCreateFragment : Fragment() {
         val fruitList = viewModel.todayFruitList.value
 
         viewModel.setSelectedFruit(fruitList[0])
-        binding.imageUrl = viewModel.selectedFruit.value.fruitImageUrl
 
         viewLifecycleOwner.repeatOnStarted {
             viewModel.selectedFruit.collect {
@@ -92,19 +91,16 @@ class AfterFruitCreateFragment : Fragment() {
                 when (checkedIds[0]) {
                     R.id.fisrt_fruit_chip -> {
                         viewModel.setSelectedFruit(fruitList[0])
-                        binding.imageUrl = viewModel.selectedFruit.value.fruitImageUrl
                         lastCheckedId = checkedIds[0]
                     }
 
                     R.id.second_fruit_chip -> {
                         viewModel.setSelectedFruit(fruitList[1])
-                        binding.imageUrl = viewModel.selectedFruit.value.fruitImageUrl
                         lastCheckedId = checkedIds[0]
                     }
 
                     R.id.third_fruit_chip -> {
                         viewModel.setSelectedFruit(fruitList[2])
-                        binding.imageUrl = viewModel.selectedFruit.value.fruitImageUrl
                         lastCheckedId = checkedIds[0]
                     }
                 }
@@ -117,17 +113,7 @@ class AfterFruitCreateFragment : Fragment() {
     }
 
     private fun changeChipName(feelEng: String): String {
-        return when (feelEng) {
-            "luck" -> "행운"
-            "happy" -> "행복"
-            "exciting" -> "신남"
-            "soso" -> "쏘쏘"
-            "sad" -> "우울"
-            "annoying" -> "짜증"
-            "tired" -> "피곤"
-            "worried" -> "걱정"
-            else -> ""
-        }
+        return FruitName.getFeelKor(feelEng)
     }
 
     override fun onDestroyView() {
