@@ -15,7 +15,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.d101.presentation.R
 import com.d101.presentation.databinding.LayoutInputTextInWelcomeBinding
-import com.d101.presentation.welcome.state.InputDataSate
+import com.d101.presentation.welcome.state.InputDataState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -73,19 +73,21 @@ class FrientreeInputLayout @JvmOverloads constructor(
         })
     }
 
-    fun setInputDataState(inputDataSate: InputDataSate) {
-        binding.labelTextView.text = context.getText(inputDataSate.label)
-        binding.inputEditText.hint = context.getText(inputDataSate.hint)
+    fun setInputDataState(inputDataState: InputDataState) {
+        binding.labelTextView.text = context.getText(inputDataState.label)
+        binding.inputEditText.hint = context.getText(inputDataState.hint)
+        binding.inputEditText.isEnabled = inputDataState.inputEnabled
         binding.confirmButton.visibility =
-            if (inputDataSate.confirmVisible) View.VISIBLE else View.INVISIBLE
-        binding.confirmButton.isEnabled = inputDataSate.confirmEnabled
-        binding.descriptionTextView.setText(inputDataSate.description)
+            if (inputDataState.buttonVisible) View.VISIBLE else View.INVISIBLE
+        binding.confirmButton.isEnabled = inputDataState.buttonEnabled
+        binding.confirmButton.text = context.getText(inputDataState.buttonType.stringRes)
+        binding.descriptionTextView.setText(inputDataState.description)
         binding.descriptionTextView.setTextColor(
             ContextCompat.getColor(
                 context,
-                inputDataSate.descriptionType.colorRes,
+                inputDataState.descriptionType.colorRes,
             ),
         )
-        textInputType = inputDataSate.inputType
+        textInputType = inputDataState.inputType
     }
 }

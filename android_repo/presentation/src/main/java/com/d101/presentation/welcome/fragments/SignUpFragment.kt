@@ -61,11 +61,7 @@ class SignUpFragment : Fragment() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.eventFlow.collect { evnet ->
                 when (evnet) {
-                    SignUpEvent.EmailCheckAttempt -> Toast.makeText(
-                        requireContext(),
-                        "id",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    SignUpEvent.EmailCheckAttempt -> viewModel.createAuthCode()
                     SignUpEvent.AuthNumberCheckAttempt -> Toast.makeText(
                         requireContext(),
                         "인증번호",
@@ -91,11 +87,19 @@ class SignUpFragment : Fragment() {
                         "회원가입 시도",
                         Toast.LENGTH_SHORT,
                     ).show()
+
+                    is SignUpEvent.SignUpFailure -> showToast(evnet.message)
+                    SignUpEvent.SetDefault -> {  }
                 }
             }
         }
     }
 
+    private fun showToast(message: String) = Toast.makeText(
+        requireContext(),
+        message,
+        Toast.LENGTH_SHORT,
+    ).show()
 
     override fun onDestroyView() {
         super.onDestroyView()

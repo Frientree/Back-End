@@ -93,4 +93,11 @@ class UserRepositoryImpl @Inject constructor(
             Result.Failure(ErrorStatus.UnknownError)
         }
     }
+
+    override suspend fun createAuthCode(userEmail: String): Result<Unit> =
+        when (val result = userDataSource.createAuthCode(userEmail)) {
+            is Result.Success -> Result.Success(Unit)
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
 }

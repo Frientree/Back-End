@@ -5,6 +5,7 @@
     <string name="email_example">frientree@gmail.com</string>
     <string name="nickname_example">프렌트리</string>
     <string name="confirm">확인</string>
+    <string name="cancel">취소</string>
     <string name="set_alarm">알림 설정</string>
     <string name="on">ON</string>
     <string name="off">OFF</string>
@@ -33,9 +34,12 @@
     <string name="sign_in">로그인</string>
     <string name="id_upper_case">ID</string>
     <string name="id_example">ex) frientree@gmail.com</string>
-    <string name="usable_id">사용가능한 ID입니다.</string>
     <string name="check_email_form">이메일 형식으로 입력해 주세요.</string>
-    <style name="unusable_id">사용할 수 없는 ID 입니다.</style>
+    <string name="auth_code_sending">인증 번호를 전송 중 입니다.</string>
+    <string name="auth_number_send">이메일로 인증번호가 전송되었습니다.</string>
+    <string name="auth_number_limit">10분 내로 인증 번호를 입력해 주세요.</string>
+    <string name="usable_id">사용 할 수 있는 ID 입니다.</string>
+    <string name="unusable_id">사용할 수 없는 ID 입니다.</string>
     <string name="loading_text">열매가 만들어지는\n중이에요!</string>
     <string name="save_fruit_text">열매 저장하기</string>
     <string name="listening_text">나무가 듣고 있어요!</string>
@@ -65,4 +69,6 @@
     <string name="unusable_nickname">사용할 수 없는 닉네임입니다.</string>
     <string name="example_password">비밀번호 예시</string>
     <string name="empty_text"> </string>
+    <string name="network_error">네트워크 연결 실패</string>
+    <string name="unknown_error">알 수 없는 에러</string>
 </resources>
