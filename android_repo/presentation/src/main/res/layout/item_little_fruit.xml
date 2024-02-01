@@ -16,8 +16,7 @@
 
     <TextView
         android:id="@+id/fruit_count_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Base.FTR.TextView"
         android:textSize="12sp"
         android:fontFamily="@font/binggrae_bold"
         android:layout_marginStart="4dp"
