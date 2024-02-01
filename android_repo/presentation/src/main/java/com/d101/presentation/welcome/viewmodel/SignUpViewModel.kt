@@ -37,39 +37,13 @@ class SignUpViewModel @Inject constructor(
     val authCode = MutableStateFlow("")
     val nickname = MutableStateFlow("")
     val password = MutableStateFlow("")
-    val passwordAgain = MutableStateFlow("")
+    val confirmPassword = MutableStateFlow("")
 
     init {
         checkEmailState()
         checkNicknameState()
-    }
-
-    private fun checkNicknameState() {
-        viewModelScope.launch {
-            nickname.collect { nickname ->
-                _uiState.update { signUpUiModel ->
-                    if (nickname.isEmpty()) {
-                        signUpUiModel.copy(
-                            nickNameInputState = InputDataState.NickNameInputState(),
-                        )
-                    } else if (isNicknameValid(nickname)) {
-                        signUpUiModel.copy(
-                            nickNameInputState = signUpUiModel.nickNameInputState.copy(
-                                description = R.string.usable_nickname,
-                                descriptionType = DescriptionType.DEFAULT,
-                            ),
-                        )
-                    } else {
-                        signUpUiModel.copy(
-                            nickNameInputState = signUpUiModel.nickNameInputState.copy(
-                                description = R.string.unusable_nickname,
-                                descriptionType = DescriptionType.ERROR,
-                            ),
-                        )
-                    }
-                }
-            }
-        }
+        checkPasswordState()
+        checkConfirmPasswordState()
     }
 
     private fun checkEmailState() {
@@ -250,10 +224,105 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    private fun checkNicknameState() {
+        viewModelScope.launch {
+            nickname.collect { nickname ->
+                _uiState.update { signUpUiModel ->
+                    if (nickname.isEmpty()) {
+                        signUpUiModel.copy(
+                            nickNameInputState = InputDataState.NickNameInputState(),
+                        )
+                    } else if (isNicknameValid(nickname)) {
+                        signUpUiModel.copy(
+                            nickNameInputState = signUpUiModel.nickNameInputState.copy(
+                                description = R.string.usable_nickname,
+                                descriptionType = DescriptionType.DEFAULT,
+                            ),
+                        )
+                    } else {
+                        signUpUiModel.copy(
+                            nickNameInputState = signUpUiModel.nickNameInputState.copy(
+                                description = R.string.unusable_nickname,
+                                descriptionType = DescriptionType.ERROR,
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkPasswordState() {
+        viewModelScope.launch {
+            password.collect { password ->
+                _uiState.update { signUpUiModel ->
+                    if (password.isEmpty()) {
+                        signUpUiModel.copy(
+                            passwordInputState = InputDataState.PasswordInputState(),
+                        )
+                    } else if (isPasswordValid(password)) {
+                        signUpUiModel.copy(
+                            passwordInputState = signUpUiModel.passwordInputState.copy(
+                                description = R.string.usable_password,
+                                descriptionType = DescriptionType.DEFAULT,
+                            ),
+                        )
+                    } else {
+                        signUpUiModel.copy(
+                            passwordInputState = signUpUiModel.passwordInputState.copy(
+                                description = R.string.unusable_password,
+                                descriptionType = DescriptionType.ERROR,
+                            ),
+                        )
+                    }
+                }
+                comparePassword()
+            }
+        }
+    }
+
+    private fun checkConfirmPasswordState() {
+        viewModelScope.launch {
+            confirmPassword.collect {
+                comparePassword()
+            }
+        }
+    }
+
+    private fun comparePassword() {
+        _uiState.update { signUpUiModel ->
+            if (confirmPassword.value.isEmpty()) {
+                signUpUiModel.copy(
+                    confirmPasswordInputState = InputDataState.ConfirmPasswordInputState(),
+                )
+            } else if (password.value == confirmPassword.value) {
+                signUpUiModel.copy(
+                    confirmPasswordInputState = signUpUiModel.confirmPasswordInputState.copy(
+                        description = R.string.password_match,
+                        descriptionType = DescriptionType.DEFAULT,
+                    ),
+                )
+            } else {
+                signUpUiModel.copy(
+                    confirmPasswordInputState = signUpUiModel.confirmPasswordInputState.copy(
+                        description = R.string.password_mismatch,
+                        descriptionType = DescriptionType.ERROR,
+                    ),
+                )
+            }
+        }
+    }
+
     private fun isEmailValid(email: String) =
         email.matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$".toRegex())
 
     private fun isNicknameValid(email: String) = email.length in 2..8
+
+    private fun isPasswordValid(password: String) =
+        password.matches(
+            "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$"
+                .toRegex(),
+        )
 
     private fun emitEvent(event: SignUpEvent) {
         viewModelScope.launch {

@@ -52,7 +52,7 @@ class SignUpFragment : Fragment() {
                 binding.emailCheckInputLayout.setInputDataState(it.authCodeInputState)
                 binding.nicknameInputLayout.setInputDataState(it.nickNameInputState)
                 binding.passwordInputLayout.setInputDataState(it.passwordInputState)
-                binding.passwordCheckInputLayout.setInputDataState(it.passwordCheckInputState)
+                binding.passwordCheckInputLayout.setInputDataState(it.confirmPasswordInputState)
             }
         }
     }

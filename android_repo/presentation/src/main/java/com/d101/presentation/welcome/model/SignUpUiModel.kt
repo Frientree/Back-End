@@ -11,6 +11,6 @@ data class SignUpUiModel(
         InputDataState.NickNameInputState(),
     val passwordInputState: InputDataState.PasswordInputState =
         InputDataState.PasswordInputState(),
-    val passwordCheckInputState: InputDataState.PasswordCheckInputState =
-        InputDataState.PasswordCheckInputState(),
+    val confirmPasswordInputState: InputDataState.ConfirmPasswordInputState =
+        InputDataState.ConfirmPasswordInputState(),
 )

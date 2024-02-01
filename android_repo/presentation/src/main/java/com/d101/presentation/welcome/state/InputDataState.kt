@@ -70,7 +70,7 @@ sealed class InputDataState {
         override val buttonClick: () -> (Unit) = {},
     ) : InputDataState()
 
-    data class PasswordCheckInputState(
+    data class ConfirmPasswordInputState(
         @StringRes override val label: Int = R.string.password_check,
         @StringRes override val hint: Int = R.string.empty_text,
         override val buttonVisible: Boolean = false,
