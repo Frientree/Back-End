@@ -96,44 +96,6 @@ class SignUpFragment : Fragment() {
         }
     }
 
-    private fun collectEvent() {
-        viewLifecycleOwner.repeatOnStarted {
-            viewModel.eventFlow.collect { evnet ->
-                when (evnet) {
-                    SignUpEvent.EmailCheckAttempt -> Toast.makeText(
-                        requireContext(),
-                        "id",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    SignUpEvent.AuthNumberCheckAttempt -> Toast.makeText(
-                        requireContext(),
-                        "인증번호",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    SignUpEvent.NickNameCheckAttempt -> Toast.makeText(
-                        requireContext(),
-                        "닉네임",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    SignUpEvent.PasswordFormCheck -> Toast.makeText(
-                        requireContext(),
-                        "비밀번호",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    SignUpEvent.PasswordMatchCheck -> Toast.makeText(
-                        requireContext(),
-                        "비밀번호 확인",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    SignUpEvent.SignUpAttempt -> Toast.makeText(
-                        requireContext(),
-                        "회원가입 시도",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
-            }
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
