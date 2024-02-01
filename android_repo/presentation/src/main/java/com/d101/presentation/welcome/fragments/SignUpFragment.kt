@@ -89,7 +89,7 @@ class SignUpFragment : Fragment() {
                     ).show()
 
                     is SignUpEvent.SignUpFailure -> showToast(evnet.message)
-                    SignUpEvent.SetDefault -> {  }
+                    SignUpEvent.SetDefault -> viewModel.setDefaultState()
                 }
             }
         }

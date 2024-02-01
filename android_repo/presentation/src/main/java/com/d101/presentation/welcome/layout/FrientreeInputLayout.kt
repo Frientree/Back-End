@@ -89,5 +89,8 @@ class FrientreeInputLayout @JvmOverloads constructor(
             ),
         )
         textInputType = inputDataState.inputType
+        binding.confirmButton.setOnClickListener {
+            inputDataState.buttonClick()
+        }
     }
 }

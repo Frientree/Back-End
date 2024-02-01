@@ -31,7 +31,7 @@ class SignUpViewModel @Inject constructor(
     val eventFlow = _eventFlow.asEventFlow()
 
     val id = MutableStateFlow("")
-    val authNumber = MutableStateFlow("")
+    val authCode = MutableStateFlow("")
     val nickname = MutableStateFlow("")
     val password = MutableStateFlow("")
     val passwordAgain = MutableStateFlow("")
@@ -56,7 +56,7 @@ class SignUpViewModel @Inject constructor(
                                 inputEnabled = true,
                                 description = R.string.usable_id,
                                 descriptionType = DescriptionType.DEFAULT,
-                                buttonClick = { emitEvent(SignUpEvent.EmailCheckAttempt) },
+                                buttonClick = { onEmailCheck() },
                             ),
                         )
                     } else {
@@ -91,6 +91,31 @@ class SignUpViewModel @Inject constructor(
                     ),
                 )
             }
+        }
+    }
+
+    fun setDefaultState(){
+        viewModelScope.launch {
+            _uiState.update { signUpUiModel ->
+                signUpUiModel.copy(
+                    idInputState = signUpUiModel.idInputState.copy(
+                        buttonEnabled = false,
+                        buttonType = ConfirmType.CONFIRM,
+                        inputEnabled = true,
+                        description = R.string.empty_text,
+                        descriptionType = DescriptionType.DEFAULT,
+                    ),
+                    authNumberInputState = signUpUiModel.authNumberInputState.copy(
+                        buttonEnabled = false,
+                        buttonType = ConfirmType.CONFIRM,
+                        inputEnabled = true,
+                        description = R.string.empty_text,
+                        descriptionType = DescriptionType.DEFAULT,
+                    ),
+                )
+            }
+            authCode.value = ""
+            checkId()
         }
     }
 
@@ -164,7 +189,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun onEmailCheck() = emitEvent(SignUpEvent.EmailCheckAttempt)
+    private fun onEmailCheck() = emitEvent(SignUpEvent.EmailCheckAttempt)
 
     fun onAuthNumberCheck() = emitEvent(SignUpEvent.AuthNumberCheckAttempt)
 
