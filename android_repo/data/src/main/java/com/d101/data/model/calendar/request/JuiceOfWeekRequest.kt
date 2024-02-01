@@ -1,6 +1,6 @@
 package com.d101.data.model.calendar.request
 
-data class WeeklyFruitsRequest(
+data class JuiceOfWeekRequest(
     val startDate: String,
     val endDate: String,
 )

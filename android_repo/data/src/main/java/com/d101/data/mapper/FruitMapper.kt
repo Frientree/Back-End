@@ -16,17 +16,4 @@ object FruitMapper {
             score = this.score,
         )
     }
-
-    fun Fruit.toEntity(): FruitEntity {
-        return FruitEntity(
-            id = this.id,
-            date = this.date,
-            name = this.name,
-            description = this.description,
-            imageUrl = this.imageUrl,
-            calendarImageUrl = this.calendarImageUrl,
-            emotion = this.emotion,
-            score = this.score,
-        )
-    }
 }
