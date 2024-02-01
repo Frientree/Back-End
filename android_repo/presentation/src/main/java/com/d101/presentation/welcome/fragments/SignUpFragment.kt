@@ -37,9 +37,6 @@ class SignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
         collectEvent()
-        binding.signUpButton.setOnClickListener {
-            findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
-        }
     }
 
     private fun setBinding() {
@@ -63,21 +60,7 @@ class SignUpFragment : Fragment() {
                 when (evnet) {
                     SignUpEvent.EmailCheckAttempt -> viewModel.createAuthCode()
                     SignUpEvent.AuthCodeCheckAttempt -> viewModel.checkAuthCode()
-                    SignUpEvent.NickNameCheckAttempt -> Toast.makeText(
-                        requireContext(),
-                        "닉네임",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    SignUpEvent.PasswordFormCheck -> Toast.makeText(
-                        requireContext(),
-                        "비밀번호",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                    SignUpEvent.PasswordMatchCheck -> Toast.makeText(
-                        requireContext(),
-                        "비밀번호 확인",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    SignUpEvent.SetDefault -> viewModel.setDefaultState()
                     SignUpEvent.SignUpAttempt -> Toast.makeText(
                         requireContext(),
                         "회원가입 시도",
@@ -85,10 +68,14 @@ class SignUpFragment : Fragment() {
                     ).show()
 
                     is SignUpEvent.SignUpFailure -> showToast(evnet.message)
-                    SignUpEvent.SetDefault -> viewModel.setDefaultState()
+                    is SignUpEvent.SignUpSuccess -> navigateToSignIn()
                 }
             }
         }
+    }
+
+    private fun navigateToSignIn() {
+        findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
     }
 
     private fun showToast(message: String) = Toast.makeText(
