@@ -26,10 +26,9 @@ import java.util.*;
 public class CalendarServiceImpl implements CalendarService {
     private final UserRepository userRepository;
     private final UserFruitRepository userFruitRepository;
+
     @Override
     public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarMonthlyFruitsRequest request) throws ParseException {
-        //월간 이미지 조회
-
         //request startDate, endDate --> Date 타입으로 변환
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = dateFormat.parse(request.getStartDate());
