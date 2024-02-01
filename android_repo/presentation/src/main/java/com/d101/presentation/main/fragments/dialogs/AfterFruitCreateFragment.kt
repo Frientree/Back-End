@@ -1,17 +1,25 @@
 package com.d101.presentation.main.fragments.dialogs
 
+import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentAfterFruitCreateBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
+import utils.repeatOnStarted
 
 class AfterFruitCreateFragment : Fragment() {
 
@@ -33,6 +41,7 @@ class AfterFruitCreateFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -43,20 +52,41 @@ class AfterFruitCreateFragment : Fragment() {
 
         viewModel.setSelectedFruit(fruitList[0])
 
-        val fruitChipGroup = view.findViewById<ChipGroup>(R.id.fruits_chip_group)
-
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.selectedFruit.collect {
+                val fruitColorValue = FruitColors.values()[it.fruitNum.toInt() - 1].color
+                binding.fruitDescriptionCardView.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        fruitColorValue,
+                    ),
+                )
+            }
+        }
         for (idx in 0..2) {
-            val chip = fruitChipGroup.getChildAt(idx)
+            val chip = binding.fruitsChipGroup.getChildAt(idx)
             if (chip is Chip) {
-                // TODO :: 칩 아이콘으로 이미지 글라이드로 주입 필요
-                chip.text = fruitList[idx].fruitFeel
+                Glide.with(binding.root.context).load(fruitList[idx].fruitImageUrl)
+                    .apply(RequestOptions().override(Target.SIZE_ORIGINAL))
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(
+                            chipImg: Drawable,
+                            a_transition: Transition<in Drawable>?,
+                        ) {
+                            chip.chipIcon = chipImg
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+                    })
+                chip.text = changeChipName(fruitList[idx].fruitFeel)
             }
         }
 
-        var lastCheckedId = fruitChipGroup.checkedChipId
-        fruitChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+        var lastCheckedId = binding.fruitsChipGroup.checkedChipId
+        binding.fruitsChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             if (checkedIds.isEmpty()) {
-                fruitChipGroup.check(lastCheckedId)
+                binding.fruitsChipGroup.check(lastCheckedId)
             } else {
                 when (checkedIds[0]) {
                     R.id.fisrt_fruit_chip -> {
@@ -80,6 +110,10 @@ class AfterFruitCreateFragment : Fragment() {
         binding.saveFruitButton.setOnClickListener {
             FruitDialogInterface.dialog.dismiss()
         }
+    }
+
+    private fun changeChipName(feelEng: String): String {
+        return FruitName.getFeelKor(feelEng)
     }
 
     override fun onDestroyView() {

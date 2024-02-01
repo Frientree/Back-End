@@ -68,6 +68,9 @@ dependencies {
 
     // Lottie
     implementation(Libraries.lottie)
+
+    // Glide
+    implementation(Libraries.glide)
 }
 kapt {
     correctErrorTypes = true
