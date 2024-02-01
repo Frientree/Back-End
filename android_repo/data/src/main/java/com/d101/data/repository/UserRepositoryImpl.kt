@@ -6,6 +6,7 @@ import com.d101.data.datastore.UserPreferences
 import com.d101.data.mapper.UserMapper.toUser
 import com.d101.domain.model.Result
 import com.d101.domain.model.User
+import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.repository.UserRepository
 import com.d101.domain.utils.TokenManager
 import kotlinx.coroutines.flow.first
@@ -65,6 +66,31 @@ class UserRepositoryImpl @Inject constructor(
             }
 
             is Result.Failure -> Result.Failure(result.errorStatus)
+        }
+    }
+
+    override suspend fun changeUserNickname(nickname: String): Result<String> {
+        return when (val result = userDataSource.changeUserNickname(nickname)) {
+            is Result.Success -> {
+                userDataStore.updateData {
+                    it.toBuilder()
+                        .setUserNickname(result.data.userNickname)
+                        .build()
+                }
+                Result.Success(nickname)
+            }
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
+    }
+
+    override suspend fun logout(): Result<Unit> {
+        return try {
+            userDataStore.updateData { UserPreferences.getDefaultInstance() }
+            tokenManager.deleteTokens()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Failure(ErrorStatus.UnknownError)
         }
     }
 }

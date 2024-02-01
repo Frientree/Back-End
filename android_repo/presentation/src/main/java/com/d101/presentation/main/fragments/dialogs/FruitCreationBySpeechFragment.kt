@@ -27,6 +27,7 @@ class FruitCreationBySpeechFragment : Fragment() {
 
     private val viewModel: FruitCreateViewModel by viewModels({ requireParentFragment() })
     private lateinit var audioFile: File
+    private lateinit var secText: String
 
     private var recorder: MediaRecorder? = null
     private lateinit var timerTask: Timer
@@ -50,6 +51,7 @@ class FruitCreationBySpeechFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.isTextInput = false
+        secText = getString(R.string.speech_second_text)
         startRecording()
 
         // 버튼을 누르거나 30초가 끝나면 그만
@@ -97,7 +99,7 @@ class FruitCreationBySpeechFragment : Fragment() {
             // UI 조작을 위한 메서드
             activity?.runOnUiThread {
                 binding.speechProgressBar.progress = time
-                binding.speechSecondTextView.text = getString(R.string.speech_second_text, sec)
+                binding.speechSecondTextView.text = String.format("%d %s", sec, secText)
             }
             if (sec >= 30) {
                 createFruitBySpeech()

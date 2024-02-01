@@ -4,29 +4,29 @@ import com.d101.presentation.mypage.state.AlarmStatus
 
 sealed class MyPageViewEvent {
 
-    data object onTapNicknameEditButton : MyPageViewEvent()
+    data object OnTapNicknameEditButton : MyPageViewEvent()
 
-    data object onCancelNicknameEdit : MyPageViewEvent()
+    data object OnTapNicknameEditCancelButton : MyPageViewEvent()
 
-    data class onChangeNickname(val nicknameInput: String) : MyPageViewEvent()
+    data object OnTapNicknameConfirmButton : MyPageViewEvent()
 
-    data class onNicknameChanged(val newNickname: String) : MyPageViewEvent()
+    data class OnTapAlarmStatusButton(val alarmStatus: AlarmStatus) : MyPageViewEvent()
 
-    data class onSetAlarmStatus(val alarmStatus: AlarmStatus) : MyPageViewEvent()
+    data object OnTapBackgroundMusicStatusButton : MyPageViewEvent()
 
-    data object onSetBackgroundMusicStatus : MyPageViewEvent()
+    data object OnTapBackgroundMusicChangeButton : MyPageViewEvent()
 
-    data object onTapBackgroundMusicChangeButton : MyPageViewEvent()
+    data class OnBackgroundMusicChanged(val musicName: String) : MyPageViewEvent()
 
-    data class onChangeBackgroundMusic(val musicName: String) : MyPageViewEvent()
+    data object OnTapTermsButton : MyPageViewEvent()
 
-    data object onTapTermsButton : MyPageViewEvent()
+    data object OnTapChangePasswordButton : MyPageViewEvent()
 
-    data class onShowTerms(val termsUrl: String) : MyPageViewEvent()
-
-    data object onTapChangePasswordButton : MyPageViewEvent()
-
-    data object onTapLogOutButton : MyPageViewEvent()
+    data object OnTapLogOutButton : MyPageViewEvent()
 
     data object Init : MyPageViewEvent()
+
+    data object OnLogOut : MyPageViewEvent()
+
+    data class OnShowToast(val message: String) : MyPageViewEvent()
 }

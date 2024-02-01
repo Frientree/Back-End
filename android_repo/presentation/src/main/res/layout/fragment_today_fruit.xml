@@ -37,7 +37,7 @@
                     app:layout_constraintEnd_toEndOf="parent" />
 
                 <TextView
-                    style="@style/Base.FTR.ButtonText"
+                    style="@style/Base.FTR.Bold_20sp"
                     android:gravity="center"
                     android:id="@+id/fruit_name_text_view"
                     android:layout_width="match_parent"

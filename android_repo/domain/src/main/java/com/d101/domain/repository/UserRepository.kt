@@ -9,4 +9,8 @@ interface UserRepository {
     suspend fun getUserInfo(): Result<User>
 
     suspend fun checkSignInStatus(): Result<Unit>
+
+    suspend fun changeUserNickname(nickname: String): Result<String>
+
+    suspend fun logout(): Result<Unit>
 }

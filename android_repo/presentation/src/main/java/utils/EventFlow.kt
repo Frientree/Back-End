@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 interface EventFlow<out T> : Flow<T> {
     companion object {
 
-        const val DEFAULT_REPLAY: Int = 0
+        const val DEFAULT_REPLAY: Int = 1
     }
 }
 

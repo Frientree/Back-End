@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/label_text_view"
-            style="@style/Base.FTR.TextView.LABEL"
+            style="@style/Base.FTR.TextView.Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
@@ -24,7 +24,7 @@
 
         <EditText
             android:id="@+id/input_edit_text"
-            style="@style/Base.FTR.EDIT_TEXT.EXPENDED"
+            style="@style/Base.FTR.EditTextExtended"
             android:layout_height="32dp"
             android:layout_marginStart="28dp"
             app:layout_constraintEnd_toStartOf="@id/confirm_button"
@@ -34,7 +34,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/confirm_button"
-            style="@style/Base.FTR.Button.CONFIRM"
+            style="@style/Base.FTR.Button.Confirm"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="28dp"
             android:text="@string/confirm"
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
-            android:textAppearance="@style/Base.FTR.Text.SMALL"
+            android:textAppearance="@style/Base.FTR.Text.Small"
             app:layout_constraintStart_toStartOf="@id/input_edit_text"
             app:layout_constraintTop_toBottomOf="@+id/input_edit_text"
             tools:text="@string/usable_id" />
