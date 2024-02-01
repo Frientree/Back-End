@@ -37,6 +37,7 @@ public class User {
     @Column(name = "user_disabled")
     private Boolean userDisabled = false;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "user_create_date")
     private Date userCreateDate;
 

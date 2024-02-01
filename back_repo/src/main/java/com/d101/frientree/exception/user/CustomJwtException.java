@@ -1,4 +1,4 @@
-package com.d101.frientree.util;
+package com.d101.frientree.exception.user;
 
 public class CustomJwtException extends RuntimeException {
 
