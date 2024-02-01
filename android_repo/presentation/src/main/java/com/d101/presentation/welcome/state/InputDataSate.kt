@@ -1,5 +1,6 @@
 package com.d101.presentation.welcome.state
 
+import android.text.InputType
 import androidx.annotation.StringRes
 import com.d101.presentation.R
 import com.d101.presentation.welcome.model.DescriptionType
@@ -11,16 +12,16 @@ sealed class InputDataSate {
     abstract val confirmEnabled: Boolean
     abstract val description: Int
     abstract val descriptionType: DescriptionType
-    abstract val isPasswordInputType: Boolean
+    abstract val inputType: Int
 
     data class IdInputState(
         @StringRes override val label: Int = R.string.id_upper_case,
         @StringRes override val hint: Int = R.string.id_example,
         override val confirmVisible: Boolean = true,
-        override val confirmEnabled: Boolean = true,
+        override val confirmEnabled: Boolean = false,
         @StringRes override val description: Int = R.string.empty_text,
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
-        override val isPasswordInputType: Boolean = false,
+        override val inputType: Int = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
     ) : InputDataSate()
 
     data class AuthNumberInputState(
@@ -30,7 +31,7 @@ sealed class InputDataSate {
         override val confirmEnabled: Boolean = false,
         @StringRes override val description: Int = R.string.empty_text,
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
-        override val isPasswordInputType: Boolean = false,
+        override val inputType: Int = InputType.TYPE_CLASS_TEXT,
     ) : InputDataSate()
 
     data class NickNameInputState(
@@ -40,7 +41,7 @@ sealed class InputDataSate {
         override val confirmEnabled: Boolean = true,
         @StringRes override val description: Int = R.string.empty_text,
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
-        override val isPasswordInputType: Boolean = false,
+        override val inputType: Int = InputType.TYPE_CLASS_TEXT,
     ) : InputDataSate()
 
     data class PasswordInputState(
@@ -50,7 +51,7 @@ sealed class InputDataSate {
         override val confirmEnabled: Boolean = false,
         @StringRes override val description: Int = R.string.empty_text,
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
-        override val isPasswordInputType: Boolean = true,
+        override val inputType: Int = InputType.TYPE_TEXT_VARIATION_PASSWORD,
     ) : InputDataSate()
 
     data class PasswordCheckInputState(
@@ -60,6 +61,6 @@ sealed class InputDataSate {
         override val confirmEnabled: Boolean = false,
         @StringRes override val description: Int = R.string.empty_text,
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
-        override val isPasswordInputType: Boolean = true,
+        override val inputType: Int = InputType.TYPE_TEXT_VARIATION_PASSWORD,
     ) : InputDataSate()
 }

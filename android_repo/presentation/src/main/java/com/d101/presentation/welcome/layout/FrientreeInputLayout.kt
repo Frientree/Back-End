@@ -37,7 +37,11 @@ class FrientreeInputLayout @JvmOverloads constructor(
             true,
         )
 
-    private var isPasswordType = false
+    private var textInputType = InputType.TYPE_CLASS_TEXT
+        set(value) {
+            field = value
+            binding.inputEditText.inputType = value
+        }
 
     fun bindTextFlow(lifecycleOwner: LifecycleOwner, textFlow: MutableStateFlow<String>) {
         lifecycleOwner.lifecycleScope.launch {
@@ -53,9 +57,9 @@ class FrientreeInputLayout @JvmOverloads constructor(
             override fun afterTextChanged(s: Editable?) {
                 if (s.toString() != textFlow.value) {
                     textFlow.value = s.toString()
-                    if (isPasswordType) {
+                    if (textInputType == InputType.TYPE_TEXT_VARIATION_PASSWORD) {
                         binding.inputEditText.apply {
-                            inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+                            inputType = textInputType
                             transformationMethod = PasswordTransformationMethod.getInstance()
                             PasswordTransformationMethod()
                             setSelection(text.length)
@@ -71,15 +75,17 @@ class FrientreeInputLayout @JvmOverloads constructor(
 
     fun setInputDataState(inputDataSate: InputDataSate) {
         binding.labelTextView.text = context.getText(inputDataSate.label)
+        binding.inputEditText.hint = context.getText(inputDataSate.hint)
         binding.confirmButton.visibility =
             if (inputDataSate.confirmVisible) View.VISIBLE else View.INVISIBLE
         binding.confirmButton.isEnabled = inputDataSate.confirmEnabled
+        binding.descriptionTextView.setText(inputDataSate.description)
         binding.descriptionTextView.setTextColor(
             ContextCompat.getColor(
                 context,
                 inputDataSate.descriptionType.colorRes,
             ),
         )
-        isPasswordType = inputDataSate.isPasswordInputType
+        textInputType = inputDataSate.inputType
     }
 }
