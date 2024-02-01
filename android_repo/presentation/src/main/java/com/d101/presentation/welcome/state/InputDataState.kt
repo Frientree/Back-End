@@ -47,8 +47,8 @@ sealed class InputDataState {
     data class NickNameInputState(
         @StringRes override val label: Int = R.string.nickname,
         @StringRes override val hint: Int = R.string.example_nickname,
-        override val buttonVisible: Boolean = true,
-        override val buttonEnabled: Boolean = true,
+        override val buttonVisible: Boolean = false,
+        override val buttonEnabled: Boolean = false,
         override val buttonType: ConfirmType = ConfirmType.CONFIRM,
         override val inputEnabled: Boolean = true,
         @StringRes override val description: Int = R.string.empty_text,

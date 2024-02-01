@@ -40,10 +40,39 @@ class SignUpViewModel @Inject constructor(
     val passwordAgain = MutableStateFlow("")
 
     init {
-        checkId()
+        checkEmailState()
+        checkNicknameState()
     }
 
-    private fun checkId() {
+    private fun checkNicknameState() {
+        viewModelScope.launch {
+            nickname.collect { nickname ->
+                _uiState.update { signUpUiModel ->
+                    if (nickname.isEmpty()) {
+                        signUpUiModel.copy(
+                            nickNameInputState = InputDataState.NickNameInputState(),
+                        )
+                    } else if (isNicknameValid(nickname)) {
+                        signUpUiModel.copy(
+                            nickNameInputState = signUpUiModel.nickNameInputState.copy(
+                                description = R.string.usable_nickname,
+                                descriptionType = DescriptionType.DEFAULT,
+                            ),
+                        )
+                    } else {
+                        signUpUiModel.copy(
+                            nickNameInputState = signUpUiModel.nickNameInputState.copy(
+                                description = R.string.unusable_nickname,
+                                descriptionType = DescriptionType.ERROR,
+                            ),
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkEmailState() {
         viewModelScope.launch {
             id.collect { id ->
                 _uiState.update { signUpModel ->
@@ -118,7 +147,7 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             authCode.value = ""
-            checkId()
+            checkEmailState()
         }
     }
 
@@ -223,6 +252,8 @@ class SignUpViewModel @Inject constructor(
 
     private fun isEmailValid(email: String) =
         email.matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$".toRegex())
+
+    private fun isNicknameValid(email: String) = email.length in 2..8
 
     private fun emitEvent(event: SignUpEvent) {
         viewModelScope.launch {
