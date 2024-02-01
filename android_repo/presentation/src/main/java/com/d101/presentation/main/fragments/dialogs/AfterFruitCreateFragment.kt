@@ -3,14 +3,13 @@ package com.d101.presentation.main.fragments.dialogs
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
@@ -20,7 +19,6 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentAfterFruitCreateBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import com.google.android.material.chip.Chip
-import kotlinx.coroutines.launch
 import utils.repeatOnStarted
 
 class AfterFruitCreateFragment : Fragment() {
@@ -55,13 +53,15 @@ class AfterFruitCreateFragment : Fragment() {
         viewModel.setSelectedFruit(fruitList[0])
         binding.imageUrl = viewModel.selectedFruit.value.fruitImageUrl
 
-        lifecycleScope.launch {
-            repeatOnStarted {
-                viewModel.selectedFruit.collect {
-                    binding.fruitDescriptionTextView.setBackgroundResource(
-                        FruitColors.values()[(it.fruitNum - 1).toInt()].color,
-                    )
-                }
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.selectedFruit.collect {
+                val fruitColorValue = FruitColors.values()[it.fruitNum.toInt() - 1].color
+                binding.fruitDescriptionCardView.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        fruitColorValue,
+                    ),
+                )
             }
         }
         for (idx in 0..2) {
@@ -88,7 +88,6 @@ class AfterFruitCreateFragment : Fragment() {
         binding.fruitsChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             if (checkedIds.isEmpty()) {
                 binding.fruitsChipGroup.check(lastCheckedId)
-                Log.d("DEBUG:::", "${fruitList[0]}")
             } else {
                 when (checkedIds[0]) {
                     R.id.fisrt_fruit_chip -> {
