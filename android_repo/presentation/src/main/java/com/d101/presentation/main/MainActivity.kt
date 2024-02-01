@@ -108,6 +108,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        BackgroundMusicPlayer.resumeMusic()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        BackgroundMusicPlayer.stopMusic()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         BackgroundMusicPlayer.releaseMusicPlayer()
