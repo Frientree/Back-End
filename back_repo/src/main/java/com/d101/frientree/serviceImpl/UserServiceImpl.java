@@ -55,17 +55,15 @@ public class UserServiceImpl implements UserService {
 
         // 유저 정보를 가져오고, 이메일 불일치시 404 예외처리
         UserDetails userDetails;
-        try {
-            User currentUser = userRepository.findByUserEmail(userSignInRequest.getUserEmail())
-                    .orElseThrow(() -> new UserNotFoundException("Fail"));
-            userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(currentUser.getUserId()));
-        } catch (UserNotFoundException e) {
-            throw new UserNotFoundException("Fail");
-        }
+
+        User currentUser = userRepository.findByUserEmail(userSignInRequest.getUserEmail())
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
+
+        userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(currentUser.getUserId()));
 
         // 패스워드 불일치시 401 예외처리
         if (!passwordEncoder.matches(userSignInRequest.getUserPw(), userDetails.getPassword())) {
-            throw new PasswordNotMatchingException("Fail");
+            throw new PasswordNotMatchingException("password not match");
         }
 
         // Jwt 토큰 발급 로직
@@ -109,7 +107,7 @@ public class UserServiceImpl implements UserService {
                 refreshTokenRepository.findById(clientRefreshToken);
 
         if (refreshTokenOptional.isEmpty()) {
-            throw new RefreshTokenNotFoundException("Fail");
+            throw new RefreshTokenNotFoundException("refresh token error");
         }
 
         RefreshToken serverRefreshToken = refreshTokenOptional.get();
@@ -153,11 +151,11 @@ public class UserServiceImpl implements UserService {
         User currentUser = getUser();
 
         if (userChangeNicknameRequest.getUserNickname() == null || userChangeNicknameRequest.getUserNickname().isEmpty()) {
-            throw new NicknameValidateException("Fail");
+            throw new NicknameValidateException("nickname valid error");
         }
 
         if (userChangeNicknameRequest.getUserNickname().length() > 8) {
-            throw new NicknameValidateException("Fail");
+            throw new NicknameValidateException("nickname valid error");
         }
 
         currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
@@ -236,8 +234,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<UserDuplicateCheckResponse> duplicateCheck(UserDuplicateCheckRequest userDuplicateCheckRequest) {
 
+        if (!userDuplicateCheckRequest.getUserEmail().matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
+            throw new CustomValidationException("email valid error");
+        }
+
         if (userRepository.findByUserEmail(userDuplicateCheckRequest.getUserEmail()).isPresent()) {
-            throw new EmailDuplicatedException("Fail");
+            throw new EmailDuplicatedException("email is duplicate");
         }
 
         UserDuplicateCheckResponse response = UserDuplicateCheckResponse.createUserDuplicateCheckResponse(
@@ -252,6 +254,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<UserSendEmailCertificationResponse> sendEmailCertificate(UserSendEmailCertificationRequest userSendEmailCertificationRequest) {
+
+        if (!userSendEmailCertificationRequest.getUserEmail().matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
+            throw new CustomValidationException("email valid error");
+        }
+
+        if (userRepository.findByUserEmail(userSendEmailCertificationRequest.getUserEmail()).isPresent()) {
+            throw new EmailDuplicatedException("email is duplicate");
+        }
 
         sendVerificationEmail(userSendEmailCertificationRequest.getUserEmail());
 
@@ -283,7 +293,7 @@ public class UserServiceImpl implements UserService {
             );
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } else {
-            throw new EmailCodeNotMatchingException("Fail");
+            throw new EmailCodeNotMatchingException("email code not match");
         }
     }
 
@@ -295,11 +305,11 @@ public class UserServiceImpl implements UserService {
         User currentUser = getUser();
 
         if (!passwordEncoder.matches(userChangePasswordRequest.getUserPw(), currentUser.getUserPassword())) {
-            throw new CustomValidationException("Fail");
+            throw new CustomValidationException("current password not match");
         }
 
         if (!userChangePasswordRequest.getNewPw().matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$")) {
-            throw new CustomValidationException("Fail");
+            throw new CustomValidationException("password valid error");
         }
 
         currentUser.setUserPassword(passwordEncoder.encode(userChangePasswordRequest.getNewPw()));
@@ -318,7 +328,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<UserTemporaryPasswordSendResponse> temporaryPasswordSend(UserTemporaryPasswordSendRequest userTemporaryPasswordSendRequest) {
 
         User currentUser = userRepository.findByUserEmail(userTemporaryPasswordSendRequest.getUserEmail())
-                .orElseThrow(() -> new UserNotFoundException("Fail"));
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
 
         // 임시 비밀번호 생성
         String temporaryPassword = generatePassword();
@@ -334,6 +344,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    // 이파리, 열매 생성 가능 여부 조회
     @Override
     public ResponseEntity<UserCreateStatusResponse> createStatusConfirm() {
 
@@ -351,7 +362,7 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<UserConfirmationResponse> confirm(Long id) {
 
         User currentUser = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Fail"));
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
 
         UserConfirmationResponse response = UserConfirmationResponse.createUserConfirmationResponse(
                 "Success",
@@ -376,7 +387,7 @@ public class UserServiceImpl implements UserService {
 
     // 유저 가입
     @Override
-    public ResponseEntity<UserCreateResponse> generateUser(UserCreateRequest userCreateRequest) throws CustomValidationException {
+    public ResponseEntity<UserCreateResponse> generateUser(UserCreateRequest userCreateRequest) {
         // 입력 정보의 유효성 검증
         validateUserCreateRequest(userCreateRequest);
 
@@ -425,10 +436,10 @@ public class UserServiceImpl implements UserService {
         String userId = authentication.getName();
 
         User currentUser = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new UserNotFoundException("Fail"));
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
 
         if (currentUser.getUserDisabled()) {
-            throw new UserNotFoundException("Fail");
+            throw new UserNotFoundException("user disabled");
         }
 
         return currentUser;
@@ -468,19 +479,19 @@ public class UserServiceImpl implements UserService {
 
     private void validateUserCreateRequest(UserCreateRequest userCreateRequest) {
         if (userCreateRequest.getUserNickname() == null || userCreateRequest.getUserNickname().isEmpty()) {
-            throw new CustomValidationException("Fail");
+            throw new CustomValidationException("nickname valid error");
         }
 
-        if (!userCreateRequest.getUserEmail().matches("\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b")) {
-            throw new CustomValidationException("Fail");
+        if (!userCreateRequest.getUserEmail().matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
+            throw new CustomValidationException("email valid error");
         }
 
         if (!userCreateRequest.getUserPw().matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$")) {
-            throw new CustomValidationException("Fail");
+            throw new CustomValidationException("password valid error");
         }
 
         if (userCreateRequest.getUserNickname().length() > 8) {
-            throw new CustomValidationException("Fail");
+            throw new CustomValidationException("nickname");
         }
     }
 

@@ -4,17 +4,15 @@ import com.d101.frientree.dto.juice.request.JuiceGenerationRequest;
 import com.d101.frientree.dto.juice.response.JuiceConfirmationResponse;
 import com.d101.frientree.dto.juice.response.JuiceGenerationResponse;
 import com.d101.frientree.dto.juice.response.JuiceListConfirmationResponse;
-import com.d101.frientree.dto.juice.response.dto.JuiceConfirmationResponseDTO;
-import com.d101.frientree.dto.juice.response.dto.JuiceGenerationResponseDTO;
-import com.d101.frientree.dto.juice.response.dto.JuiceListConfirmationResponseDTO;
+import com.d101.frientree.dto.juice.response.dto.*;
+import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.juice.JuiceDetail;
 import com.d101.frientree.entity.juice.UserJuice;
+import com.d101.frientree.entity.message.Message;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.juice.JuiceNotFoundException;
 import com.d101.frientree.exception.user.UserNotFoundException;
-import com.d101.frientree.repository.JuiceDetailRepository;
-import com.d101.frientree.repository.UserJuiceRepository;
-import com.d101.frientree.repository.UserRepository;
+import com.d101.frientree.repository.*;
 import com.d101.frientree.service.JuiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +21,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +35,8 @@ public class JuiceServiceImpl implements JuiceService {
     private final UserRepository userRepository;
     private final JuiceDetailRepository juiceDetailRepository;
     private final UserJuiceRepository userJuiceRepository;
+    private final UserFruitRepository userFruitRepository;
+    private final MessageRepository messageRepository;
 
     @Override
     public ResponseEntity<JuiceListConfirmationResponse> listConfirm() {
@@ -70,18 +74,67 @@ public class JuiceServiceImpl implements JuiceService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Override
+    public ResponseEntity<JuiceGenerationResponse> generate(JuiceGenerationRequest juiceGenerationRequest) throws ParseException {
+
+        User currentUser = getUser();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = dateFormat.parse(juiceGenerationRequest.getStartDate());
+        Date endDate = dateFormat.parse(juiceGenerationRequest.getEndDate());
+
+        // 해당 기간에 유저가 보유한 모든 과일을 가져온다.
+        List<UserFruit> userFruits = userFruitRepository.findAllByUserAndUserFruitCreateDateBetween(currentUser, startDate, endDate);
+
+        // 유저가 주스를 만들기 위해 가져온 과일들이 들어간 dto
+        List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO = JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(userFruits);
+
+        // 랜덤 주스를 생성 (아직 주스 디자인이 다 안나와서 그냥 랜덤주스 넣었습니다.)
+        List<JuiceDetail> allJuices = juiceDetailRepository.findAll();
+        // 랜덤한 주스 하나 선택
+        JuiceDetail randomJuice = getRandomElement(allJuices);
+
+        // Message data 중 랜덤으로 하나 가져와야 됨.
+        List<Message> allMessages = messageRepository.findAll();
+        // 랜덤한 메시지 하나 선택
+        Message randomMessage = getRandomElement(allMessages);
+
+        JuiceDataDTO juiceDataDTO = JuiceDataDTO.createJuiceDataDTO(randomJuice, randomMessage);
+
+        JuiceGenerationResponse response = JuiceGenerationResponse.createJuiceGenerationResponse(
+                "success",
+                juiceDataDTO,
+                juiceFruitsGraphDataDTO
+        );
+
+        UserJuice userJuice = UserJuice.builder()
+                .user(currentUser)
+                .juiceDetail(randomJuice)
+                .userJuiceCreateDate(new Date())
+                .build();
+
+        userJuiceRepository.save(userJuice);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     private User getUser() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 
         User currentUser = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new UserNotFoundException("Fail"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (currentUser.getUserDisabled()) {
-            throw new UserNotFoundException("Fail");
+            throw new UserNotFoundException("User disabled");
         }
 
         return currentUser;
+    }
+
+    private <T> T getRandomElement(List<T> list) {
+        Random random = new Random();
+        int randomIndex = random.nextInt(list.size());
+        return list.get(randomIndex);
     }
 }

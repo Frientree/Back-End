@@ -1,11 +1,9 @@
 package com.d101.frientree.entity.fruit;
 
 import com.d101.frientree.entity.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigInteger;
 import java.util.Date;
@@ -33,7 +31,7 @@ public class UserFruit {
 
     private Long userFruitScore;
 
-    public static UserFruit createUserFruit(User user, FruitDetail fruitDetail, Date userFruitCreateDate, Long userFruitScore){
+    public static UserFruit createUserFruit(User user, FruitDetail fruitDetail, Date userFruitCreateDate, Long userFruitScore) {
         return UserFruit.builder()
                 .user(user)
                 .fruitDetail(fruitDetail)

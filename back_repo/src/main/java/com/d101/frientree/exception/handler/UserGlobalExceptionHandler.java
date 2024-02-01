@@ -39,7 +39,7 @@ public class UserGlobalExceptionHandler {
 
     @ExceptionHandler(EmailDuplicatedException.class)
     public ResponseEntity<String> handleEmailDuplicatedException(EmailDuplicatedException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .headers(JSON_HEADERS)
                 .body(stringToGson(e.getMessage()));
     }
