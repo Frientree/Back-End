@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("user-fruit")
+@RequestMapping("/user-fruit")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class UserFruitController {

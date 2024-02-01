@@ -4,15 +4,15 @@ import com.d101.frientree.dto.userfruit.dto.UserFruitCreateDTO;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
 public class UserFruitCreateResponse {
     private String message;
-    private ArrayList<UserFruitCreateDTO> data;
+    private List<UserFruitCreateDTO> data;
 
-    public static UserFruitCreateResponse createUserFruitSaveResponse(String message, ArrayList<UserFruitCreateDTO> data){
+    public static UserFruitCreateResponse createUserFruitSaveResponse(String message, List<UserFruitCreateDTO> data){
         return UserFruitCreateResponse.builder()
                 .message(message)
                 .data(data)
