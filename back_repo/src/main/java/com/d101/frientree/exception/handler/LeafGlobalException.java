@@ -15,12 +15,23 @@ import java.util.Collections;
 public class LeafGlobalException {
 
     private final Gson gson;
+    private static final HttpHeaders JSON_HEADERS;
+    static {
+        JSON_HEADERS = new HttpHeaders();
+        JSON_HEADERS.add(HttpHeaders.CONTENT_TYPE, "application/json");
+    }
 
+    public String stringToGson(String message){
+        return gson.toJson(Collections.singletonMap("message", message));
+    }
+
+    // LeafNotFoundException
     @ExceptionHandler(LeafNotFoundException.class)
+    // handleLeafNotFoundException(LeafNotFoundException e)
     public ResponseEntity<String> handleLeafNotFoundException(LeafNotFoundException e) {
-        String msg = gson.toJson(Collections.singletonMap("message", e.getMessage()));
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).headers(headers).body(msg);
+        //HttpStatus.NOT_FOUND 만 바꾸면서 반복 내보내는 대로
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .headers(JSON_HEADERS)
+                .body(stringToGson(e.getMessage()));
     }
 }
