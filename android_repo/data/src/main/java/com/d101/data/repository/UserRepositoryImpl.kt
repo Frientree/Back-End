@@ -100,4 +100,11 @@ class UserRepositoryImpl @Inject constructor(
 
             is Result.Failure -> Result.Failure(result.errorStatus)
         }
+
+    override suspend fun checkAuthCode(userEmail: String, code: String): Result<Unit> =
+        when (val result = userDataSource.checkAuthCode(userEmail, code)) {
+            is Result.Success -> Result.Success(Unit)
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
 }

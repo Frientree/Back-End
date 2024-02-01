@@ -49,7 +49,7 @@ class SignUpFragment : Fragment() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.uiState.collect {
                 binding.idInputLayout.setInputDataState(it.idInputState)
-                binding.emailCheckInputLayout.setInputDataState(it.authNumberInputState)
+                binding.emailCheckInputLayout.setInputDataState(it.authCodeInputState)
                 binding.nicknameInputLayout.setInputDataState(it.nickNameInputState)
                 binding.passwordInputLayout.setInputDataState(it.passwordInputState)
                 binding.passwordCheckInputLayout.setInputDataState(it.passwordCheckInputState)
@@ -62,11 +62,7 @@ class SignUpFragment : Fragment() {
             viewModel.eventFlow.collect { evnet ->
                 when (evnet) {
                     SignUpEvent.EmailCheckAttempt -> viewModel.createAuthCode()
-                    SignUpEvent.AuthNumberCheckAttempt -> Toast.makeText(
-                        requireContext(),
-                        "인증번호",
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    SignUpEvent.AuthCodeCheckAttempt -> viewModel.checkAuthCode()
                     SignUpEvent.NickNameCheckAttempt -> Toast.makeText(
                         requireContext(),
                         "닉네임",

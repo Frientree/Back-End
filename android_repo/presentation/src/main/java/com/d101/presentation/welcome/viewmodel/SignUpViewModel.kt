@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.AuthCodeCreationErrorStatus
+import com.d101.domain.model.status.ErrorStatus
+import com.d101.domain.usecase.usermanagement.CheckAuthCodeUseCase
 import com.d101.domain.usecase.usermanagement.CreateAuthCodeUseCase
 import com.d101.presentation.R
 import com.d101.presentation.welcome.event.SignUpEvent
@@ -23,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val createAuthCodeUseCase: CreateAuthCodeUseCase,
+    private val checkAuthCodeUseCase: CheckAuthCodeUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SignUpUiModel())
     val uiState = _uiState.asStateFlow()
@@ -67,7 +70,7 @@ class SignUpViewModel @Inject constructor(
                                 inputEnabled = true,
                                 description = R.string.check_email_form,
                                 descriptionType = DescriptionType.ERROR,
-                                buttonClick = { emitEvent(SignUpEvent.EmailCheckAttempt) },
+                                buttonClick = { onEmailCheck() },
                             ),
                         )
                     }
@@ -85,7 +88,7 @@ class SignUpViewModel @Inject constructor(
                         inputEnabled = false,
                         description = R.string.auth_code_sending,
                     ),
-                    authNumberInputState = signUpUiModel.authNumberInputState.copy(
+                    authCodeInputState = signUpUiModel.authCodeInputState.copy(
                         buttonEnabled = false,
                         inputEnabled = false,
                     ),
@@ -94,7 +97,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun setDefaultState(){
+    fun setDefaultState() {
         viewModelScope.launch {
             _uiState.update { signUpUiModel ->
                 signUpUiModel.copy(
@@ -105,7 +108,7 @@ class SignUpViewModel @Inject constructor(
                         description = R.string.empty_text,
                         descriptionType = DescriptionType.DEFAULT,
                     ),
-                    authNumberInputState = signUpUiModel.authNumberInputState.copy(
+                    authCodeInputState = signUpUiModel.authCodeInputState.copy(
                         buttonEnabled = false,
                         buttonType = ConfirmType.CONFIRM,
                         inputEnabled = true,
@@ -130,17 +133,15 @@ class SignUpViewModel @Inject constructor(
                                 buttonEnabled = true,
                                 buttonType = ConfirmType.CANCEL,
                                 inputEnabled = false,
-                                description = R.string.auth_number_send,
+                                description = R.string.auth_number_limit,
                                 descriptionType = DescriptionType.DEFAULT,
-                                buttonClick = { emitEvent(SignUpEvent.SetDefault) },
+                                buttonClick = { onSetDefault() },
                             ),
-                            authNumberInputState = signUpUiModel.authNumberInputState.copy(
+                            authCodeInputState = signUpUiModel.authCodeInputState.copy(
                                 buttonEnabled = true,
                                 buttonType = ConfirmType.CONFIRM,
                                 inputEnabled = true,
-                                description = R.string.auth_number_limit,
-                                descriptionType = DescriptionType.DEFAULT,
-                                buttonClick = { emitEvent(SignUpEvent.AuthNumberCheckAttempt) },
+                                buttonClick = { onAuthNumberCheck() },
                             ),
                         )
                     }
@@ -157,23 +158,63 @@ class SignUpViewModel @Inject constructor(
                                         inputEnabled = true,
                                         description = R.string.unusable_id,
                                         descriptionType = DescriptionType.ERROR,
-                                        buttonClick = { emitEvent(SignUpEvent.EmailCheckAttempt) },
+                                        buttonClick = { onEmailCheck() },
                                     ),
-                                    authNumberInputState = signUpUiModel.authNumberInputState.copy(
+                                    authCodeInputState = signUpUiModel.authCodeInputState.copy(
                                         buttonEnabled = false,
                                         buttonType = ConfirmType.CONFIRM,
                                         inputEnabled = false,
                                         description = R.string.empty_text,
                                         descriptionType = DescriptionType.DEFAULT,
-                                        buttonClick = {
-                                            emitEvent(SignUpEvent.AuthNumberCheckAttempt)
-                                        },
+                                        buttonClick = { onAuthNumberCheck() },
                                     ),
                                 )
                             }
                         }
 
                         else -> SignUpEvent.SignUpFailure("네트워크 연결 실패")
+                    }
+                }
+            }
+        }
+    }
+
+    fun checkAuthCode() {
+        viewModelScope.launch {
+            when (val result = checkAuthCodeUseCase(id.value, authCode.value)) {
+                is Result.Success -> {
+                    _uiState.update { signInModel ->
+                        signInModel.copy(
+                            authCodeInputState = signInModel.authCodeInputState.copy(
+                                inputEnabled = false,
+                                buttonEnabled = false,
+                                description = R.string.auth_success,
+                                descriptionType = DescriptionType.DEFAULT,
+                            ),
+                            idInputState = signInModel.idInputState.copy(
+                                description = R.string.empty_text,
+                            ),
+                        )
+                    }
+                }
+
+                is Result.Failure -> {
+                    when (result.errorStatus) {
+                        ErrorStatus.BadRequest -> {
+                            _uiState.update { signInModel ->
+                                signInModel.copy(
+                                    authCodeInputState = signInModel.authCodeInputState.copy(
+                                        inputEnabled = true,
+                                        buttonEnabled = true,
+                                        description = R.string.auth_failure,
+                                        descriptionType = DescriptionType.ERROR,
+                                    ),
+                                )
+                            }
+                        }
+
+                        ErrorStatus.NetworkError -> onSignUpFailure("네트워크 에러")
+                        else -> onSignUpFailure("알 수 없는 에러")
                     }
                 }
             }
@@ -189,14 +230,15 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    private fun onSetDefault() = emitEvent(SignUpEvent.SetDefault)
     private fun onEmailCheck() = emitEvent(SignUpEvent.EmailCheckAttempt)
 
-    fun onAuthNumberCheck() = emitEvent(SignUpEvent.AuthNumberCheckAttempt)
+    private fun onAuthNumberCheck() = emitEvent(SignUpEvent.AuthCodeCheckAttempt)
 
     fun onNicknameCheck() = emitEvent(SignUpEvent.NickNameCheckAttempt)
     fun onPasswordFormCheck() = emitEvent(SignUpEvent.PasswordFormCheck)
 
-    fun onPasswordMatchCheck() = emitEvent(SignUpEvent.EmailCheckAttempt)
+    fun onPasswordMatchCheck() = emitEvent(SignUpEvent.PasswordMatchCheck)
 
     fun onSignUpAttempt() = emitEvent(SignUpEvent.SignUpAttempt)
 

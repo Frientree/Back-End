@@ -31,7 +31,7 @@ sealed class InputDataState {
         override val buttonClick: () -> Unit = {},
     ) : InputDataState()
 
-    data class AuthNumberInputState(
+    data class AuthCodeInputState(
         @StringRes override val label: Int = R.string.input_auth_number,
         @StringRes override val hint: Int = R.string.please_input_auth_number,
         override val buttonVisible: Boolean = true,

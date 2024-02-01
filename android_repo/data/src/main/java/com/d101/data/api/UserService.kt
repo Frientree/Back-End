@@ -2,6 +2,7 @@ package com.d101.data.api
 
 import com.d101.data.model.ApiResponse
 import com.d101.data.model.ApiResult
+import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
 import com.d101.data.model.user.request.SignInRequest
@@ -29,5 +30,10 @@ interface UserService {
     @POST("/users/certification-send")
     suspend fun createAuthCode(
         @Body createAuthCodeRequest: AuthCodeCreationRequest,
+    ): ApiResult<ApiResponse<Boolean>>
+
+    @POST("/users/certification-pass")
+    suspend fun checkAuthCode(
+        @Body authCodeCheckRequest: AuthCodeCheckRequest,
     ): ApiResult<ApiResponse<Boolean>>
 }

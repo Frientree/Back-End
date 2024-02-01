@@ -36,8 +36,9 @@
     <string name="id_example">ex) frientree@gmail.com</string>
     <string name="check_email_form">이메일 형식으로 입력해 주세요.</string>
     <string name="auth_code_sending">인증 번호를 전송 중 입니다.</string>
-    <string name="auth_number_send">이메일로 인증번호가 전송되었습니다.</string>
     <string name="auth_number_limit">10분 내로 인증 번호를 입력해 주세요.</string>
+    <string name="auth_success">인증에 성공했습니다</string>
+    <string name="auth_failure">잘못된 인증 번호 입니다.</string>
     <string name="usable_id">사용 할 수 있는 ID 입니다.</string>
     <string name="unusable_id">사용할 수 없는 ID 입니다.</string>
     <string name="loading_text">열매가 만들어지는\n중이에요!</string>

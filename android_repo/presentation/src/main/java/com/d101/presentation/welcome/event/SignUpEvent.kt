@@ -4,7 +4,7 @@ sealed class SignUpEvent {
 
     data object SetDefault : SignUpEvent()
     data object EmailCheckAttempt : SignUpEvent()
-    data object AuthNumberCheckAttempt : SignUpEvent()
+    data object AuthCodeCheckAttempt : SignUpEvent()
     data object NickNameCheckAttempt : SignUpEvent()
     data object PasswordFormCheck : SignUpEvent()
     data object PasswordMatchCheck : SignUpEvent()
