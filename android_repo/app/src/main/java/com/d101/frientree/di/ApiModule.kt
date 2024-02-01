@@ -1,6 +1,7 @@
 package com.d101.frientree.di
 
 import com.d101.data.api.AuthService
+import com.d101.data.api.CalendarService
 import com.d101.data.api.FruitCreateService
 import com.d101.data.api.UserService
 import com.d101.data.network.ResultCallAdapter
@@ -73,4 +74,11 @@ object ApiModule {
         @FrientreeRetrofit
         retrofit: Retrofit,
     ): FruitCreateService = retrofit.create((FruitCreateService::class.java))
+
+    @Singleton
+    @Provides
+    fun provideCalendarApi(
+        @FrientreeRetrofit
+        retrofit: Retrofit,
+    ): CalendarService = retrofit.create((CalendarService::class.java))
 }
