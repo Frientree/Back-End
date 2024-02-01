@@ -6,15 +6,16 @@ import com.d101.frientree.dto.leaf.response.LeafConfirmationResponse;
 import com.d101.frientree.dto.leaf.response.LeafGenerationResponse;
 import com.d101.frientree.dto.leaf.response.LeafViewResponse;
 import com.d101.frientree.dto.leaf.response.dto.LeafConfirmationResponseDTO;
+import com.d101.frientree.dto.message.response.MessageResponse;
 import com.d101.frientree.entity.LeafCategory;
 import com.d101.frientree.entity.leaf.LeafDetail;
 import com.d101.frientree.entity.leaf.LeafReceive;
 import com.d101.frientree.entity.leaf.LeafSend;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
-import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.*;
 import com.d101.frientree.service.LeafService;
+import com.d101.frientree.service.MessageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class LeafServiceImpl implements LeafService {
     private final LeafReceiveRepository leafReceiveRepository;
     private final UserRepository userRepository;
     private final LeafDetailRepository leafDetailRepository;
-
+    private final MessageService messageService;
 
     @Override
     public ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory) {
@@ -68,10 +69,9 @@ public class LeafServiceImpl implements LeafService {
             // leaf를 업데이트
             leafRepository.save(selectedLeaf);
 
-            // 현재 로그인된 정보를 받아온 후 조회한 이파리를 leaf_receive테이블에 추가하기,
-            // 로그인된 유저를 찾을 수 없으면 예외처리
+            // 현재 로그인된 정보를 받아온 후 조회한 이파리를 leaf_receive테이블에 추가하기
             User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
+                    .orElseThrow(() -> new RuntimeException("해당하는 유저를 찾을 수 없습니다."));
 
             // LeafReceive 테이블에 중복 체크를 위한 existsByUserAndLeafDetail 메서드 사용
             boolean leafExists = leafReceiveRepository.existsByUserAndLeafDetail(user, selectedLeaf);
@@ -87,12 +87,26 @@ public class LeafServiceImpl implements LeafService {
                     "Success",
                     LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(selectedLeaf)
             );
-
             return ResponseEntity.ok(response);
         }
 
-        // 위로 나무 이파리 넣을 것...
-        return null;
+        // 더 이상 받을 이파리가 없을 때 MessageResponse의 description을 가져와서 LeafConfirmationResponse 형식으로 반환
+        ResponseEntity<MessageResponse> messageResponseEntity = messageService.confirm();
+        MessageResponse messageResponse = messageResponseEntity.getBody();
+
+        if (messageResponse != null) {
+            String description = messageResponse.getDescription();
+
+            // LeafConfirmationResponse 객체 생성
+            LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
+                    "Success",
+                    LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(description)  // 또는 description를 이용하여 DTO를 생성
+            );
+            return ResponseEntity.ok(response);
+        }
+
+        // 예외 처리 또는 다른 로직을 추가하십시오.
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
     @Override
@@ -113,7 +127,7 @@ public class LeafServiceImpl implements LeafService {
 
         // LeafSend 테이블에 추가할 정보 설정
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다. "));
+                .orElseThrow(() -> new RuntimeException("해당하는 유저를 찾을 수 없습니다. "));
 
         LeafSend leafSend = LeafSend.createLeafSend(newLeaf, user);
 
@@ -135,7 +149,7 @@ public class LeafServiceImpl implements LeafService {
     @Transactional
     public ResponseEntity<LeafComplaintResponse> complain(Long leafId) {
         LeafDetail currentLeaf = leafRepository.findById(leafId)
-                .orElseThrow(() -> new LeafNotFoundException("이파리가 존재하지 않습니다."));
+                .orElseThrow(() -> new LeafNotFoundException("이파리는 존재하지 않습니다."));
 
         currentLeaf.setLeafComplain(currentLeaf.getLeafComplain() + 1);
 
@@ -191,7 +205,9 @@ public class LeafServiceImpl implements LeafService {
                     .sum();
 
             // LeafViewResponse를 생성하고 반환
-            LeafViewResponse response = LeafViewResponse.createLeafViewResponse("Success", Long.valueOf(totalLeafView));
+            LeafViewResponse response = LeafViewResponse.createLeafViewResponse(
+                    "Success",
+                    Long.valueOf(totalLeafView));
 
             // response 반환
             return ResponseEntity.ok(response);
