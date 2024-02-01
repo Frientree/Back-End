@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/white" />
-    <corners android:radius="30dp" />
-    <size android:width="50dp" />
-    <padding
-        android:bottom="8dp"
-        android:left="12dp"
-        android:right="12dp"
-        android:top="8dp" />
-    <stroke
-        android:width="1dp"
-        android:color="@color/black" />
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/btn_small_confirm_enabled" android:state_enabled="true" />
+    <item android:drawable="@drawable/btn_small_confirm_disabled" android:state_enabled="false" />
+</selector>

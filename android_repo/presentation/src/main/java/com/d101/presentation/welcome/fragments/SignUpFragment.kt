@@ -45,7 +45,16 @@ class SignUpFragment : Fragment() {
     private fun setBinding() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.idInputLayout.bindTextFlow(viewLifecycleOwner, viewModel.id)
+
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.uiState.collect {
+                binding.idInputLayout.setInputDataState(it.idInputState)
+                binding.emailCheckInputLayout.setInputDataState(it.authNumberInputState)
+                binding.nicknameInputLayout.setInputDataState(it.nickNameInputState)
+                binding.passwordInputLayout.setInputDataState(it.passwordInputState)
+                binding.passwordCheckInputLayout.setInputDataState(it.passwordCheckInputState)
+            }
+        }
     }
 
     private fun collectEvent() {
