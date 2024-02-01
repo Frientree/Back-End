@@ -26,4 +26,11 @@ public class LeafConfirmationResponseDTO {
                 .build();
     }
 
+    public static LeafConfirmationResponseDTO createLeafConfirmationResponseDTO(String description) {
+        return LeafConfirmationResponseDTO.builder()
+                .leafNum(0L)
+                .leafContent(description)
+                .build();
+    }
+
 }
