@@ -3,6 +3,7 @@ package com.d101.frientree.entity.juice;
 import com.d101.frientree.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserJuice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
