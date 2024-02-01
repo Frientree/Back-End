@@ -21,6 +21,10 @@
         <item name="android:textSize">24sp</item>
     </style>
 
+    <style name="Base.FTR.Text.Medium" parent="Base.FTR.Text">
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="Base.FTR.Text.NanumBarunGothic" parent="Base.FTR.Text">
         <item name="android:fontFamily">@font/nanum_barun_gothic</item>
     </style>
@@ -72,7 +76,7 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <style name="Base.FTR.AppBarTitle" parent="Base.FTR.Text.Big">
+    <style name="Base.FTR.AppBarTitle" parent="Base.FTR.Text.Medium">
         <item name="fontFamily">@font/binggrae_bold</item>
     </style>
 

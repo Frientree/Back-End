@@ -61,7 +61,7 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
         val xInterval = (width - 400f) / xIntervalCount
         val yInterval = (height - 400f) / yIntervalCount
 
-        for (index in 0..< xIntervalCount) {
+        for (index in 0..<xIntervalCount) {
             val x1 = 125f + xInterval + index * xInterval
             val y1 = height + 40f - 200f - (yInterval * fruitList[index].score)
             val x2 = 125f + xInterval + (index + 1) * xInterval
@@ -71,8 +71,15 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
 
         for (index in fruitList.indices) {
             val x = 100f + (index + 1) * xInterval
+            val dateString = fruitList[index].date.toString()
+            val monthDay =
+                if (dateString.length > 2) {
+                    dateString.substring(dateString.length - 2)
+                } else {
+                    dateString
+                }
             canvas.drawText(
-                (fruitList[index].date.toString().substring(6)),
+                (monthDay),
                 x,
                 height - 75f,
                 textPaint,

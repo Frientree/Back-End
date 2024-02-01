@@ -22,10 +22,11 @@
             android:orientation="vertical">
 
             <TextView
+                android:textAppearance="@style/Base.FTR.AppBarTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
                 android:text="@string/emotion_calendar" />
 
             <!--        캘린더 영역-->
@@ -40,18 +41,16 @@
                 android:id="@+id/today_fruit_statistics_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:layout_marginHorizontal="32dp"
                 android:layout_marginTop="12dp"
                 android:background="@drawable/bg_main_radius"
-                android:fontFamily="@font/binggrae_bold"
                 android:gravity="center"
                 android:maxLines="2"
                 android:minLines="2"
                 android:paddingHorizontal="48dp"
                 android:paddingVertical="8dp"
                 android:text="@string/today_fruit_statistics_example"
-                android:textSize="16sp" />
+                android:textAppearance="@style/Base.FTR.Text.Bold" />
 
             <View
                 android:layout_width="match_parent"
@@ -65,33 +64,30 @@
                 android:id="@+id/not_enough_fruits_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/binggrae_bold"
                 android:gravity="center"
                 android:text="@string/not_enough_fruits"
-                android:textSize="16sp" />
+                android:textAppearance="@style/Base.FTR.Text.Bold" />
 
             <TextView
                 android:id="@+id/juice_requirements_text_view"
+                style="@style/Base.FTR.Text.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/binggrae_bold"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:drawablePadding="3dp"
                 android:gravity="center_vertical"
                 android:text="@string/juice_requirements"
-                android:textSize="12sp"
-                android:drawablePadding="3dp"
-                android:layout_marginTop="4dp"
-                app:drawableLeftCompat="@drawable/outline_info_24"
-                />
+                android:textColor="@color/gray"
+                app:drawableLeftCompat="@drawable/outline_info_24" />
 
             <TextView
                 android:id="@+id/juice_ready_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/binggrae_bold"
                 android:gravity="center"
                 android:text="@string/juice_ready"
-                android:textSize="16sp" />
+                android:textAppearance="@style/Base.FTR.Text.Bold" />
 
             <LinearLayout
                 android:id="@+id/juice_making_button_linear_layout"
@@ -101,12 +97,11 @@
                 android:layout_marginTop="20dp"
                 android:background="@drawable/btn_white_green_36dp"
                 android:gravity="center"
+                android:onClick="@{() -> viewModel.onClickJuiceMakingButton()}"
                 android:orientation="horizontal"
                 android:paddingHorizontal="32dp"
                 android:paddingTop="8dp"
-                android:paddingBottom="12dp"
-                android:onClick="@{() -> viewModel.onClickJuiceMakingButton()}"
-                >
+                android:paddingBottom="12dp">
 
                 <ImageView
                     android:layout_width="40dp"
@@ -118,9 +113,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:fontFamily="@font/binggrae_bold"
                     android:text="@string/make_juice"
-                    android:textSize="20sp" />
+                    android:textAppearance="@style/Base.FTR.Bold_20sp" />
             </LinearLayout>
 
             <TextView
@@ -128,6 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
+                android:textAppearance="@style/Base.FTR.Text.Bold"
                 android:text="@string/juice_of_week" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -158,6 +153,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/juice_name_example"
+                    android:textAppearance="@style/Base.FTR.Bold_20sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/juice_image_image_view"
                     app:layout_constraintTop_toTopOf="@id/juice_image_image_view" />
@@ -169,6 +165,7 @@
                     android:layout_marginVertical="12dp"
                     android:gravity="center_horizontal"
                     android:text="@string/juice_description"
+                    android:textAppearance="@style/Base.FTR.Text.Small"
                     app:layout_constraintBottom_toBottomOf="@id/juice_image_image_view"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/juice_image_image_view"
@@ -200,6 +197,8 @@
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="8dp"
                     android:text="@string/juice_condolence_example"
+                    android:textAppearance="@style/Base.FTR.Text.Bold"
+                    android:textSize="12sp"
                     app:layout_constraintTop_toBottomOf="@id/dash_divider_1_view" />
 
                 <View
@@ -222,6 +221,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/juice_graph"
+                    android:textAppearance="@style/Base.FTR.Text.Bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/dash_divider_2_view" />
 
@@ -257,18 +257,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:fontFamily="@font/binggrae_bold"
                     android:text="@string/fruit_list"
-                    android:textSize="16sp" />
+                    android:textAppearance="@style/Base.FTR.Text.Bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/little_fruit_list_recycler_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     android:orientation="horizontal"
-                    />
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
