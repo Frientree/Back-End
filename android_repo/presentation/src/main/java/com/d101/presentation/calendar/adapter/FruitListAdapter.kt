@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.d101.domain.model.Fruit
 import com.d101.presentation.databinding.ItemFruitBinding
+import utils.toMonthDayFormat
 
 class FruitListAdapter() :
     ListAdapter<Fruit, FruitListAdapter.FruitViewHolder>(diffUtil) {
@@ -15,6 +16,8 @@ class FruitListAdapter() :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(fruit: Fruit) {
             binding.fruitNameTextView.text = fruit.name
+            binding.emotionTextView.text = fruit.emotion
+            binding.dateTextView.text = fruit.date.toMonthDayFormat()
         }
     }
 
