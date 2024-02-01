@@ -1,8 +1,10 @@
 package com.d101.frientree.serviceImpl.calendar;
 
 import com.d101.frientree.dto.calendar.dto.CalendarMonthlyFruitsDTO;
-import com.d101.frientree.dto.calendar.request.CalendarMonthlyFruitsRequest;
+import com.d101.frientree.dto.calendar.dto.CalendarWeeklyFruitsDTO;
+import com.d101.frientree.dto.calendar.request.CalendarDateRequest;
 import com.d101.frientree.dto.calendar.response.CalendarMonthlyFruitsResponse;
+import com.d101.frientree.dto.calendar.response.CalendarWeeklyFruitsResponse;
 import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.user.UserNotFoundException;
@@ -28,7 +30,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final UserFruitRepository userFruitRepository;
 
     @Override
-    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarMonthlyFruitsRequest request) throws ParseException {
+    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request) throws ParseException {
         //request startDate, endDate --> Date 타입으로 변환
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = dateFormat.parse(request.getStartDate());
@@ -66,6 +68,54 @@ public class CalendarServiceImpl implements CalendarService {
                 "Success", calendarMonthlyFruitsDTOList);
 
         //Response Entity 반환
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(CalendarDateRequest request) throws ParseException {
+        //주간 열매 리스트 조회
+
+        //request startDate, endDate --> Date 타입으로 변환
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = dateFormat.parse(request.getStartDate());
+        Date endDate = dateFormat.parse(request.getEndDate());
+
+        //사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
+        if(user.isEmpty()){throw new UserNotFoundException("User Not Found");}
+
+        //시작 date, 종료 date 기준 유저 열매 조회
+        List<UserFruit> userFruits = userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(
+                user.get().getUserId(), startDate, endDate);
+
+        //day 값 setting (Calendar 객체로 날짜 더하는 기능 쓰기)
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+
+        List<CalendarWeeklyFruitsDTO> calendarWeeklyFruitsDTOList = new ArrayList<>();
+
+        //DTO 담기
+        for(UserFruit userFruit : userFruits){
+            Date day =  calendar.getTime();
+
+            calendarWeeklyFruitsDTOList.add(
+                    CalendarWeeklyFruitsDTO.createCalendarWeeklyFruitsDTO(
+                            dateFormat.format(day),
+                            userFruit
+                    )
+            );
+            calendar.add(Calendar.DATE, 1); //하루 더하기
+        }
+
+        //Response 형식 저장
+        CalendarWeeklyFruitsResponse response = CalendarWeeklyFruitsResponse
+                .createCalendarWeeklyFruitsResponse(
+                        "Success",
+                        calendarWeeklyFruitsDTOList);
+
+        //Response 반환
         return ResponseEntity.ok(response);
     }
 }

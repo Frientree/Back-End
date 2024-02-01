@@ -1,7 +1,8 @@
 package com.d101.frientree.controller;
 
-import com.d101.frientree.dto.calendar.request.CalendarMonthlyFruitsRequest;
+import com.d101.frientree.dto.calendar.request.CalendarDateRequest;
 import com.d101.frientree.dto.calendar.response.CalendarMonthlyFruitsResponse;
+import com.d101.frientree.dto.calendar.response.CalendarWeeklyFruitsResponse;
 import com.d101.frientree.service.CalendarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,12 @@ public class CalendarController {
     private final CalendarService calendarService;
 
     @PostMapping("/monthly-fruits")
-    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarMonthlyFruitsRequest request) throws ParseException {
+    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request) throws ParseException {
         return calendarService.monthlyFruits(request);
+    }
+
+    @PostMapping("/weekly-fruits")
+    public ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(CalendarDateRequest request) throws ParseException{
+        return calendarService.weeklyFruits(request);
     }
 }
