@@ -82,13 +82,13 @@ public class HttpPostAIRequest {
         //감정 1순위 결과 NoSQL 저장 (text : sentence)
         mongoEmotionService.createEmotion(authentication.getName(), sentence, resultList.get(0));
 
-        ArrayList<UserFruitCreateDTO> fruitDetailList = new ArrayList<>();
+        List<UserFruitCreateDTO> fruitDetailList = new ArrayList<>();
 
         //3가지 감정 List 요소 FruitDetail 정보 가져오기
         for(int i=0;i<3;i++){
             Optional<FruitDetail> fruit = fruitDetailRepository.findByFruitFeel(resultList.get(i));
             if(fruit.isPresent()){
-                fruitDetailList.add(UserFruitCreateDTO.createUserFruitSaveDTO(fruit.get()));
+                fruitDetailList.add(UserFruitCreateDTO.createUserFruitCreateDTO(fruit.get()));
             }
         }
         return UserFruitCreateResponse.createUserFruitSaveResponse("Success", fruitDetailList);

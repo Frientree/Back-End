@@ -12,7 +12,10 @@ public class CalendarMonthlyFruitsResponse {
     private String message;
     public List<CalendarMonthlyFruitsDTO> data;
 
-    public static CalendarMonthlyFruitsResponse createCalendarMonthlyFruitsResponse(){
-        return CalendarMonthlyFruitsResponse.builder().build();
+    public static CalendarMonthlyFruitsResponse createCalendarMonthlyFruitsResponse(String message, List<CalendarMonthlyFruitsDTO> data){
+        return CalendarMonthlyFruitsResponse.builder()
+                .message(message)
+                .data(data)
+                .build();
     }
 }

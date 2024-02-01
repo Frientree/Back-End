@@ -13,7 +13,7 @@ public class UserFruitCreateDTO {
     private String fruitImageUrl;
     private String fruitFeel;
 
-    public static UserFruitCreateDTO createUserFruitSaveDTO(FruitDetail fruitDetail){
+    public static UserFruitCreateDTO createUserFruitCreateDTO(FruitDetail fruitDetail){
         return UserFruitCreateDTO.builder()
                 .fruitNum(fruitDetail.getFruitNum())
                 .fruitName(fruitDetail.getFruitName())

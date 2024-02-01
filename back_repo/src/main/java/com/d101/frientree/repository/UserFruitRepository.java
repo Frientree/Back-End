@@ -12,4 +12,7 @@ import java.util.List;
 @Repository
 public interface UserFruitRepository extends JpaRepository<UserFruit, Long> {
     List<UserFruit> findAllByUserAndUserFruitCreateDateBetween(User user, Date startDate, Date endDate);
+
+    List<UserFruit> findAllByUser_UserIdAndUserFruitCreateDateBetween(Long userId, Date startDate, Date endDate);
+
 }

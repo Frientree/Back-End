@@ -53,6 +53,14 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi calendarApi(){
+        return GroupedOpenApi.builder()
+                .group("calendar-api")
+                .pathsToMatch("/calendar/**")
+                .build();
+    }
+
+    @Bean
     public OpenAPI openAPI(){
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")

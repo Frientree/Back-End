@@ -24,7 +24,7 @@ public class UserFruitController {
 
     private final UserFruitService userFruitService;
 
-    @Operation(summary = "STT 음성 파일", description = "음성파일을 STT해서 감정 분석한 후 3가지 결과가 나옵니다.")
+    @Operation(summary = "STT 음성 파일 감정 분석", description = "음성파일을 STT해서 감정 분석한 후 3가지 결과가 나옵니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitCreateResponse.class))),
@@ -37,7 +37,7 @@ public class UserFruitController {
         return userFruitService.speechToTextAudio(file);
     }
 
-    @Operation(summary = "STT 음성 파일", description = "음성파일을 STT해서 감정 분석한 후 3가지 결과가 나옵니다.")
+    @Operation(summary = "Text 파일 감정 분석", description = "Text를 감정 분석한 후 3가지 결과가 나옵니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitCreateResponse.class))),
