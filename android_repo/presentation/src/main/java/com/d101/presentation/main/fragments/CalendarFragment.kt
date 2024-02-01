@@ -23,6 +23,7 @@ import com.d101.presentation.databinding.FragmentCalendarBinding
 import utils.ShakeEventListener
 import utils.ShakeSensorModule
 import utils.repeatOnStarted
+import kotlin.random.Random
 
 class CalendarFragment : Fragment() {
     private val viewModel: CalendarViewModel by viewModels()
@@ -32,6 +33,8 @@ class CalendarFragment : Fragment() {
     private lateinit var shakeSensor: ShakeSensorModule
 
     private lateinit var dialog: Dialog
+
+    val list = makeDummyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,7 +93,6 @@ class CalendarFragment : Fragment() {
                         val fruitListAdapter = FruitListAdapter()
                         binding.fruitListRecyclerView.adapter = fruitListAdapter
 //                        TODO(지워야 한다)
-                        val list = makeDummyList()
                         fruitListAdapter.submitList(list)
                         val countList = countFruits(list)
                         val littleFruitListAdapter = LittleFruitListAdapter()
@@ -109,6 +111,7 @@ class CalendarFragment : Fragment() {
                         binding.juiceReadyTextView.visibility = View.GONE
                         binding.notEnoughFruitsTextView.visibility = View.GONE
                         binding.juiceRequirementsTextView.visibility = View.GONE
+                        binding.juiceGraph.setFruitList(list)
                         setTodayFruitStatisticsView(state)
                     }
 
@@ -166,20 +169,19 @@ class CalendarFragment : Fragment() {
             "키위",
             "체리",
             "블루베리",
-            "포도",
         )
 
-        fruits.forEach { fruitName ->
+        fruits.forEachIndexed { index, fruitName ->
             list.add(
                 Fruit(
-                    2024L,
-                    2035L,
+                    20240201L,
+                    20240201L + index,
                     fruitName,
                     "사과는 맛있다",
                     "https://www.naver.com",
                     "사과는 맛있다",
                     "행복",
-                    5,
+                    Random.nextInt(1, 22),
                 ),
             )
         }
