@@ -41,7 +41,7 @@ public class CalendarServiceImpl implements CalendarService {
         if(user.isEmpty()){throw new UserNotFoundException("User Not Found");}
 
         //시작 date 와 종료 date 기준으로 유저 열매 조회하기
-        List<UserFruit> userFruits = userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetween(
+        List<UserFruit> userFruits = userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(
                 user.get().getUserId(), startDate, endDate);
 
         //day 값 setting (Calendar 객체로 날짜 더하는 기능 쓰기)
