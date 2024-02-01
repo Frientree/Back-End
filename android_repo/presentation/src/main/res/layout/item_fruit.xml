@@ -2,61 +2,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingVertical="12dp"
-    android:paddingHorizontal="16dp"
-    android:gravity="center_vertical"
+    android:layout_marginBottom="12dp"
     android:background="@drawable/bg_white_radius_30dp"
     android:elevation="1dp"
-    android:layout_marginBottom="12dp"
-    >
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
 
     <ImageView
         android:id="@+id/fruit_image_image_view"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/tree1"
-        />
+        android:src="@drawable/tree1" />
 
     <TextView
         android:id="@+id/fruit_name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/fruit_name"
-        android:textSize="16sp"
-        android:fontFamily="@font/binggrae_bold"
         android:layout_marginStart="12dp"
-        />
+        android:text="@string/fruit_name"
+        android:textAppearance="@style/Base.FTR.Text.Bold" />
 
     <TextView
         android:id="@+id/emotion_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/emotion"
-        android:textSize="12sp"
-        android:fontFamily="@font/binggrae"
+        style="@style/Base.FTR.TextView"
         android:layout_marginStart="8dp"
-        />
+        android:text="@string/emotion"
+        android:textColor="@color/gray"
+        android:textSize="12sp" />
 
     <Space
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        />
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/date_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/Base.FTR.TextView"
         android:text="@string/date_example"
-        />
+        android:textColor="@color/light_gray"
+        android:textSize="12sp" />
 
     <ImageView
         android:id="@+id/fruit_detail_button_image_view"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:src="@drawable/sharp_keyboard_arrow_right_24"
         android:layout_marginStart="8dp"
-        />
+        android:src="@drawable/sharp_keyboard_arrow_right_24" />
 
 </LinearLayout>
