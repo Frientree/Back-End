@@ -76,9 +76,11 @@ class FrientreeInputLayout @JvmOverloads constructor(
     fun setInputDataState(inputDataSate: InputDataSate) {
         binding.labelTextView.text = context.getText(inputDataSate.label)
         binding.inputEditText.hint = context.getText(inputDataSate.hint)
+        binding.inputEditText.isEnabled = inputDataSate.inputEnabled
         binding.confirmButton.visibility =
-            if (inputDataSate.confirmVisible) View.VISIBLE else View.INVISIBLE
-        binding.confirmButton.isEnabled = inputDataSate.confirmEnabled
+            if (inputDataSate.buttonVisible) View.VISIBLE else View.INVISIBLE
+        binding.confirmButton.isEnabled = inputDataSate.buttonEnabled
+        binding.confirmButton.text = context.getText(inputDataSate.buttonType.stringRes)
         binding.descriptionTextView.setText(inputDataSate.description)
         binding.descriptionTextView.setTextColor(
             ContextCompat.getColor(

@@ -13,4 +13,6 @@ interface UserRepository {
     suspend fun changeUserNickname(nickname: String): Result<String>
 
     suspend fun logout(): Result<Unit>
+
+    suspend fun createAuthCode(userEmail: String): Result<Unit>
 }

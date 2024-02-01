@@ -11,4 +11,6 @@ interface UserDataSource {
     suspend fun getUserInfo(): Result<UserResponse>
 
     suspend fun changeUserNickname(userNickname: String): Result<NicknameChangeResponse>
+
+    suspend fun createAuthCode(userEmail: String): Result<Boolean>
 }

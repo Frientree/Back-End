@@ -8,3 +8,7 @@ sealed class SignInErrorStatus : ErrorStatus {
 sealed class GetUserErrorStatus : ErrorStatus {
     data object UserNotFound : GetUserErrorStatus()
 }
+
+sealed class AuthCodeCreationErrorStatus : ErrorStatus {
+    data object EmailDuplicate : AuthCodeCreationErrorStatus()
+}
