@@ -31,7 +31,7 @@ sealed class InputDataState {
         override val buttonClick: () -> Unit = {},
     ) : InputDataState()
 
-    data class AuthNumberInputState(
+    data class AuthCodeInputState(
         @StringRes override val label: Int = R.string.input_auth_number,
         @StringRes override val hint: Int = R.string.please_input_auth_number,
         override val buttonVisible: Boolean = true,
@@ -47,8 +47,8 @@ sealed class InputDataState {
     data class NickNameInputState(
         @StringRes override val label: Int = R.string.nickname,
         @StringRes override val hint: Int = R.string.example_nickname,
-        override val buttonVisible: Boolean = true,
-        override val buttonEnabled: Boolean = true,
+        override val buttonVisible: Boolean = false,
+        override val buttonEnabled: Boolean = false,
         override val buttonType: ConfirmType = ConfirmType.CONFIRM,
         override val inputEnabled: Boolean = true,
         @StringRes override val description: Int = R.string.empty_text,
@@ -70,7 +70,7 @@ sealed class InputDataState {
         override val buttonClick: () -> (Unit) = {},
     ) : InputDataState()
 
-    data class PasswordCheckInputState(
+    data class ConfirmPasswordInputState(
         @StringRes override val label: Int = R.string.password_check,
         @StringRes override val hint: Int = R.string.empty_text,
         override val buttonVisible: Boolean = false,

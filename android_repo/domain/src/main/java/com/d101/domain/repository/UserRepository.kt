@@ -15,4 +15,6 @@ interface UserRepository {
     suspend fun logout(): Result<Unit>
 
     suspend fun createAuthCode(userEmail: String): Result<Unit>
+
+    suspend fun checkAuthCode(userEmail: String, code: String): Result<Unit>
 }

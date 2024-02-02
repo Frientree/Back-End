@@ -2,6 +2,7 @@ package com.d101.data.datasource.user
 
 import com.d101.data.api.UserService
 import com.d101.data.error.FrientreeHttpError
+import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
 import com.d101.data.model.user.request.SignInRequest
@@ -75,10 +76,26 @@ class UserDataSourceImpl @Inject constructor(
                 Result.Success(it)
             },
             onFailure = { e ->
+                if (e is IOException) {
+                    Result.Failure(ErrorStatus.NetworkError)
+                } else {
+                    Result.Failure(ErrorStatus.UnknownError)
+                }
+            },
+        )
+
+    override suspend fun createAuthCode(userEmail: String): Result<Boolean> =
+        runCatching {
+            userService.createAuthCode(AuthCodeCreationRequest(userEmail)).getOrThrow().data
+        }.fold(
+            onSuccess = {
+                Result.Success(it)
+            },
+            onFailure = { e ->
                 if (e is FrientreeHttpError) {
                     when (e.code) {
                         400 -> Result.Failure(ErrorStatus.BadRequest)
-                        401 -> Result.Failure(GetUserErrorStatus.UserNotFound)
+                        409 -> Result.Failure(AuthCodeCreationErrorStatus.EmailDuplicate)
                         else -> Result.Failure(ErrorStatus.UnknownError)
                     }
                 } else {
@@ -91,9 +108,9 @@ class UserDataSourceImpl @Inject constructor(
             },
         )
 
-    override suspend fun createAuthCode(userEmail: String): Result<Boolean> =
+    override suspend fun checkAuthCode(userEmail: String, code: String): Result<Boolean> =
         runCatching {
-            userService.createAuthCode(AuthCodeCreationRequest(userEmail)).getOrThrow().data
+            userService.checkAuthCode(AuthCodeCheckRequest(userEmail, code)).getOrThrow().data
         }.fold(
             onSuccess = {
                 Result.Success(it)
