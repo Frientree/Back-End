@@ -10,12 +10,12 @@ import lombok.Data;
 
 public class MessageResponse {
     private String message;
-    private String description;
+    private String data;
 
     public static MessageResponse createMessageResponse(String message, String description) {
         return MessageResponse.builder()
                 .message(message)
-                .description(description)
+                .data(description)
                 .build();
     }
 
