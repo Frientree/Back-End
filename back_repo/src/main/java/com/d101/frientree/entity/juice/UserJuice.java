@@ -29,4 +29,7 @@ public class UserJuice {
 
     @Temporal(TemporalType.DATE)
     private Date userJuiceCreateDate;
+
+    @Column(name = "user_juice_message")
+    private String userJuiceMessage;
 }
