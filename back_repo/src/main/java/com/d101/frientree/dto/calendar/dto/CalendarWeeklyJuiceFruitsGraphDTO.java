@@ -14,7 +14,7 @@ public class CalendarWeeklyJuiceFruitsGraphDTO {
     public static CalendarWeeklyJuiceFruitsGraphDTO createCalendarWeeklyJuiceFruitGraphDTO(String fruitDate, UserFruit userFruit){
         return CalendarWeeklyJuiceFruitsGraphDTO.builder()
                 .fruitDate(fruitDate)
-                .fruitCalendarImageUrl(userFruit.getFruitDetail().getFruitImageUrl())
+                .fruitCalendarImageUrl(userFruit.getFruitDetail().getFruitCalendarUrl())
                 .fruitScore(userFruit.getUserFruitScore())
                 .build();
     }
