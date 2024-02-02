@@ -2,7 +2,6 @@ package com.d101.frientree.serviceImpl.calendar;
 
 import com.d101.frientree.dto.calendar.dto.CalendarMonthlyFruitsDTO;
 import com.d101.frientree.dto.calendar.dto.CalendarTodayFeelStatisticsDTO;
-import com.d101.frientree.dto.calendar.request.CalendarMonthlyFruitsRequest;
 import com.d101.frientree.dto.calendar.dto.CalendarWeeklyFruitsDTO;
 import com.d101.frientree.dto.calendar.request.CalendarDateRequest;
 import com.d101.frientree.dto.calendar.response.CalendarMonthlyFruitsResponse;
@@ -34,7 +33,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final UserFruitRepository userFruitRepository;
 
     @Override
-    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarMonthlyFruitsRequest request) throws ParseException {
+    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request) throws ParseException {
         //request startDate, endDate --> Date 타입으로 변환
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = dateFormat.parse(request.getStartDate());
