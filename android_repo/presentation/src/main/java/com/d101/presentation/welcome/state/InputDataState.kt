@@ -6,7 +6,7 @@ import com.d101.presentation.R
 import com.d101.presentation.welcome.model.ConfirmType
 import com.d101.presentation.welcome.model.DescriptionType
 
-sealed class InputDataSate {
+sealed class InputDataState {
     abstract val label: Int
     abstract val hint: Int
     abstract val buttonVisible: Boolean
@@ -29,7 +29,7 @@ sealed class InputDataSate {
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
         override val inputType: Int = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS,
         override val buttonClick: () -> Unit = {},
-    ) : InputDataSate()
+    ) : InputDataState()
 
     data class AuthNumberInputState(
         @StringRes override val label: Int = R.string.input_auth_number,
@@ -42,7 +42,7 @@ sealed class InputDataSate {
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
         override val inputType: Int = InputType.TYPE_CLASS_TEXT,
         override val buttonClick: () -> (Unit) = {},
-    ) : InputDataSate()
+    ) : InputDataState()
 
     data class NickNameInputState(
         @StringRes override val label: Int = R.string.nickname,
@@ -55,7 +55,7 @@ sealed class InputDataSate {
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
         override val inputType: Int = InputType.TYPE_CLASS_TEXT,
         override val buttonClick: () -> (Unit) = {},
-    ) : InputDataSate()
+    ) : InputDataState()
 
     data class PasswordInputState(
         @StringRes override val label: Int = R.string.password,
@@ -68,7 +68,7 @@ sealed class InputDataSate {
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
         override val inputType: Int = InputType.TYPE_TEXT_VARIATION_PASSWORD,
         override val buttonClick: () -> (Unit) = {},
-    ) : InputDataSate()
+    ) : InputDataState()
 
     data class PasswordCheckInputState(
         @StringRes override val label: Int = R.string.password_check,
@@ -81,5 +81,5 @@ sealed class InputDataSate {
         override val descriptionType: DescriptionType = DescriptionType.DEFAULT,
         override val inputType: Int = InputType.TYPE_TEXT_VARIATION_PASSWORD,
         override val buttonClick: () -> (Unit) = {},
-    ) : InputDataSate()
+    ) : InputDataState()
 }

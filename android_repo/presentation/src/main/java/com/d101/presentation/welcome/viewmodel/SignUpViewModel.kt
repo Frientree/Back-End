@@ -10,7 +10,7 @@ import com.d101.presentation.welcome.event.SignUpEvent
 import com.d101.presentation.welcome.model.ConfirmType
 import com.d101.presentation.welcome.model.DescriptionType
 import com.d101.presentation.welcome.model.SignUpUiModel
-import com.d101.presentation.welcome.state.InputDataSate
+import com.d101.presentation.welcome.state.InputDataState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -46,7 +46,7 @@ class SignUpViewModel @Inject constructor(
                 _uiState.update { signUpModel ->
                     if (id.isEmpty()) {
                         signUpModel.copy(
-                            idInputState = InputDataSate.IdInputState(),
+                            idInputState = InputDataState.IdInputState(),
                         )
                     } else if (isEmailValid(id)) {
                         signUpModel.copy(
