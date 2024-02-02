@@ -159,7 +159,7 @@ class SignUpViewModel @Inject constructor(
                                 signUpUiModel.copy(
                                     idInputState = signUpUiModel.idInputState.copy(
                                         buttonEnabled = true,
-                                        buttonType = ConfirmType.CANCEL,
+                                        buttonType = ConfirmType.CONFIRM,
                                         inputEnabled = true,
                                         description = R.string.unusable_id,
                                         descriptionType = DescriptionType.ERROR,
@@ -272,7 +272,7 @@ class SignUpViewModel @Inject constructor(
                     } else {
                         signUpUiModel.copy(
                             passwordInputState = signUpUiModel.passwordInputState.copy(
-                                description = R.string.unusable_password,
+                                description = R.string.example_password,
                                 descriptionType = DescriptionType.ERROR,
                             ),
                         )
@@ -331,14 +331,14 @@ class SignUpViewModel @Inject constructor(
                 }
             }
         } else {
-            onSignUpFailure("모든 항목을 입력해 주세요")
+            onSignUpFailure("입력 내용을 다시 확인해 주세요")
         }
     }
 
     private fun isEmailValid(email: String) =
         email.matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$".toRegex())
 
-    private fun isNicknameValid(email: String) = email.length in 2..8
+    private fun isNicknameValid(email: String) = email.length in 1..8
 
     private fun isPasswordValid(password: String) =
         password.matches(

@@ -59,7 +59,7 @@ sealed class InputDataState {
 
     data class PasswordInputState(
         @StringRes override val label: Int = R.string.password,
-        @StringRes override val hint: Int = R.string.example_password,
+        @StringRes override val hint: Int = R.string.empty_text,
         override val buttonVisible: Boolean = false,
         override val buttonEnabled: Boolean = false,
         override val buttonType: ConfirmType = ConfirmType.CONFIRM,
