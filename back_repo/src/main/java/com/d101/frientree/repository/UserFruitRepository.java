@@ -14,7 +14,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserFruitRepository extends JpaRepository<UserFruit, Long> {
-    List<UserFruit> findAllByUserAndUserFruitCreateDateBetween(User user, Date startDate, Date endDate);
 
     List<UserFruit> findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(Long userId, Date startDate, Date endDate);
 

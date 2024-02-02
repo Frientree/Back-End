@@ -85,6 +85,17 @@ public class JuiceServiceImpl implements JuiceService {
         Date startDate = dateFormat.parse(juiceGenerationRequest.getStartDate());
         Date endDate = dateFormat.parse(juiceGenerationRequest.getEndDate());
 
+        // 만약 해당 기간 사이에서 주스를 조회해서 이미 만든게 있으면 커스텀 예외처리
+        List<UserJuice> existingJuices = userJuiceRepository.findAllByUser_UserIdAndUserJuiceCreateDateBetween(currentUser.getUserId(), startDate, endDate);
+        if (!existingJuices.isEmpty()) {
+            throw new JuiceGenerationException("Juice already generated for the given date range");
+        }
+
+        // 만약 endDate가 미래면 커스텀 예외처리
+        if (endDate.after(new Date())) {
+            throw new InvalidDateException("End date cannot be in the future");
+        }
+
         // 만약 startDate가 일요일이 아니거나 endDate가 토요일이 아닐경우에 커스텀 예외처리
         if (!isSunday(startDate) || !isSaturday(endDate)) {
             throw new InvalidDateException("Invalid date range");
@@ -96,27 +107,30 @@ public class JuiceServiceImpl implements JuiceService {
         }
 
         // 해당 기간에 유저가 보유한 모든 과일을 가져온다.
-        List<UserFruit> userFruits = userFruitRepository.findAllByUserAndUserFruitCreateDateBetween(currentUser, startDate, endDate);
+        List<UserFruit> userFruits = userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(currentUser.getUserId(), startDate, endDate);
 
         if (userFruits.size() < 4) {
             throw new JuiceGenerationException("Not enough fruits to generate juice");
         }
 
+        long score;
+
+        score = userFruits.stream()
+                .mapToLong(UserFruit::getUserFruitScore)
+                .sum();
+
+        // 최종 스코어
+        JuiceDetail createdJuice = juiceDetailRepository.findJuicesByScore(score);
 
         // 유저가 주스를 만들기 위해 가져온 과일들이 들어간 dto
         List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO = JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(userFruits);
-
-        // 랜덤 주스를 생성 (아직 주스 디자인이 다 안나와서 그냥 랜덤주스 넣었습니다.)
-        List<JuiceDetail> allJuices = juiceDetailRepository.findAll();
-        // 랜덤한 주스 하나 선택
-        JuiceDetail randomJuice = getRandomElement(allJuices);
 
         // Message data 중 랜덤으로 하나 가져와야 됨.
         List<Message> allMessages = messageRepository.findAll();
         // 랜덤한 메시지 하나 선택
         Message randomMessage = getRandomElement(allMessages);
 
-        JuiceDataDTO juiceDataDTO = JuiceDataDTO.createJuiceDataDTO(randomJuice, randomMessage);
+        JuiceDataDTO juiceDataDTO = JuiceDataDTO.createJuiceDataDTO(createdJuice, randomMessage);
 
         JuiceGenerationResponse response = JuiceGenerationResponse.createJuiceGenerationResponse(
                 "success",
@@ -126,8 +140,9 @@ public class JuiceServiceImpl implements JuiceService {
 
         UserJuice userJuice = UserJuice.builder()
                 .user(currentUser)
-                .juiceDetail(randomJuice)
+                .juiceDetail(createdJuice)
                 .userJuiceCreateDate(endDate)
+                .userJuiceMessage(randomMessage.getMessageDescription())
                 .build();
 
         userJuiceRepository.save(userJuice);
