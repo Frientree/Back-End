@@ -62,36 +62,46 @@ public class LeafServiceImpl implements LeafService {
         // 2. leaf_detail 테이블에서 leaf_category에 해당하는 이파리 중에서
         //    로그인한 사용자가 보낸 및 받은 leaf를 제외한 이파리들 가져오기
         LeafCategory selectedCategory = LeafCategory.valueOf(leafCategory.toUpperCase());
-        List<LeafDetail> leaves = leafRepository.findByLeafCategoryAndLeafNumNotIn(selectedCategory, sentAndReceivedLeafNums);
+
+        List<LeafDetail> leaves;
+
+        if (sentAndReceivedLeafNums.isEmpty()) {
+            // 선택한 카테고리에 해당하는 모든 LeafDetail 가져오기
+            leaves = leafRepository.findByLeafCategory(selectedCategory);
+        } else {
+            // 선택한 카테고리에 속하면서 sentAndReceivedLeafNums에 포함되지 않은 LeafDetail 가져오기
+            leaves = leafRepository.findAllByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc
+                    (selectedCategory, sentAndReceivedLeafNums);
+        }
 
         if (!leaves.isEmpty()) {
-            // leaf_view 값을 낮은 순서로 정렬
+            // leaf_view 값을 오름차순으로 정렬
             leaves.sort(Comparator.comparing(LeafDetail::getLeafView));
 
-            // 정렬된 leaves 중에서 가장 낮은 leaf_view를 가진 leaf 선택
+            // leaf_view가 가장 낮은 leaf 선택
             LeafDetail selectedLeaf = leaves.get(0);
 
-            // 선택된 leaf의 leaf_view 값을 1 증가시킴
+            // 선택된 leaf의 leaf_view 값을 1 증가
             selectedLeaf.setLeafView(selectedLeaf.getLeafView() + 1);
 
-            // leaf를 업데이트
+            // leaf 업데이트
             leafRepository.save(selectedLeaf);
 
-            // 현재 로그인된 정보를 받아온 후 조회한 이파리를 leaf_receive테이블에 추가하기
+            // 현재 로그인한 사용자 정보 가져오기
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
 
-            // LeafReceive 테이블에 중복 체크를 위한 existsByUserAndLeafDetail 메서드 사용
+            // LeafReceive 테이블에서 중복 체크
             boolean leafExists = leafReceiveRepository.existsByUserAndLeafDetail(user, selectedLeaf);
 
             if (!leafExists) {
-                // 중복되지 않으면 LeafReceive 테이블에 추가
+                // 중복이 없다면 LeafReceive 테이블에 추가
                 LeafReceive leafReceive = LeafReceive.createLeafReceive(selectedLeaf, user);
                 leafReceiveRepository.save(leafReceive);
             }
 
-            // LeafConfirmationResponse 객체 생성
-            LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
+
+           LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
                     "Success",
                     LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(selectedLeaf)
             );
@@ -103,7 +113,7 @@ public class LeafServiceImpl implements LeafService {
         MessageResponse messageResponse = messageResponseEntity.getBody();
 
         if (messageResponse != null) {
-            String description = messageResponse.getDescription();
+            String description = messageResponse.getData();
 
             // LeafConfirmationResponse 객체 생성
             LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
@@ -159,10 +169,9 @@ public class LeafServiceImpl implements LeafService {
 
         currentLeaf.setLeafComplain(currentLeaf.getLeafComplain() + 1);
 
-        // 누적된 complain(신고)수가 5를 충족하면 이파리를 삭제합니다.
-
+        // 누적된 complain(신고)수가 5를 충족하면 이파리를 삭제
         if (currentLeaf.getLeafComplain() >= 5) {
-            // 삭제할 LeafDetail의 leaf_send 에 저장된 이파리 삭제
+            // leaf_send 에 저장된 이파리 삭제
             leafSendRepository.deleteByLeafDetail(currentLeaf);
 
             // leaf_receive 에 저장된 이파리 삭제

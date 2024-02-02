@@ -22,10 +22,10 @@ public class MessageController {
 
     private final MessageService messageService;
 
-    @Operation(summary = "위로 메세지 ", description = "이파리의 전체 조회수를 확인합니다.")
+    @Operation(summary = "위로 메세지 ", description = "나무로부터 위로 메세지를 받아옵니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "조회수 확인 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
-            @ApiResponse(responseCode = "404", description = "조회수 확인 실패 (message : \"User not Found\", code : 400, data : null)", content = @Content),
+            @ApiResponse(responseCode = "200", description = "위로메세지 조회 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "404", description = "위로메세지 조회 실패 (message : \"Message not Found\", code : 400, data : null)", content = @Content),
     })
     @GetMapping
     public ResponseEntity<MessageResponse> messageConfirm() {
