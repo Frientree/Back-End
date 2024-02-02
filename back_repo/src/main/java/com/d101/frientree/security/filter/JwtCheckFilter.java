@@ -33,7 +33,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
-        if (path.equals("/users/create")) {
+        if (path.equals("/users/sign-up")) {
             return true;
         }
 

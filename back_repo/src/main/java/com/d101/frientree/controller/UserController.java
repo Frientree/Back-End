@@ -52,7 +52,7 @@ public class UserController {
             @ApiResponse(responseCode = "201", description = "(message : \"Success\", code : 201)", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
             @ApiResponse(responseCode = "400", description = "(message : \"Fail\", code : 400)\n")
     })
-    @PostMapping("/create")
+    @PostMapping("/sign-up")
     public ResponseEntity<UserCreateResponse> userGeneration(@RequestBody UserCreateRequest userCreateRequest) {
         return userService.generateUser(userCreateRequest);
     }
