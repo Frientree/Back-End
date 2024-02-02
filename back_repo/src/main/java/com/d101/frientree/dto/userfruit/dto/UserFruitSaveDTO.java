@@ -8,7 +8,7 @@ import lombok.Data;
 @Builder
 public class UserFruitSaveDTO {
     private Boolean isApple;
-    private String fruitCreateDare;
+    private String fruitCreateDate;
     private String fruitName;
     private String fruitDescription;
     private String fruitImageUrl;
@@ -16,10 +16,10 @@ public class UserFruitSaveDTO {
     private String fruitFeel;
     private Long fruitScore;
 
-    public static UserFruitSaveDTO createUserFruitSaveDTO(Boolean isApple, String fruitCreateDare,FruitDetail fruitDetail, Long score){
+    public static UserFruitSaveDTO createUserFruitSaveDTO(Boolean isApple, String fruitCreateDate, FruitDetail fruitDetail, Long score){
         return UserFruitSaveDTO.builder()
                 .isApple(isApple)
-                .fruitCreateDare(fruitCreateDare)
+                .fruitCreateDate(fruitCreateDate)
                 .fruitName(fruitDetail.getFruitName())
                 .fruitDescription(fruitDetail.getFruitDescription())
                 .fruitImageUrl(fruitDetail.getFruitImageUrl())
