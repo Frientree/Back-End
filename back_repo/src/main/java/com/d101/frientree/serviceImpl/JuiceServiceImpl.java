@@ -102,6 +102,7 @@ public class JuiceServiceImpl implements JuiceService {
             throw new JuiceGenerationException("Not enough fruits to generate juice");
         }
 
+
         // 유저가 주스를 만들기 위해 가져온 과일들이 들어간 dto
         List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO = JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(userFruits);
 
