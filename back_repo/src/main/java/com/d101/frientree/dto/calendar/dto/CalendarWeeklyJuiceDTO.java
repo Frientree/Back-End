@@ -9,10 +9,10 @@ import java.util.List;
 @Builder
 public class CalendarWeeklyJuiceDTO {
     private CalendarWeeklyJuiceDetailDTO juiceData;
-    private List<CalendarWeeklyJuiceFruitGraphDTO> fruitGraphData;
+    private List<CalendarWeeklyJuiceFruitsGraphDTO> fruitGraphData;
 
     public static CalendarWeeklyJuiceDTO createCalendarWeeklyJuiceDTO(
-            CalendarWeeklyJuiceDetailDTO juiceData, List<CalendarWeeklyJuiceFruitGraphDTO> fruitGraphData) {
+            CalendarWeeklyJuiceDetailDTO juiceData, List<CalendarWeeklyJuiceFruitsGraphDTO> fruitGraphData) {
         return CalendarWeeklyJuiceDTO.builder()
                 .juiceData(juiceData)
                 .fruitGraphData(fruitGraphData)

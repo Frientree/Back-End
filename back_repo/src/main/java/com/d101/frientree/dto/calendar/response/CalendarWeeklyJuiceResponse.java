@@ -10,7 +10,7 @@ public class CalendarWeeklyJuiceResponse {
     private String message;
     private CalendarWeeklyJuiceDTO data;
 
-    public CalendarWeeklyJuiceResponse createCalendarWeeklyJuiceResponse(String message, CalendarWeeklyJuiceDTO data){
+    public static CalendarWeeklyJuiceResponse createCalendarWeeklyJuiceResponse(String message, CalendarWeeklyJuiceDTO data){
         return CalendarWeeklyJuiceResponse.builder()
                 .message(message)
                 .data(data)
