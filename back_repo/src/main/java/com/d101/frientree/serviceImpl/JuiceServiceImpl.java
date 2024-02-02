@@ -113,14 +113,12 @@ public class JuiceServiceImpl implements JuiceService {
             throw new JuiceGenerationException("Not enough fruits to generate juice");
         }
 
-        long score;
-
-        score = userFruits.stream()
+        long scoreSum = userFruits.stream()
                 .mapToLong(UserFruit::getUserFruitScore)
                 .sum();
 
         // 최종 스코어
-        JuiceDetail createdJuice = juiceDetailRepository.findJuicesByScore(score);
+        JuiceDetail createdJuice = juiceDetailRepository.findJuicesByScore(scoreSum);
 
         // 유저가 주스를 만들기 위해 가져온 과일들이 들어간 dto
         List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO = JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(userFruits);
