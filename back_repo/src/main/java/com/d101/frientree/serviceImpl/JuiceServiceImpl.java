@@ -25,10 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,8 +83,9 @@ public class JuiceServiceImpl implements JuiceService {
         Date endDate = dateFormat.parse(juiceGenerationRequest.getEndDate());
 
         // 만약 해당 기간 사이에서 주스를 조회해서 이미 만든게 있으면 커스텀 예외처리
-        List<UserJuice> existingJuices = userJuiceRepository.findAllByUser_UserIdAndUserJuiceCreateDateBetween(currentUser.getUserId(), startDate, endDate);
-        if (!existingJuices.isEmpty()) {
+        Optional<UserJuice> existJuice = userJuiceRepository.findByUser_UserIdAndUserJuiceCreateDate(currentUser.getUserId(), endDate);
+
+        if (existJuice.isPresent()) {
             throw new JuiceGenerationException("Juice already generated for the given date range");
         }
 
