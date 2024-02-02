@@ -210,12 +210,14 @@ public class LeafServiceImpl implements LeafService {
             // response 반환
             return ResponseEntity.ok(response);
 
-        } catch (Exception e) {
-            // 예외 발생 시 에러 응답
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "예기치 못한 오류가 발생했습니다.", e);
+        } catch (UserNotFoundException e) {
+            // 사용자를 찾을 수 없는 경우
+            throw new UserNotFoundException("해당하는 유저를 찾을 수 없습니다.");
+
+        } catch (LeafNotFoundException e) {
+            // leaf_num을 찾지 못한 경우 ( leaf_send 테이블에 로그인한 유저가 보낸 이파리가 없을 때)
+            throw new LeafNotFoundException("송신한 이파리를 찾을 수 없습니다.");
 
         }
     }
-
-
 }
