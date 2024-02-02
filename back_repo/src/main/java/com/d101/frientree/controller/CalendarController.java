@@ -2,13 +2,12 @@ package com.d101.frientree.controller;
 
 import com.d101.frientree.dto.calendar.request.CalendarDateRequest;
 import com.d101.frientree.dto.calendar.response.CalendarMonthlyFruitsResponse;
+import com.d101.frientree.dto.calendar.response.CalendarTodayFeelStatisticsResponse;
 import com.d101.frientree.dto.calendar.response.CalendarWeeklyFruitsResponse;
 import com.d101.frientree.service.CalendarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -27,5 +26,11 @@ public class CalendarController {
     @PostMapping("/weekly-fruits")
     public ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(CalendarDateRequest request) throws ParseException{
         return calendarService.weeklyFruits(request);
+    }
+
+    @GetMapping("/today-feel-statistics")
+    public ResponseEntity<CalendarTodayFeelStatisticsResponse> todayFeelStatistics(
+            @RequestParam("todayDate") String todayDate) throws ParseException {
+        return calendarService.todayFeelStatistics(todayDate);
     }
 }

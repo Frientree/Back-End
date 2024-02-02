@@ -1,13 +1,17 @@
 package com.d101.frientree.serviceImpl.calendar;
 
 import com.d101.frientree.dto.calendar.dto.CalendarMonthlyFruitsDTO;
+import com.d101.frientree.dto.calendar.dto.CalendarTodayFeelStatisticsDTO;
+import com.d101.frientree.dto.calendar.request.CalendarMonthlyFruitsRequest;
 import com.d101.frientree.dto.calendar.dto.CalendarWeeklyFruitsDTO;
 import com.d101.frientree.dto.calendar.request.CalendarDateRequest;
 import com.d101.frientree.dto.calendar.response.CalendarMonthlyFruitsResponse;
+import com.d101.frientree.dto.calendar.response.CalendarTodayFeelStatisticsResponse;
 import com.d101.frientree.dto.calendar.response.CalendarWeeklyFruitsResponse;
 import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.user.UserNotFoundException;
+import com.d101.frientree.exception.userfruit.UserFruitNotFoundException;
 import com.d101.frientree.repository.UserFruitRepository;
 import com.d101.frientree.repository.UserRepository;
 import com.d101.frientree.service.CalendarService;
@@ -30,7 +34,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final UserFruitRepository userFruitRepository;
 
     @Override
-    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request) throws ParseException {
+    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarMonthlyFruitsRequest request) throws ParseException {
         //request startDate, endDate --> Date 타입으로 변환
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate = dateFormat.parse(request.getStartDate());
@@ -66,6 +70,42 @@ public class CalendarServiceImpl implements CalendarService {
         CalendarMonthlyFruitsResponse response = CalendarMonthlyFruitsResponse
                 .createCalendarMonthlyFruitsResponse(
                 "Success", calendarMonthlyFruitsDTOList);
+
+        //Response Entity 반환
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<CalendarTodayFeelStatisticsResponse> todayFeelStatistics(String todayDate) throws ParseException {
+        //request todayDate --> Date 타입으로 변환
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date today = dateFormat.parse(todayDate);
+
+        //사용자 정보 가져오기
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        //사용자가 금일 생성한 열매 감정 가져오기
+        Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(Long.valueOf(authentication.getName()), today);
+        if(userFruit.isEmpty()){throw new UserFruitNotFoundException("User Fruit Not Found");}
+
+        //금일 생성한 열매 감정과 같은 사용자 수 가져오기
+        Long userFruitStatistics = userFruitRepository
+                .countByFruitNumAndDateExcludingUser(
+                        userFruit.get().getFruitDetail().getFruitNum(),
+                        today,
+                        Long.valueOf(authentication.getName())
+                );
+
+        //DTO 담으면서 Response 형식으로 저장
+        CalendarTodayFeelStatisticsResponse response = CalendarTodayFeelStatisticsResponse
+                .createCalendarTodayFeelStatisticsResponse(
+                "Success",
+                CalendarTodayFeelStatisticsDTO.createCalendarTodayFeelStatisticsDTO(
+                        dateFormat.format(today),
+                        userFruit.get().getFruitDetail().getFruitFeel(),
+                        userFruitStatistics
+                )
+        );
 
         //Response Entity 반환
         return ResponseEntity.ok(response);
