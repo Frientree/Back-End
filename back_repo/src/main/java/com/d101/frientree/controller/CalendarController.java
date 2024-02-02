@@ -37,7 +37,6 @@ public class CalendarController {
 
     @PostMapping("/weekly-juice")
     public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(CalendarDateRequest request) throws ParseException{
-        //return calendarService.
-        return null;
+        return calendarService.weeklyJuice(request);
     }
 }

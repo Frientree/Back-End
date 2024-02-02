@@ -7,6 +7,7 @@ import com.d101.frientree.dto.calendar.request.CalendarDateRequest;
 import com.d101.frientree.dto.calendar.response.CalendarMonthlyFruitsResponse;
 import com.d101.frientree.dto.calendar.response.CalendarTodayFeelStatisticsResponse;
 import com.d101.frientree.dto.calendar.response.CalendarWeeklyFruitsResponse;
+import com.d101.frientree.dto.calendar.response.CalendarWeeklyJuiceResponse;
 import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.user.UserNotFoundException;
@@ -108,6 +109,22 @@ public class CalendarServiceImpl implements CalendarService {
 
         //Response Entity 반환
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(CalendarDateRequest request) throws ParseException {
+        //주간 주스 조회
+
+        //request startDate, endDate --> Date 타입으로 변환
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = dateFormat.parse(request.getStartDate());
+        Date endDate = dateFormat.parse(request.getEndDate());
+
+
+
+
+
+        return null;
     }
 
     @Override
