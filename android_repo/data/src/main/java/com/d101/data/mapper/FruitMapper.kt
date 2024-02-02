@@ -2,6 +2,7 @@ package com.d101.data.mapper
 
 import com.d101.data.roomdb.entity.FruitEntity
 import com.d101.domain.model.Fruit
+import com.d101.domain.utils.toFruitEmotion
 
 object FruitMapper {
     fun FruitEntity.toFruit(): Fruit {
@@ -12,7 +13,7 @@ object FruitMapper {
             description = this.description,
             imageUrl = this.imageUrl,
             calendarImageUrl = this.calendarImageUrl,
-            emotion = this.emotion,
+            fruitEmotion = this.emotion.toFruitEmotion(),
             score = this.score,
         )
     }

@@ -16,7 +16,7 @@ class FruitListAdapter() :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(fruit: Fruit) {
             binding.fruitNameTextView.text = fruit.name
-            binding.emotionTextView.text = fruit.emotion
+            binding.emotionTextView.text = fruit.fruitEmotion.korean
             binding.dateTextView.text = fruit.date.toMonthDayFormat()
         }
     }

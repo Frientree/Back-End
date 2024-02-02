@@ -79,7 +79,7 @@ class AfterFruitCreateFragment : Fragment() {
                         override fun onLoadCleared(placeholder: Drawable?) {
                         }
                     })
-                chip.text = changeChipName(fruitList[idx].fruitFeel)
+                chip.text = fruitList[idx].fruitFeel.korean
             }
         }
 
@@ -110,10 +110,6 @@ class AfterFruitCreateFragment : Fragment() {
         binding.saveFruitButton.setOnClickListener {
             FruitDialogInterface.dialog.dismiss()
         }
-    }
-
-    private fun changeChipName(feelEng: String): String {
-        return FruitName.getFeelKor(feelEng)
     }
 
     override fun onDestroyView() {
