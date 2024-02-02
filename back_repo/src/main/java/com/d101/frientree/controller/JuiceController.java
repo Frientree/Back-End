@@ -29,8 +29,8 @@ public class JuiceController {
             @ApiResponse(responseCode = "201", description = "(message : \"Success\", code : 201)",
                     content = @Content(schema = @Schema(implementation = JuiceGenerationResponse.class))),
             @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n"),
-            @ApiResponse(responseCode = "422", description = "(message : \"Fail\", code : 422)\n"),
-            @ApiResponse(responseCode = "422", description = "(message : \"Fail\", code : 409)\n")
+            @ApiResponse(responseCode = "422", description = "(message : \"Input Data Error\", code : 422)\n"),
+            @ApiResponse(responseCode = "409", description = "(message : \"Date Error\", code : 409)\n")
     })
     @PostMapping
     public ResponseEntity<JuiceGenerationResponse> juiceGeneration(@RequestBody JuiceGenerationRequest juiceGenerationRequest) throws ParseException {
