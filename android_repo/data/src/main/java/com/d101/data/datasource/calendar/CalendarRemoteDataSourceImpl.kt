@@ -1,5 +1,6 @@
 package com.d101.data.datasource.calendar
 
+import android.util.Log
 import com.d101.data.api.CalendarService
 import com.d101.data.error.FrientreeHttpError
 import com.d101.data.model.calendar.request.FruitsOfMonthRequest
@@ -46,13 +47,14 @@ class CalendarRemoteDataSourceImpl @Inject constructor(
     override suspend fun getJuiceOfWeek(startDate: String, endDate: String) = runCatching {
         calendarService.getJuiceOfWeek(JuiceOfWeekRequest(startDate, endDate)).getOrThrow().data
     }.fold(
-        onSuccess = { Result.Success(it) },
+        onSuccess = {
+            Log.d("Juice", it.toString())
+            Result.Success(it)
+        },
         onFailure = { e ->
             if (e is FrientreeHttpError) {
                 when (e.code) {
                     404 -> Result.Failure(JuiceErrorStatus.JuiceNotFound)
-                    422 -> Result.Failure(JuiceErrorStatus.NotEnoughFruits)
-                    409 -> Result.Failure(JuiceErrorStatus.NotEnoughTime)
                     else -> Result.Failure(ErrorStatus.UnknownError)
                 }
             } else {

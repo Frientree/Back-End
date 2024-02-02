@@ -5,5 +5,5 @@ import com.d101.data.model.juice.JuiceDataModel
 
 data class JuiceOfWeekResponse(
     val juiceData: JuiceDataModel,
-    val fruitsGraphData: List<FruitGraphElementModel>,
+    val fruitGraphData: List<FruitGraphElementModel>,
 )

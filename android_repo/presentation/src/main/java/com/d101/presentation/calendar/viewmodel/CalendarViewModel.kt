@@ -3,9 +3,11 @@ package com.d101.presentation.calendar.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Fruit
+import com.d101.domain.model.Juice
 import com.d101.domain.model.Result
 import com.d101.domain.usecase.calendar.GetFruitsOfMonthUseCase
 import com.d101.domain.usecase.calendar.GetFruitsOfWeekUseCase
+import com.d101.domain.usecase.calendar.GetJuiceOfWeekUseCase
 import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +23,7 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     val getFruitsOfMonthUseCase: GetFruitsOfMonthUseCase,
     val getFruitsOfWeekUseCase: GetFruitsOfWeekUseCase,
+    val getJuiceOfWeekUseCase: GetJuiceOfWeekUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<CalendarViewState>(CalendarViewState.JuiceAbsentState())
     val uiState = _uiState.asStateFlow()
@@ -45,7 +48,9 @@ class CalendarViewModel @Inject constructor(
     }
 
     private fun onSetWeek(weekDate: Long) {
-        viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnSetWeek) }
+        viewModelScope.launch {
+            _eventFlow.emit(CalendarViewEvent.OnSetWeek)
+        }
     }
 
     fun onInitOccurred() {
@@ -56,7 +61,9 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun onTapJuiceMakingButtonOccurred() {
-        setJuiceShakeState()
+        viewModelScope.launch {
+            _eventFlow.emit(CalendarViewEvent.OnShowJuiceShakeDialog)
+        }
     }
 
     fun onCompleteJuiceShakeOccurred() {
@@ -80,6 +87,11 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun onWeekChangeOccurred(weekDate: Long) {
+        getFruitsOfWeek(weekDate)
+        getJuiceOfWeek(weekDate)
+    }
+
+    private fun getFruitsOfWeek(weekDate: Long) {
         viewModelScope.launch {
             when (val result = getFruitsOfWeekUseCase(weekDate)) {
                 is Result.Success -> {
@@ -87,6 +99,41 @@ class CalendarViewModel @Inject constructor(
                 }
 
                 is Result.Failure -> {}
+            }
+        }
+    }
+
+    private fun getJuiceOfWeek(weekDate: Long) {
+        viewModelScope.launch {
+            when (val result = getJuiceOfWeekUseCase(weekDate)) {
+                is Result.Success -> {
+                    setJuiceOfWeek(result.data)
+                }
+
+                is Result.Failure -> {}
+            }
+        }
+    }
+
+    private fun setJuiceOfWeek(juice: Juice) {
+        when (val currentState = _uiState.value) {
+            is CalendarViewState.JuiceAbsentState -> {
+                _uiState.update {
+                    CalendarViewState.JuicePresentState(
+                        juice,
+                        currentState.fruitListForWeek,
+                        currentState.fruitListForMonth,
+                        currentState.todayFruitCreationStatus,
+                        currentState.todayFruitStatistics,
+                        currentState.juiceCreatableStatus,
+                    )
+                }
+            }
+
+            is CalendarViewState.JuicePresentState -> {
+                _uiState.update {
+                    currentState.copy(juice = juice)
+                }
             }
         }
     }
@@ -104,12 +151,6 @@ class CalendarViewModel @Inject constructor(
                     currentState.copy(fruitListForMonth = fruitListForMonth)
                 }
             }
-
-            is CalendarViewState.JuiceShakeState -> {
-                _uiState.update {
-                    currentState.copy(fruitListForMonth = fruitListForMonth)
-                }
-            }
         }
     }
 
@@ -122,12 +163,6 @@ class CalendarViewModel @Inject constructor(
             }
 
             is CalendarViewState.JuicePresentState -> {
-                _uiState.update {
-                    currentState.copy(fruitListForWeek = fruitListForWeek)
-                }
-            }
-
-            is CalendarViewState.JuiceShakeState -> {
                 _uiState.update {
                     currentState.copy(fruitListForWeek = fruitListForWeek)
                 }
@@ -151,19 +186,6 @@ class CalendarViewModel @Inject constructor(
     private fun setJuicePresentState() {
         _uiState.update {
             CalendarViewState.JuicePresentState(
-                it.juice,
-                it.fruitListForWeek,
-                it.fruitListForMonth,
-                it.todayFruitCreationStatus,
-                it.todayFruitStatistics,
-                it.juiceCreatableStatus,
-            )
-        }
-    }
-
-    private fun setJuiceShakeState() {
-        _uiState.update {
-            CalendarViewState.JuiceShakeState(
                 it.juice,
                 it.fruitListForWeek,
                 it.fruitListForMonth,

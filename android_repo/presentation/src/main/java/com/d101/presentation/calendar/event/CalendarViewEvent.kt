@@ -15,4 +15,6 @@ sealed class CalendarViewEvent {
     data object OnTapCollectionButton : CalendarViewEvent()
 
     data object OnCancelJuiceShake : CalendarViewEvent()
+
+    data object OnShowJuiceShakeDialog : CalendarViewEvent()
 }

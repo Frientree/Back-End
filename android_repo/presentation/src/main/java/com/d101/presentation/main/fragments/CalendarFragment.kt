@@ -1,11 +1,13 @@
 package com.d101.presentation.main.fragments
 
+import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -36,6 +38,9 @@ class CalendarFragment : Fragment() {
 
     private lateinit var dialog: Dialog
 
+    private lateinit var fruitListAdapter: FruitListAdapter
+    private lateinit var littleFruitListAdapter: LittleFruitListAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,6 +55,8 @@ class CalendarFragment : Fragment() {
         setBinding()
         subscribeEvent()
         subscribeViewState()
+        fruitListAdapter = FruitListAdapter()
+        littleFruitListAdapter = LittleFruitListAdapter()
     }
 
     private fun setBinding() {
@@ -83,8 +90,10 @@ class CalendarFragment : Fragment() {
                     }
 
                     CalendarViewEvent.OnSetWeek -> {
-                        viewModel.onWeekChangeOccurred(2024010920240115)
+                        viewModel.onWeekChangeOccurred(2024010720240113)
                     }
+
+                    CalendarViewEvent.OnShowJuiceShakeDialog -> showShakeJuiceDialog()
                 }
             }
         }
@@ -95,38 +104,43 @@ class CalendarFragment : Fragment() {
             viewModel.uiState.collect { state ->
                 when (state) {
                     is CalendarViewState.JuiceAbsentState -> {
-                        binding.juiceOfWeekTextView.visibility = View.GONE
-                        binding.juiceOfWeekInfoConstraintLayout.visibility = View.GONE
-                        val fruitListAdapter = FruitListAdapter()
-                        binding.fruitListRecyclerView.adapter = fruitListAdapter
-                        fruitListAdapter.submitList(state.fruitListForWeek)
-                        val countList = countFruits(state.fruitListForWeek)
-                        val littleFruitListAdapter = LittleFruitListAdapter()
-                        binding.littleFruitListRecyclerView.adapter = littleFruitListAdapter
-                        littleFruitListAdapter.submitList(countList)
-                        binding.fruitListLinearLayout.gravity = Gravity.CENTER_VERTICAL
+                        setViewsVisibility(isJuicePresent = false)
+                        updateFruitListView(state)
                         setJuiceCreatableStatusView(state)
                         setTodayFruitStatisticsView(state)
                     }
 
                     is CalendarViewState.JuicePresentState -> {
                         if (::dialog.isInitialized && dialog.isShowing) dialog.dismiss()
-                        binding.juiceOfWeekTextView.visibility = View.VISIBLE
-                        binding.juiceOfWeekInfoConstraintLayout.visibility = View.VISIBLE
-                        binding.juiceMakingButtonLinearLayout.visibility = View.GONE
-                        binding.juiceReadyTextView.visibility = View.GONE
-                        binding.notEnoughFruitsTextView.visibility = View.GONE
-                        binding.juiceRequirementsTextView.visibility = View.GONE
-                        binding.juiceGraph.setFruitList(state.fruitListForWeek)
+                        setViewsVisibility(isJuicePresent = true)
+                        binding.juiceGraph.setFruitList(state.juice.fruitList)
+                        updateFruitListView(state)
                         setTodayFruitStatisticsView(state)
-                    }
-
-                    is CalendarViewState.JuiceShakeState -> {
-                        showShakeJuiceDialog()
                     }
                 }
             }
         }
+    }
+
+    fun setViewsVisibility(isJuicePresent: Boolean) {
+        binding.juiceOfWeekTextView.visibility = if (isJuicePresent) View.VISIBLE else View.GONE
+        binding.juiceOfWeekInfoConstraintLayout.visibility =
+            if (isJuicePresent) View.VISIBLE else View.GONE
+        binding.juiceMakingButtonLinearLayout.visibility =
+            if (isJuicePresent) View.GONE else View.VISIBLE
+        binding.juiceReadyTextView.visibility = if (isJuicePresent) View.GONE else View.VISIBLE
+        binding.notEnoughFruitsTextView.visibility = if (isJuicePresent) View.GONE else View.VISIBLE
+        binding.juiceRequirementsTextView.visibility =
+            if (isJuicePresent) View.GONE else View.VISIBLE
+    }
+
+    private fun updateFruitListView(state: CalendarViewState) {
+        binding.fruitListRecyclerView.adapter = fruitListAdapter
+        fruitListAdapter.submitList(state.fruitListForWeek)
+        val countList = countFruits(state.fruitListForWeek)
+        binding.littleFruitListRecyclerView.adapter = littleFruitListAdapter
+        littleFruitListAdapter.submitList(countList)
+        binding.fruitListLinearLayout.gravity = Gravity.CENTER_VERTICAL
     }
 
     private fun setTodayFruitStatisticsView(state: CalendarViewState) {
@@ -178,7 +192,16 @@ class CalendarFragment : Fragment() {
             object : ShakeEventListener {
                 override fun onShakeSensed() {
                     if (progressBar.progress < progressBar.max) {
-                        progressBar.progress += 1
+                        val progressAnimator =
+                            ObjectAnimator.ofInt(
+                                progressBar,
+                                "progress",
+                                progressBar.progress,
+                                progressBar.progress + 34,
+                            )
+                        progressAnimator.duration = 300
+                        progressAnimator.interpolator = LinearInterpolator()
+                        progressAnimator.start()
                     }
 
                     if (progressBar.progress >= progressBar.max) {
