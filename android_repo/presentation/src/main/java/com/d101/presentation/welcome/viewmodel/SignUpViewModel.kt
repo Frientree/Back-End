@@ -334,12 +334,6 @@ class SignUpViewModel @Inject constructor(
     private fun onEmailCheck() = emitEvent(SignUpEvent.EmailCheckAttempt)
 
     private fun onAuthNumberCheck() = emitEvent(SignUpEvent.AuthCodeCheckAttempt)
-
-    fun onNicknameCheck() = emitEvent(SignUpEvent.NickNameCheckAttempt)
-    fun onPasswordFormCheck() = emitEvent(SignUpEvent.PasswordFormCheck)
-
-    fun onPasswordMatchCheck() = emitEvent(SignUpEvent.PasswordMatchCheck)
-
     fun onSignUpAttempt() = emitEvent(SignUpEvent.SignUpAttempt)
 
     private fun onSignUpFailure(message: String) = emitEvent(SignUpEvent.SignUpFailure(message))
