@@ -94,6 +94,7 @@ class SignUpViewModel @Inject constructor(
                         buttonEnabled = false,
                         inputEnabled = false,
                         description = R.string.auth_code_sending,
+                        descriptionType = DescriptionType.DEFAULT
                     ),
                     authCodeInputState = signUpUiModel.authCodeInputState.copy(
                         buttonEnabled = false,
