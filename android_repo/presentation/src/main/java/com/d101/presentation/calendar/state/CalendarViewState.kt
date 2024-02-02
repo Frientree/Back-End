@@ -5,14 +5,16 @@ import com.d101.domain.model.Juice
 
 sealed class CalendarViewState {
     abstract val juice: Juice
-    abstract val fruitList: List<Fruit>
+    abstract val fruitListForWeek: List<Fruit>
+    abstract val fruitListForMonth: List<Fruit>
     abstract val todayFruitCreationStatus: TodayFruitCreationStatus
     abstract val todayFruitStatistics: String
     abstract val juiceCreatableStatus: JuiceCreatableStatus
 
     data class JuicePresentState(
         override val juice: Juice,
-        override val fruitList: List<Fruit>,
+        override val fruitListForWeek: List<Fruit>,
+        override val fruitListForMonth: List<Fruit>,
         override val todayFruitCreationStatus: TodayFruitCreationStatus,
         override val todayFruitStatistics: String,
         override val juiceCreatableStatus: JuiceCreatableStatus,
@@ -27,7 +29,8 @@ sealed class CalendarViewState {
             condolenceMessage = "",
             fruitList = emptyList(),
         ),
-        override val fruitList: List<Fruit> = emptyList(),
+        override val fruitListForWeek: List<Fruit> = emptyList(),
+        override val fruitListForMonth: List<Fruit> = emptyList(),
         override val todayFruitCreationStatus: TodayFruitCreationStatus =
             TodayFruitCreationStatus.NotCreated,
         override val todayFruitStatistics: String = "",
@@ -37,7 +40,8 @@ sealed class CalendarViewState {
 
     data class JuiceShakeState(
         override val juice: Juice,
-        override val fruitList: List<Fruit>,
+        override val fruitListForWeek: List<Fruit>,
+        override val fruitListForMonth: List<Fruit>,
         override val todayFruitCreationStatus: TodayFruitCreationStatus,
         override val todayFruitStatistics: String,
         override val juiceCreatableStatus: JuiceCreatableStatus,

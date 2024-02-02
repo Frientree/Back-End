@@ -16,12 +16,12 @@
 
         <TextView
             android:id="@+id/juice_name_text_view"
-            style="@style/Base.FTR.Bold_20sp"
+            style="@style/Base.FTR.TextView.DialogMain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="24dp"
-            android:text="@string/juice_name_example" />
+            android:text="@string/making_juice" />
 
         <ImageView
             android:id="@+id/juice_image_image_view"

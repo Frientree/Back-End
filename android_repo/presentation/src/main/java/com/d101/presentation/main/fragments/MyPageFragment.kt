@@ -218,6 +218,8 @@ class MyPageFragment : Fragment() {
             displayedValues = musicList.toTypedArray()
             value = musicList.indexOf(currentMusic)
             setOnValueChangedListener { _, _, selectedNow ->
+                BackgroundMusicPlayer.stopMusic()
+                BackgroundMusicPlayer.releaseMusicPlayer()
                 BackgroundMusicPlayer.playMusic(requireContext(), musicList[selectedNow])
             }
         }

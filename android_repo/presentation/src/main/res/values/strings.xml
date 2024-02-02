@@ -56,11 +56,14 @@
     <string name="juice_ready">주스 만들 준비가 되었어요!</string>
     <string name="fruit_name">행복한 사과</string>
     <string name="emotion">기쁨</string>
-    <string name="date">01.20</string>
+    <string name="date_example">01.20</string>
     <string name="juice_graph">주스 그래프</string>
     <string name="juice_shake_guide">흔들어서 주스를 만들어보세요!</string>
     <string name="juice_requirements">주스를 만들기 위해선 주간 열매가 4개 이상 필요해요!</string>
     <string name="not_enough_fruits">열매를 모으는 중이에요!</string>
+    <string name="making_juice">주스 만드는중..</string>
+    <string name="receive_leaf_text">이파리 받기</string>
+    <string name="send_leaf_text">이파리 날리기</string>
     <string name="password_check">비밀번호 확인</string>
     <string name="password">비밀번호</string>
     <string name="input_auth_number">인증번호입력</string>

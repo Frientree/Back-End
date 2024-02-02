@@ -37,9 +37,9 @@ object NetworkModule {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         builder.apply {
-            addInterceptor(loggingInterceptor)
             addInterceptor(authInterceptor)
             authenticator(authAuthenticator)
+            addInterceptor(loggingInterceptor)
         }
         return builder.build()
     }
@@ -54,8 +54,8 @@ object NetworkModule {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         builder.apply {
-            addInterceptor(loggingInterceptor)
             addInterceptor(authInterceptor)
+            addInterceptor(loggingInterceptor)
         }
         return builder.build()
     }

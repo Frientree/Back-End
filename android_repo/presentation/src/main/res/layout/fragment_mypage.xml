@@ -85,6 +85,7 @@
                 android:cursorVisible="true"
                 android:enabled="false"
                 android:inputType="text"
+                android:textColor="@color/black"
                 android:text="@{myPageViewModel.uiState.nickname}" />
 
             <ImageView

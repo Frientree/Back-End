@@ -5,7 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.d101.domain.model.Fruit
+import com.d101.domain.utils.toMonthDayFormat
 import com.d101.presentation.databinding.ItemFruitBinding
 
 class FruitListAdapter() :
@@ -15,6 +17,9 @@ class FruitListAdapter() :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(fruit: Fruit) {
             binding.fruitNameTextView.text = fruit.name
+            binding.emotionTextView.text = fruit.fruitEmotion.korean
+            binding.dateTextView.text = fruit.date.toMonthDayFormat()
+            Glide.with(this.itemView).load(fruit.calendarImageUrl).into(binding.fruitImageImageView)
         }
     }
 

@@ -1,5 +1,7 @@
 package com.d101.domain.model
 
+import com.d101.domain.utils.FruitEmotion
+
 data class Fruit(
     val id: Long,
     val date: Long,
@@ -7,6 +9,6 @@ data class Fruit(
     val description: String,
     val imageUrl: String,
     val calendarImageUrl: String,
-    val emotion: String,
+    val fruitEmotion: FruitEmotion,
     val score: Int,
 )

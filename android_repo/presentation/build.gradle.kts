@@ -48,6 +48,7 @@ dependencies {
     implementation(Libraries.coreKtx)
     implementation(Libraries.appCompat)
     implementation(Libraries.material)
+    implementation("com.google.android.gms:play-services-fido:20.1.0")
     testImplementation(Libraries.junit)
     androidTestImplementation(Libraries.androidxJunit)
     androidTestImplementation(Libraries.espressoCore)
@@ -68,6 +69,9 @@ dependencies {
 
     // Lottie
     implementation(Libraries.lottie)
+
+    // Glide
+    implementation(Libraries.glide)
 }
 kapt {
     correctErrorTypes = true
