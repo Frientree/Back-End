@@ -64,7 +64,7 @@ class FruitCreationBySpeechFragment : Fragment() {
         timerTask.cancel()
         stopRecording()
         viewModel.setAudioFile(audioFile)
-        viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
+        viewModel.changeViewEvent(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
     }
 
     private fun startRecording() {

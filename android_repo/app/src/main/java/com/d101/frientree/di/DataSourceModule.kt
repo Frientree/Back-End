@@ -4,8 +4,10 @@ import com.d101.data.datasource.calendar.CalendarLocalDataSource
 import com.d101.data.datasource.calendar.CalendarLocalDataSourceImpl
 import com.d101.data.datasource.calendar.CalendarRemoteDataSource
 import com.d101.data.datasource.calendar.CalendarRemoteDataSourceImpl
-import com.d101.data.datasource.fruitcreate.FruitCreateRemoteDataSource
-import com.d101.data.datasource.fruitcreate.FruitCreateRemoteDataSourceImpl
+import com.d101.data.datasource.fruit.FruitLocalDataSource
+import com.d101.data.datasource.fruit.FruitLocalDataSourceImpl
+import com.d101.data.datasource.fruit.FruitRemoteDataSource
+import com.d101.data.datasource.fruit.FruitRemoteDataSourceImpl
 import com.d101.data.datasource.user.UserDataSource
 import com.d101.data.datasource.user.UserDataSourceImpl
 import dagger.Binds
@@ -24,9 +26,15 @@ abstract class DataSourceModule {
 
     @Binds
     @Singleton
-    abstract fun bindFruitCreateRemoteDataSource(
-        fruitCreateRemoteDataSourceImpl: FruitCreateRemoteDataSourceImpl,
-    ): FruitCreateRemoteDataSource
+    abstract fun bindFruitRemoteDataSource(
+        fruitRemoteDataSourceImpl: FruitRemoteDataSourceImpl,
+    ): FruitRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindFruitLocalDataSource(
+        fruitLocalDataSourceImpl: FruitLocalDataSourceImpl,
+    ): FruitLocalDataSource
 
     @Binds
     @Singleton

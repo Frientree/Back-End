@@ -19,8 +19,10 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentAfterFruitCreateBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import com.google.android.material.chip.Chip
+import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
 
+@AndroidEntryPoint
 class AfterFruitCreateFragment : Fragment() {
 
     private var _binding: FragmentAfterFruitCreateBinding? = null
@@ -49,6 +51,7 @@ class AfterFruitCreateFragment : Fragment() {
         binding.viewModel = viewModel
 
         val fruitList = viewModel.todayFruitList.value
+        fruitList[0].fruitName = "생각이 많은 " + fruitList[0].fruitName
 
         viewModel.setSelectedFruit(fruitList[0])
 
@@ -71,7 +74,7 @@ class AfterFruitCreateFragment : Fragment() {
                     .into(object : CustomTarget<Drawable>() {
                         override fun onResourceReady(
                             chipImg: Drawable,
-                            a_transition: Transition<in Drawable>?,
+                            trainsition: Transition<in Drawable>?,
                         ) {
                             chip.chipIcon = chipImg
                         }
@@ -108,7 +111,7 @@ class AfterFruitCreateFragment : Fragment() {
         }
 
         binding.saveFruitButton.setOnClickListener {
-            FruitDialogInterface.dialog.dismiss()
+            viewModel.saveSelectedFruit()
         }
     }
 

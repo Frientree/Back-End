@@ -69,9 +69,9 @@ class SelectInputTypeFragment : Fragment() {
 
     private fun moveToFragment() {
         if (isTextInput) {
-            viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationByTextViewEvent)
+            viewModel.changeViewEvent(CreateFruitDialogViewEvent.FruitCreationByTextViewEvent)
         } else {
-            viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationBySpeechViewEvent)
+            viewModel.changeViewEvent(CreateFruitDialogViewEvent.FruitCreationBySpeechViewEvent)
         }
     }
 

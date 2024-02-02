@@ -1,8 +1,9 @@
-package com.d101.data.datasource.fruitcreate
+package com.d101.data.datasource.fruit
 
-import com.d101.data.api.FruitCreateService
+import com.d101.data.api.FruitService
 import com.d101.data.model.fruit.request.FruitCreationByTextRequest
 import com.d101.data.model.fruit.response.FruitCreationResponse
+import com.d101.data.model.fruit.response.FruitSaveResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -10,11 +11,11 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
-class FruitCreateRemoteDataSourceImpl @Inject constructor(
-    private val fruitCreateService: FruitCreateService,
-) : FruitCreateRemoteDataSource {
+class FruitRemoteDataSourceImpl @Inject constructor(
+    private val fruitService: FruitService,
+) : FruitRemoteDataSource {
     override suspend fun sendText(text: String): List<FruitCreationResponse> {
-        return fruitCreateService.sendText(FruitCreationByTextRequest(text)).getOrThrow().data
+        return fruitService.sendText(FruitCreationByTextRequest(text)).getOrThrow().data
         /**
          *  테스트용 더미 데이터 코드
          */
@@ -23,7 +24,6 @@ class FruitCreateRemoteDataSourceImpl @Inject constructor(
 //            FruitCreationResponse(2L, "행복한 사과", "사과는 행복과 행운을 모두 갖췄을 때 나옵니다.", "url", "행운"),
 //            FruitCreationResponse(3L, "피곤한 키위", "피곤할 땐 이 키위 먹고 힘내퀴~", "url", "피곤"),
 //        )
-        return fruitCreateService.sendText(FruitCreationByTextRequest(text)).getOrThrow().data
     }
 
     override suspend fun sendFile(file: File): List<FruitCreationResponse> {
@@ -31,6 +31,10 @@ class FruitCreateRemoteDataSourceImpl @Inject constructor(
         val body: MultipartBody.Part =
             MultipartBody.Part.createFormData("file", file.name, requestFile)
 
-        return fruitCreateService.sendFile(body).getOrThrow().data
+        return fruitService.sendFile(body).getOrThrow().data
+    }
+
+    override suspend fun saveFruit(fruitNum: Long): FruitSaveResponse {
+        return fruitService.saveFruit(fruitNum).getOrThrow().data
     }
 }

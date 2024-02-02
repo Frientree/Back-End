@@ -6,4 +6,8 @@ sealed class CreateFruitDialogViewEvent {
     object FruitCreationBySpeechViewEvent : CreateFruitDialogViewEvent()
     object FruitCreationLoadingViewEvent : CreateFruitDialogViewEvent()
     object AfterFruitCreationViewEvent : CreateFruitDialogViewEvent()
+
+    data class AppleEvent(
+        val isApple: Boolean,
+    ) : CreateFruitDialogViewEvent()
 }
