@@ -29,6 +29,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
@@ -191,9 +192,16 @@ public class UserFruitServiceImpl implements UserFruitService {
         //UserFruit Table 정보 저장
         userFruitRepository.save(newUserFruit);
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
         //UserFruitSaveResponse 생성
         userFruitSaveResponse = UserFruitSaveResponse.createUserFruitSaveResponse("Success"
-                , UserFruitSaveDTO.createUserFruitSaveDTO(isApple, fruitDetail));
+                , UserFruitSaveDTO.createUserFruitSaveDTO(
+                        isApple,
+                        dateFormat.format(newUserFruit.getUserFruitCreateDate()),
+                        fruitDetail,
+                        userScore)
+        );
 
         //UserFruitSaveResponse 반환
         return ResponseEntity.ok(userFruitSaveResponse);
