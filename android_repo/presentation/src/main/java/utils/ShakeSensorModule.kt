@@ -10,7 +10,6 @@ interface ShakeEventListener {
     fun onShakeSensed()
 }
 
-// 센서 관리를 위한 클래스
 class ShakeSensorModule(context: Context, private val listener: ShakeEventListener) {
 
     private var sensorManager: SensorManager =
@@ -39,9 +38,9 @@ class ShakeSensorModule(context: Context, private val listener: ShakeEventListen
                     val deltaX: Float = kotlin.math.abs(lastX - x)
                     val deltaY: Float = kotlin.math.abs(lastY - y)
                     val deltaZ: Float = kotlin.math.abs(lastZ - z)
-                    if (deltaX > Shake_THRESHOLD ||
-                        deltaZ > Shake_THRESHOLD ||
-                        deltaY > Shake_THRESHOLD
+                    if ((deltaX > Shake_THRESHOLD && deltaY > Shake_THRESHOLD) ||
+                        (deltaZ > Shake_THRESHOLD && deltaX > Shake_THRESHOLD) ||
+                        (deltaY > Shake_THRESHOLD && deltaZ > Shake_THRESHOLD)
                     ) {
                         listener.onShakeSensed()
                     }
@@ -65,6 +64,6 @@ class ShakeSensorModule(context: Context, private val listener: ShakeEventListen
     }
 
     companion object {
-        private const val Shake_THRESHOLD = 4f
+        private const val Shake_THRESHOLD = 12f
     }
 }

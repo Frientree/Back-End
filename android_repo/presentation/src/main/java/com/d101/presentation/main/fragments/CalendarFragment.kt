@@ -20,11 +20,12 @@ import com.d101.presentation.calendar.state.TodayFruitCreationStatus
 import com.d101.presentation.calendar.viewmodel.CalendarViewModel
 import com.d101.presentation.databinding.DialogJuiceShakeBinding
 import com.d101.presentation.databinding.FragmentCalendarBinding
+import dagger.hilt.android.AndroidEntryPoint
 import utils.ShakeEventListener
 import utils.ShakeSensorModule
 import utils.repeatOnStarted
-import kotlin.random.Random
 
+@AndroidEntryPoint
 class CalendarFragment : Fragment() {
     private val viewModel: CalendarViewModel by viewModels()
     private var _binding: FragmentCalendarBinding? = null
@@ -33,8 +34,6 @@ class CalendarFragment : Fragment() {
     private lateinit var shakeSensor: ShakeSensorModule
 
     private lateinit var dialog: Dialog
-
-    val list = makeDummyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +49,6 @@ class CalendarFragment : Fragment() {
         setBinding()
         subscribeEvent()
         subscribeViewState()
-        viewModel.init()
     }
 
     private fun setBinding() {
@@ -78,6 +76,14 @@ class CalendarFragment : Fragment() {
                     CalendarViewEvent.OnCancelJuiceShake -> {
                         viewModel.onCancelJuiceShakeOccurred()
                     }
+
+                    is CalendarViewEvent.OnSetMonth -> {
+                        viewModel.onMonthChangedOccurred(2024010120240131)
+                    }
+
+                    CalendarViewEvent.OnSetWeek -> {
+                        viewModel.onWeekChangeOccurred(2024010920240115)
+                    }
                 }
             }
         }
@@ -92,9 +98,8 @@ class CalendarFragment : Fragment() {
                         binding.juiceOfWeekInfoConstraintLayout.visibility = View.GONE
                         val fruitListAdapter = FruitListAdapter()
                         binding.fruitListRecyclerView.adapter = fruitListAdapter
-//                        TODO(지워야 한다)
-                        fruitListAdapter.submitList(list)
-                        val countList = countFruits(list)
+                        fruitListAdapter.submitList(state.fruitListForWeek)
+                        val countList = countFruits(state.fruitListForWeek)
                         val littleFruitListAdapter = LittleFruitListAdapter()
                         binding.littleFruitListRecyclerView.adapter = littleFruitListAdapter
                         littleFruitListAdapter.submitList(countList)
@@ -111,7 +116,7 @@ class CalendarFragment : Fragment() {
                         binding.juiceReadyTextView.visibility = View.GONE
                         binding.notEnoughFruitsTextView.visibility = View.GONE
                         binding.juiceRequirementsTextView.visibility = View.GONE
-                        binding.juiceGraph.setFruitList(list)
+                        binding.juiceGraph.setFruitList(state.fruitListForWeek)
                         setTodayFruitStatisticsView(state)
                     }
 
@@ -159,35 +164,6 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun makeDummyList(): ArrayList<Fruit> {
-        val list = ArrayList<Fruit>()
-        val fruits = arrayOf(
-            "사과",
-            "딸기",
-            "레몬",
-            "애플망고",
-            "키위",
-            "체리",
-            "블루베리",
-        )
-
-        fruits.forEachIndexed { index, fruitName ->
-            list.add(
-                Fruit(
-                    20240201L,
-                    20240201L + index,
-                    fruitName,
-                    "사과는 맛있다",
-                    "https://www.naver.com",
-                    "사과는 맛있다",
-                    "행복",
-                    Random.nextInt(1, 22),
-                ),
-            )
-        }
-        return list
-    }
-
     private fun showShakeJuiceDialog() {
         dialog = createFullScreenDialog()
         val dialogBinding = DialogJuiceShakeBinding.inflate(layoutInflater)
@@ -233,7 +209,7 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun countFruits(fruits: ArrayList<Fruit>): List<Pair<String, Int>> {
+    private fun countFruits(fruits: List<Fruit>): List<Pair<String, Int>> {
         val counts = mutableMapOf<String, Int>()
 
         fruits.forEach { fruit ->

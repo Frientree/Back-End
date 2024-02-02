@@ -14,7 +14,7 @@ import javax.inject.Inject
 class CalendarRemoteDataSourceImpl @Inject constructor(
     private val calendarService: CalendarService,
 ) : CalendarRemoteDataSource {
-    override fun getFruitsOfMonth(startDate: String, endDate: String) =
+    override suspend fun getFruitsOfMonth(startDate: String, endDate: String) =
         runCatching {
             calendarService.getFruitsOfMonth(
                 FruitsOfMonthRequest(startDate, endDate),
@@ -30,7 +30,7 @@ class CalendarRemoteDataSourceImpl @Inject constructor(
             },
         )
 
-    override fun getFruitsOfWeek(startDate: String, endDate: String) = runCatching {
+    override suspend fun getFruitsOfWeek(startDate: String, endDate: String) = runCatching {
         calendarService.getFruitsOfWeek(FruitsOfWeekRequest(startDate, endDate)).getOrThrow().data
     }.fold(
         onSuccess = { Result.Success(it) },
@@ -43,7 +43,7 @@ class CalendarRemoteDataSourceImpl @Inject constructor(
         },
     )
 
-    override fun getJuiceOfWeek(startDate: String, endDate: String) = runCatching {
+    override suspend fun getJuiceOfWeek(startDate: String, endDate: String) = runCatching {
         calendarService.getJuiceOfWeek(JuiceOfWeekRequest(startDate, endDate)).getOrThrow().data
     }.fold(
         onSuccess = { Result.Success(it) },
@@ -65,7 +65,7 @@ class CalendarRemoteDataSourceImpl @Inject constructor(
         },
     )
 
-    override fun getTodayFruitStatistics(date: String) = runCatching {
+    override suspend fun getTodayFruitStatistics(date: String) = runCatching {
         calendarService.getTodayFruitStatistics(date).getOrThrow().data
     }.fold(
         onSuccess = { Result.Success(it) },

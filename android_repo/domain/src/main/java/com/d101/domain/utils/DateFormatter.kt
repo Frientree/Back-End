@@ -5,8 +5,9 @@ fun Long.toYearMonthDayFormat(): String {
 }
 
 fun Long.toStartEndDatePair(): Pair<String, String> {
-    val startDate = this / 100_000_000
-    val endDate = this % 100_000_000
+    val startDate = this / 100000000
+    val endDate = this % 100000000
+    System.out.println("startDate: $startDate, endDate: $endDate")
     return Pair(startDate.toYearMonthDayFormat(), endDate.toYearMonthDayFormat())
 }
 

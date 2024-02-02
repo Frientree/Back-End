@@ -7,11 +7,17 @@ import com.d101.data.model.calendar.response.TodayFeelStatisticsResponse
 import com.d101.domain.model.Result
 
 interface CalendarRemoteDataSource {
-    fun getFruitsOfMonth(startDate: String, endDate: String): Result<List<FruitsOfMonthResponse>>
+    suspend fun getFruitsOfMonth(
+        startDate: String,
+        endDate: String,
+    ): Result<List<FruitsOfMonthResponse>>
 
-    fun getFruitsOfWeek(startDate: String, endDate: String): Result<List<FruitsOfWeekResponse>>
+    suspend fun getFruitsOfWeek(
+        startDate: String,
+        endDate: String,
+    ): Result<List<FruitsOfWeekResponse>>
 
-    fun getJuiceOfWeek(startDate: String, endDate: String): Result<JuiceOfWeekResponse>
+    suspend fun getJuiceOfWeek(startDate: String, endDate: String): Result<JuiceOfWeekResponse>
 
-    fun getTodayFruitStatistics(date: String): Result<TodayFeelStatisticsResponse>
+    suspend fun getTodayFruitStatistics(date: String): Result<TodayFeelStatisticsResponse>
 }

@@ -1,5 +1,9 @@
 package com.d101.frientree.di
 
+import com.d101.data.datasource.calendar.CalendarLocalDataSource
+import com.d101.data.datasource.calendar.CalendarLocalDataSourceImpl
+import com.d101.data.datasource.calendar.CalendarRemoteDataSource
+import com.d101.data.datasource.calendar.CalendarRemoteDataSourceImpl
 import com.d101.data.datasource.fruitcreate.FruitCreateRemoteDataSource
 import com.d101.data.datasource.fruitcreate.FruitCreateRemoteDataSourceImpl
 import com.d101.data.datasource.user.UserDataSource
@@ -23,4 +27,16 @@ abstract class DataSourceModule {
     abstract fun bindFruitCreateRemoteDataSource(
         fruitCreateRemoteDataSourceImpl: FruitCreateRemoteDataSourceImpl,
     ): FruitCreateRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCalendarRemoteDataSource(
+        calendarRemoteDataSourceImpl: CalendarRemoteDataSourceImpl,
+    ): CalendarRemoteDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCalendarLocalDataSource(
+        calendarLocalDataSourceImpl: CalendarLocalDataSourceImpl,
+    ): CalendarLocalDataSource
 }
