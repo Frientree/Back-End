@@ -145,7 +145,7 @@ public class JuiceServiceImpl implements JuiceService {
 
         userJuiceRepository.save(userJuice);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     private User getUser() {
