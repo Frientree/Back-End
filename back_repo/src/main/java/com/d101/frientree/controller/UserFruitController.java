@@ -46,7 +46,7 @@ public class UserFruitController {
                     "(message : \"Python AI API Error\", code : 503)")
     })
     @PostMapping(value = "/speech-to-text-text")
-    public ResponseEntity<UserFruitCreateResponse> speechToTextText(UserFruitTextRequest textFile) throws Exception {
+    public ResponseEntity<UserFruitCreateResponse> speechToTextText(@RequestBody UserFruitTextRequest textFile) throws Exception {
         return userFruitService.speechToTextText(textFile);
     }
 

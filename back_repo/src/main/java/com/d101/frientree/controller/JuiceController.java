@@ -20,7 +20,7 @@ public class JuiceController {
     private final JuiceService juiceService;
 
     @PostMapping
-    public ResponseEntity<JuiceGenerationResponse> juiceGeneration(JuiceGenerationRequest juiceGenerationRequest) throws ParseException {
+    public ResponseEntity<JuiceGenerationResponse> juiceGeneration(@RequestBody JuiceGenerationRequest juiceGenerationRequest) throws ParseException {
         return juiceService.generate(juiceGenerationRequest);
     }
 
