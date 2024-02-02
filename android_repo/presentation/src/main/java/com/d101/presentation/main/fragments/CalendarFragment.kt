@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import com.d101.domain.model.Fruit
 import com.d101.presentation.R
 import com.d101.presentation.calendar.adapter.FruitListAdapter
+import com.d101.presentation.calendar.adapter.LittleFruitImageUrl
 import com.d101.presentation.calendar.adapter.LittleFruitListAdapter
 import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
@@ -177,10 +178,9 @@ class CalendarFragment : Fragment() {
             object : ShakeEventListener {
                 override fun onShakeSensed() {
                     if (progressBar.progress < progressBar.max) {
-                        progressBar.incrementProgressBy(
-                            10,
-                        )
+                        progressBar.progress += 1
                     }
+
                     if (progressBar.progress >= progressBar.max) {
                         progressBar.progress = progressBar.max
                         shakeSensor.stop()
@@ -209,12 +209,11 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun countFruits(fruits: List<Fruit>): List<Pair<String, Int>> {
-        val counts = mutableMapOf<String, Int>()
+    private fun countFruits(fruits: List<Fruit>): List<Pair<LittleFruitImageUrl, Int>> {
+        val counts = mutableMapOf<LittleFruitImageUrl, Int>()
 
         fruits.forEach { fruit ->
-            val key = fruit.name
-            counts[key] = counts.getOrDefault(key, 0) + 1
+            counts[fruit.calendarImageUrl] = counts.getOrDefault(fruit.calendarImageUrl, 0) + 1
         }
 
         return counts.map { (key, count) -> Pair(key, count) }
