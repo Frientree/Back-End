@@ -107,4 +107,13 @@ class UserRepositoryImpl @Inject constructor(
 
             is Result.Failure -> Result.Failure(result.errorStatus)
         }
+
+    override suspend fun signUp(
+        userEmail: String,
+        userPw: String,
+        userNickname: String,
+    ): Result<Unit> = when (val result = userDataSource.signUp(userEmail, userPw, userNickname)) {
+        is Result.Success -> Result.Success(Unit)
+        is Result.Failure -> Result.Failure(result.errorStatus)
+    }
 }

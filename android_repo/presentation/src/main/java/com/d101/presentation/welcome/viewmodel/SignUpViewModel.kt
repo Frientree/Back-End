@@ -7,6 +7,7 @@ import com.d101.domain.model.status.AuthCodeCreationErrorStatus
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.usecase.usermanagement.CheckAuthCodeUseCase
 import com.d101.domain.usecase.usermanagement.CreateAuthCodeUseCase
+import com.d101.domain.usecase.usermanagement.SignUpUseCase
 import com.d101.presentation.R
 import com.d101.presentation.welcome.event.SignUpEvent
 import com.d101.presentation.welcome.model.ConfirmType
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class SignUpViewModel @Inject constructor(
     private val createAuthCodeUseCase: CreateAuthCodeUseCase,
     private val checkAuthCodeUseCase: CheckAuthCodeUseCase,
+    private val signUpUseCase: SignUpUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(SignUpUiModel())
     val uiState = _uiState.asStateFlow()
@@ -33,7 +35,7 @@ class SignUpViewModel @Inject constructor(
     private val _eventFlow = MutableEventFlow<SignUpEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
-    val id = MutableStateFlow("")
+    val email = MutableStateFlow("")
     val authCode = MutableStateFlow("")
     val nickname = MutableStateFlow("")
     val password = MutableStateFlow("")
@@ -48,7 +50,7 @@ class SignUpViewModel @Inject constructor(
 
     private fun checkEmailState() {
         viewModelScope.launch {
-            id.collect { id ->
+            email.collect { id ->
                 _uiState.update { signUpModel ->
                     if (id.isEmpty()) {
                         signUpModel.copy(
@@ -105,11 +107,12 @@ class SignUpViewModel @Inject constructor(
             _uiState.update { signUpUiModel ->
                 signUpUiModel.copy(
                     idInputState = signUpUiModel.idInputState.copy(
-                        buttonEnabled = false,
+                        buttonEnabled = true,
                         buttonType = ConfirmType.CONFIRM,
                         inputEnabled = true,
-                        description = R.string.empty_text,
+                        description = R.string.usable_id,
                         descriptionType = DescriptionType.DEFAULT,
+                        buttonClick = { onEmailCheck() },
                     ),
                     authCodeInputState = signUpUiModel.authCodeInputState.copy(
                         buttonEnabled = false,
@@ -121,14 +124,13 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             authCode.value = ""
-            checkEmailState()
         }
     }
 
     fun createAuthCode() {
         viewModelScope.launch {
             setLoadingState()
-            when (val result = createAuthCodeUseCase(id.value)) {
+            when (val result = createAuthCodeUseCase(email.value)) {
                 is Result.Success -> {
                     _uiState.update { signUpUiModel ->
                         signUpUiModel.copy(
@@ -184,7 +186,7 @@ class SignUpViewModel @Inject constructor(
 
     fun checkAuthCode() {
         viewModelScope.launch {
-            when (val result = checkAuthCodeUseCase(id.value, authCode.value)) {
+            when (val result = checkAuthCodeUseCase(email.value, authCode.value)) {
                 is Result.Success -> {
                     _uiState.update { signInModel ->
                         signInModel.copy(
@@ -313,6 +315,26 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    fun signUpAttempt() {
+        if (email.value.isNotEmpty() && authCode.value.isNotEmpty() &&
+            nickname.value.isNotEmpty() && password.value.isNotEmpty() &&
+            password.value == confirmPassword.value
+        ) {
+            viewModelScope.launch {
+                when (val result = signUpUseCase(email.value, password.value, nickname.value)) {
+                    is Result.Success -> onSignUpSuccess()
+                    is Result.Failure -> when (result.errorStatus) {
+                        ErrorStatus.BadRequest -> onSignUpFailure("입력 내용을 다시 확인해 주세요")
+                        ErrorStatus.NetworkError -> onSignUpFailure("네트워크 에러")
+                        else -> onSignUpFailure("알 수 없는 에러")
+                    }
+                }
+            }
+        } else {
+            onSignUpFailure("모든 항목을 입력해 주세요")
+        }
+    }
+
     private fun isEmailValid(email: String) =
         email.matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$".toRegex())
 
@@ -335,6 +357,6 @@ class SignUpViewModel @Inject constructor(
 
     private fun onAuthNumberCheck() = emitEvent(SignUpEvent.AuthCodeCheckAttempt)
     fun onSignUpAttempt() = emitEvent(SignUpEvent.SignUpAttempt)
-
+    private fun onSignUpSuccess() = emitEvent(SignUpEvent.SignUpSuccess)
     private fun onSignUpFailure(message: String) = emitEvent(SignUpEvent.SignUpFailure(message))
 }

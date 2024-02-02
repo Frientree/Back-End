@@ -6,6 +6,7 @@ import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
 import com.d101.data.model.user.request.SignInRequest
+import com.d101.data.model.user.request.SignUpRequest
 import com.d101.data.model.user.response.NicknameChangeResponse
 import com.d101.data.model.user.response.TokenResponse
 import com.d101.data.model.user.response.UserResponse
@@ -131,4 +132,30 @@ class UserDataSourceImpl @Inject constructor(
                 }
             },
         )
+
+    override suspend fun signUp(
+        userEmail: String,
+        userPw: String,
+        userNickname: String,
+    ): Result<Boolean> = runCatching {
+        userService.signUp(SignUpRequest(userEmail, userPw, userNickname)).getOrThrow().data
+    }.fold(
+        onSuccess = {
+            Result.Success(it)
+        },
+        onFailure = { e ->
+            if (e is FrientreeHttpError) {
+                when (e.code) {
+                    400 -> Result.Failure(ErrorStatus.BadRequest)
+                    else -> Result.Failure(ErrorStatus.UnknownError)
+                }
+            } else {
+                if (e is IOException) {
+                    Result.Failure(ErrorStatus.NetworkError)
+                } else {
+                    Result.Failure(ErrorStatus.UnknownError)
+                }
+            }
+        },
+    )
 }

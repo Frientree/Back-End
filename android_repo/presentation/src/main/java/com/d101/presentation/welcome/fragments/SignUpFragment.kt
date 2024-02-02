@@ -56,19 +56,17 @@ class SignUpFragment : Fragment() {
 
     private fun collectEvent() {
         viewLifecycleOwner.repeatOnStarted {
-            viewModel.eventFlow.collect { evnet ->
-                when (evnet) {
+            viewModel.eventFlow.collect { event ->
+                when (event) {
                     SignUpEvent.EmailCheckAttempt -> viewModel.createAuthCode()
                     SignUpEvent.AuthCodeCheckAttempt -> viewModel.checkAuthCode()
                     SignUpEvent.SetDefault -> viewModel.setDefaultState()
-                    SignUpEvent.SignUpAttempt -> Toast.makeText(
-                        requireContext(),
-                        "회원가입 시도",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-
-                    is SignUpEvent.SignUpFailure -> showToast(evnet.message)
-                    is SignUpEvent.SignUpSuccess -> navigateToSignIn()
+                    SignUpEvent.SignUpAttempt -> viewModel.signUpAttempt()
+                    is SignUpEvent.SignUpFailure -> showToast(event.message)
+                    SignUpEvent.SignUpSuccess -> {
+                        showToast("회원 가입 성공")
+                        navigateToSignIn()
+                    }
                 }
             }
         }
