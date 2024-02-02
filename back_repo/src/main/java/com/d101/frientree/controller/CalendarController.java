@@ -67,7 +67,7 @@ public class CalendarController {
                     "(message : \"User Juice Not Found\", code : 404)")
     })
     @PostMapping("/weekly-juice")
-    public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(CalendarDateRequest request) throws ParseException{
+    public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(@RequestBody CalendarDateRequest request) throws ParseException{
         return calendarService.weeklyJuice(request);
     }
 }
