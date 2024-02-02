@@ -10,6 +10,8 @@ import com.d101.frientree.entity.juice.JuiceDetail;
 import com.d101.frientree.entity.juice.UserJuice;
 import com.d101.frientree.entity.message.Message;
 import com.d101.frientree.entity.user.User;
+import com.d101.frientree.exception.juice.InvalidDateException;
+import com.d101.frientree.exception.juice.JuiceGenerationException;
 import com.d101.frientree.exception.juice.JuiceNotFoundException;
 import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.*;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -82,8 +85,23 @@ public class JuiceServiceImpl implements JuiceService {
         Date startDate = dateFormat.parse(juiceGenerationRequest.getStartDate());
         Date endDate = dateFormat.parse(juiceGenerationRequest.getEndDate());
 
+        // 만약 startDate가 일요일이 아니거나 endDate가 토요일이 아닐경우에 커스텀 예외처리
+        if (!isSunday(startDate) || !isSaturday(endDate)) {
+            throw new InvalidDateException("Invalid date range");
+        }
+
+        // 만약 startDate와 endDate가 일주일 이상 차이나면 커스텀 예외 처리
+        if (endDate.getTime() - startDate.getTime() > 7 * 24 * 60 * 60 * 1000) {
+            throw new InvalidDateException("Date range should be within 7 days");
+        }
+
         // 해당 기간에 유저가 보유한 모든 과일을 가져온다.
         List<UserFruit> userFruits = userFruitRepository.findAllByUserAndUserFruitCreateDateBetween(currentUser, startDate, endDate);
+
+        if (userFruits.size() < 4) {
+            throw new JuiceGenerationException("Not enough fruits to generate juice");
+        }
+
 
         // 유저가 주스를 만들기 위해 가져온 과일들이 들어간 dto
         List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO = JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(userFruits);
@@ -109,7 +127,7 @@ public class JuiceServiceImpl implements JuiceService {
         UserJuice userJuice = UserJuice.builder()
                 .user(currentUser)
                 .juiceDetail(randomJuice)
-                .userJuiceCreateDate(new Date())
+                .userJuiceCreateDate(endDate)
                 .build();
 
         userJuiceRepository.save(userJuice);
@@ -136,5 +154,19 @@ public class JuiceServiceImpl implements JuiceService {
         Random random = new Random();
         int randomIndex = random.nextInt(list.size());
         return list.get(randomIndex);
+    }
+
+    private Boolean isSunday(Date startDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek == Calendar.SUNDAY;
+    }
+
+    private Boolean isSaturday(Date endDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(endDate);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        return dayOfWeek == Calendar.SATURDAY;
     }
 }
