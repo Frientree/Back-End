@@ -2,15 +2,18 @@ package com.d101.presentation.calendar.view
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.d101.domain.model.Fruit
 import com.d101.presentation.R
+import com.d101.presentation.calendar.adapter.LittleFruitImageUrl
 
 class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : View(
     context,
@@ -20,12 +23,7 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
     private var fruitList: List<Fruit> = emptyList()
-
-    private val bitmap: Bitmap = BitmapFactory.decodeResource(
-        getContext().resources,
-        R.drawable.tree1,
-    )
-    private val scaledImage = Bitmap.createScaledBitmap(bitmap, 80, 80, false)
+    private val fruitBitmaps = mutableMapOf<LittleFruitImageUrl, Bitmap?>()
 
     private val linePaint = Paint().apply {
         color = Color.BLACK
@@ -40,7 +38,20 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
 
     fun setFruitList(fruitList: List<Fruit>) {
         this.fruitList = fruitList
+        fruitList.forEach { fruit ->
+            loadBitmapForFruit(fruit)
+        }
         invalidate()
+    }
+
+    private fun loadBitmapForFruit(fruit: Fruit) {
+        Glide.with(context).asBitmap().load(fruit.calendarImageUrl).override(80, 80)
+            .into(object : SimpleTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    fruitBitmaps[fruit.calendarImageUrl] = resource
+                    invalidate()
+                }
+            })
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -78,15 +89,13 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
                 } else {
                     dateString
                 }
-            canvas.drawText(
-                (monthDay),
-                x,
-                height - 75f,
-                textPaint,
-            )
+            canvas.drawText((monthDay), x, height - 75f, textPaint)
             val imageX = 125 + (index + 1) * xInterval
             val imageY = height - 200f - (yInterval * fruitList[index].score)
-            canvas.drawBitmap(scaledImage, imageX - 40f, imageY, null)
+
+            fruitBitmaps[fruitList[index].calendarImageUrl]?.let { bitmap ->
+                canvas.drawBitmap(bitmap, imageX - 40f, imageY, null)
+            }
         }
     }
 }

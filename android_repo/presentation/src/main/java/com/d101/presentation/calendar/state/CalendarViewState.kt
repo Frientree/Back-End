@@ -37,13 +37,4 @@ sealed class CalendarViewState {
         override val juiceCreatableStatus: JuiceCreatableStatus =
             JuiceCreatableStatus.JuiceCreatable,
     ) : CalendarViewState()
-
-    data class JuiceShakeState(
-        override val juice: Juice,
-        override val fruitListForWeek: List<Fruit>,
-        override val fruitListForMonth: List<Fruit>,
-        override val todayFruitCreationStatus: TodayFruitCreationStatus,
-        override val todayFruitStatistics: String,
-        override val juiceCreatableStatus: JuiceCreatableStatus,
-    ) : CalendarViewState()
 }

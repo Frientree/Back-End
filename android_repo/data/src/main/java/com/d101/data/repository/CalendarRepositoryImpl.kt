@@ -108,8 +108,7 @@ class CalendarRepositoryImpl @Inject constructor(
                     imageUrl = result.data.juiceData.juiceImageUrl,
                     condolenceMessage = result.data.juiceData.condolenceMessage,
                 ).toJuice()
-
-                val fruitList = result.data.fruitsGraphData.map {
+                val fruitList = result.data.fruitGraphData?.map {
                     FruitEntity(
                         id = 0L,
                         date = it.fruitDate.toLongDate(),
@@ -121,7 +120,7 @@ class CalendarRepositoryImpl @Inject constructor(
                         score = it.fruitScore,
                     ).toFruit()
                 }
-                Result.Success(juice.copy(fruitList = fruitList))
+                Result.Success(juice.copy(fruitList = fruitList ?: emptyList()))
             }
 
             is Result.Failure -> Result.Failure(result.errorStatus)

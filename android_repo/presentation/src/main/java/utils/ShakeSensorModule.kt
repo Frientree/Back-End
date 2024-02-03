@@ -64,6 +64,6 @@ class ShakeSensorModule(context: Context, private val listener: ShakeEventListen
     }
 
     companion object {
-        private const val Shake_THRESHOLD = 8f
+        private const val Shake_THRESHOLD = 4f
     }
 }
