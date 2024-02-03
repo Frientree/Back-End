@@ -130,4 +130,9 @@ class FruitCreationBySpeechFragment : Fragment() {
 
         timerTask.cancel()
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
