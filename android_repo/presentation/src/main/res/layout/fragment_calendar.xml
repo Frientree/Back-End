@@ -29,8 +29,8 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/emotion_calendar" />
 
-            <!--        캘린더 영역-->
-            <Space
+
+            <com.d101.presentation.calendar.view.FrientreeCalendar
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
                 android:layout_gravity="center_horizontal"
