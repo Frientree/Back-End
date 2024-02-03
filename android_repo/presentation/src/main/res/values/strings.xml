@@ -87,5 +87,7 @@
     <string name="thursday">목</string>
     <string name="friday">금</string>
     <string name="saturday">토</string>
+    <string name="year">%d년</string>
+    <string name="month">%d월</string>
 
 </resources>

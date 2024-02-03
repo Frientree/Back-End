@@ -5,7 +5,7 @@ sealed class CalendarViewEvent {
     data object Init : CalendarViewEvent()
     data object OnTapJuiceMakingButton : CalendarViewEvent()
 
-    data object OnSetMonth : CalendarViewEvent()
+    data class OnSetMonth(val startDate: String, val endDate: String) : CalendarViewEvent()
 
     data object OnSetWeek : CalendarViewEvent()
 

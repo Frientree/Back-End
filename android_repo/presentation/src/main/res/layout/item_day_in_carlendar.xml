@@ -10,8 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/day_constraint_layout"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:background="@drawable/bg_selected_week">
+        android:layout_height="52dp">
 
         <TextView
             android:id="@+id/day_text_view"
@@ -29,7 +28,8 @@
             android:id="@+id/day_fruit_image_view"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:padding="4dp"
+            android:padding="12dp"
+            android:visibility="invisible"
             android:src="@drawable/img_lemon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -26,9 +26,30 @@ class FrientreeCalendar @JvmOverloads constructor(
 
     private lateinit var adapter: FruitInCalendarListAdapter
 
+    init {
+        binding.calendarRecyclerView.itemAnimator = null
+    }
+
     fun setCalendarAdapter(adapter: FruitInCalendarListAdapter) {
         this.adapter = adapter
         binding.calendarRecyclerView.adapter = adapter
+    }
+
+    fun setNowYearMonth(nowYear: Int, nowMonth: Int) {
+        binding.year = nowYear
+        binding.month = nowMonth
+    }
+
+    fun setOnMonthClickListener(onNextMonthClickListener: () -> Unit) {
+        binding.nextMonthImageButton.setOnClickListener {
+            onNextMonthClickListener()
+        }
+    }
+
+    fun setOnPrevMonthClickListener(onPrevMonthClickListener: () -> Unit) {
+        binding.previousMonthImageButton.setOnClickListener {
+            onPrevMonthClickListener()
+        }
     }
 
     fun submitList(fruitInCalendarList: List<FruitInCalendar>) {

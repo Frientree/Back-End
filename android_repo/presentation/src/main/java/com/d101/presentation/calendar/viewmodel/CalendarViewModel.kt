@@ -9,6 +9,9 @@ import com.d101.domain.model.Result
 import com.d101.domain.usecase.calendar.GetFruitsOfMonthUseCase
 import com.d101.domain.usecase.calendar.GetFruitsOfWeekUseCase
 import com.d101.domain.usecase.calendar.GetJuiceOfWeekUseCase
+import com.d101.domain.utils.toLocalDate
+import com.d101.domain.utils.toLongDate
+import com.d101.domain.utils.toYearMonthDayFormat
 import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +21,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import utils.MutableEventFlow
 import utils.asEventFlow
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,6 +43,9 @@ class CalendarViewModel @Inject constructor(
     private val _nowMonth: MutableStateFlow<Int> = MutableStateFlow(today.monthValue)
     val nowMonth = _nowMonth.asStateFlow()
 
+    private val _nowYear: MutableStateFlow<Int> = MutableStateFlow(today.year)
+    val nowYear = _nowYear.asStateFlow()
+
     init {
         viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.Init) }
     }
@@ -50,8 +58,33 @@ class CalendarViewModel @Inject constructor(
         viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnCancelJuiceShake) }
     }
 
-    private fun onSetMonth(monthDate: Long) {
-        viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnSetMonth) }
+    fun onNextMonth() {
+        _nowMonth.update { it + 1 }
+        if (_nowMonth.value == 13) {
+            _nowMonth.update { 1 }
+            _nowYear.update { it + 1 }
+        }
+        onSetMonth(getFirstAndLastDayOfMonth())
+    }
+
+    fun onPreviousMonth() {
+        _nowMonth.update { it - 1 }
+        if (_nowMonth.value == 0) {
+            _nowMonth.update { 12 }
+            _nowYear.update { it - 1 }
+        }
+        onSetMonth(getFirstAndLastDayOfMonth())
+    }
+
+    private fun onSetMonth(monthDate: Pair<String, String>) {
+        viewModelScope.launch {
+            _eventFlow.emit(
+                CalendarViewEvent.OnSetMonth(
+                    monthDate.first,
+                    monthDate.second,
+                ),
+            )
+        }
     }
 
     private fun onSetWeek(weekDate: Long) {
@@ -62,7 +95,8 @@ class CalendarViewModel @Inject constructor(
 
     fun onInitOccurred() {
         viewModelScope.launch {
-            _eventFlow.emit(CalendarViewEvent.OnSetMonth)
+            val monthDate = getFirstAndLastDayOfMonth()
+            _eventFlow.emit(CalendarViewEvent.OnSetMonth(monthDate.first, monthDate.second))
             _eventFlow.emit(CalendarViewEvent.OnSetWeek)
         }
     }
@@ -81,11 +115,26 @@ class CalendarViewModel @Inject constructor(
         setJuiceAbsentState()
     }
 
-    fun onMonthChangedOccurred(monthDate: Long) {
+    fun onMonthChangedOccurred(startDate: String, endDate: String) {
         viewModelScope.launch {
-            when (val result = getFruitsOfMonthUseCase(monthDate)) {
+            when (val result = getFruitsOfMonthUseCase((startDate + endDate).toLongDate())) {
                 is Result.Success -> {
-                    setFruitListForMonth(result.data)
+                    val fruitListForMonth = ArrayList<FruitsOfMonth>()
+
+                    var localStartDate = startDate.toLocalDate()
+                    val localEndDate = endDate.toLocalDate()
+
+                    while (localStartDate <= localEndDate) {
+                        val dateStr = localStartDate.toYearMonthDayFormat()
+                        val fruit = result.data.find { it.day == dateStr }
+                        if (fruit != null) {
+                            fruitListForMonth.add(fruit)
+                        } else {
+                            fruitListForMonth.add(FruitsOfMonth(dateStr, ""))
+                        }
+                        localStartDate = localStartDate.plusDays(1)
+                    }
+                    setFruitListForMonth(fruitListForMonth)
                 }
 
                 is Result.Failure -> {}
@@ -201,5 +250,15 @@ class CalendarViewModel @Inject constructor(
                 it.juiceCreatableStatus,
             )
         }
+    }
+
+    private fun getFirstAndLastDayOfMonth(): Pair<String, String> {
+        val firstDay = LocalDate.of(nowYear.value, nowMonth.value, 1)
+        val lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth())
+
+        val firstSunday = firstDay.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+        val lastSaturday = lastDay.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
+
+        return Pair(firstSunday.toYearMonthDayFormat(), lastSaturday.toYearMonthDayFormat())
     }
 }

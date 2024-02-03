@@ -26,6 +26,7 @@ import com.d101.presentation.databinding.DialogJuiceShakeBinding
 import com.d101.presentation.databinding.FragmentCalendarBinding
 import com.d101.presentation.mapper.CalendarMapper.toFruitInCalendar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.combine
 import utils.ShakeEventListener
 import utils.ShakeSensorModule
 import utils.repeatOnStarted
@@ -55,11 +56,20 @@ class CalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
+        subscribeDate()
         subscribeEvent()
         subscribeViewState()
         fruitListAdapter = FruitListAdapter()
         littleFruitListAdapter = LittleFruitListAdapter()
         binding.frientreeCalendar.setCalendarAdapter(FruitInCalendarListAdapter())
+
+        binding.frientreeCalendar.setOnMonthClickListener {
+            viewModel.onNextMonth()
+        }
+
+        binding.frientreeCalendar.setOnPrevMonthClickListener {
+            viewModel.onPreviousMonth()
+        }
     }
 
     private fun setBinding() {
@@ -89,7 +99,8 @@ class CalendarFragment : Fragment() {
                     }
 
                     is CalendarViewEvent.OnSetMonth -> {
-                        viewModel.onMonthChangedOccurred(2024010120240131)
+//                        viewModel.onMonthChangedOccurred(2023122020240131)
+                        viewModel.onMonthChangedOccurred(event.startDate, event.endDate)
                     }
 
                     CalendarViewEvent.OnSetWeek -> {
@@ -98,6 +109,16 @@ class CalendarFragment : Fragment() {
 
                     CalendarViewEvent.OnShowJuiceShakeDialog -> showShakeJuiceDialog()
                 }
+            }
+        }
+    }
+
+    private fun subscribeDate() {
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.nowYear.combine(viewModel.nowMonth) { year, month ->
+                year to month
+            }.collect { (year, month) ->
+                binding.frientreeCalendar.setNowYearMonth(year, month)
             }
         }
     }

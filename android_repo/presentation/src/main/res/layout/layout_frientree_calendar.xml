@@ -4,7 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="year"
+            type="Integer" />
 
+        <variable
+            name="month"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,11 +19,13 @@
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:cardCornerRadius="40dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:padding="12dp">
 
                 <ImageButton
                     android:id="@+id/previous_month_image_button"
@@ -37,6 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
+                    android:text="@{@string/year(year)}"
                     app:layout_constraintBottom_toBottomOf="@id/previous_month_image_button"
                     app:layout_constraintEnd_toStartOf="@id/calendar_title_month_text_view"
                     app:layout_constraintStart_toEndOf="@id/previous_month_image_button"
@@ -49,6 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
+                    android:text="@{@string/month(month)}"
                     app:layout_constraintBottom_toBottomOf="@id/calendar_title_year_text_view"
                     app:layout_constraintEnd_toStartOf="@id/next_month_image_button"
                     app:layout_constraintStart_toEndOf="@id/calendar_title_year_text_view"

@@ -1,11 +1,13 @@
 package com.d101.presentation.calendar.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.d101.domain.utils.toLocalDate
 import com.d101.presentation.databinding.ItemDayInCarlendarBinding
 import com.d101.presentation.model.FruitInCalendar
 
@@ -25,8 +27,15 @@ class FruitInCalendarListAdapter :
     class FruitInCalendarViewHolder(private val binding: ItemDayInCarlendarBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(fruit: FruitInCalendar) {
-            binding.dayTextView.text = fruit.day
-            Glide.with(this.itemView).load(fruit.imageUrl).into(binding.dayFruitImageView)
+            if (fruit.imageUrl.isEmpty()) {
+                binding.dayTextView.text = fruit.day.toLocalDate().dayOfMonth.toString()
+                binding.dayTextView.visibility = View.VISIBLE
+                binding.dayFruitImageView.visibility = View.INVISIBLE
+            } else {
+                Glide.with(this.itemView).load(fruit.imageUrl).into(binding.dayFruitImageView)
+                binding.dayTextView.visibility = View.INVISIBLE
+                binding.dayFruitImageView.visibility = View.VISIBLE
+            }
         }
     }
 
