@@ -12,7 +12,5 @@ public interface UserJuiceRepository extends JpaRepository<UserJuice, Long> {
 
     List<UserJuice> findAllByUser(User user);
 
-    List<UserJuice> findAllByUser_UserIdAndUserJuiceCreateDateBetween(Long userId, Date startDate, Date endDate);
-
     Optional<UserJuice> findByUser_UserIdAndUserJuiceCreateDate(Long userId, Date createDate);
 }
