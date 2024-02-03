@@ -1,6 +1,5 @@
 package com.d101.presentation.main.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.AppleData
@@ -8,6 +7,7 @@ import com.d101.domain.model.FruitCreated
 import com.d101.domain.usecase.main.DecideTodayFruitUseCase
 import com.d101.domain.usecase.main.MakeFruitBySpeechUseCase
 import com.d101.domain.usecase.main.MakeFruitByTextUseCase
+import com.d101.domain.usecase.usermanagement.UpdateUserStatusUseCase
 import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +25,7 @@ class FruitCreateViewModel @Inject constructor(
     private val makeFruitByTextUseCase: MakeFruitByTextUseCase,
     private val makeFruitBySpeechUseCase: MakeFruitBySpeechUseCase,
     private val decideTodayFruitUseCase: DecideTodayFruitUseCase,
+    private val updateUserStatusUseCase: UpdateUserStatusUseCase,
 ) : ViewModel() {
     private val _todayFruitList: MutableStateFlow<List<FruitCreated>> = MutableStateFlow(listOf())
     val todayFruitList: StateFlow<List<FruitCreated>> = _todayFruitList.asStateFlow()
@@ -70,7 +71,7 @@ class FruitCreateViewModel @Inject constructor(
     fun saveSelectedFruit() {
         viewModelScope.launch(Dispatchers.IO) {
             val result = decideTodayFruitUseCase(selectedFruit.value.fruitNum)
-            Log.d("apple test", "$result")
+            updateUserStatusUseCase()
             if (result.isApple) {
                 _apple = result
                 changeViewEvent(CreateFruitDialogViewEvent.AppleEvent(true))

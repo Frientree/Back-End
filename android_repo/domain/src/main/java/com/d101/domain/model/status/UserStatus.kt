@@ -12,3 +12,8 @@ sealed class GetUserErrorStatus : ErrorStatus {
 sealed class AuthCodeCreationErrorStatus : ErrorStatus {
     data object EmailDuplicate : AuthCodeCreationErrorStatus()
 }
+
+sealed class GetUserStatusErrorStatus : ErrorStatus {
+    data object UserNotFound : GetUserStatusErrorStatus()
+    data object Fail : GetUserStatusErrorStatus()
+}

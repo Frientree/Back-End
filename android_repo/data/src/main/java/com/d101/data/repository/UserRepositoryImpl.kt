@@ -3,6 +3,7 @@ package com.d101.data.repository
 import androidx.datastore.core.DataStore
 import com.d101.data.datasource.user.UserDataSource
 import com.d101.data.datastore.UserPreferences
+import com.d101.data.datastore.UserStatusPreferences
 import com.d101.data.mapper.UserMapper.toUser
 import com.d101.domain.model.Result
 import com.d101.domain.model.User
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val tokenManager: TokenManager,
     private val userDataStore: DataStore<UserPreferences>,
+    private val userStatusDataStore: DataStore<UserStatusPreferences>,
     private val userDataSource: UserDataSource,
 ) : UserRepository {
     override suspend fun signIn(userId: String, userPw: String) =
@@ -115,5 +117,21 @@ class UserRepositoryImpl @Inject constructor(
     ): Result<Unit> = when (val result = userDataSource.signUp(userEmail, userPw, userNickname)) {
         is Result.Success -> Result.Success(Unit)
         is Result.Failure -> Result.Failure(result.errorStatus)
+    }
+
+    override suspend fun updateUserStatus(): Result<Unit> {
+        return when (val result = userDataSource.getUserStatus()) {
+            is Result.Success -> {
+                userStatusDataStore.updateData {
+                    it.toBuilder()
+                        .setUserFruitStatus(result.data.userFruitStatus)
+                        .setUserLeafStatus(result.data.userLeafStatus)
+                        .build()
+                }
+                Result.Success(Unit)
+            }
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
     }
 }
