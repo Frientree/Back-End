@@ -64,7 +64,7 @@ class FruitCreationBySpeechFragment : Fragment() {
         timerTask.cancel()
         stopRecording()
         viewModel.setAudioFile(audioFile)
-        viewModel.changeViewState(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
+        viewModel.changeViewEvent(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
     }
 
     private fun startRecording() {
@@ -129,5 +129,10 @@ class FruitCreationBySpeechFragment : Fragment() {
         recorder = null
 
         timerTask.cancel()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

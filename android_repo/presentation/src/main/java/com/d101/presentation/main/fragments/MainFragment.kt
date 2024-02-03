@@ -9,9 +9,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentMainBinding
 import com.d101.presentation.main.fragments.dialogs.BeforeFruitCreateBaseFragment
@@ -20,7 +17,7 @@ import com.d101.presentation.main.fragments.dialogs.TodayFruitFragment
 import com.d101.presentation.main.state.TreeFragmentViewState
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
+import utils.repeatOnStarted
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
@@ -59,23 +56,21 @@ class MainFragment : Fragment() {
                     dialog.dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                     dialog.show(childFragmentManager, "")
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.currentViewState.collect {
+                when (it) {
+                    is TreeFragmentViewState.FruitNotCreated -> {
+                        binding.createFruitButton.text = "오늘의 열매 만들기"
+                    }
+                    is TreeFragmentViewState.FruitCreated -> {
+                        binding.createFruitButton.text = "오늘의 열매 확인하기"
+                    }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.currentViewState.collect {
-                    when (it) {
-                        is TreeFragmentViewState.FruitNotCreated -> {
-                            binding.createFruitButton.text = "오늘의 열매 만들기"
-                        }
-                        is TreeFragmentViewState.FruitCreated -> {
-                            binding.createFruitButton.text = "오늘의 열매 확인하기"
-                        }
-
-                        is TreeFragmentViewState.TreeMessageChanged -> {
-                        }
+                    is TreeFragmentViewState.TreeMessageChanged -> {
                     }
                 }
             }

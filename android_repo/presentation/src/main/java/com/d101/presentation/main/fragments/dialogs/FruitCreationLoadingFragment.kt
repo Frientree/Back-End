@@ -40,39 +40,18 @@ class FruitCreationLoadingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        when (inputType) {
-            TEXT -> {
-                viewModel.setTodayFruitListByText()
-            }
-
-            SPEECH -> {
-                viewModel.setTodayFruitListBySpeech()
-            }
-        }
+        viewModel.setTodayFruitList()
 
         FruitDialogInterface.dialog.isCancelable = false
 
         viewLifecycleOwner.repeatOnStarted {
             viewModel.todayFruitList.collect {
                 if (it.isNotEmpty()) {
-                    viewModel.changeViewState(
+                    viewModel.changeViewEvent(
                         CreateFruitDialogViewEvent.AfterFruitCreationViewEvent,
                     )
                 }
             }
         }
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(inputType: String) = FruitCreationLoadingFragment().apply {
-            arguments = Bundle().apply {
-                putString(INPUT_TYPE, inputType)
-            }
-        }
-
-        const val TEXT = "text"
-        const val SPEECH = "speech"
     }
 }

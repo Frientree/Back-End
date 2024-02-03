@@ -41,10 +41,12 @@ class FruitCreationByTextFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.isTextInput = true
+
         binding.createFruitByTextButton
             .setOnClickListener {
                 if (viewModel.inputText.value.isNotEmpty()) {
-                    viewModel.changeViewState(
+                    viewModel.changeViewEvent(
                         CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent,
                     )
                 } else {
