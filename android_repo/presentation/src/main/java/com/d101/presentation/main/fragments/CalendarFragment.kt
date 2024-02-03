@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.domain.model.Fruit
 import com.d101.presentation.R
+import com.d101.presentation.calendar.adapter.FruitInCalendarListAdapter
 import com.d101.presentation.calendar.adapter.FruitListAdapter
 import com.d101.presentation.calendar.adapter.LittleFruitImageUrl
 import com.d101.presentation.calendar.adapter.LittleFruitListAdapter
@@ -23,6 +24,7 @@ import com.d101.presentation.calendar.state.TodayFruitCreationStatus
 import com.d101.presentation.calendar.viewmodel.CalendarViewModel
 import com.d101.presentation.databinding.DialogJuiceShakeBinding
 import com.d101.presentation.databinding.FragmentCalendarBinding
+import com.d101.presentation.mapper.CalendarMapper.toFruitInCalendar
 import dagger.hilt.android.AndroidEntryPoint
 import utils.ShakeEventListener
 import utils.ShakeSensorModule
@@ -57,6 +59,7 @@ class CalendarFragment : Fragment() {
         subscribeViewState()
         fruitListAdapter = FruitListAdapter()
         littleFruitListAdapter = LittleFruitListAdapter()
+        binding.frientreeCalendar.setCalendarAdapter(FruitInCalendarListAdapter())
     }
 
     private fun setBinding() {
@@ -102,6 +105,9 @@ class CalendarFragment : Fragment() {
     private fun subscribeViewState() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.uiState.collect { state ->
+                binding.frientreeCalendar.submitList(
+                    state.fruitListForMonth.map { it.toFruitInCalendar() },
+                )
                 when (state) {
                     is CalendarViewState.JuiceAbsentState -> {
                         setViewsVisibility(isJuicePresent = false)

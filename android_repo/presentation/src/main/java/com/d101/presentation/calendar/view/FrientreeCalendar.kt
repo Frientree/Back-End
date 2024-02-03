@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import com.d101.presentation.R
+import com.d101.presentation.calendar.adapter.FruitInCalendarListAdapter
 import com.d101.presentation.databinding.LayoutFrientreeCalendarBinding
+import com.d101.presentation.model.FruitInCalendar
 
 class FrientreeCalendar @JvmOverloads constructor(
     context: Context,
@@ -22,4 +24,14 @@ class FrientreeCalendar @JvmOverloads constructor(
             true,
         )
 
+    private lateinit var adapter: FruitInCalendarListAdapter
+
+    fun setCalendarAdapter(adapter: FruitInCalendarListAdapter) {
+        this.adapter = adapter
+        binding.calendarRecyclerView.adapter = adapter
+    }
+
+    fun submitList(fruitInCalendarList: List<FruitInCalendar>) {
+        adapter.submitList(fruitInCalendarList)
+    }
 }

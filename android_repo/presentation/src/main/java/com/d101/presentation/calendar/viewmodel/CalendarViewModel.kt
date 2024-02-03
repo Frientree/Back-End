@@ -3,6 +3,7 @@ package com.d101.presentation.calendar.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Fruit
+import com.d101.domain.model.FruitsOfMonth
 import com.d101.domain.model.Juice
 import com.d101.domain.model.Result
 import com.d101.domain.usecase.calendar.GetFruitsOfMonthUseCase
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import utils.MutableEventFlow
 import utils.asEventFlow
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,6 +32,11 @@ class CalendarViewModel @Inject constructor(
 
     private val _eventFlow = MutableEventFlow<CalendarViewEvent>()
     val eventFlow = _eventFlow.asEventFlow()
+
+    private val today = LocalDate.now()
+
+    private val _nowMonth: MutableStateFlow<Int> = MutableStateFlow(today.monthValue)
+    val nowMonth = _nowMonth.asStateFlow()
 
     init {
         viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.Init) }
@@ -138,7 +145,7 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    private fun setFruitListForMonth(fruitListForMonth: List<Fruit>) {
+    private fun setFruitListForMonth(fruitListForMonth: List<FruitsOfMonth>) {
         when (val currentState = _uiState.value) {
             is CalendarViewState.JuiceAbsentState -> {
                 _uiState.update {

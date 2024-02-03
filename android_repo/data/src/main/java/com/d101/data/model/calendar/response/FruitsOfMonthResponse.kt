@@ -1,6 +1,6 @@
 package com.d101.data.model.calendar.response
 
 data class FruitsOfMonthResponse(
-    val day: Int,
+    val day: String,
     val fruitCalendarImageUrl: String,
 )
