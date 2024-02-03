@@ -14,9 +14,4 @@ public class MessageResponseDTO {
 
     private String messageDescription;
 
-    public static MessageResponseDTO createMessageResponseDTO(Message message){
-        return MessageResponseDTO.builder()
-                .messageDescription(message.getMessageDescription())
-                .build();
-    }
 }
