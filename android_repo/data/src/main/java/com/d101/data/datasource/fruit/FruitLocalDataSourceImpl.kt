@@ -10,4 +10,8 @@ class FruitLocalDataSourceImpl @Inject constructor(
     override suspend fun insertFruit(fruitEntity: FruitEntity) {
         fruitDao.insertFruit(fruitEntity)
     }
+
+    override suspend fun getTodayFruit(date: Long): FruitEntity {
+        return fruitDao.getFruit(date)
+    }
 }

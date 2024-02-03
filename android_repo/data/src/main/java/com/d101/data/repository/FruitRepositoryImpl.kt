@@ -50,4 +50,9 @@ class FruitRepositoryImpl @Inject constructor(
 
         return remoteResult.toAppleData()
     }
+
+    override suspend fun getTodayFruit(date: String): FruitCreated {
+        val dateLong = date.toLongDate()
+        return fruitLocalDataSource.getTodayFruit(dateLong).toFruitCreated()
+    }
 }

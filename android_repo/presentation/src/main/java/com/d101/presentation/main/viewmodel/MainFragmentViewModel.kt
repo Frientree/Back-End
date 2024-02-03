@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.FruitCreated
 import com.d101.domain.model.Result
+import com.d101.domain.usecase.main.GetTodayFruitUseCase
 import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
 import com.d101.presentation.main.state.TreeFragmentViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainFragmentViewModel @Inject constructor(
     private val manageUserStatusUseCase: ManageUserStatusUseCase,
+    private val getTodayFruitUseCase: GetTodayFruitUseCase,
 ) : ViewModel() {
+    val localDate: LocalDate = LocalDate.now()
 
     private val _todayDate: MutableStateFlow<String> = MutableStateFlow("year / month / day")
     val todayDate: StateFlow<String> = _todayDate.asStateFlow()
@@ -40,13 +43,20 @@ class MainFragmentViewModel @Inject constructor(
 
     fun getTodayFruitFromDataModule() {
         // 갔다온다.
-        val result = FruitCreated()
-        _todayFruit.update { result }
+        viewModelScope.launch {
+            val result = getTodayFruitUseCase(
+                String.format(
+                    "%d-%d-%d",
+                    localDate.year,
+                    localDate.monthValue,
+                    localDate.dayOfMonth,
+                ),
+            )
+            _todayFruit.update { result }
+        }
     }
 
     fun initTodayDate() {
-        val localDate: LocalDate = LocalDate.now()
-
         _todayDate.update {
             String.format(
                 "%d / %d / %d",

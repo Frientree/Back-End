@@ -9,4 +9,5 @@ interface FruitRepository {
     suspend fun sendFile(file: File): List<FruitCreated>
 
     suspend fun saveSelectedFruit(fruitNum: Long): AppleData
+    suspend fun getTodayFruit(date: String): FruitCreated
 }

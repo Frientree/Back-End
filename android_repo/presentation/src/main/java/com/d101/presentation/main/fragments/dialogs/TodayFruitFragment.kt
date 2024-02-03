@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -33,6 +34,15 @@ class TodayFruitFragment : DialogFragment() {
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+
+        val fruitColorValue =
+            FruitColors.values()[viewModel.todayFruit.value.fruitNum.toInt() - 1].color
+        binding.fruitDescriptionCardView.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                fruitColorValue,
+            ),
+        )
     }
 
     override fun onDestroyView() {
