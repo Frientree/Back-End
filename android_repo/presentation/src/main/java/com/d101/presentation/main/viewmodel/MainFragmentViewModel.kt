@@ -1,18 +1,24 @@
 package com.d101.presentation.main.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.FruitCreated
+import com.d101.domain.model.Result
+import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
 import com.d101.presentation.main.state.TreeFragmentViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class MainFragmentViewModel @Inject constructor() : ViewModel() {
+class MainFragmentViewModel @Inject constructor(
+    private val manageUserStatusUseCase: ManageUserStatusUseCase,
+) : ViewModel() {
 
     private val _todayDate: MutableStateFlow<String> = MutableStateFlow("year / month / day")
     val todayDate: StateFlow<String> = _todayDate.asStateFlow()
@@ -48,6 +54,22 @@ class MainFragmentViewModel @Inject constructor() : ViewModel() {
                 localDate.monthValue,
                 localDate.dayOfMonth,
             )
+        }
+    }
+
+    fun getUserStatus() {
+        viewModelScope.launch {
+            when (val result = manageUserStatusUseCase.getUserStatus()) {
+                is Result.Success -> {
+                    if (result.data.userFruitStatus) {
+                        changeViewState(TreeFragmentViewState.FruitCreated)
+                    } else {
+                        changeViewState(TreeFragmentViewState.FruitNotCreated)
+                    }
+                }
+
+                else -> {}
+            }
         }
     }
 }
