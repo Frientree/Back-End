@@ -89,5 +89,8 @@
     <string name="saturday">토</string>
     <string name="year">%d년</string>
     <string name="month">%d월</string>
+    <string name="greeting">반가워요,\n함께 감정을 기록해봐요</string>
+    <string name="show">보기</string>
+    <string name="all_terms_agree">약관 전체 동의</string>
 
 </resources>
