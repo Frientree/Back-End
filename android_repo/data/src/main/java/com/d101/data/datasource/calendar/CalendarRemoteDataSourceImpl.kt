@@ -52,7 +52,7 @@ class CalendarRemoteDataSourceImpl @Inject constructor(
         onFailure = { e ->
             if (e is FrientreeHttpError) {
                 when (e.code) {
-                    404 -> Result.Failure(JuiceErrorStatus.JuiceNotFound)
+                    404 -> Result.Failure(JuiceErrorStatus.JuiceNotFound())
                     else -> Result.Failure(ErrorStatus.UnknownError)
                 }
             } else {

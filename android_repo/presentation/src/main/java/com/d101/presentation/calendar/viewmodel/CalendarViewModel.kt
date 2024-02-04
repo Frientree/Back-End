@@ -10,6 +10,7 @@ import com.d101.domain.model.status.JuiceErrorStatus
 import com.d101.domain.usecase.calendar.GetFruitsOfMonthUseCase
 import com.d101.domain.usecase.calendar.GetFruitsOfWeekUseCase
 import com.d101.domain.usecase.calendar.GetJuiceOfWeekUseCase
+import com.d101.domain.usecase.calendar.MakeJuiceUseCase
 import com.d101.domain.utils.toYearMonthDayFormat
 import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
@@ -31,6 +32,7 @@ class CalendarViewModel @Inject constructor(
     val getFruitsOfMonthUseCase: GetFruitsOfMonthUseCase,
     val getFruitsOfWeekUseCase: GetFruitsOfWeekUseCase,
     val getJuiceOfWeekUseCase: GetJuiceOfWeekUseCase,
+    val makeJuiceUseCase: MakeJuiceUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<CalendarViewState>(CalendarViewState.JuiceAbsentState())
     val uiState = _uiState.asStateFlow()
@@ -88,6 +90,12 @@ class CalendarViewModel @Inject constructor(
         viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnTapFruitDetailButton(fruit)) }
     }
 
+    fun onCompleteJuiceShake() {
+        viewModelScope.launch {
+            _eventFlow.emit(CalendarViewEvent.OnCompleteJuiceShake(uiState.value.selectedWeek))
+        }
+    }
+
     fun onWeekSelected(selectDate: LocalDate) {
         val weekDate = getFirstAndLastDayOfWeek(selectDate)
         _uiState.update { currentState ->
@@ -97,6 +105,7 @@ class CalendarViewModel @Inject constructor(
                         selectedWeek = weekDate,
                     )
                 }
+
                 is CalendarViewState.JuicePresentState -> {
                     currentState.copy(
                         selectedWeek = weekDate,
@@ -144,8 +153,40 @@ class CalendarViewModel @Inject constructor(
         viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnShowFruitDetailDialog(fruit)) }
     }
 
-    fun onCompleteJuiceShakeOccurred() {
-        setJuicePresentState()
+    fun onCompleteJuiceShakeOccurred(weekDate: Pair<LocalDate, LocalDate>) {
+        viewModelScope.launch {
+            when (val result = makeJuiceUseCase(weekDate)) {
+                is Result.Success -> {
+                    setJuiceOfWeek(result.data)
+                }
+
+                is Result.Failure -> {
+                    when (val errorStatus = result.errorStatus) {
+                        is JuiceErrorStatus.UnAuthorized -> _eventFlow.emit(
+                            CalendarViewEvent.OnShowToast(
+                                errorStatus.message,
+                            ),
+                        )
+
+                        is JuiceErrorStatus.DateError -> _eventFlow.emit(
+                            CalendarViewEvent.OnShowToast(
+                                errorStatus.message,
+                            ),
+                        )
+
+                        is JuiceErrorStatus.NotEnoughFruits -> _eventFlow.emit(
+                            CalendarViewEvent.OnShowToast(
+                                errorStatus.message,
+                            ),
+                        )
+
+                        else -> {
+                            _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
+                        }
+                    }
+                }
+            }
+        }
     }
 
     fun onMonthChangedOccurred(monthDate: Pair<LocalDate, LocalDate>) {
@@ -220,7 +261,7 @@ class CalendarViewModel @Inject constructor(
 
                 is Result.Failure -> {
                     when (result.errorStatus) {
-                        JuiceErrorStatus.JuiceNotFound -> setJuiceAbsentState()
+                        JuiceErrorStatus.JuiceNotFound() -> setJuiceAbsentState()
                         else -> {
                             _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
                         }
