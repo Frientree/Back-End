@@ -17,6 +17,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentAfterFruitCreateBinding
+import com.d101.presentation.fruit_elements.FruitResources
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,7 +58,11 @@ class AfterFruitCreateFragment : Fragment() {
 
         viewLifecycleOwner.repeatOnStarted {
             viewModel.selectedFruit.collect {
-                val fruitColorValue = FruitColors.values()[it.fruitNum.toInt() - 1].color
+                val fruitColorValue =
+                    FruitResources.entries.find {
+                        it.fruitEmotion == viewModel.selectedFruit.value.fruitFeel
+                    }?.color ?: R.color.main_green
+
                 binding.fruitDescriptionCardView.setCardBackgroundColor(
                     ContextCompat.getColor(
                         requireContext(),

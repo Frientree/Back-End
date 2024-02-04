@@ -23,7 +23,7 @@ sealed class CalendarViewState {
         override val todayFruitStatistics: String,
         override val juiceCreatableStatus: JuiceCreatableStatus,
         override val nowDate: LocalDate,
-        override val selectedWeek: Pair<LocalDate, LocalDate>
+        override val selectedWeek: Pair<LocalDate, LocalDate>,
     ) : CalendarViewState()
 
     data class JuiceAbsentState(
@@ -45,7 +45,7 @@ sealed class CalendarViewState {
         override val nowDate: LocalDate = LocalDate.now(),
         override val selectedWeek: Pair<LocalDate, LocalDate> = Pair(
             LocalDate.now(),
-            LocalDate.now()
-        )
+            LocalDate.now(),
+        ),
     ) : CalendarViewState()
 }

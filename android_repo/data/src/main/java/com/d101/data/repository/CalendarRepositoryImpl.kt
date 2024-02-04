@@ -26,7 +26,8 @@ class CalendarRepositoryImpl @Inject constructor(
         return calendarLocalDataSource.getFruit(date).toFruit()
     }
 
-    override suspend fun getFruitsOfMonth(monthDate: Pair<LocalDate, LocalDate>): Result<List<FruitsOfMonth>> {
+    override suspend fun getFruitsOfMonth(monthDate: Pair<LocalDate, LocalDate>):
+        Result<List<FruitsOfMonth>> {
         val startDate = monthDate.first.toYearMonthDayFormat()
         val endDate = monthDate.second.toYearMonthDayFormat()
 
@@ -42,7 +43,8 @@ class CalendarRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFruitsOfWeek(weekDate: Pair<LocalDate, LocalDate>): Result<List<Fruit>> {
+    override suspend fun getFruitsOfWeek(weekDate: Pair<LocalDate, LocalDate>):
+        Result<List<Fruit>> {
         val startDate = weekDate.first.toYearMonthDayFormat()
         val endDate = weekDate.second.toYearMonthDayFormat()
 
@@ -53,8 +55,8 @@ class CalendarRepositoryImpl @Inject constructor(
                         id = 0L,
                         date = it.fruitDay.toLongDate(),
                         name = it.fruitName,
-                        description = "",
-                        imageUrl = "",
+                        description = it.fruitDescription,
+                        imageUrl = it.fruitCalendarImageUrl,
                         calendarImageUrl = it.fruitCalendarImageUrl,
                         emotion = it.fruitFeel,
                         score = 0,

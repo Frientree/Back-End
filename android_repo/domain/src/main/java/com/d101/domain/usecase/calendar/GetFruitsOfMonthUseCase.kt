@@ -7,5 +7,8 @@ import javax.inject.Inject
 class GetFruitsOfMonthUseCase @Inject constructor(
     private val repository: CalendarRepository,
 ) {
-    suspend operator fun invoke(monthDate: Pair<LocalDate, LocalDate>) = repository.getFruitsOfMonth(monthDate)
+    suspend operator fun invoke(monthDate: Pair<LocalDate, LocalDate>) =
+        repository.getFruitsOfMonth(
+            monthDate,
+        )
 }

@@ -6,12 +6,14 @@ import com.d101.domain.model.Fruit
 import com.d101.domain.model.FruitsOfMonth
 import com.d101.domain.model.Juice
 import com.d101.domain.model.Result
+import com.d101.domain.model.status.JuiceErrorStatus
 import com.d101.domain.usecase.calendar.GetFruitsOfMonthUseCase
 import com.d101.domain.usecase.calendar.GetFruitsOfWeekUseCase
 import com.d101.domain.usecase.calendar.GetJuiceOfWeekUseCase
 import com.d101.domain.utils.toYearMonthDayFormat
 import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
+import com.d101.presentation.calendar.state.JuiceCreatableStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,10 +44,6 @@ class CalendarViewModel @Inject constructor(
 
     fun onClickJuiceMakingButton() {
         viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnTapJuiceMakingButton) }
-    }
-
-    fun onCancelJuiceShakeDialog() {
-        viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnCancelJuiceShake) }
     }
 
     fun onClickNextMonth() {
@@ -86,6 +84,10 @@ class CalendarViewModel @Inject constructor(
         onSetMonth(getFirstAndLastDayOfMonth())
     }
 
+    fun onTapFruitDetailButton(fruit: Fruit) {
+        viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnTapFruitDetailButton(fruit)) }
+    }
+
     fun onWeekSelected(selectDate: LocalDate) {
         val weekDate = getFirstAndLastDayOfWeek(selectDate)
         _uiState.update { currentState ->
@@ -95,7 +97,6 @@ class CalendarViewModel @Inject constructor(
                         selectedWeek = weekDate,
                     )
                 }
-
                 is CalendarViewState.JuicePresentState -> {
                     currentState.copy(
                         selectedWeek = weekDate,
@@ -116,9 +117,7 @@ class CalendarViewModel @Inject constructor(
 
     private fun onSetWeek(weekDate: Pair<LocalDate, LocalDate>) {
         viewModelScope.launch {
-            _eventFlow.emit(
-                CalendarViewEvent.OnSetWeek(weekDate),
-            )
+            _eventFlow.emit(CalendarViewEvent.OnSetWeek(weekDate))
         }
     }
 
@@ -141,12 +140,12 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    fun onCompleteJuiceShakeOccurred() {
-        setJuicePresentState()
+    fun onTapFruitDetailButtonOccurred(fruit: Fruit) {
+        viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnShowFruitDetailDialog(fruit)) }
     }
 
-    fun onCancelJuiceShakeOccurred() {
-        setJuiceAbsentState()
+    fun onCompleteJuiceShakeOccurred() {
+        setJuicePresentState()
     }
 
     fun onMonthChangedOccurred(monthDate: Pair<LocalDate, LocalDate>) {
@@ -171,7 +170,9 @@ class CalendarViewModel @Inject constructor(
                     setFruitListForMonth(fruitListForMonth)
                 }
 
-                is Result.Failure -> {}
+                is Result.Failure -> {
+                    _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
+                }
             }
         }
     }
@@ -203,7 +204,9 @@ class CalendarViewModel @Inject constructor(
                     setFruitListForWeek(result.data)
                 }
 
-                is Result.Failure -> {}
+                is Result.Failure -> {
+                    _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
+                }
             }
         }
     }
@@ -215,7 +218,14 @@ class CalendarViewModel @Inject constructor(
                     setJuiceOfWeek(result.data)
                 }
 
-                is Result.Failure -> {}
+                is Result.Failure -> {
+                    when (result.errorStatus) {
+                        JuiceErrorStatus.JuiceNotFound -> setJuiceAbsentState()
+                        else -> {
+                            _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
+                        }
+                    }
+                }
             }
         }
     }
@@ -262,16 +272,28 @@ class CalendarViewModel @Inject constructor(
     }
 
     private fun setFruitListForWeek(fruitListForWeek: List<Fruit>) {
+        val juiceCreatableStatus: JuiceCreatableStatus = if (fruitListForWeek.size >= 4) {
+            JuiceCreatableStatus.JuiceCreatable
+        } else {
+            JuiceCreatableStatus.JuiceUnCreatable
+        }
+
         when (val currentState = _uiState.value) {
             is CalendarViewState.JuiceAbsentState -> {
                 _uiState.update {
-                    currentState.copy(fruitListForWeek = fruitListForWeek)
+                    currentState.copy(
+                        fruitListForWeek = fruitListForWeek,
+                        juiceCreatableStatus = juiceCreatableStatus,
+                    )
                 }
             }
 
             is CalendarViewState.JuicePresentState -> {
                 _uiState.update {
-                    currentState.copy(fruitListForWeek = fruitListForWeek)
+                    currentState.copy(
+                        fruitListForWeek = fruitListForWeek,
+                        juiceCreatableStatus = juiceCreatableStatus,
+                    )
                 }
             }
         }
@@ -291,7 +313,6 @@ class CalendarViewModel @Inject constructor(
             )
         }
     }
-
 
     private fun setJuicePresentState() {
         _uiState.update {

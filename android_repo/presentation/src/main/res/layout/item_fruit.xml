@@ -14,8 +14,7 @@
         android:id="@+id/fruit_image_image_view"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@drawable/tree1"
-        />
+        android:src="@drawable/img_sub_tree" />
 
     <TextView
         android:id="@+id/fruit_name_text_view"
