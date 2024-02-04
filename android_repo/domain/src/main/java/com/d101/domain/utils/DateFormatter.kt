@@ -9,7 +9,6 @@ fun Long.toYearMonthDayFormat(): String {
 fun Long.toStartEndDatePair(): Pair<String, String> {
     val startDate = this / 100000000
     val endDate = this % 100000000
-    System.out.println("startDate: $startDate, endDate: $endDate")
     return Pair(startDate.toYearMonthDayFormat(), endDate.toYearMonthDayFormat())
 }
 
@@ -23,7 +22,6 @@ fun Long.toMonthDayFormat(): String {
     return dateString.substring(5)
 }
 
-// LocalDate 를 받아서 "yyyy-MM-dd" 형식으로 변환
 fun LocalDate.toYearMonthDayFormat(): String {
     return String.format("%04d-%02d-%02d", this.year, this.monthValue, this.dayOfMonth)
 }

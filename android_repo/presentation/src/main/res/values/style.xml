@@ -183,12 +183,11 @@
     </style>
 
     <style name="Base.FTR.TextView.Calendar" parent="Base.FTR.TextView">
-        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:textAppearance">@style/Base.FTR.Text.Small</item>
         <item name="android:gravity">center</item>
     </style>
 
     <style name="Base.FTR.TextView.Calendar.Title" parent="Base.FTR.TextView.Calendar">
-        <item name="android:fontFamily">@font/binggrae_bold</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textAppearance">@style/Base.FTR.Bold_20sp</item>
     </style>
 </resources>

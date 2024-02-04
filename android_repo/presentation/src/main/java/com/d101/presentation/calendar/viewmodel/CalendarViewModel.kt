@@ -9,8 +9,6 @@ import com.d101.domain.model.Result
 import com.d101.domain.usecase.calendar.GetFruitsOfMonthUseCase
 import com.d101.domain.usecase.calendar.GetFruitsOfWeekUseCase
 import com.d101.domain.usecase.calendar.GetJuiceOfWeekUseCase
-import com.d101.domain.utils.toLocalDate
-import com.d101.domain.utils.toLongDate
 import com.d101.domain.utils.toYearMonthDayFormat
 import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
@@ -38,14 +36,6 @@ class CalendarViewModel @Inject constructor(
     private val _eventFlow = MutableEventFlow<CalendarViewEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
-    private val today = LocalDate.now()
-
-    private val _nowMonth: MutableStateFlow<Int> = MutableStateFlow(today.monthValue)
-    val nowMonth = _nowMonth.asStateFlow()
-
-    private val _nowYear: MutableStateFlow<Int> = MutableStateFlow(today.year)
-    val nowYear = _nowYear.asStateFlow()
-
     init {
         viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.Init) }
     }
@@ -58,46 +48,90 @@ class CalendarViewModel @Inject constructor(
         viewModelScope.launch { _eventFlow.emit(CalendarViewEvent.OnCancelJuiceShake) }
     }
 
-    fun onNextMonth() {
-        _nowMonth.update { it + 1 }
-        if (_nowMonth.value == 13) {
-            _nowMonth.update { 1 }
-            _nowYear.update { it + 1 }
+    fun onClickNextMonth() {
+        _uiState.update { currentState ->
+            when (currentState) {
+                is CalendarViewState.JuiceAbsentState -> {
+                    currentState.copy(
+                        nowDate = currentState.nowDate.plusMonths(1),
+                    )
+                }
+
+                is CalendarViewState.JuicePresentState -> {
+                    currentState.copy(
+                        nowDate = currentState.nowDate.plusMonths(1),
+                    )
+                }
+            }
         }
         onSetMonth(getFirstAndLastDayOfMonth())
     }
 
-    fun onPreviousMonth() {
-        _nowMonth.update { it - 1 }
-        if (_nowMonth.value == 0) {
-            _nowMonth.update { 12 }
-            _nowYear.update { it - 1 }
+    fun onClickPreviousMonth() {
+        _uiState.update { currentState ->
+            when (currentState) {
+                is CalendarViewState.JuiceAbsentState -> {
+                    currentState.copy(
+                        nowDate = currentState.nowDate.minusMonths(1),
+                    )
+                }
+
+                is CalendarViewState.JuicePresentState -> {
+                    currentState.copy(
+                        nowDate = currentState.nowDate.minusMonths(1),
+                    )
+                }
+            }
         }
         onSetMonth(getFirstAndLastDayOfMonth())
     }
 
-    private fun onSetMonth(monthDate: Pair<String, String>) {
+    fun onWeekSelected(selectDate: LocalDate) {
+        val weekDate = getFirstAndLastDayOfWeek(selectDate)
+        _uiState.update { currentState ->
+            when (currentState) {
+                is CalendarViewState.JuiceAbsentState -> {
+                    currentState.copy(
+                        selectedWeek = weekDate,
+                    )
+                }
+
+                is CalendarViewState.JuicePresentState -> {
+                    currentState.copy(
+                        selectedWeek = weekDate,
+                    )
+                }
+            }
+        }
+        onSetWeek(weekDate)
+    }
+
+    private fun onSetMonth(monthDate: Pair<LocalDate, LocalDate>) {
         viewModelScope.launch {
             _eventFlow.emit(
-                CalendarViewEvent.OnSetMonth(
-                    monthDate.first,
-                    monthDate.second,
-                ),
+                CalendarViewEvent.OnSetMonth(monthDate),
             )
         }
     }
 
-    private fun onSetWeek(weekDate: Long) {
+    private fun onSetWeek(weekDate: Pair<LocalDate, LocalDate>) {
         viewModelScope.launch {
-            _eventFlow.emit(CalendarViewEvent.OnSetWeek)
+            _eventFlow.emit(
+                CalendarViewEvent.OnSetWeek(weekDate),
+            )
         }
     }
 
     fun onInitOccurred() {
         viewModelScope.launch {
             val monthDate = getFirstAndLastDayOfMonth()
-            _eventFlow.emit(CalendarViewEvent.OnSetMonth(monthDate.first, monthDate.second))
-            _eventFlow.emit(CalendarViewEvent.OnSetWeek)
+            val weekDate = getFirstAndLastDayOfWeek(LocalDate.now())
+            _eventFlow.emit(
+                CalendarViewEvent.OnSetMonth(monthDate),
+            )
+            _eventFlow.emit(
+                CalendarViewEvent.OnSetWeek(weekDate),
+            )
         }
     }
 
@@ -115,14 +149,14 @@ class CalendarViewModel @Inject constructor(
         setJuiceAbsentState()
     }
 
-    fun onMonthChangedOccurred(startDate: String, endDate: String) {
+    fun onMonthChangedOccurred(monthDate: Pair<LocalDate, LocalDate>) {
         viewModelScope.launch {
-            when (val result = getFruitsOfMonthUseCase((startDate + endDate).toLongDate())) {
+            when (val result = getFruitsOfMonthUseCase(monthDate)) {
                 is Result.Success -> {
                     val fruitListForMonth = ArrayList<FruitsOfMonth>()
 
-                    var localStartDate = startDate.toLocalDate()
-                    val localEndDate = endDate.toLocalDate()
+                    var localStartDate = monthDate.first
+                    val localEndDate = monthDate.second
 
                     while (localStartDate <= localEndDate) {
                         val dateStr = localStartDate.toYearMonthDayFormat()
@@ -142,12 +176,27 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    fun onWeekChangeOccurred(weekDate: Long) {
+    fun onWeekChangeOccurred(weekDate: Pair<LocalDate, LocalDate>) {
+        _uiState.update { currentState ->
+            when (currentState) {
+                is CalendarViewState.JuiceAbsentState -> {
+                    currentState.copy(
+                        selectedWeek = weekDate,
+                    )
+                }
+
+                is CalendarViewState.JuicePresentState -> {
+                    currentState.copy(
+                        selectedWeek = weekDate,
+                    )
+                }
+            }
+        }
         getFruitsOfWeek(weekDate)
         getJuiceOfWeek(weekDate)
     }
 
-    private fun getFruitsOfWeek(weekDate: Long) {
+    private fun getFruitsOfWeek(weekDate: Pair<LocalDate, LocalDate>) {
         viewModelScope.launch {
             when (val result = getFruitsOfWeekUseCase(weekDate)) {
                 is Result.Success -> {
@@ -159,7 +208,7 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    private fun getJuiceOfWeek(weekDate: Long) {
+    private fun getJuiceOfWeek(weekDate: Pair<LocalDate, LocalDate>) {
         viewModelScope.launch {
             when (val result = getJuiceOfWeekUseCase(weekDate)) {
                 is Result.Success -> {
@@ -182,6 +231,8 @@ class CalendarViewModel @Inject constructor(
                         currentState.todayFruitCreationStatus,
                         currentState.todayFruitStatistics,
                         currentState.juiceCreatableStatus,
+                        currentState.nowDate,
+                        currentState.selectedWeek,
                     )
                 }
             }
@@ -235,9 +286,12 @@ class CalendarViewModel @Inject constructor(
                 it.todayFruitCreationStatus,
                 it.todayFruitStatistics,
                 it.juiceCreatableStatus,
+                it.nowDate,
+                it.selectedWeek,
             )
         }
     }
+
 
     private fun setJuicePresentState() {
         _uiState.update {
@@ -248,17 +302,27 @@ class CalendarViewModel @Inject constructor(
                 it.todayFruitCreationStatus,
                 it.todayFruitStatistics,
                 it.juiceCreatableStatus,
+                it.nowDate,
+                it.selectedWeek,
             )
         }
     }
 
-    private fun getFirstAndLastDayOfMonth(): Pair<String, String> {
-        val firstDay = LocalDate.of(nowYear.value, nowMonth.value, 1)
+    private fun getFirstAndLastDayOfMonth(): Pair<LocalDate, LocalDate> {
+        val firstDay = uiState.value.nowDate.withDayOfMonth(1)
+
         val lastDay = firstDay.with(TemporalAdjusters.lastDayOfMonth())
 
         val firstSunday = firstDay.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
         val lastSaturday = lastDay.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
 
-        return Pair(firstSunday.toYearMonthDayFormat(), lastSaturday.toYearMonthDayFormat())
+        return Pair(firstSunday, lastSaturday)
+    }
+
+    private fun getFirstAndLastDayOfWeek(selectDate: LocalDate): Pair<LocalDate, LocalDate> {
+        val firstSunday = selectDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
+        val lastSaturday = selectDate.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
+
+        return Pair(firstSunday, lastSaturday)
     }
 }

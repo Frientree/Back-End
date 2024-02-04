@@ -3,6 +3,7 @@ package com.d101.presentation.main.fragments
 import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +27,6 @@ import com.d101.presentation.databinding.DialogJuiceShakeBinding
 import com.d101.presentation.databinding.FragmentCalendarBinding
 import com.d101.presentation.mapper.CalendarMapper.toFruitInCalendar
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.combine
 import utils.ShakeEventListener
 import utils.ShakeSensorModule
 import utils.repeatOnStarted
@@ -56,19 +56,22 @@ class CalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
-        subscribeDate()
         subscribeEvent()
         subscribeViewState()
         fruitListAdapter = FruitListAdapter()
         littleFruitListAdapter = LittleFruitListAdapter()
-        binding.frientreeCalendar.setCalendarAdapter(FruitInCalendarListAdapter())
+        binding.frientreeCalendar.setCalendarAdapter(
+            FruitInCalendarListAdapter {
+                viewModel.onWeekSelected(it)
+            },
+        )
 
         binding.frientreeCalendar.setOnMonthClickListener {
-            viewModel.onNextMonth()
+            viewModel.onClickNextMonth()
         }
 
         binding.frientreeCalendar.setOnPrevMonthClickListener {
-            viewModel.onPreviousMonth()
+            viewModel.onClickPreviousMonth()
         }
     }
 
@@ -99,12 +102,11 @@ class CalendarFragment : Fragment() {
                     }
 
                     is CalendarViewEvent.OnSetMonth -> {
-//                        viewModel.onMonthChangedOccurred(2023122020240131)
-                        viewModel.onMonthChangedOccurred(event.startDate, event.endDate)
+                        viewModel.onMonthChangedOccurred(event.monthDate)
                     }
 
-                    CalendarViewEvent.OnSetWeek -> {
-                        viewModel.onWeekChangeOccurred(2024010720240113)
+                    is CalendarViewEvent.OnSetWeek -> {
+                        viewModel.onWeekChangeOccurred(event.weekDate)
                     }
 
                     CalendarViewEvent.OnShowJuiceShakeDialog -> showShakeJuiceDialog()
@@ -113,22 +115,16 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    private fun subscribeDate() {
-        viewLifecycleOwner.repeatOnStarted {
-            viewModel.nowYear.combine(viewModel.nowMonth) { year, month ->
-                year to month
-            }.collect { (year, month) ->
-                binding.frientreeCalendar.setNowYearMonth(year, month)
-            }
-        }
-    }
-
     private fun subscribeViewState() {
         viewLifecycleOwner.repeatOnStarted {
-            viewModel.uiState.collect { state ->
+            viewModel.uiState.collect{ state ->
+                Log.d("CalendarViewModel", "state: ${state.nowDate}")
                 binding.frientreeCalendar.submitList(
-                    state.fruitListForMonth.map { it.toFruitInCalendar() },
+                    state.fruitListForMonth.map {
+                        it.toFruitInCalendar(state.selectedWeek, state.nowDate.monthValue)
+                    },
                 )
+                binding.frientreeCalendar.setNowDate(state.nowDate)
                 when (state) {
                     is CalendarViewState.JuiceAbsentState -> {
                         setViewsVisibility(isJuicePresent = false)

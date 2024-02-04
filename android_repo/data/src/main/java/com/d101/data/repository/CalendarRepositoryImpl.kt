@@ -14,8 +14,8 @@ import com.d101.domain.model.Result
 import com.d101.domain.model.TodayStatistics
 import com.d101.domain.repository.CalendarRepository
 import com.d101.domain.utils.toLongDate
-import com.d101.domain.utils.toStartEndDatePair
 import com.d101.domain.utils.toYearMonthDayFormat
+import java.time.LocalDate
 import javax.inject.Inject
 
 class CalendarRepositoryImpl @Inject constructor(
@@ -26,26 +26,12 @@ class CalendarRepositoryImpl @Inject constructor(
         return calendarLocalDataSource.getFruit(date).toFruit()
     }
 
-//    override suspend fun getFruitsOfMonth(monthDate: Long): Result<List<Fruit>> {
-    override suspend fun getFruitsOfMonth(monthDate: Long): Result<List<FruitsOfMonth>> {
-        val pair = monthDate.toStartEndDatePair()
-        val startDate = pair.first
-        val endDate = pair.second
+    override suspend fun getFruitsOfMonth(monthDate: Pair<LocalDate, LocalDate>): Result<List<FruitsOfMonth>> {
+        val startDate = monthDate.first.toYearMonthDayFormat()
+        val endDate = monthDate.second.toYearMonthDayFormat()
 
         return when (val result = calendarRemoteDataSource.getFruitsOfMonth(startDate, endDate)) {
             is Result.Success -> {
-//                val fruitList = result.data.map {
-//                    FruitEntity(
-//                        id = 0L,
-//                        date = it.day.toLongDate(),
-//                        name = "",
-//                        description = "",
-//                        imageUrl = "",
-//                        calendarImageUrl = it.fruitCalendarImageUrl,
-//                        emotion = "",
-//                        score = 0,
-//                    ).toFruit()
-//                Result.Success(fruitList)
                 val fruitInCalendar = result.data.map {
                     it.toFruitInCalendar()
                 }
@@ -56,10 +42,9 @@ class CalendarRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFruitsOfWeek(weekDate: Long): Result<List<Fruit>> {
-        val pair = weekDate.toStartEndDatePair()
-        val startDate = pair.first
-        val endDate = pair.second
+    override suspend fun getFruitsOfWeek(weekDate: Pair<LocalDate, LocalDate>): Result<List<Fruit>> {
+        val startDate = weekDate.first.toYearMonthDayFormat()
+        val endDate = weekDate.second.toYearMonthDayFormat()
 
         return when (val result = calendarRemoteDataSource.getFruitsOfWeek(startDate, endDate)) {
             is Result.Success -> {
@@ -101,10 +86,10 @@ class CalendarRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getJuiceOfWeek(weekDate: Long): Result<Juice> {
-        val pair = weekDate.toStartEndDatePair()
-        val startDate = pair.first
-        val endDate = pair.second
+    override suspend fun getJuiceOfWeek(weekDate: Pair<LocalDate, LocalDate>): Result<Juice> {
+        val startDate = weekDate.first.toYearMonthDayFormat()
+        val endDate = weekDate.second.toYearMonthDayFormat()
+
         return when (val result = calendarRemoteDataSource.getJuiceOfWeek(startDate, endDate)) {
             is Result.Success -> {
                 val juice = JuiceEntity(
@@ -114,7 +99,7 @@ class CalendarRepositoryImpl @Inject constructor(
                     imageUrl = result.data.juiceData.juiceImageUrl,
                     condolenceMessage = result.data.juiceData.condolenceMessage,
                 ).toJuice()
-                val fruitList = result.data.fruitGraphData?.map {
+                val fruitList = result.data.fruitGraphData.map {
                     FruitEntity(
                         id = 0L,
                         date = it.fruitDate.toLongDate(),
@@ -126,7 +111,7 @@ class CalendarRepositoryImpl @Inject constructor(
                         score = it.fruitScore,
                     ).toFruit()
                 }
-                Result.Success(juice.copy(fruitList = fruitList ?: emptyList()))
+                Result.Success(juice.copy(fruitList = fruitList))
             }
 
             is Result.Failure -> Result.Failure(result.errorStatus)

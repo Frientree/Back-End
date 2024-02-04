@@ -9,6 +9,7 @@ import com.d101.presentation.R
 import com.d101.presentation.calendar.adapter.FruitInCalendarListAdapter
 import com.d101.presentation.databinding.LayoutFrientreeCalendarBinding
 import com.d101.presentation.model.FruitInCalendar
+import java.time.LocalDate
 
 class FrientreeCalendar @JvmOverloads constructor(
     context: Context,
@@ -35,9 +36,9 @@ class FrientreeCalendar @JvmOverloads constructor(
         binding.calendarRecyclerView.adapter = adapter
     }
 
-    fun setNowYearMonth(nowYear: Int, nowMonth: Int) {
-        binding.year = nowYear
-        binding.month = nowMonth
+    fun setNowDate(nowDate: LocalDate) {
+        binding.year = nowDate.year
+        binding.month = nowDate.monthValue
     }
 
     fun setOnMonthClickListener(onNextMonthClickListener: () -> Unit) {
