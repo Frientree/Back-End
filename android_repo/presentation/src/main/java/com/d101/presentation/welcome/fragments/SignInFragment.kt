@@ -71,7 +71,7 @@ class SignInFragment : Fragment() {
     }
 
     private fun navigateToTermsAgree() =
-        findNavController().navigate(R.id.action_signInFragment_to_signUpFragment)
+        findNavController().navigate(R.id.action_signInFragment_to_termsAgreeFragment)
 
     private fun navigateToFindPassword() =
         findNavController().navigate(R.id.action_signInFragment_to_findPasswordFragment)

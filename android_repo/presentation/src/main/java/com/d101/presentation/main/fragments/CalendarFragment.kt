@@ -28,8 +28,8 @@ import com.d101.presentation.calendar.viewmodel.CalendarViewModel
 import com.d101.presentation.databinding.DialogFruitDetailBinding
 import com.d101.presentation.databinding.DialogJuiceShakeBinding
 import com.d101.presentation.databinding.FragmentCalendarBinding
-import com.d101.presentation.fruit_elements.FruitResources
 import com.d101.presentation.mapper.CalendarMapper.toFruitInCalendar
+import com.d101.presentation.model.FruitResources
 import dagger.hilt.android.AndroidEntryPoint
 import utils.ShakeEventListener
 import utils.ShakeSensorModule
@@ -63,7 +63,7 @@ class CalendarFragment : Fragment() {
         setBinding()
         subscribeEvent()
         subscribeViewState()
-        fruitListAdapter = FruitListAdapter{fruit -> viewModel.onTapFruitDetailButton(fruit)}
+        fruitListAdapter = FruitListAdapter { fruit -> viewModel.onTapFruitDetailButton(fruit) }
         littleFruitListAdapter = LittleFruitListAdapter()
         binding.frientreeCalendar.setCalendarAdapter(
             FruitInCalendarListAdapter {

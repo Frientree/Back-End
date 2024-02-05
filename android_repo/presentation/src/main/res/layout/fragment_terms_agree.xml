@@ -33,6 +33,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
+        android:button="@drawable/outline_check_circle_24"
+        app:buttonTint="@color/bg_checkbox_color_selector"
         app:layout_constraintBottom_toTopOf="@id/terms_agree_recycler_view"
         app:layout_constraintStart_toStartOf="@+id/terms_greeting_text_view"
         app:layout_constraintTop_toBottomOf="@+id/terms_greeting_text_view" />
