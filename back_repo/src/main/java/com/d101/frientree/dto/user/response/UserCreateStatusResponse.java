@@ -9,12 +9,12 @@ import lombok.Data;
 public class UserCreateStatusResponse {
 
     private String message;
-    private UserCreateStatusResponseDTO dto;
+    private UserCreateStatusResponseDTO data;
 
     public static UserCreateStatusResponse createUserCreateStatusResponse(String message, UserCreateStatusResponseDTO dto) {
         return UserCreateStatusResponse.builder()
                 .message(message)
-                .dto(dto)
+                .data(dto)
                 .build();
     }
 }
