@@ -97,6 +97,11 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
+    fun onTapJuiceCollectionButton() {
+        viewModelScope.launch {
+            _eventFlow.emit(CalendarViewEvent.OnTapCollectionButton)
+        }
+    }
     fun onWeekSelected(selectDate: LocalDate) {
         val weekDate = getFirstAndLastDayOfWeek(selectDate)
         _uiState.update { currentState ->

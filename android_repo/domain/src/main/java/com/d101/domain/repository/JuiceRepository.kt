@@ -8,5 +8,5 @@ import java.time.LocalDate
 interface JuiceRepository {
     suspend fun makeJuice(weekDate: Pair<LocalDate, LocalDate>): Result<Juice>
 
-    suspend fun getEveryJuice(): Result<List<JuiceForCollection>>
+    suspend fun getJuiceCollection(): Result<List<JuiceForCollection>>
 }

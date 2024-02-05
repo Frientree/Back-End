@@ -3,6 +3,7 @@ package com.d101.data.datasource.juice
 import com.d101.data.api.JuiceService
 import com.d101.data.error.FrientreeHttpError
 import com.d101.data.model.juice.request.JuiceCreationRequest
+import com.d101.data.model.juice.response.JuiceCollectionResponse
 import com.d101.data.model.juice.response.JuiceCreationResponse
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
@@ -36,4 +37,25 @@ class JuiceRemoteDataSourceImpl @Inject constructor(private val juiceService: Ju
             }
         },
     )
+
+    override suspend fun getJuiceCollection(): Result<List<JuiceCollectionResponse>> =
+        runCatching {
+            juiceService.getJuiceCollection().getOrThrow().data
+        }.fold(
+            onSuccess = { Result.Success(it) },
+            onFailure = { e ->
+                if (e is FrientreeHttpError) {
+                    when (e.code) {
+                        401 -> Result.Failure(JuiceErrorStatus.UnAuthorized())
+                        else -> Result.Failure(ErrorStatus.UnknownError)
+                    }
+                } else {
+                    if (e is IOException) {
+                        Result.Failure(ErrorStatus.NetworkError)
+                    } else {
+                        Result.Failure(ErrorStatus.UnknownError)
+                    }
+                }
+            },
+        )
 }

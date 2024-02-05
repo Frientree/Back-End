@@ -1,6 +1,7 @@
 package com.d101.presentation.main.fragments
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import com.d101.presentation.calendar.state.CalendarViewState
 import com.d101.presentation.calendar.state.JuiceCreatableStatus
 import com.d101.presentation.calendar.state.TodayFruitCreationStatus
 import com.d101.presentation.calendar.viewmodel.CalendarViewModel
+import com.d101.presentation.collection.CollectionActivity
 import com.d101.presentation.databinding.DialogFruitDetailBinding
 import com.d101.presentation.databinding.DialogJuiceShakeBinding
 import com.d101.presentation.databinding.FragmentCalendarBinding
@@ -95,7 +97,10 @@ class CalendarFragment : Fragment() {
                         viewModel.onCompleteJuiceShakeOccurred(event.weekDate)
                     }
 
-                    is CalendarViewEvent.OnTapCollectionButton -> {}
+                    is CalendarViewEvent.OnTapCollectionButton -> {
+                        val intent = Intent(requireContext(), CollectionActivity::class.java)
+                        startActivity(intent)
+                    }
                     is CalendarViewEvent.OnTapJuiceMakingButton -> {
                         viewModel.onTapJuiceMakingButtonOccurred()
                     }

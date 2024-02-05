@@ -67,7 +67,21 @@ class JuiceRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getEveryJuice(): Result<List<JuiceForCollection>> {
-        TODO("Not yet implemented")
+    override suspend fun getJuiceCollection(): Result<List<JuiceForCollection>> {
+        return when (val result = juiceRemoteDataSource.getJuiceCollection()) {
+            is Result.Success -> {
+                val juiceForCollectionList = result.data.map {
+                    JuiceForCollection(
+                        juiceNum = it.juiceNum,
+                        juiceName = it.juiceName,
+                        juiceImageUrl = it.juiceImageUrl,
+                        juiceDescription = it.juiceDescription,
+                        juiceOwn = it.juiceOwn,
+                    )
+                }
+                Result.Success(juiceForCollectionList)
+            }
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
     }
 }

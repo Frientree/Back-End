@@ -19,6 +19,9 @@
         <activity
             android:name=".main.MainActivity"
             android:exported="true" />
+        <activity
+            android:name=".collection.CollectionActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

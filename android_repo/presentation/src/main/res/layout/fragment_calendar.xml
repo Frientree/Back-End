@@ -21,13 +21,31 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:textAppearance="@style/Base.FTR.AppBarTitle"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:text="@string/emotion_calendar" />
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/emotion_calendar"
+                    android:textAppearance="@style/Base.FTR.AppBarTitle"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="24dp"
+                    android:onClick="@{() -> viewModel.onTapJuiceCollectionButton()}"
+                    android:src="@drawable/book"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <com.d101.presentation.calendar.view.FrientreeCalendar
@@ -123,8 +141,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:textAppearance="@style/Base.FTR.Text.Bold"
-                android:text="@string/juice_of_week" />
+                android:text="@string/juice_of_week"
+                android:textAppearance="@style/Base.FTR.Text.Bold" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/juice_of_week_info_constraint_layout"
@@ -138,18 +156,17 @@
                     android:id="@+id/juice_image_image_view"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:minHeight="140dp"
                     android:layout_marginStart="24dp"
                     android:layout_marginTop="32dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/bg_lightgray_stroke_20dp"
+                    android:minHeight="140dp"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="16dp"
                     android:src="@{viewModel.uiState.juice.juiceImageUrl}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.33"
-                    />
+                    app:layout_constraintWidth_percent="0.33" />
 
                 <TextView
                     android:id="@+id/juice_name_text_view"
