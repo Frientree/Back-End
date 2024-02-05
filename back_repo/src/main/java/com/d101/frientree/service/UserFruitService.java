@@ -7,8 +7,10 @@ import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface UserFruitService {
-    ResponseEntity<UserFruitCreateResponse> speechToTextAudio(MultipartFile file) throws Exception;
+    CompletableFuture<ResponseEntity<UserFruitCreateResponse>> speechToTextAudio(MultipartFile file) throws Exception;
 
     ResponseEntity<UserFruitCreateResponse> speechToTextText(UserFruitTextRequest textFile) throws Exception;
 

@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequestMapping("/user-fruit")
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class UserFruitController {
                     "(message : \"Python AI API Error\", code : 503)")
     })
     @PostMapping(value = "/speech-to-text-audio", consumes = "multipart/form-data")
-    public ResponseEntity<UserFruitCreateResponse> speechToTextAudio(@RequestParam("file") MultipartFile file) throws Exception {
+    public CompletableFuture<ResponseEntity<UserFruitCreateResponse>> speechToTextAudio(@RequestParam("file") MultipartFile file) throws Exception {
         return userFruitService.speechToTextAudio(file);
     }
 
