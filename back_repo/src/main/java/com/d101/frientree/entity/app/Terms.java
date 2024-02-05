@@ -2,12 +2,14 @@ package com.d101.frientree.entity.app;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Terms {
@@ -20,4 +22,9 @@ public class Terms {
 
     @Column(name = "terms_url")
     private String termsUrl;
+
+    @Builder.Default
+    @Column(name = "necessary")
+    private Boolean isNecessary = true;
+
 }
