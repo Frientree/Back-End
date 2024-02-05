@@ -225,4 +225,9 @@ public class UserController {
         return userService.createStatusConfirm();
     }
 
+    @PostMapping("/sign-in-naver")
+    public ResponseEntity<UserSignInNaverResponse> userSignInNaver(@RequestBody UserSignInNaverRequest userSignInNaverRequest) {
+        return userService.userSignInNaver(userSignInNaverRequest);
+    }
+
 }

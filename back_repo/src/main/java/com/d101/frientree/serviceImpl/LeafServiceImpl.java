@@ -43,16 +43,8 @@ public class LeafServiceImpl implements LeafService {
 
     @Override
     public ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // orElseThrow 는 Optional에서만 사용 가능, getcontext는 객체를 반환함..
-        if (authentication == null) {
-            throw new UserNotFoundException("해당하는 유저를 찾을 수 없습니다.");
-        }
-
-        // 현재 로그인한 사용자의 userId를 받아오기
-        Long userId = Long.parseLong(authentication.getName());
-
+        User currentUser = getUser();
+        Long userId = currentUser.getUserId();
 
         // 1. leaf_send와 leaf_receive 테이블에서 현재 로그인한 사용자가 보낸 및 받은 leaf_num 가져오기
         List<Long> sentAndReceivedLeafNums = new ArrayList<>();
@@ -63,45 +55,29 @@ public class LeafServiceImpl implements LeafService {
         //    로그인한 사용자가 보낸 및 받은 leaf를 제외한 이파리들 가져오기
         LeafCategory selectedCategory = LeafCategory.valueOf(leafCategory.toUpperCase());
 
-        List<LeafDetail> leaves;
+        Optional<LeafDetail> leaves;
 
         if (sentAndReceivedLeafNums.isEmpty()) {
             // 선택한 카테고리에 해당하는 모든 LeafDetail 가져오기
-            leaves = leafRepository.findByLeafCategory(selectedCategory);
+            leaves = leafRepository.findByLeafCategoryOrderByLeafViewAsc(selectedCategory).stream().findFirst();
         } else {
             // 선택한 카테고리에 속하면서 sentAndReceivedLeafNums에 포함되지 않은 LeafDetail 가져오기
-            leaves = leafRepository.findAllByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc
-                    (selectedCategory, sentAndReceivedLeafNums);
+            leaves = leafRepository.findAllByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(selectedCategory, sentAndReceivedLeafNums).stream().findFirst();
         }
 
-        if (!leaves.isEmpty()) {
-            // leaf_view 값을 오름차순으로 정렬
-            leaves.sort(Comparator.comparing(LeafDetail::getLeafView));
+        Optional<LeafDetail> selectedorderbyLeaf = leaves;
 
-            // leaf_view가 가장 낮은 leaf 선택
-            LeafDetail selectedLeaf = leaves.get(0);
 
+        // Optional을 사용하니까 isPresent 가 사용이 가능해서 코드 수정했습니다.
+        if (selectedorderbyLeaf.isPresent()) {
             // 선택된 leaf의 leaf_view 값을 1 증가
+            LeafDetail selectedLeaf = selectedorderbyLeaf.get();
             selectedLeaf.setLeafView(selectedLeaf.getLeafView() + 1);
 
             // leaf 업데이트
             leafRepository.save(selectedLeaf);
 
-            // 현재 로그인한 사용자 정보 가져오기
-            User user = userRepository.findById(userId)
-                    .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다."));
-
-            // LeafReceive 테이블에서 중복 체크
-            boolean leafExists = leafReceiveRepository.existsByUserAndLeafDetail(user, selectedLeaf);
-
-            if (!leafExists) {
-                // 중복이 없다면 LeafReceive 테이블에 추가
-                LeafReceive leafReceive = LeafReceive.createLeafReceive(selectedLeaf, user);
-                leafReceiveRepository.save(leafReceive);
-            }
-
-
-           LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
+            LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
                     "Success",
                     LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(selectedLeaf)
             );
@@ -122,6 +98,7 @@ public class LeafServiceImpl implements LeafService {
             );
             return ResponseEntity.ok(response);
         }
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
@@ -129,10 +106,9 @@ public class LeafServiceImpl implements LeafService {
     @Transactional
     public ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest) {
 
-        // 혅재 접속한 정보를 contextholder 에 담아놓은 정보를 가지고 오는 것
+        // user 정보를 받아올 때, 유효성 검사까지 함께하는 메서드를 가지고 와서 사용했습니다.
+        User currentUser = getUser();
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = Long.valueOf(authentication.getName());
         LocalDateTime leafCreateDate = LocalDateTime.now();
 
         LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
@@ -141,11 +117,8 @@ public class LeafServiceImpl implements LeafService {
         // LeafDetail 저장
         leafRepository.save(newLeaf);
 
-        // LeafSend 테이블에 추가할 정보 설정
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("해당하는 유저를 찾을 수 없습니다. "));
 
-        LeafSend leafSend = LeafSend.createLeafSend(newLeaf, user);
+        LeafSend leafSend = LeafSend.createLeafSend(newLeaf, currentUser);
 
         // LeafSend 테이블에 추가
         leafSendRepository.save(leafSend);
@@ -195,13 +168,13 @@ public class LeafServiceImpl implements LeafService {
     @Transactional
     public ResponseEntity<LeafViewResponse> view() {
         // security를 이용해 로그인 정보를 받아옴
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = getUser();
 
         try {
-            Long authenticatedUserId = Long.parseLong(authentication.getName());
+            Long userId = currentUser.getUserId();
 
             // 1. leaf_send 테이블에서 user_id를 기준으로 leaf_num을 가져오기
-            List<Long> leafNumList = leafSendRepository.findLeafNumsByUser(authenticatedUserId);
+            List<Long> leafNumList = leafSendRepository.findLeafNumsByUser(userId);
 
             // 2. leaf_detail 테이블에서 leaf_num에 해당하는 leaf_view 값 모두 더하기
             long totalLeafView = leafNumList.stream()
@@ -219,14 +192,26 @@ public class LeafServiceImpl implements LeafService {
             // response 반환
             return ResponseEntity.ok(response);
 
-        } catch (UserNotFoundException e) {
-            // 사용자를 찾을 수 없는 경우
-            throw new UserNotFoundException("해당하는 유저를 찾을 수 없습니다.");
-
         } catch (LeafNotFoundException e) {
             // leaf_num을 찾지 못한 경우 ( leaf_send 테이블에 로그인한 유저가 보낸 이파리가 없을 때)
             throw new LeafNotFoundException("송신한 이파리를 찾을 수 없습니다.");
-
         }
+    }
+
+
+    private User getUser() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = authentication.getName();
+
+        User currentUser = userRepository.findById(Long.valueOf(userId)
+                )
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
+
+        if (currentUser.getUserDisabled()) {
+            throw new UserNotFoundException("user disabled");
+        }
+
+        return currentUser;
     }
 }

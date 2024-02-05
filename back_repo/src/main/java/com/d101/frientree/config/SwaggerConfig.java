@@ -61,6 +61,15 @@ public class SwaggerConfig {
     }
 
     @Bean
+    public GroupedOpenApi TermsApi(){
+        return GroupedOpenApi.builder()
+                .group("terms-api")
+                .pathsToMatch("/terms/**")
+                .build();
+    }
+
+
+    @Bean
     public OpenAPI openAPI(){
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")

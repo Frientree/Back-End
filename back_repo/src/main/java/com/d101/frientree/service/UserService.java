@@ -37,4 +37,8 @@ public interface UserService {
     ResponseEntity<UserTemporaryPasswordSendResponse> temporaryPasswordSend(UserTemporaryPasswordSendRequest userTemporaryPasswordSendRequest);
 
     ResponseEntity<UserCreateStatusResponse> createStatusConfirm();
+
+    void updateAllUserFruitAndLeafStatus();
+
+    ResponseEntity<UserSignInNaverResponse> userSignInNaver(UserSignInNaverRequest userSignInNaverRequest);
 }

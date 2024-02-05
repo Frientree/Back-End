@@ -181,11 +181,16 @@ public class UserServiceImpl implements UserService {
 
         User currentUser = getUser();
 
-        String decodeEmail = getAESDecoded(currentUser.getUserEmail());
+        String decodeEmail = "";
+        if (currentUser.getUserEmail() != null) {
+            decodeEmail = getAESDecoded(currentUser.getUserEmail());
+        }
+
+        boolean social = currentUser.getNaverCode() != null;
 
         UserProfileConfirmationResponse response = UserProfileConfirmationResponse.createUserProfileConfirmationResponse(
                 "Success",
-                UserProfileConfirmationResponseDTO.createUserProfileConfirmationResponseDTO(currentUser, decodeEmail)
+                UserProfileConfirmationResponseDTO.createUserProfileConfirmationResponseDTO(currentUser, decodeEmail, social)
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -371,6 +376,101 @@ public class UserServiceImpl implements UserService {
         );
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
+
+    // 네이버 소셜 로그인 로직
+    @Transactional
+    @Override
+    public ResponseEntity<UserSignInNaverResponse> userSignInNaver(UserSignInNaverRequest userSignInNaverRequest) {
+
+        String naverCode = userSignInNaverRequest.getCode();
+
+        Optional<User> currentUser = userRepository.findByNaverCode(naverCode);
+
+        if (currentUser.isEmpty()) {
+            // 회원가입 진행한 다음 해당 계정으로 로그인
+            LocalDateTime userCreateDate = LocalDateTime.now();
+            User newUser = User.builder()
+                    .userNickname(generateRandomCode())
+                    .userCreateDate(Date.from(userCreateDate.atZone(ZoneId.systemDefault()).toInstant()))
+                    .userPassword(passwordEncoder.encode(generatePassword()))
+                    .naverCode(naverCode)
+                    .build();
+
+            userRepository.save(newUser);
+
+            UserDetails userDetails;
+            userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(newUser.getUserId()));
+            // Jwt 토큰 발급 로직
+            Map<String, Object> claims = new HashMap<>();
+            UserDTO userDTO = (UserDTO) userDetails;
+            Collection<GrantedAuthority> roleNames = userDTO.getAuthorities();
+            claims.put("roleNames", roleNames);
+            claims.put("username", userDetails.getUsername());
+
+            String accessToken = JwtUtil.generateToken(claims, 60 * 24);
+            String refreshToken = JwtUtil.generateToken(claims, 43200);
+
+            Long refreshTokenExpiry = JwtUtil.getExpirationDateFromToken(refreshToken);
+
+            Instant refreshTokenExpiryDate = Instant.ofEpochMilli(refreshTokenExpiry);
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+            String formattedExpiryDate = formatter.format(refreshTokenExpiryDate);
+
+            RefreshToken refreshTokenEntity = RefreshToken.builder()
+                    .refreshToken(refreshToken)
+                    .username(userDetails.getUsername())
+                    .expiryDate(formattedExpiryDate)
+                    .build();
+            refreshTokenRepository.save(refreshTokenEntity);
+
+            UserSignInNaverResponse response = UserSignInNaverResponse.createUserSignInNaverResponseDTO(
+                    "Login Success",
+                    UserSignInNaverResponseDTO.createUserSignInNaverResponseDTO(accessToken, refreshToken));
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } else {
+            currentUser.get().setNaverCode(naverCode);
+            // 해당 계정으로 로그인
+            // 유저 정보를 가져오고, 이메일 불일치시 404 예외처리
+            UserDetails userDetails;
+            userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(currentUser.get().getUserId()));
+
+            // Jwt 토큰 발급 로직
+            Map<String, Object> claims = new HashMap<>();
+            UserDTO userDTO = (UserDTO) userDetails;
+            Collection<GrantedAuthority> roleNames = userDTO.getAuthorities();
+            claims.put("roleNames", roleNames);
+            claims.put("username", userDetails.getUsername());
+
+            String accessToken = JwtUtil.generateToken(claims, 60 * 24);
+            String refreshToken = JwtUtil.generateToken(claims, 43200);
+
+            Long refreshTokenExpiry = JwtUtil.getExpirationDateFromToken(refreshToken);
+
+            Instant refreshTokenExpiryDate = Instant.ofEpochMilli(refreshTokenExpiry);
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
+            String formattedExpiryDate = formatter.format(refreshTokenExpiryDate);
+
+            RefreshToken refreshTokenEntity = RefreshToken.builder()
+                    .refreshToken(refreshToken)
+                    .username(userDetails.getUsername())
+                    .expiryDate(formattedExpiryDate)
+                    .build();
+            refreshTokenRepository.save(refreshTokenEntity);
+
+            UserSignInNaverResponse response = UserSignInNaverResponse.createUserSignInNaverResponseDTO(
+                    "Login Success",
+                    UserSignInNaverResponseDTO.createUserSignInNaverResponseDTO(accessToken, refreshToken));
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }
+    }
+
+    @Override
+    public void updateAllUserFruitAndLeafStatus() {
+        userRepository.incrementAllUserFruitAndLeafStatus();
+    }
+
 
     // 유저 개별 조회
     @Override

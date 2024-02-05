@@ -47,7 +47,7 @@ public class LeafController {
     @Operation(summary = "이파리 생성", description = "이파리 카테고리와 내용을 기입해 이파리를 생성합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "이파리 생성 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafGenerationResponse.class))),
-            @ApiResponse(responseCode = "404", description = "이파리 생성 실패 (message : \"Bad Request\", code : 400, data : null)", content = @Content),
+            @ApiResponse(responseCode = "400", description = "이파리 생성 실패 (message : \"Bad Request\", code : 400, data : null)", content = @Content),
             @ApiResponse(responseCode = "500", description = "이파리 생성 실패 (message : \"Server Error\", code : 500, data : null)", content = @Content)
     })
     @PostMapping
@@ -73,7 +73,7 @@ public class LeafController {
     @Operation(summary = "이파리 조회수 확인", description = "이파리의 전체 조회수를 확인합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회수 확인 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafViewResponse.class))),
-            @ApiResponse(responseCode = "404", description = "조회수 확인 실패 (message : \"User not Found\", code : 400, data : null)", content = @Content),
+            @ApiResponse(responseCode = "404", description = "조회수 확인 실패 (message : \"User not Found\", code : 404, data : null)", content = @Content),
     })
     @GetMapping("/view")
     public ResponseEntity<LeafViewResponse> leafView() {
