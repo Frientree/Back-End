@@ -1,7 +1,6 @@
 package com.d101.frientree.dto.juice.response;
 
 import com.d101.frientree.dto.juice.response.dto.JuiceListConfirmationResponseDTO;
-import com.d101.frientree.entity.juice.JuiceDetail;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,13 +11,13 @@ import java.util.List;
 public class JuiceListConfirmationResponse {
 
     private String message;
-    private List<JuiceListConfirmationResponseDTO> dto;
+    private List<JuiceListConfirmationResponseDTO> data;
 
     public static JuiceListConfirmationResponse createJuiceListConfirmationResponse(String message, List<JuiceListConfirmationResponseDTO> dto) {
 
         return JuiceListConfirmationResponse.builder()
                 .message(message)
-                .dto(dto)
+                .data(dto)
                 .build();
     }
 }
