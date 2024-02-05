@@ -219,7 +219,7 @@ public class UserController {
             @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n"),
             @ApiResponse(responseCode = "404", description = "(message : \"User not found\", code : 404)\n")
     })
-    @PostMapping("/create-status")
+    @GetMapping("/create-status")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<UserCreateStatusResponse> userCreateStatusConfirmation() {
         return userService.createStatusConfirm();
