@@ -21,7 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:button="@drawable/outline_check_24"
-            android:checked="true"
+            android:checked="@{termsItem.checked}"
+            android:clickable="false"
             android:text="@{termsItem.name}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/terms_name_space"
@@ -34,8 +35,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="@id/terms_check_box"
-            app:layout_constraintStart_toEndOf="@id/terms_check_box"
             app:layout_constraintEnd_toStartOf="@id/terms_show_text_view"
+            app:layout_constraintStart_toEndOf="@id/terms_check_box"
             app:layout_constraintTop_toTopOf="@id/terms_check_box" />
 
         <TextView

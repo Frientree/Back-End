@@ -1,5 +1,6 @@
 package com.d101.presentation.welcome.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
@@ -77,13 +78,16 @@ class TermsAgreeViewModel @Inject constructor(
     }
 
     private fun checkAllTermsChecked() {
+        Log.d("모든 약관 동의", "체크 바뀜: ${uiState.value.termsList}")
         _uiState.update { currentState ->
             if (isAllAgreed()) {
+                Log.d("모든 약관 동의", "${uiState.value.termsList}")
                 TermsAgreeState.TermsAllAgreedState(
-                    termsList = currentState.termsList,
+                    termsList = currentState.termsList.map { it.copy(checked = true) },
                     allAgree = true,
                 )
             } else {
+                Log.d("모든 약관 동의 안함", "${uiState.value.termsList}")
                 TermsAgreeState.TermsDisagreeAbsentState(
                     termsList = currentState.termsList,
                     allAgree = false,
@@ -98,14 +102,14 @@ class TermsAgreeViewModel @Inject constructor(
                 when (currentState) {
                     is TermsAgreeState.TermsAllAgreedState -> {
                         TermsAgreeState.TermsDisagreeAbsentState(
-                            termsList = currentState.termsList.map { it.copy(selected = false) },
+                            termsList = currentState.termsList.map { it.copy(checked = false) },
                             allAgree = false,
                         )
                     }
 
                     is TermsAgreeState.TermsDisagreeAbsentState -> {
                         TermsAgreeState.TermsAllAgreedState(
-                            termsList = currentState.termsList.map { it.copy(selected = true) },
+                            termsList = currentState.termsList.map { it.copy(checked = true) },
                             allAgree = true,
                         )
                     }
@@ -120,7 +124,7 @@ class TermsAgreeViewModel @Inject constructor(
 
     fun onAllCheckedTerms() = emitEvent(TermsAgreeEvent.OnCheckAllAgree)
 
-    private fun isAllAgreed() = uiState.value.termsList.all { it.selected }
+    private fun isAllAgreed() = uiState.value.termsList.all { it.checked }
 
     private fun emitEvent(event: TermsAgreeEvent) {
         viewModelScope.launch {

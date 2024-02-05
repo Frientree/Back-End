@@ -44,7 +44,9 @@ class TermsAgreeFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        adapter = TermsListAdapter()
+        adapter = TermsListAdapter {
+            viewModel.onCheckedTerms(it)
+        }
         binding.termsAgreeRecyclerView.adapter = adapter
     }
 

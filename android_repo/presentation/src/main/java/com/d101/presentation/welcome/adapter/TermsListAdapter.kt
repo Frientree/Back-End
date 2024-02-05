@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.d101.presentation.databinding.ItemTermsAgreeBinding
 import com.d101.presentation.model.TermsItem
 
-class TermsListAdapter() : ListAdapter<TermsItem, TermsListAdapter.TermsViewHolder>(diffUtil) {
+class TermsListAdapter(
+    private val checkTerms: (TermsItem) -> Unit,
+) : ListAdapter<TermsItem, TermsListAdapter.TermsViewHolder>(diffUtil) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
@@ -18,15 +20,28 @@ class TermsListAdapter() : ListAdapter<TermsItem, TermsListAdapter.TermsViewHold
             parent,
             false,
         )
-        return TermsViewHolder(binding)
+        return TermsViewHolder(binding, checkTerms)
     }
 
     override fun onBindViewHolder(holder: TermsViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class TermsViewHolder(private val binding: ItemTermsAgreeBinding) : ViewHolder(binding.root) {
+    class TermsViewHolder(
+        private val binding: ItemTermsAgreeBinding,
+        checkTerms: (TermsItem) -> Unit,
+    ) : ViewHolder(binding.root) {
+
+        private lateinit var termsItem: TermsItem
+
+        init {
+            binding.termsCheckBox.setOnClickListener {
+                checkTerms(termsItem.copy(checked = termsItem.checked.not()))
+            }
+        }
+
         fun bind(termsItem: TermsItem) {
+            this.termsItem = termsItem
             binding.termsItem = termsItem
         }
     }

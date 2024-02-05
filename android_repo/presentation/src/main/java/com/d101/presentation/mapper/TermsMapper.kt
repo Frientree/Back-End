@@ -8,7 +8,7 @@ object TermsMapper {
         return TermsItem(
             name = this.name,
             url = this.url,
-            selected = false,
+            checked = false,
         )
     }
 }
