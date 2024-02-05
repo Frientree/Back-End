@@ -19,16 +19,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("UPDATE User u SET u.userFruitStatus = :status WHERE u.userId = :userId")
     int updateUserFruitStatusById(Long userId, Boolean status);
 
-    //모든 유저 열매 상태 수정
+    //모든 유저 열매, 이파리 상태 수정
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE User u SET u.userFruitStatus = false")
-    int incrementAllUserFruitStatus();
+    @Query("UPDATE User u SET u.userFruitStatus = true, u.userLeafStatus = true")
+    void incrementAllUserFruitAndLeafStatus();
 
-    //모든 유저 이파리 상태 수정
-    @Transactional
-    @Modifying(clearAutomatically = true)
-    @Query("UPDATE User u SET u.userLeafStatus = false")
-    int incrementAllUserLeafStatus();
 
 }
