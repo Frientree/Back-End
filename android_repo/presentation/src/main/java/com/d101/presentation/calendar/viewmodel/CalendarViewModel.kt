@@ -11,7 +11,6 @@ import com.d101.domain.usecase.calendar.GetFruitsOfMonthUseCase
 import com.d101.domain.usecase.calendar.GetFruitsOfWeekUseCase
 import com.d101.domain.usecase.calendar.GetJuiceOfWeekUseCase
 import com.d101.domain.usecase.calendar.MakeJuiceUseCase
-import com.d101.domain.utils.toYearMonthDayFormat
 import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
 import com.d101.presentation.calendar.state.JuiceCreatableStatus
@@ -211,6 +210,12 @@ class CalendarViewModel @Inject constructor(
                     }
                     setFruitListForMonth(fruitListForMonth)
                 }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                when (val result = getFruitsOfMonthUseCase(LocalDate.now(), monthDate)) {
+                    is Result.Success -> {
+                        setFruitListForMonth(result.data)
+                    }
 
                 is Result.Failure -> {
                     _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))

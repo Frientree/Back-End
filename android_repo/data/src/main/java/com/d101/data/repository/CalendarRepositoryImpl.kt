@@ -111,7 +111,7 @@ class CalendarRepositoryImpl @Inject constructor(
                         date = it.fruitDay.toLongDate(),
                         name = it.fruitName,
                         description = it.fruitDescription,
-                        imageUrl = it.fruitCalendarImageUrl,
+                        imageUrl = it.fruitImageUrl,
                         calendarImageUrl = it.fruitCalendarImageUrl,
                         emotion = it.fruitFeel,
                         score = 0,

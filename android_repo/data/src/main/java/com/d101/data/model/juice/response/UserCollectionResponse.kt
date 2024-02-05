@@ -5,4 +5,5 @@ data class UserCollectionResponse(
     val juiceImageUrl: String,
     val juiceName: String,
     val juiceOwn: Boolean,
+    val juiceDescription: String,
 )
