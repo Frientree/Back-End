@@ -225,6 +225,12 @@ public class UserController {
         return userService.createStatusConfirm();
     }
 
+    // 네이버 소셜 로그인
+    @Operation(summary = "네이버 소셜 로그인", description = "네이버 계정으로 소셜 로그인을 진행합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = UserCreateStatusResponse.class)))
+    })
     @PostMapping("/sign-in-naver")
     public ResponseEntity<UserSignInNaverResponse> userSignInNaver(@RequestBody UserSignInNaverRequest userSignInNaverRequest) {
         return userService.userSignInNaver(userSignInNaverRequest);
