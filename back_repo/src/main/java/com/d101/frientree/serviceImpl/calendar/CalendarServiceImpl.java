@@ -169,16 +169,48 @@ public class CalendarServiceImpl implements CalendarService {
                 user.get().getUserId(), startDate, endDate
         );
 
+        // Calendar 인스턴스를 startDate와 endDate에 맞춰 설정
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(startDate);
+
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(endDate);
+
         List<CalendarWeeklyJuiceFruitsGraphDTO> calendarWeeklyJuiceFruitsGraphDTOList = new ArrayList<>();
 
-        //List --> fruitsGraphData DTO 담기
-        for(UserFruit userFruit : userFruitList){
-            calendarWeeklyJuiceFruitsGraphDTOList.add(
-                    CalendarWeeklyJuiceFruitsGraphDTO.createCalendarWeeklyJuiceFruitGraphDTO(
-                            dateFormat.format(userFruit.getUserFruitCreateDate()),
-                            userFruit
-                    )
-            );
+        while (!startCal.after(endCal)){
+            Date loopDate = startCal.getTime();
+            String formattedDate = dateFormat.format(loopDate);
+
+            UserFruit matchingUserFruit = null;
+
+            // 해당 날짜에 맞는 데이터 찾기
+            for(UserFruit userFruit : userFruitList){
+                String findFruitDate = dateFormat.format(userFruit.getUserFruitCreateDate());
+                if(findFruitDate.equals(formattedDate)){
+                    matchingUserFruit = userFruit;
+                    break;
+                }
+            }
+
+            //DTO 담기 (day = "2024-01-01", imageUrl = "aws url", Score = 열매 점수)
+            if(matchingUserFruit != null){
+                calendarWeeklyJuiceFruitsGraphDTOList.add(
+                        CalendarWeeklyJuiceFruitsGraphDTO.createCalendarWeeklyJuiceFruitGraphDTO(
+                                formattedDate,
+                                matchingUserFruit
+                        )
+                );
+            }else{ //DTO 담기 (day = "2024-01-01", imageUrl = "", Score = 11L)
+                calendarWeeklyJuiceFruitsGraphDTOList.add(
+                        CalendarWeeklyJuiceFruitsGraphDTO.createCalendarWeeklyJuiceFruitGraphDTO(
+                                formattedDate
+                        )
+                );
+            }
+            // 다음 날짜로 이동
+            startCal.add(Calendar.DATE, 1);
+
         }
 
         //DTO 2개 저장하는 DTO에 담기

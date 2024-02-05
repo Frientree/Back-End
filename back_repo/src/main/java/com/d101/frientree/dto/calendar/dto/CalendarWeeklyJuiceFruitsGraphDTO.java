@@ -11,11 +11,19 @@ public class CalendarWeeklyJuiceFruitsGraphDTO {
     private String fruitCalendarImageUrl;
     private Long fruitScore;
 
-    public static CalendarWeeklyJuiceFruitsGraphDTO createCalendarWeeklyJuiceFruitGraphDTO(String fruitDate, UserFruit userFruit){
+    public static CalendarWeeklyJuiceFruitsGraphDTO createCalendarWeeklyJuiceFruitGraphDTO(String fruitDate,
+                                                                                           UserFruit userFruit){
         return CalendarWeeklyJuiceFruitsGraphDTO.builder()
                 .fruitDate(fruitDate)
                 .fruitCalendarImageUrl(userFruit.getFruitDetail().getFruitCalendarUrl())
                 .fruitScore(userFruit.getUserFruitScore())
+                .build();
+    }
+    public static CalendarWeeklyJuiceFruitsGraphDTO createCalendarWeeklyJuiceFruitGraphDTO(String fruitDate){
+        return CalendarWeeklyJuiceFruitsGraphDTO.builder()
+                .fruitDate(fruitDate)
+                .fruitCalendarImageUrl("")
+                .fruitScore(11L)
                 .build();
     }
 }
