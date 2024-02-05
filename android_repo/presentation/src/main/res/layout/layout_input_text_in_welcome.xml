@@ -25,7 +25,6 @@
         <EditText
             android:id="@+id/input_edit_text"
             style="@style/Base.FTR.EditTextExtended"
-            android:layout_height="32dp"
             android:layout_marginStart="28dp"
             app:layout_constraintEnd_toStartOf="@id/confirm_button"
             app:layout_constraintStart_toStartOf="parent"

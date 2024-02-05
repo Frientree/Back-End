@@ -93,5 +93,7 @@
     <string name="greeting">반가워요,\n함께 감정을 기록해봐요</string>
     <string name="show">보기</string>
     <string name="all_terms_agree">약관 전체 동의</string>
+    <string name="now_password">기존 비밀번호</string>
+    <string name="new_password">새로운 비밀번호</string>
 
 </resources>

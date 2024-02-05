@@ -3,6 +3,9 @@
 
     <application android:theme="@style/Theme.Frientree">
         <activity
+            android:name=".mypage.PasswordChangeActivity"
+            android:exported="false" />
+        <activity
             android:name=".welcome.WelcomeActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
