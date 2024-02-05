@@ -38,9 +38,9 @@ class ShakeSensorModule(context: Context, private val listener: ShakeEventListen
                     val deltaX: Float = kotlin.math.abs(lastX - x)
                     val deltaY: Float = kotlin.math.abs(lastY - y)
                     val deltaZ: Float = kotlin.math.abs(lastZ - z)
-                    if ((deltaX > Shake_THRESHOLD && deltaY > Shake_THRESHOLD) ||
-                        (deltaZ > Shake_THRESHOLD && deltaX > Shake_THRESHOLD) ||
-                        (deltaY > Shake_THRESHOLD && deltaZ > Shake_THRESHOLD)
+                    if (deltaX > Shake_THRESHOLD ||
+                        deltaZ > Shake_THRESHOLD ||
+                        deltaY > Shake_THRESHOLD
                     ) {
                         listener.onShakeSensed()
                     }

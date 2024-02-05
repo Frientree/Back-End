@@ -1,13 +1,11 @@
 package com.d101.presentation.main.fragments
 
-import android.animation.ObjectAnimator
 import android.app.Dialog
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -63,7 +61,7 @@ class CalendarFragment : Fragment() {
         setBinding()
         subscribeEvent()
         subscribeViewState()
-        fruitListAdapter = FruitListAdapter{fruit -> viewModel.onTapFruitDetailButton(fruit)}
+        fruitListAdapter = FruitListAdapter { fruit -> viewModel.onTapFruitDetailButton(fruit) }
         littleFruitListAdapter = LittleFruitListAdapter()
         binding.frientreeCalendar.setCalendarAdapter(
             FruitInCalendarListAdapter {
@@ -94,7 +92,7 @@ class CalendarFragment : Fragment() {
                     }
 
                     is CalendarViewEvent.OnCompleteJuiceShake -> {
-                        viewModel.onCompleteJuiceShakeOccurred()
+                        viewModel.onCompleteJuiceShakeOccurred(event.weekDate)
                     }
 
                     is CalendarViewEvent.OnTapCollectionButton -> {}
@@ -251,22 +249,13 @@ class CalendarFragment : Fragment() {
             object : ShakeEventListener {
                 override fun onShakeSensed() {
                     if (progressBar.progress < progressBar.max) {
-                        val progressAnimator =
-                            ObjectAnimator.ofInt(
-                                progressBar,
-                                "progress",
-                                progressBar.progress,
-                                progressBar.progress + 34,
-                            )
-                        progressAnimator.duration = 300
-                        progressAnimator.interpolator = LinearInterpolator()
-                        progressAnimator.start()
+                        progressBar.progress += 3
                     }
 
                     if (progressBar.progress >= progressBar.max) {
                         progressBar.progress = progressBar.max
                         shakeSensor.stop()
-                        viewModel.onCompleteJuiceShakeOccurred()
+                        viewModel.onCompleteJuiceShake()
                     }
                 }
             },
