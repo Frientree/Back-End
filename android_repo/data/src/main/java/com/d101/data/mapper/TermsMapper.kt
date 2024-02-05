@@ -7,5 +7,6 @@ object TermsMapper {
     fun TermsResponse.toTerms() = Terms(
         url = this.url,
         name = this.name,
+        necessary = this.necessary,
     )
 }

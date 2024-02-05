@@ -1,4 +1,4 @@
-package com.d101.presentation.fruit_elements
+package com.d101.presentation.model
 
 import androidx.annotation.ColorRes
 import com.d101.domain.utils.FruitEmotion
