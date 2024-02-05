@@ -111,7 +111,8 @@ public class UserFruitServiceImpl implements UserFruitService {
 
             log.info("음성 Text : {}", response.getFullText());
             try {//Python 감정 분석 API 호출
-                ResponseEntity<UserFruitCreateResponse> sttResponse = ResponseEntity.ok(httpPostAIRequest.sendPostRequest(fullText));
+                ResponseEntity<UserFruitCreateResponse> sttResponse =
+                        ResponseEntity.ok(httpPostAIRequest.sendPostRequest(fullText));
                 return CompletableFuture.completedFuture(sttResponse);
             }catch (PythonAPIException e){
                 throw new PythonAPIException("Python AI API Error");
