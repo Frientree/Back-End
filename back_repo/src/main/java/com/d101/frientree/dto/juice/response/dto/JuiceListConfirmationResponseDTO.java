@@ -12,6 +12,7 @@ public class JuiceListConfirmationResponseDTO {
     private String juiceImageUrl;
     private String juiceName;
     private Boolean juiceOwn;
+    private String juiceDescription;
 
     public static JuiceListConfirmationResponseDTO createJuiceListConfirmationResponseDTO(JuiceDetail juiceDetail, Boolean own) {
 
@@ -20,6 +21,7 @@ public class JuiceListConfirmationResponseDTO {
                 .juiceNum(juiceDetail.getJuiceNum())
                 .juiceImageUrl(juiceDetail.getJuiceImageUrl())
                 .juiceOwn(own)
+                .juiceDescription(juiceDetail.getJuiceInfo())
                 .build();
     }
 }

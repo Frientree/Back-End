@@ -69,6 +69,10 @@ jasypt:
   encryptor:
     aiurl: ENC(S5SsEvmX4X7ncHUDkHz5OJMVfy9wotQhzIz84ER28YKENkB7CNSgQw==)
 ---
+jasypt:
+  encryptor:
+    aes256: ENC(skeHJW51/jfDrQlpaOg0Sszs2zwl7IKhgWkjLUNfy8U=)
+---
 cloud:
   aws:
     s3:

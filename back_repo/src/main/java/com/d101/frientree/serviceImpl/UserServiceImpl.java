@@ -17,6 +17,7 @@ import com.d101.frientree.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -49,6 +55,9 @@ public class UserServiceImpl implements UserService {
 
     private static final int VERIFICATION_CODE_LENGTH = 6;
 
+    @Value("${jasypt.encryptor.aes256}")
+    private String aesKey;
+
     // 로그인 + 토큰 발급 로직
     @Override
     public ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest) {
@@ -56,11 +65,10 @@ public class UserServiceImpl implements UserService {
         // 유저 정보를 가져오고, 이메일 불일치시 404 예외처리
         UserDetails userDetails;
 
-        User currentUser = userRepository.findByUserEmail(userSignInRequest.getUserEmail())
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
+        String hashedEmail = getAESEncoded(userSignInRequest.getUserEmail());
+        User currentUser = userRepository.findByUserEmail(hashedEmail).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         userDetails = customUserDetailsService.loadUserByUsername(String.valueOf(currentUser.getUserId()));
-
         // 패스워드 불일치시 401 예외처리
         if (!passwordEncoder.matches(userSignInRequest.getUserPw(), userDetails.getPassword())) {
             throw new PasswordNotMatchingException("password not match");
@@ -88,7 +96,6 @@ public class UserServiceImpl implements UserService {
                 .expiryDate(formattedExpiryDate)
                 .build();
         refreshTokenRepository.save(refreshTokenEntity);
-        System.out.println(refreshTokenEntity);
 
         UserSignInResponse response = UserSignInResponse.createUserConfirmationResponse(
                 "Login Success",
@@ -174,9 +181,11 @@ public class UserServiceImpl implements UserService {
 
         User currentUser = getUser();
 
+        String decodeEmail = getAESDecoded(currentUser.getUserEmail());
+
         UserProfileConfirmationResponse response = UserProfileConfirmationResponse.createUserProfileConfirmationResponse(
                 "Success",
-                UserProfileConfirmationResponseDTO.createUserProfileConfirmationResponseDTO(currentUser)
+                UserProfileConfirmationResponseDTO.createUserProfileConfirmationResponseDTO(currentUser, decodeEmail)
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -238,7 +247,9 @@ public class UserServiceImpl implements UserService {
             throw new CustomValidationException("email valid error");
         }
 
-        if (userRepository.findByUserEmail(userDuplicateCheckRequest.getUserEmail()).isPresent()) {
+        String hashingEmail = getAESEncoded(userDuplicateCheckRequest.getUserEmail());
+
+        if (userRepository.findByUserEmail(hashingEmail).isPresent()) {
             throw new EmailDuplicatedException("email is duplicate");
         }
 
@@ -259,7 +270,9 @@ public class UserServiceImpl implements UserService {
             throw new CustomValidationException("email valid error");
         }
 
-        if (userRepository.findByUserEmail(userSendEmailCertificationRequest.getUserEmail()).isPresent()) {
+        String hashingEmail = getAESEncoded(userSendEmailCertificationRequest.getUserEmail());
+
+        if (userRepository.findByUserEmail(hashingEmail).isPresent()) {
             throw new EmailDuplicatedException("email is duplicate");
         }
 
@@ -327,7 +340,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public ResponseEntity<UserTemporaryPasswordSendResponse> temporaryPasswordSend(UserTemporaryPasswordSendRequest userTemporaryPasswordSendRequest) {
 
-        User currentUser = userRepository.findByUserEmail(userTemporaryPasswordSendRequest.getUserEmail())
+        String hashingEmail = getAESEncoded(userTemporaryPasswordSendRequest.getUserEmail());
+
+        User currentUser = userRepository.findByUserEmail(hashingEmail)
                 .orElseThrow(() -> new UserNotFoundException("user not found"));
 
         // 임시 비밀번호 생성
@@ -396,7 +411,8 @@ public class UserServiceImpl implements UserService {
         User newUser = User.builder()
                 .userNickname(userCreateRequest.getUserNickname())
                 .userPassword(passwordEncoder.encode(userCreateRequest.getUserPw()))
-                .userEmail(userCreateRequest.getUserEmail())
+                // 이메일 값을 해싱하여 저장합니다.
+                .userEmail(getAESEncoded(userCreateRequest.getUserEmail()))
                 .userCreateDate(Date.from(userCreateDate.atZone(ZoneId.systemDefault()).toInstant()))
                 .build();
 
@@ -522,6 +538,41 @@ public class UserServiceImpl implements UserService {
         }
 
         return shuffledString.toString();
+    }
+
+
+    public String getAESEncoded(String data) {
+        try {
+            String key = "insert 16 length";
+            String iv = "insert 16 length";
+
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(iv.getBytes());
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+
+            byte[] encrypted = cipher.doFinal(data.getBytes(StandardCharsets.UTF_8));
+
+            return Base64.getEncoder().encodeToString(encrypted);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException("Error occurred while encrypting data", e);
+        }
+    }
+
+    public String getAESDecoded(String encryptedData) {
+        try {
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            SecretKeySpec keySpec = new SecretKeySpec(aesKey.getBytes(), "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(aesKey.getBytes());
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+
+            byte[] decodedBytes = Base64.getDecoder().decode(encryptedData);
+            byte[] original = cipher.doFinal(decodedBytes);
+
+            return new String(original, StandardCharsets.UTF_8);
+        } catch (GeneralSecurityException e) {
+            throw new RuntimeException("Error occurred while decrypting data", e);
+        }
     }
 
 }

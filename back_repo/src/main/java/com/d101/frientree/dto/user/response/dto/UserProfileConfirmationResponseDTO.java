@@ -20,13 +20,13 @@ public class UserProfileConfirmationResponseDTO {
 
     private boolean userFruitStatus;
 
-    public static UserProfileConfirmationResponseDTO createUserProfileConfirmationResponseDTO(User user) {
+    public static UserProfileConfirmationResponseDTO createUserProfileConfirmationResponseDTO(User user, String email) {
         return UserProfileConfirmationResponseDTO.builder()
                 .userId(user.getUserId())
                 .userNickname(user.getUserNickname())
                 .userLeafStatus(user.getUserLeafStatus())
                 .userFruitStatus(user.getUserFruitStatus())
-                .userEmail(user.getUserEmail())
+                .userEmail(email)
                 .build();
     }
 }
