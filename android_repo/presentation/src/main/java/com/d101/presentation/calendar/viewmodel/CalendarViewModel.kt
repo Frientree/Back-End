@@ -11,7 +11,6 @@ import com.d101.domain.usecase.calendar.GetFruitsOfMonthUseCase
 import com.d101.domain.usecase.calendar.GetFruitsOfWeekUseCase
 import com.d101.domain.usecase.calendar.GetJuiceOfWeekUseCase
 import com.d101.domain.usecase.calendar.MakeJuiceUseCase
-import com.d101.domain.utils.toYearMonthDayFormat
 import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
 import com.d101.presentation.calendar.state.JuiceCreatableStatus
@@ -196,22 +195,7 @@ class CalendarViewModel @Inject constructor(
             withContext(Dispatchers.IO) {
                 when (val result = getFruitsOfMonthUseCase(LocalDate.now(), monthDate)) {
                     is Result.Success -> {
-                        val fruitListForMonth = ArrayList<FruitsOfMonth>()
-
-                        var localStartDate = monthDate.first
-                        val localEndDate = monthDate.second
-
-                        while (localStartDate <= localEndDate) {
-                            val dateStr = localStartDate.toYearMonthDayFormat()
-                            val fruit = result.data.find { it.day == dateStr }
-                            if (fruit != null) {
-                                fruitListForMonth.add(fruit)
-                            } else {
-                                fruitListForMonth.add(FruitsOfMonth(dateStr, ""))
-                            }
-                            localStartDate = localStartDate.plusDays(1)
-                        }
-                        setFruitListForMonth(fruitListForMonth)
+                        setFruitListForMonth(result.data)
                     }
 
                     is Result.Failure -> {

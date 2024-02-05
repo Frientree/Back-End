@@ -40,7 +40,7 @@ class TermsListAdapter(
             binding.termsCheckBox.setOnClickListener {
                 checkTerms(termsItem.copy(checked = termsItem.checked.not()))
             }
-            binding.termsShowTextView.setOnClickListener{
+            binding.termsShowTextView.setOnClickListener {
                 showTermsInfo(termsItem.url)
             }
         }
