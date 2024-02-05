@@ -10,9 +10,15 @@ import java.time.LocalDate
 interface CalendarRepository {
     suspend fun getFruit(date: Long): Fruit
 
-    suspend fun getFruitsOfMonth(monthDate: Pair<LocalDate, LocalDate>): Result<List<FruitsOfMonth>>
+    suspend fun getFruitsOfMonth(
+        todayDate: LocalDate,
+        monthDate: Pair<LocalDate, LocalDate>,
+    ): Result<List<FruitsOfMonth>>
 
-    suspend fun getFruitsOfWeek(weekDate: Pair<LocalDate, LocalDate>): Result<List<Fruit>>
+    suspend fun getFruitsOfWeek(
+        todayDate: LocalDate,
+        weekDate: Pair<LocalDate, LocalDate>,
+    ): Result<List<Fruit>>
 
     suspend fun getTodayFruitStatistics(date: Long): Result<TodayStatistics>
 
