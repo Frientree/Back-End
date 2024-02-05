@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUserEmail(String username);
 
+    Optional<User> findByNaverCode(String code);
+
 
     //유저 열매 상태 수정 (clearAutomatically = true --> 영속성 컨텍스트 초기화 = 데이터 동기화)
     @Transactional

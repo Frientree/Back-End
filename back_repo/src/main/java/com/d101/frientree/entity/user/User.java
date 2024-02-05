@@ -56,6 +56,9 @@ public class User {
     @Column(name = "user_fruit_status")
     private Boolean userFruitStatus = true;
 
+    @Column(name = "naver_code")
+    private String naverCode;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<UserFruit> userFruits;
@@ -71,4 +74,5 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<LeafReceive> leafReceives;
+
 }
