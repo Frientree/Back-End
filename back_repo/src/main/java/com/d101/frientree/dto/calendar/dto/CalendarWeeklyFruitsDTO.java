@@ -14,6 +14,7 @@ public class CalendarWeeklyFruitsDTO {
     private String fruitName;
     private String fruitFeel;
     private String fruitDescription;
+    private String fruitImageUrl;
     private String fruitCalendarImageUrl;
 
     public static CalendarWeeklyFruitsDTO createCalendarWeeklyFruitsDTO(String fruitDay, UserFruit userFruit){
@@ -22,6 +23,7 @@ public class CalendarWeeklyFruitsDTO {
                 .fruitName(userFruit.getFruitDetail().getFruitName())
                 .fruitFeel(userFruit.getFruitDetail().getFruitFeel())
                 .fruitDescription(userFruit.getFruitDetail().getFruitDescription())
+                .fruitImageUrl(userFruit.getFruitDetail().getFruitImageUrl())
                 .fruitCalendarImageUrl(userFruit.getFruitDetail().getFruitCalendarUrl())
                 .build();
     }
