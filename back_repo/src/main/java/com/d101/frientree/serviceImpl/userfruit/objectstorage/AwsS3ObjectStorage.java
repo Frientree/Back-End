@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
 
 @Log4j2
 @Data
@@ -29,7 +30,23 @@ public class AwsS3ObjectStorage {
         amazonS3.putObject(bucket, originalFilename, multipartFile.getInputStream(), metadata);
         return amazonS3.getUrl(bucket, originalFilename).toString();
     }
-    public void deleteImage(String originalFilename)  {
-        amazonS3.deleteObject(bucket, originalFilename);
+    public void deleteFile(String fileUrl)  {
+        try {
+            // URL에서 객체 키 추출
+            URL url = new URL(fileUrl);
+            // URL의 첫 번째 '/'를 제거하여 객체 키 얻기
+            String key = url.getPath().substring(1);
+
+            // 파일 존재 여부 확인
+            if (amazonS3.doesObjectExist(bucket, key)) {
+                // S3에서 파일 삭제
+                amazonS3.deleteObject(bucket, key);
+                log.info("File deleted successfully: {}", key);
+            } else { // file not found
+                log.warn("File not found: {}", key);
+            }
+        } catch (Exception e) { //error
+            log.error("Failed to delete file: {}", fileUrl, e);
+        }
     }
 }

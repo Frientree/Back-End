@@ -99,8 +99,9 @@ public class UserFruitServiceImpl implements UserFruitService {
             }catch (NaverClovaAPIException e){
                 throw new NaverClovaAPIException("Naver API Error");
             }
+            log.info("AWS S3 URL : {}", awsS3Path);
             // 3. 파일 삭제
-            awsS3ObjectStorage.deleteImage(awsS3Path);
+            awsS3ObjectStorage.deleteFile(awsS3Path);
 
             // Gson을 사용하여 응답을 ClovaSpeechResponse 객체로 파싱
             Gson gson = new Gson();
