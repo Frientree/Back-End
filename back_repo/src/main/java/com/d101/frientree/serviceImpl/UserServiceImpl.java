@@ -17,6 +17,7 @@ import com.d101.frientree.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +54,9 @@ public class UserServiceImpl implements UserService {
     private final RedisTemplate<String, String> redisTemplate;
 
     private static final int VERIFICATION_CODE_LENGTH = 6;
+
+    @Value("${jasypt.encryptor.aes256}")
+    private String aesKey;
 
     // 로그인 + 토큰 발급 로직
     @Override
@@ -557,12 +561,9 @@ public class UserServiceImpl implements UserService {
 
     public String getAESDecoded(String encryptedData) {
         try {
-            String key = "insert 16 length";
-            String iv = "insert 16 length";
-
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
-            IvParameterSpec ivSpec = new IvParameterSpec(iv.getBytes());
+            SecretKeySpec keySpec = new SecretKeySpec(aesKey.getBytes(), "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(aesKey.getBytes());
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
 
             byte[] decodedBytes = Base64.getDecoder().decode(encryptedData);
