@@ -10,6 +10,7 @@ import com.d101.presentation.model.TermsItem
 
 class TermsListAdapter(
     private val checkTerms: (TermsItem) -> Unit,
+    private val showTermsInfo: (String) -> Unit,
 ) : ListAdapter<TermsItem, TermsListAdapter.TermsViewHolder>(diffUtil) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -20,7 +21,7 @@ class TermsListAdapter(
             parent,
             false,
         )
-        return TermsViewHolder(binding, checkTerms)
+        return TermsViewHolder(binding, checkTerms, showTermsInfo)
     }
 
     override fun onBindViewHolder(holder: TermsViewHolder, position: Int) {
@@ -30,6 +31,7 @@ class TermsListAdapter(
     class TermsViewHolder(
         private val binding: ItemTermsAgreeBinding,
         checkTerms: (TermsItem) -> Unit,
+        showTermsInfo: (String) -> Unit,
     ) : ViewHolder(binding.root) {
 
         private lateinit var termsItem: TermsItem
@@ -37,6 +39,9 @@ class TermsListAdapter(
         init {
             binding.termsCheckBox.setOnClickListener {
                 checkTerms(termsItem.copy(checked = termsItem.checked.not()))
+            }
+            binding.termsShowTextView.setOnClickListener{
+                showTermsInfo(termsItem.url)
             }
         }
 

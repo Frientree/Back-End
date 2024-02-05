@@ -1,5 +1,7 @@
 package com.d101.presentation.welcome.fragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,9 +46,13 @@ class TermsAgreeFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        adapter = TermsListAdapter {
-            viewModel.onCheckedTerms(it)
-        }
+        adapter = TermsListAdapter(
+            checkTerms = { viewModel.onCheckedTerms(it) },
+            showTermsInfo = {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
+                startActivity(intent)
+            },
+        )
         binding.termsAgreeRecyclerView.adapter = adapter
     }
 

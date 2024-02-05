@@ -121,6 +121,8 @@ class TermsAgreeViewModel @Inject constructor(
 
     fun onAllCheckedTerms() = emitEvent(TermsAgreeEvent.OnCheckAllAgree)
 
+    fun onClickConfirm() = emitEvent(TermsAgreeEvent.OnClickConfirmButton)
+
     private fun isAllAgreed() = uiState.value.termsList.all { it.checked }
 
     private fun isNecessaryTermsAgreed() = uiState.value.termsList.filter {
