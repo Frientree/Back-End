@@ -3,6 +3,8 @@ package com.d101.frientree.serviceImpl.userfruit.objectstorage;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.d101.frientree.exception.awss3.AwsS3FileNotFoundException;
+import com.d101.frientree.exception.awss3.AwsS3InternalServerErrorException;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,12 +43,14 @@ public class AwsS3ObjectStorage {
             if (amazonS3.doesObjectExist(bucket, key)) {
                 // S3에서 파일 삭제
                 amazonS3.deleteObject(bucket, key);
-                log.info("File deleted successfully: {}", key);
+                //log.info("File deleted successfully: {}", key);
             } else { // file not found
-                log.warn("File not found: {}", key);
+                //log.warn("File not found: {}", key);
+                throw new AwsS3FileNotFoundException("m4a Not Found");
             }
         } catch (Exception e) { //error
-            log.error("Failed to delete file: {}", fileUrl, e);
+            //log.error("Failed to delete file: {}", fileUrl, e);
+            throw new AwsS3InternalServerErrorException("Aws Server Error");
         }
     }
 }
