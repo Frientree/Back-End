@@ -1,42 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <CheckBox
-        android:id="@+id/terms_check_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:button="@drawable/outline_check_24"
-        app:buttonTint="@color/bg_checkbox_color_selector"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/terms_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
 
-    <TextView
-        android:id="@+id/terms_text_view"
-        style="@style/Base.FTR.TextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@id/terms_check_box"
-        app:layout_constraintEnd_toStartOf="@id/terms_show_text_view"
-        app:layout_constraintStart_toEndOf="@id/terms_check_box"
-        app:layout_constraintTop_toTopOf="@id/terms_check_box"
-        tools:text="[필수] 이용약관 동의" />
+        <variable
+            name="termsItem"
+            type="com.d101.presentation.model.TermsItem" />
 
-    <TextView
-        android:id="@+id/terms_show_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/show"
-        android:textAppearance="@style/Base.FTR.Text.Bold"
+    </data>
 
-        app:layout_constraintBottom_toBottomOf="@id/terms_text_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/terms_text_view"
-        app:layout_constraintTop_toTopOf="@id/terms_text_view" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <CheckBox
+            android:id="@+id/terms_check_box"
+            style="@style/Base.FTR.CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:button="@drawable/outline_check_24"
+            android:checked="@{termsItem.selected}"
+            android:text="@{termsItem.name}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/terms_name_space"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="[필수] 이용약관 동의" />
+
+        <Space
+            android:id="@+id/terms_name_space"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/terms_check_box"
+            app:layout_constraintStart_toEndOf="@id/terms_check_box"
+            app:layout_constraintEnd_toStartOf="@id/terms_show_text_view"
+            app:layout_constraintTop_toTopOf="@id/terms_check_box" />
+
+        <TextView
+            android:id="@+id/terms_show_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:padding="4dp"
+            android:text="@string/show"
+            android:textAppearance="@style/Base.FTR.Text.Bold"
+            app:layout_constraintBottom_toBottomOf="@+id/terms_check_box"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/terms_name_space"
+            app:layout_constraintTop_toTopOf="@+id/terms_check_box" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
