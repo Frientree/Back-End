@@ -60,7 +60,7 @@ public class UserFruitController {
             @ApiResponse(responseCode = "500", description = "(message : \"User Modify Exception\", code : 500)"),
     })
     @PostMapping
-    public ResponseEntity<UserFruitSaveResponse> userFruitSave(@RequestParam("fruitNum") Long fruitNum){
-        return userFruitService.userFruitSave(fruitNum);
+    public ResponseEntity<UserFruitSaveResponse> userFruitSave(@RequestHeader("Date") String CreateDate, @RequestParam("fruitNum") Long fruitNum){
+        return userFruitService.userFruitSave(fruitNum, CreateDate);
     }
 }

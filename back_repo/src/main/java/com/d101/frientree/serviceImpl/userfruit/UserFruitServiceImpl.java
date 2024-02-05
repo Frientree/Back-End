@@ -32,6 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -136,7 +138,14 @@ public class UserFruitServiceImpl implements UserFruitService {
     }
 
     @Override
-    public ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum) {
+    public ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum, String createDate) {
+        //헤더에 들어온 Client 기준 Date 값을 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(createDate, formatter);
+
+        // LocalDate를 java.sql.Date로 변환
+        Date date = java.sql.Date.valueOf(localDate);
+
         //반환 객체 미리 생성
         UserFruitSaveResponse userFruitSaveResponse;
 
@@ -176,8 +185,9 @@ public class UserFruitServiceImpl implements UserFruitService {
         //같으면 luck 열매 사과 생성해주기
         if(fruitDetail.getFruitFeel().equals("happy")){
             long currentTimeMillis = System.currentTimeMillis();
+
             if((userScore % 10) == (currentTimeMillis % 10)){
-                userScore = 15;
+                userScore = 22;
                 //luck 열매로 정보 바꾸기
                 optionalFruitDetail = fruitDetailRepository.findByFruitFeel("luck");
                 fruitDetail = optionalFruitDetail.get();
@@ -192,7 +202,7 @@ public class UserFruitServiceImpl implements UserFruitService {
             try{ //유저 열매 생성 상태 변경
                 int isChange = userRepository.updateUserFruitStatusById(user.get().getUserId(), false);
                 if(isChange>0){ //수정 성공
-                    newUserFruit = UserFruit.createUserFruit(user.get(), fruitDetail, Date.from(Instant.now()), userScore);
+                    newUserFruit = UserFruit.createUserFruit(user.get(), fruitDetail, date, userScore);
                 }
             }catch (UserModifyException e){ //수정 실패
                 throw new UserModifyException("User Modify Exception");
