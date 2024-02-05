@@ -2,6 +2,7 @@ package com.d101.data.repository
 
 import com.d101.data.datasource.calendar.CalendarLocalDataSource
 import com.d101.data.datasource.calendar.CalendarRemoteDataSource
+import com.d101.data.datasource.juice.JuiceLocalDataSource
 import com.d101.data.mapper.FruitMapper.toFruit
 import com.d101.data.mapper.FruitMapper.toFruitInCalendar
 import com.d101.data.mapper.JuiceMapper.toJuice
@@ -20,9 +21,12 @@ import com.d101.domain.utils.toYearMonthDayFormat
 import java.time.LocalDate
 import javax.inject.Inject
 
+private const val MIN_DAYS_FOR_CACHING = 28
+
 class CalendarRepositoryImpl @Inject constructor(
     private val calendarLocalDataSource: CalendarLocalDataSource,
     private val calendarRemoteDataSource: CalendarRemoteDataSource,
+    private val juiceLocalDataSource: JuiceLocalDataSource,
 ) : CalendarRepository {
     override suspend fun getFruit(date: Long): Fruit {
         return calendarLocalDataSource.getFruit(date).toFruit()
@@ -45,9 +49,9 @@ class CalendarRepositoryImpl @Inject constructor(
                 startDate.toLongDate(),
                 endDate.toLongDate(),
             )
-        if (endDate.toLocalDate()
-                .plusDays(1).monthValue == todayDate.monthValue &&
-            localCalendarFruitEntityList.isNotEmpty()
+
+        if (endDate.toLocalDate().isBefore(todayDate) &&
+            localCalendarFruitEntityList.size >= MIN_DAYS_FOR_CACHING
         ) {
             val calendarFruitList = localCalendarFruitEntityList.map {
                 it.toFruitInCalendar()
@@ -67,10 +71,8 @@ class CalendarRepositoryImpl @Inject constructor(
 
                 calendarLocalDataSource.insertCalendarFruitsForMonth(remoteCalendarFruitEntityList)
                     .fold(
-                        onSuccess = {
-                        },
-                        onFailure = {
-                        },
+                        onSuccess = {},
+                        onFailure = {},
                     )
 
                 Result.Success(remoteCalendarFruitEntityList.map { it.toFruitInCalendar() })
@@ -115,7 +117,7 @@ class CalendarRepositoryImpl @Inject constructor(
                         score = 0,
                     )
                 }
-                calendarLocalDataSource.insertFruitsForWeek(remoteFruitEntityList).fold(
+                calendarLocalDataSource.updateFruitEntityList(remoteFruitEntityList).fold(
                     onSuccess = {},
                     onFailure = {},
                 )
@@ -149,16 +151,32 @@ class CalendarRepositoryImpl @Inject constructor(
         val startDate = weekDate.first.toYearMonthDayFormat()
         val endDate = weekDate.second.toYearMonthDayFormat()
 
+        val localJuiceEntity = juiceLocalDataSource.getJuice((startDate + endDate).toLongDate())
+        val localFruitEntityList = calendarLocalDataSource.getFruitsForWeek(
+            startDate.toLongDate(),
+            endDate.toLongDate(),
+        )
+
+        if (localJuiceEntity != null && localFruitEntityList.isNotEmpty()) {
+            return Result.Success(
+                localJuiceEntity.toJuice().copy(
+                    fruitList = localFruitEntityList.map {
+                        it.toFruit()
+                    },
+                ),
+            )
+        }
+
         return when (val result = calendarRemoteDataSource.getJuiceOfWeek(startDate, endDate)) {
             is Result.Success -> {
-                val juice = JuiceEntity(
+                val juiceEntity = JuiceEntity(
                     weekDate = (startDate + endDate).toLongDate(),
                     name = result.data.juiceData.juiceName,
                     description = result.data.juiceData.juiceDescription,
                     imageUrl = result.data.juiceData.juiceImageUrl,
                     condolenceMessage = result.data.juiceData.condolenceMessage,
-                ).toJuice()
-                val fruitList = result.data.fruitGraphData.map {
+                )
+                val remoteFruitEntityList = result.data.fruitGraphData.map {
                     FruitEntity(
                         id = 0L,
                         date = it.fruitDate.toLongDate(),
@@ -168,8 +186,20 @@ class CalendarRepositoryImpl @Inject constructor(
                         calendarImageUrl = it.fruitCalendarImageUrl,
                         emotion = "",
                         score = it.fruitScore,
-                    ).toFruit()
+                    )
                 }
+
+                calendarLocalDataSource.updateFruitEntityList(remoteFruitEntityList).fold(
+                    onSuccess = {},
+                    onFailure = {},
+                )
+
+                juiceLocalDataSource.insertJuice(juiceEntity).fold(
+                    onSuccess = {},
+                    onFailure = {},
+                )
+                val juice = juiceEntity.toJuice()
+                val fruitList = remoteFruitEntityList.map { it.toFruit() }
                 Result.Success(juice.copy(fruitList = fruitList))
             }
 

@@ -8,6 +8,8 @@ import com.d101.data.datasource.fruit.FruitLocalDataSource
 import com.d101.data.datasource.fruit.FruitLocalDataSourceImpl
 import com.d101.data.datasource.fruit.FruitRemoteDataSource
 import com.d101.data.datasource.fruit.FruitRemoteDataSourceImpl
+import com.d101.data.datasource.juice.JuiceLocalDataSource
+import com.d101.data.datasource.juice.JuiceLocalDataSourceImpl
 import com.d101.data.datasource.juice.JuiceRemoteDataSource
 import com.d101.data.datasource.juice.JuiceRemoteDataSourceImpl
 import com.d101.data.datasource.terms.TermsDataSource
@@ -51,6 +53,12 @@ abstract class DataSourceModule {
     abstract fun bindCalendarLocalDataSource(
         calendarLocalDataSourceImpl: CalendarLocalDataSourceImpl,
     ): CalendarLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindJuiceLocalDataSource(
+        juiceLocalDataSourceImpl: JuiceLocalDataSourceImpl,
+    ): JuiceLocalDataSource
 
     @Binds
     @Singleton

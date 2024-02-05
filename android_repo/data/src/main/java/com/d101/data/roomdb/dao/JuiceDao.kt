@@ -1,14 +1,17 @@
 package com.d101.data.roomdb.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.d101.data.roomdb.entity.JuiceEntity
 
 @Dao
 interface JuiceDao {
 
-    fun getJuice(weekDate: Long): JuiceEntity
+    @Query("SELECT * FROM JuiceEntity WHERE weekDate = :weekDate")
+    fun getJuice(weekDate: Long): JuiceEntity?
 
-    fun insertJuice(juiceEntity: JuiceEntity)
-
-    fun updateJuice(juiceEntity: JuiceEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertJuice(juiceEntity: JuiceEntity): Long
 }

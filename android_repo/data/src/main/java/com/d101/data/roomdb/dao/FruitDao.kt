@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import com.d101.data.roomdb.entity.FruitEntity
 
 @Dao
@@ -19,4 +20,18 @@ interface FruitDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFruit(fruitEntity: FruitEntity)
+
+    @Transaction
+    fun updateFruitEntities(fruits: List<FruitEntity>) {
+        fruits.forEach { fruit ->
+            updateFruit(fruit.date, fruit.score, fruit.calendarImageUrl)
+        }
+    }
+
+    @Query(
+        "UPDATE FruitEntity " +
+            "SET score = :score, calendar_image_url = :calendarImageUrl " +
+            "WHERE date = :date",
+    )
+    fun updateFruit(date: Long, score: Int, calendarImageUrl: String)
 }

@@ -41,4 +41,12 @@ class CalendarLocalDataSourceImpl @Inject constructor(
         } catch (e: Exception) {
             Result.failure(e)
         }
+
+    override fun updateFruitEntityList(fruitEntityList: List<FruitEntity>): Result<Unit> =
+        try {
+            val result = fruitDao.updateFruitEntities(fruitEntityList)
+            Result.success(result)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
 }

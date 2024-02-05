@@ -13,4 +13,6 @@ interface CalendarLocalDataSource {
     fun getCalendarFruitsFroMonth(startDate: Long, endDate: Long): List<CalendarFruitEntity>
 
     fun insertCalendarFruitsForMonth(fruitEntityList: List<CalendarFruitEntity>): Result<List<Long>>
+
+    fun updateFruitEntityList(fruitEntityList: List<FruitEntity>): Result<Unit>
 }

@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.d101.data.roomdb.AppDatabase
 import com.d101.data.roomdb.dao.CalendarFruitDao
 import com.d101.data.roomdb.dao.FruitDao
+import com.d101.data.roomdb.dao.JuiceDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,5 +34,10 @@ object RoomDBModule {
     @Provides
     fun provideCalendarFruitDao(database: AppDatabase): CalendarFruitDao {
         return database.calendarFruitDao()
+    }
+
+    @Provides
+    fun provideJuiceDao(database: AppDatabase): JuiceDao {
+        return database.juiceDao()
     }
 }

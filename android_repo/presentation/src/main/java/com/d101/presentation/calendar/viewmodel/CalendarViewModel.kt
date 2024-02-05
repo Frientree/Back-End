@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import utils.MutableEventFlow
 import utils.asEventFlow
 import java.time.DayOfWeek
@@ -156,7 +155,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun onCompleteJuiceShakeOccurred(weekDate: Pair<LocalDate, LocalDate>) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             when (val result = makeJuiceUseCase(weekDate)) {
                 is Result.Success -> {
                     setJuiceOfWeek(result.data)
@@ -192,31 +191,29 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun onMonthChangedOccurred(monthDate: Pair<LocalDate, LocalDate>) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                when (val result = getFruitsOfMonthUseCase(LocalDate.now(), monthDate)) {
-                    is Result.Success -> {
-                        val fruitListForMonth = ArrayList<FruitsOfMonth>()
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = getFruitsOfMonthUseCase(LocalDate.now(), monthDate)) {
+                is Result.Success -> {
+                    val fruitListForMonth = ArrayList<FruitsOfMonth>()
 
-                        var localStartDate = monthDate.first
-                        val localEndDate = monthDate.second
+                    var localStartDate = monthDate.first
+                    val localEndDate = monthDate.second
 
-                        while (localStartDate <= localEndDate) {
-                            val dateStr = localStartDate.toYearMonthDayFormat()
-                            val fruit = result.data.find { it.day == dateStr }
-                            if (fruit != null) {
-                                fruitListForMonth.add(fruit)
-                            } else {
-                                fruitListForMonth.add(FruitsOfMonth(dateStr, ""))
-                            }
-                            localStartDate = localStartDate.plusDays(1)
+                    while (localStartDate <= localEndDate) {
+                        val dateStr = localStartDate.toYearMonthDayFormat()
+                        val fruit = result.data.find { it.day == dateStr }
+                        if (fruit != null) {
+                            fruitListForMonth.add(fruit)
+                        } else {
+                            fruitListForMonth.add(FruitsOfMonth(dateStr, ""))
                         }
-                        setFruitListForMonth(fruitListForMonth)
+                        localStartDate = localStartDate.plusDays(1)
                     }
+                    setFruitListForMonth(fruitListForMonth)
+                }
 
-                    is Result.Failure -> {
-                        _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
-                    }
+                is Result.Failure -> {
+                    _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
                 }
             }
         }
@@ -243,23 +240,21 @@ class CalendarViewModel @Inject constructor(
     }
 
     private fun getFruitsOfWeek(weekDate: Pair<LocalDate, LocalDate>) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                when (val result = getFruitsOfWeekUseCase(LocalDate.now(), weekDate)) {
-                    is Result.Success -> {
-                        setFruitListForWeek(result.data)
-                    }
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = getFruitsOfWeekUseCase(LocalDate.now(), weekDate)) {
+                is Result.Success -> {
+                    setFruitListForWeek(result.data)
+                }
 
-                    is Result.Failure -> {
-                        _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
-                    }
+                is Result.Failure -> {
+                    _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
                 }
             }
         }
     }
 
     private fun getJuiceOfWeek(weekDate: Pair<LocalDate, LocalDate>) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             when (val result = getJuiceOfWeekUseCase(weekDate)) {
                 is Result.Success -> {
                     setJuiceOfWeek(result.data)
