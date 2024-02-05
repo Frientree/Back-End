@@ -203,6 +203,6 @@
     <style name="Base.FTR.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:textAppearance">@style/Base.FTR.Text</item>
         <item name="android:padding">12dp</item>
-        <item name="android:buttonTint">@color/bg_checkbox_color_selector</item>
+        <item name="buttonTint">@color/bg_checkbox_color_selector</item>
     </style>
 </resources>

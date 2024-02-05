@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:button="@drawable/outline_check_24"
-            android:checked="@{termsItem.selected}"
+            android:checked="true"
             android:text="@{termsItem.name}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/terms_name_space"
