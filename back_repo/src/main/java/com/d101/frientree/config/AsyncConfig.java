@@ -3,6 +3,8 @@ package com.d101.frientree.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.concurrent.DelegatingSecurityContextExecutor;
+
 import java.util.concurrent.Executor;
 
 @Configuration
@@ -15,6 +17,6 @@ public class AsyncConfig {
         executor.setQueueCapacity(100); // 큐 용량
         executor.setThreadNamePrefix("Async-Executor-");
         executor.initialize();
-        return executor;
+        return new DelegatingSecurityContextExecutor(executor);
     }
 }

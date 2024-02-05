@@ -99,8 +99,9 @@ public class UserFruitServiceImpl implements UserFruitService {
             }catch (NaverClovaAPIException e){
                 throw new NaverClovaAPIException("Naver API Error");
             }
+            log.info("AWS S3 URL : {}", awsS3Path);
             // 3. 파일 삭제
-            awsS3ObjectStorage.deleteImage(awsS3Path);
+            awsS3ObjectStorage.deleteFile(awsS3Path);
 
             // Gson을 사용하여 응답을 ClovaSpeechResponse 객체로 파싱
             Gson gson = new Gson();
@@ -111,7 +112,8 @@ public class UserFruitServiceImpl implements UserFruitService {
 
             log.info("음성 Text : {}", response.getFullText());
             try {//Python 감정 분석 API 호출
-                ResponseEntity<UserFruitCreateResponse> sttResponse = ResponseEntity.ok(httpPostAIRequest.sendPostRequest(fullText));
+                ResponseEntity<UserFruitCreateResponse> sttResponse =
+                        ResponseEntity.ok(httpPostAIRequest.sendPostRequest(fullText));
                 return CompletableFuture.completedFuture(sttResponse);
             }catch (PythonAPIException e){
                 throw new PythonAPIException("Python AI API Error");
