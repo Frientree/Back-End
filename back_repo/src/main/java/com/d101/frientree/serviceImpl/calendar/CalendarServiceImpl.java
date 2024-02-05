@@ -6,7 +6,6 @@ import com.d101.frientree.dto.calendar.response.CalendarMonthlyFruitsResponse;
 import com.d101.frientree.dto.calendar.response.CalendarTodayFeelStatisticsResponse;
 import com.d101.frientree.dto.calendar.response.CalendarWeeklyFruitsResponse;
 import com.d101.frientree.dto.calendar.response.CalendarWeeklyJuiceResponse;
-import com.d101.frientree.dto.juice.response.dto.JuiceDataDTO;
 import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.juice.UserJuice;
 import com.d101.frientree.entity.user.User;
