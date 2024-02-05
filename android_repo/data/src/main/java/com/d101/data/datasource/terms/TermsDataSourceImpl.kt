@@ -23,9 +23,11 @@ class TermsDataSourceImpl @Inject constructor(
 //        )
         Result.Success(
             List(3) {
+                val necessary = if (it < 2) "[필수]" else "[선택]"
                 TermsResponse(
-                    name = "[필수] ${it}번째 약관",
+                    name = "$necessary ${it}번째 약관",
                     url = "https://www.google.com",
+                    necessary = it < 2,
                 )
             },
         )

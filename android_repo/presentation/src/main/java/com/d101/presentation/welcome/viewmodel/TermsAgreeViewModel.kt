@@ -1,6 +1,5 @@
 package com.d101.presentation.welcome.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
@@ -40,6 +39,7 @@ class TermsAgreeViewModel @Inject constructor(
                     _uiState.update {
                         TermsAgreeState.TermsDisagreeAbsentState(
                             termsList = result.data.map { it.toTermsItem() },
+                            necessaryTermsAgreed = false,
                             allAgree = false,
                         )
                     }
@@ -78,18 +78,15 @@ class TermsAgreeViewModel @Inject constructor(
     }
 
     private fun checkAllTermsChecked() {
-        Log.d("모든 약관 동의", "체크 바뀜: ${uiState.value.termsList}")
         _uiState.update { currentState ->
             if (isAllAgreed()) {
-                Log.d("모든 약관 동의", "${uiState.value.termsList}")
                 TermsAgreeState.TermsAllAgreedState(
                     termsList = currentState.termsList.map { it.copy(checked = true) },
-                    allAgree = true,
                 )
             } else {
-                Log.d("모든 약관 동의 안함", "${uiState.value.termsList}")
                 TermsAgreeState.TermsDisagreeAbsentState(
                     termsList = currentState.termsList,
+                    necessaryTermsAgreed = isNecessaryTermsAgreed(),
                     allAgree = false,
                 )
             }
@@ -103,7 +100,7 @@ class TermsAgreeViewModel @Inject constructor(
                     is TermsAgreeState.TermsAllAgreedState -> {
                         TermsAgreeState.TermsDisagreeAbsentState(
                             termsList = currentState.termsList.map { it.copy(checked = false) },
-                            allAgree = false,
+                            necessaryTermsAgreed = false,
                         )
                     }
 
@@ -126,6 +123,9 @@ class TermsAgreeViewModel @Inject constructor(
 
     private fun isAllAgreed() = uiState.value.termsList.all { it.checked }
 
+    private fun isNecessaryTermsAgreed() = uiState.value.termsList.filter {
+        it.necessary
+    }.all { it.checked }
     private fun emitEvent(event: TermsAgreeEvent) {
         viewModelScope.launch {
             _eventFlow.emit(event)

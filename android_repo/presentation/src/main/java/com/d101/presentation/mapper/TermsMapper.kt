@@ -8,6 +8,7 @@ object TermsMapper {
         return TermsItem(
             name = this.name,
             url = this.url,
+            necessary = this.necessary,
             checked = false,
         )
     }
