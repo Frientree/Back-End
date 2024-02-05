@@ -53,15 +53,44 @@ public class CalendarServiceImpl implements CalendarService {
         List<UserFruit> userFruits = userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(
                 user.get().getUserId(), startDate, endDate);
 
+        // Calendar 인스턴스를 startDate와 endDate에 맞춰 설정
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(startDate);
+
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(endDate);
+
         List<CalendarMonthlyFruitsDTO> calendarMonthlyFruitsDTOList = new ArrayList<>();
 
-        //DTO 담기 (day = "2024-01-01", imageUrl = userFruits.CalendarImageUrl)
-        for(UserFruit userFruit : userFruits){
-            calendarMonthlyFruitsDTOList.add(
-                    CalendarMonthlyFruitsDTO.createCalendarMonthlyFruitsDTO(
-                            dateFormat.format(userFruit.getUserFruitCreateDate()),
-                            userFruit
-                    ));
+        while(!startCal.after(endCal)){
+            Date loopDate = startCal.getTime();
+            String formattedDate = dateFormat.format(loopDate);
+
+            UserFruit matchingUserFruit = null;
+            // 해당 날짜에 맞는 데이터 찾기
+            for(UserFruit userFruit : userFruits){
+                String findFruitDate = dateFormat.format(userFruit.getUserFruitCreateDate());
+                if(findFruitDate.equals(formattedDate)){
+                    matchingUserFruit = userFruit;
+                    break;
+                }
+            }
+            //DTO 담기 (day = "2024-01-01", imageUrl = userFruits.CalendarImageUrl)
+            if(matchingUserFruit != null){
+
+                calendarMonthlyFruitsDTOList.add(
+                        CalendarMonthlyFruitsDTO.createCalendarMonthlyFruitsDTO(
+                                formattedDate,
+                                matchingUserFruit
+                        ));
+            }else{ //DTO 담기 (day = "2024-01-01", imageUrl = "")
+                calendarMonthlyFruitsDTOList.add(
+                        CalendarMonthlyFruitsDTO.createCalendarMonthlyFruitsDTO(
+                                formattedDate
+                        ));
+            }
+            // 다음 날짜로 이동
+            startCal.add(Calendar.DATE, 1);
         }
         //Response 형식으로 저장
         CalendarMonthlyFruitsResponse response = CalendarMonthlyFruitsResponse

@@ -16,4 +16,11 @@ public class CalendarMonthlyFruitsDTO {
                 .fruitCalendarImageUrl(userFruit.getFruitDetail().getFruitCalendarUrl())
                 .build();
     }
+
+    public static CalendarMonthlyFruitsDTO createCalendarMonthlyFruitsDTO(String day){
+        return CalendarMonthlyFruitsDTO.builder()
+                .day(day)
+                .fruitCalendarImageUrl("")
+                .build();
+    }
 }
