@@ -170,11 +170,17 @@ public class LeafServiceImpl implements LeafService {
         // security를 이용해 로그인 정보를 받아옴
         User currentUser = getUser();
 
-        try {
             Long userId = currentUser.getUserId();
 
             // 1. leaf_send 테이블에서 user_id를 기준으로 leaf_num을 가져오기
             List<Long> leafNumList = leafSendRepository.findLeafNumsByUser(userId);
+
+
+            // 보낸 이파리가 없어서 leafNumList가 비어있을 경우 예외처리
+            if (leafNumList.isEmpty()) {
+                throw new LeafNotFoundException("보낸 이파리를 찾을 수 없습니다.");
+            }
+
 
             // 2. leaf_detail 테이블에서 leaf_num에 해당하는 leaf_view 값 모두 더하기
             long totalLeafView = leafNumList.stream()
@@ -192,10 +198,6 @@ public class LeafServiceImpl implements LeafService {
             // response 반환
             return ResponseEntity.ok(response);
 
-        } catch (LeafNotFoundException e) {
-            // leaf_num을 찾지 못한 경우 ( leaf_send 테이블에 로그인한 유저가 보낸 이파리가 없을 때)
-            throw new LeafNotFoundException("송신한 이파리를 찾을 수 없습니다.");
-        }
     }
 
 

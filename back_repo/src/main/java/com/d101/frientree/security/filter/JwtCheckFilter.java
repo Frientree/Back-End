@@ -81,6 +81,14 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if (path.equals("/terms")){
+            return true;
+        }
+
+        if (path.equals("/appversion")){
+            return true;
+        }
+
         return false;
     }
 
