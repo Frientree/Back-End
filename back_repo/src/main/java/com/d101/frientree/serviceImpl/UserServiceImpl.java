@@ -466,6 +466,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional
     @Override
     public void updateAllUserFruitAndLeafStatus() {
         userRepository.incrementAllUserFruitAndLeafStatus();

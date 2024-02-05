@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Builder
@@ -35,8 +37,9 @@ public class LeafDetail {
     @Builder.Default
     private Long leafView = 0l;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "leaf_create_date")
-    private Date leafCreateDate;
+    private LocalDate leafCreateDate;
 
     @JsonIgnore
     @OneToMany(mappedBy = "leafDetail")

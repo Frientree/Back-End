@@ -17,4 +17,6 @@ public interface LeafReceiveRepository extends JpaRepository<LeafReceive, Long> 
     List<Long> findReceivedLeafNumsByUserId(@Param("userId") Long userId);
 
     boolean existsByUserAndLeafDetail(User user, LeafDetail selectedLeaf);
+
+    void deleteByLeafDetail(LeafDetail leafDetail);
 }
