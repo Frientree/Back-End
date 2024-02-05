@@ -372,6 +372,12 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
+    @Override
+    public void updateAllUserFruitAndLeafStatus() {
+        userRepository.incrementAllUserFruitAndLeafStatus();
+    }
+
+
     // 유저 개별 조회
     @Override
     public ResponseEntity<UserConfirmationResponse> confirm(Long id) {
