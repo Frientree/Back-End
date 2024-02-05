@@ -32,8 +32,11 @@ public class TermsServiceImpl implements TermsService {
         // 약관 정보를 DTO로 변환
         // termsList 리스트에 있는 Terms 객체들을 각각 TermsResponseDTO 객체로 변환하여 새로운 리스트인 data로 만들기
         List<TermsResponseDTO> data = termsList.stream()
+                // map 함수를 통해 각 Terms 객체를 ResponseDTO객체로 변환시캬주기
                 .map(TermsResponseDTO::createTermsResponseDTO)
+                // isNecessary를 기준으로 내림차순으로 정렬 ( true를 우선으로 정렬 )
                 .sorted(Comparator.comparing(TermsResponseDTO::isNecessary, Comparator.reverseOrder()))
+                // 리스트로 만들기
                 .toList();
 
         TermsResponse response = TermsResponse.createTermsResponse(
