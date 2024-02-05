@@ -5,6 +5,7 @@ import com.d101.data.model.ApiResult
 import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
+import com.d101.data.model.user.request.PasswordFindRequest
 import com.d101.data.model.user.request.SignInRequest
 import com.d101.data.model.user.request.SignUpRequest
 import com.d101.data.model.user.response.NicknameChangeResponse
@@ -41,5 +42,10 @@ interface UserService {
     @POST("/users/sign-up")
     suspend fun signUp(
         @Body signUpRequest: SignUpRequest,
+    ): ApiResult<ApiResponse<Boolean>>
+
+    @POST("/users/temporary-password")
+    suspend fun findPassword(
+        @Body passwordFindRequest: PasswordFindRequest,
     ): ApiResult<ApiResponse<Boolean>>
 }

@@ -16,18 +16,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FindPasswordViewModel @Inject constructor(
-    private val findPasswordUseCase: FindPasswordUseCase
+    private val findPasswordUseCase: FindPasswordUseCase,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<InputDataState.IdInputState> =
-        MutableStateFlow(InputDataState.IdInputState(
-            buttonClick = {}
-        ))
+        MutableStateFlow(
+            InputDataState.IdInputState(
+                buttonClick = {},
+            ),
+        )
 
     val uiState = _uiState.asStateFlow()
 
     val email: MutableStateFlow<String> = MutableStateFlow("")
-
 
     init {
         collectEmailChange()
@@ -55,5 +56,4 @@ class FindPasswordViewModel @Inject constructor(
     }
 
     fun isEmailValid(email: String) = email.matches(EMAIL_PATTERN.toRegex())
-
 }

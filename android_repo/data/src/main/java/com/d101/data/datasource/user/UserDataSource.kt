@@ -17,4 +17,6 @@ interface UserDataSource {
     suspend fun checkAuthCode(userEmail: String, code: String): Result<Boolean>
 
     suspend fun signUp(userEmail: String, userPw: String, userNickname: String): Result<Boolean>
+
+    suspend fun findPassword(userEmail: String): Result<Boolean>
 }

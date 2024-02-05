@@ -5,6 +5,7 @@ import com.d101.data.error.FrientreeHttpError
 import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
+import com.d101.data.model.user.request.PasswordFindRequest
 import com.d101.data.model.user.request.SignInRequest
 import com.d101.data.model.user.request.SignUpRequest
 import com.d101.data.model.user.response.NicknameChangeResponse
@@ -14,6 +15,7 @@ import com.d101.domain.model.Result
 import com.d101.domain.model.status.AuthCodeCreationErrorStatus
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.GetUserErrorStatus
+import com.d101.domain.model.status.PassWordErrorStatus
 import com.d101.domain.model.status.SignInErrorStatus
 import java.io.IOException
 import javax.inject.Inject
@@ -147,6 +149,28 @@ class UserDataSourceImpl @Inject constructor(
             if (e is FrientreeHttpError) {
                 when (e.code) {
                     400 -> Result.Failure(ErrorStatus.BadRequest)
+                    else -> Result.Failure(ErrorStatus.UnknownError)
+                }
+            } else {
+                if (e is IOException) {
+                    Result.Failure(ErrorStatus.NetworkError)
+                } else {
+                    Result.Failure(ErrorStatus.UnknownError)
+                }
+            }
+        },
+    )
+
+    override suspend fun findPassword(userEmail: String): Result<Boolean> = runCatching {
+        userService.findPassword(PasswordFindRequest(userEmail)).getOrThrow().data
+    }.fold(
+        onSuccess = {
+            Result.Success(it)
+        },
+        onFailure = { e ->
+            if (e is FrientreeHttpError) {
+                when (e.code) {
+                    404 -> Result.Failure(PassWordErrorStatus.UserNotFound)
                     else -> Result.Failure(ErrorStatus.UnknownError)
                 }
             } else {
