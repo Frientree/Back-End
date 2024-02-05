@@ -10,7 +10,7 @@
         android:id="@+id/imageFilterView"
         android:layout_width="100dp"
         android:layout_height="0dp"
-        android:src="@drawable/tree3"
+        android:src="@drawable/img_main_tree"
         app:layout_constraintBottom_toTopOf="@id/terms_greeting_text_view"
         app:layout_constraintDimensionRatio="1"
         app:layout_constraintStart_toStartOf="@+id/terms_greeting_text_view"
