@@ -119,7 +119,7 @@ public class JuiceServiceImpl implements JuiceService {
         JuiceDetail createdJuice = juiceDetailRepository.findJuicesByScore(scoreSum);
 
         // 유저가 주스를 만들기 위해 가져온 과일들이 들어간 dto
-        List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO = JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(userFruits);
+        List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO = JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(startDate, endDate, userFruits);
 
         // Message data 중 랜덤으로 하나 가져와야 됨.
         List<Message> allMessages = messageRepository.findAll();
