@@ -17,7 +17,7 @@ class AuthInterceptor @Inject constructor(
 
         if (accessToken != "NEED_LOGIN") {
             request = chain.request().newBuilder()
-                .addHeader("Authorization", "Bearer $accessToken sdflasdjfl;ajsd;lfkjasdklf")
+                .addHeader("Authorization", "Bearer $accessToken")
                 .build()
         }
         return chain.proceed(request)
