@@ -77,6 +77,10 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if (path.equals("/users/sign-in-naver")) {
+            return true;
+        }
+
         return false;
     }
 
