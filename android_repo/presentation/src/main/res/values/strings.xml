@@ -79,6 +79,7 @@
     <string name="empty_text"> </string>
     <string name="network_error">네트워크 연결 실패</string>
     <string name="unknown_error">알 수 없는 에러</string>
+    <string name="sending_temp_password">임시 비밀번호를 전송 중 입니다.</string>
 
     <string name="sunday">일</string>
     <string name="monday">월</string>
