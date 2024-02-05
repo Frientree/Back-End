@@ -1,14 +1,15 @@
 package com.d101.data.mapper
 
-import com.d101.data.model.calendar.response.FruitsOfMonthResponse
 import com.d101.data.model.fruit.response.FruitCreationResponse
 import com.d101.data.model.fruit.response.FruitSaveResponse
+import com.d101.data.roomdb.entity.CalendarFruitEntity
 import com.d101.data.roomdb.entity.FruitEntity
 import com.d101.domain.model.AppleData
 import com.d101.domain.model.Fruit
 import com.d101.domain.model.FruitCreated
 import com.d101.domain.model.FruitsOfMonth
 import com.d101.domain.utils.toFruitEmotion
+import com.d101.domain.utils.toYearMonthDayFormat
 
 object FruitMapper {
     fun FruitEntity.toFruit(): Fruit {
@@ -43,10 +44,10 @@ object FruitMapper {
         )
     }
 
-    fun FruitsOfMonthResponse.toFruitInCalendar(): FruitsOfMonth {
+    fun CalendarFruitEntity.toFruitInCalendar(): FruitsOfMonth {
         return FruitsOfMonth(
-            day = this.day,
-            imageUrl = this.fruitCalendarImageUrl,
+            day = this.date.toYearMonthDayFormat(),
+            imageUrl = this.imageUrl,
         )
     }
 }

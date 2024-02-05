@@ -3,6 +3,7 @@ package com.d101.frientree.di
 import android.content.Context
 import androidx.room.Room
 import com.d101.data.roomdb.AppDatabase
+import com.d101.data.roomdb.dao.CalendarFruitDao
 import com.d101.data.roomdb.dao.FruitDao
 import dagger.Module
 import dagger.Provides
@@ -27,5 +28,10 @@ object RoomDBModule {
     @Provides
     fun provideFruitDao(database: AppDatabase): FruitDao {
         return database.fruitDao()
+    }
+
+    @Provides
+    fun provideCalendarFruitDao(database: AppDatabase): CalendarFruitDao {
+        return database.calendarFruitDao()
     }
 }

@@ -11,6 +11,12 @@ interface FruitDao {
     @Query("SELECT * FROM FruitEntity WHERE date = :date")
     fun getFruit(date: Long): FruitEntity
 
+    @Query("SELECT * FROM FruitEntity WHERE date BETWEEN :startDate AND :endDate")
+    fun getFruitsForWeek(startDate: Long, endDate: Long): List<FruitEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertFruitsForWeek(fruitEntityList: List<FruitEntity>): List<Long>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFruit(fruitEntity: FruitEntity)
 }

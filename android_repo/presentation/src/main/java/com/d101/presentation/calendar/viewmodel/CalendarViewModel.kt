@@ -16,10 +16,12 @@ import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
 import com.d101.presentation.calendar.state.JuiceCreatableStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import utils.MutableEventFlow
 import utils.asEventFlow
 import java.time.DayOfWeek
@@ -191,28 +193,30 @@ class CalendarViewModel @Inject constructor(
 
     fun onMonthChangedOccurred(monthDate: Pair<LocalDate, LocalDate>) {
         viewModelScope.launch {
-            when (val result = getFruitsOfMonthUseCase(monthDate)) {
-                is Result.Success -> {
-                    val fruitListForMonth = ArrayList<FruitsOfMonth>()
+            withContext(Dispatchers.IO) {
+                when (val result = getFruitsOfMonthUseCase(LocalDate.now(), monthDate)) {
+                    is Result.Success -> {
+                        val fruitListForMonth = ArrayList<FruitsOfMonth>()
 
-                    var localStartDate = monthDate.first
-                    val localEndDate = monthDate.second
+                        var localStartDate = monthDate.first
+                        val localEndDate = monthDate.second
 
-                    while (localStartDate <= localEndDate) {
-                        val dateStr = localStartDate.toYearMonthDayFormat()
-                        val fruit = result.data.find { it.day == dateStr }
-                        if (fruit != null) {
-                            fruitListForMonth.add(fruit)
-                        } else {
-                            fruitListForMonth.add(FruitsOfMonth(dateStr, ""))
+                        while (localStartDate <= localEndDate) {
+                            val dateStr = localStartDate.toYearMonthDayFormat()
+                            val fruit = result.data.find { it.day == dateStr }
+                            if (fruit != null) {
+                                fruitListForMonth.add(fruit)
+                            } else {
+                                fruitListForMonth.add(FruitsOfMonth(dateStr, ""))
+                            }
+                            localStartDate = localStartDate.plusDays(1)
                         }
-                        localStartDate = localStartDate.plusDays(1)
+                        setFruitListForMonth(fruitListForMonth)
                     }
-                    setFruitListForMonth(fruitListForMonth)
-                }
 
-                is Result.Failure -> {
-                    _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
+                    is Result.Failure -> {
+                        _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
+                    }
                 }
             }
         }
@@ -240,13 +244,15 @@ class CalendarViewModel @Inject constructor(
 
     private fun getFruitsOfWeek(weekDate: Pair<LocalDate, LocalDate>) {
         viewModelScope.launch {
-            when (val result = getFruitsOfWeekUseCase(weekDate)) {
-                is Result.Success -> {
-                    setFruitListForWeek(result.data)
-                }
+            withContext(Dispatchers.IO) {
+                when (val result = getFruitsOfWeekUseCase(LocalDate.now(), weekDate)) {
+                    is Result.Success -> {
+                        setFruitListForWeek(result.data)
+                    }
 
-                is Result.Failure -> {
-                    _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
+                    is Result.Failure -> {
+                        _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
+                    }
                 }
             }
         }
@@ -343,21 +349,6 @@ class CalendarViewModel @Inject constructor(
     private fun setJuiceAbsentState() {
         _uiState.update {
             CalendarViewState.JuiceAbsentState(
-                it.juice,
-                it.fruitListForWeek,
-                it.fruitListForMonth,
-                it.todayFruitCreationStatus,
-                it.todayFruitStatistics,
-                it.juiceCreatableStatus,
-                it.nowDate,
-                it.selectedWeek,
-            )
-        }
-    }
-
-    private fun setJuicePresentState() {
-        _uiState.update {
-            CalendarViewState.JuicePresentState(
                 it.juice,
                 it.fruitListForWeek,
                 it.fruitListForMonth,
