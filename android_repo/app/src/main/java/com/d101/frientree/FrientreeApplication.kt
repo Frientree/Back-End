@@ -5,7 +5,6 @@ import android.app.Application
 import android.os.Bundle
 import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.main.MainActivity
-import com.d101.presentation.splash.SplashActivity
 import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.HiltAndroidApp
 
@@ -28,9 +27,9 @@ class FrientreeApplication : Application() {
 
         override fun onActivityStarted(activity: Activity) {
             activeActivities++
-            if ((activity is SplashActivity).not()) {
-                BackgroundMusicPlayer.resumeMusic()
-            }
+//            if ((activity is SplashActivity).not()) {
+//                BackgroundMusicPlayer.resumeMusic()
+//            }
         }
 
         override fun onActivityStopped(activity: Activity) {

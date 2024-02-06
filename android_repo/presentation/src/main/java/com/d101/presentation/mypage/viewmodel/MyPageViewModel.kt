@@ -1,6 +1,5 @@
 package com.d101.presentation.mypage.viewmodel
 
-import android.util.Log
 import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -39,27 +38,6 @@ class MyPageViewModel @Inject constructor(
     val eventFlow = _eventFlow.asEventFlow()
 
     init {
-        viewModelScope.launch {
-            getUserInfoUseCase().collect { result ->
-                when (result) {
-                    is Result.Success -> {
-                        val uiModel = result.data.toUserUiModel()
-                        _uiState.update {
-                            MyPageViewState.Default(
-                                id = uiModel.userEmail,
-                                nickname = uiModel.userNickname,
-                                backgroundMusicStatus = uiModel.backgroundMusicStatus,
-                                alarmStatus = uiModel.alarmStatus,
-                                backgroundMusic = uiModel.backgroundMusicName.ifEmpty { "봄날" },
-                            )
-                        }
-                    }
-
-                    is Result.Failure -> {}
-                }
-            }
-        }
-
         viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.Init) }
     }
 
@@ -119,7 +97,6 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = changeUserNicknameUseCase(nicknameInput)) {
                 is Result.Success -> {
-//                    onNicknameChanged(result.data)
                     setDefaultState()
                 }
 
@@ -142,18 +119,6 @@ class MyPageViewModel @Inject constructor(
             return true
         }
         return false
-    }
-
-    private fun onNicknameChanged(newNickname: String) {
-        _uiState.update {
-            MyPageViewState.Default(
-                it.id,
-                newNickname,
-                it.backgroundMusicStatus,
-                it.alarmStatus,
-                it.backgroundMusic,
-            )
-        }
     }
 
     fun onTapAlarmStatusButtonOccurred(alarmStatus: AlarmStatus) {
@@ -190,11 +155,9 @@ class MyPageViewModel @Inject constructor(
     fun onInitOccurred() {
         viewModelScope.launch {
             getUserInfoUseCase().collect { result ->
-                Log.d("유저 정보 확인", "onInitOccurred: $result")
                 when (result) {
                     is Result.Success -> {
                         val uiModel = result.data.toUserUiModel()
-                        Log.d("확인", "마이페이지: $uiModel")
                         _uiState.update {
                             MyPageViewState.Default(
                                 id = uiModel.userEmail,
@@ -254,8 +217,9 @@ class MyPageViewModel @Inject constructor(
                 _uiState.value =
                     currentState.copy(alarmStatus = alarmStatus)
 
-            is MyPageViewState.NicknameEditState -> {}
-            is MyPageViewState.BackgroundMusicSelectState -> {}
+            else -> {
+                setDefaultState()
+            }
         }
     }
 
@@ -270,9 +234,9 @@ class MyPageViewModel @Inject constructor(
                     }
                 _uiState.value = currentState.copy(backgroundMusicStatus = newStatus)
             }
-
-            is MyPageViewState.NicknameEditState -> {}
-            is MyPageViewState.BackgroundMusicSelectState -> {}
+            else -> {
+                setDefaultState()
+            }
         }
     }
 

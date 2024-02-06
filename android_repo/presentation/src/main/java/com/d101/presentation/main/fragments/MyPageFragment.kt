@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -130,7 +129,6 @@ class MyPageFragment : Fragment() {
                 Context.INPUT_METHOD_SERVICE,
             ) as InputMethodManager
             viewModel.uiState.collect { state ->
-                Log.d("상태 확인", "subScribeViewState: $state")
                 when (state) {
                     is MyPageViewState.Default -> {
                         setBackgroundMusicStatusUI(state)
@@ -169,6 +167,9 @@ class MyPageFragment : Fragment() {
                 InputMethodManager.SHOW_IMPLICIT,
             )
         }, 100)
+        binding.nicknameEditText.apply {
+            setSelection(text.length)
+        }
     }
 
     private fun setDefaultUI(inputMethodManager: InputMethodManager) {
