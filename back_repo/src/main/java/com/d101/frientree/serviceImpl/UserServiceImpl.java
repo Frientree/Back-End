@@ -327,7 +327,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (!userChangePasswordRequest.getNewPw().matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$")) {
-            throw new CustomValidationException("password valid error");
+            throw new NewPasswordValidException("password valid error");
         }
 
         currentUser.setUserPassword(passwordEncoder.encode(userChangePasswordRequest.getNewPw()));

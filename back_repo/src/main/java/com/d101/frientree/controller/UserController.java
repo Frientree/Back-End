@@ -192,7 +192,8 @@ public class UserController {
                     content = @Content(schema = @Schema(implementation = UserChangePasswordResponse.class))),
             @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n"),
             @ApiResponse(responseCode = "404", description = "(message : \"User not found\", code : 404)\n"),
-            @ApiResponse(responseCode = "400", description = "(message : \"Current password not match\", code : 404)\n")
+            @ApiResponse(responseCode = "400", description = "(message : \"Current password not match\", code : 400)\n"),
+            @ApiResponse(responseCode = "422", description = "(message : \"new password valid error\", code : 422)\n")
     })
     @PostMapping("/password")
     @PreAuthorize("isAuthenticated()")
