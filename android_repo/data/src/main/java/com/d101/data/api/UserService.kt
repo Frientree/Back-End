@@ -4,6 +4,7 @@ import com.d101.data.model.ApiResponse
 import com.d101.data.model.ApiResult
 import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
+import com.d101.data.model.user.request.NaverLoginRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
 import com.d101.data.model.user.request.PasswordChangeRequest
 import com.d101.data.model.user.request.PasswordFindRequest
@@ -44,6 +45,11 @@ interface UserService {
     suspend fun signUp(
         @Body signUpRequest: SignUpRequest,
     ): ApiResult<ApiResponse<Boolean>>
+
+    @POST("/users/sign-in-naver")
+    suspend fun signInNaver(
+        @Body naverLoginRequest: NaverLoginRequest,
+    ): ApiResult<ApiResponse<TokenResponse>>
 
     @POST("/users/temporary-password")
     suspend fun findPassword(

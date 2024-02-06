@@ -84,6 +84,8 @@ dependencies {
     implementation(Libraries.dataStore)
     implementation(Libraries.dataStoreCore)
     implementation(Libraries.protoBuf)
+
+    implementation(Libraries.naverOAuth)
 }
 kapt {
     correctErrorTypes = true

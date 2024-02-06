@@ -6,4 +6,5 @@ data class UserResponse(
     val userLeafStatus: Boolean,
     val userNotification: Boolean,
     val userFruitStatus: Boolean,
+    val social: Boolean,
 )

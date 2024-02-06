@@ -13,6 +13,7 @@ object UserMapper {
             userLeafStatus = this.userLeafStatus,
             userNotification = this.userNotification,
             userFruitStatus = this.userFruitStatus,
+            isSocial = this.social,
         )
 
     fun UserPreferences.toUser(): User =
@@ -22,5 +23,7 @@ object UserMapper {
             userLeafStatus = this.userLeafStatus,
             userNotification = this.userNotification,
             userFruitStatus = this.userFruitStatus,
+//            Todo: Add isSocial to UserPreferences
+            isSocial = false,
         )
 }

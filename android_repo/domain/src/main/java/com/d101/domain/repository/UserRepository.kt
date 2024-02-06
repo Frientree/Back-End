@@ -23,4 +23,8 @@ interface UserRepository {
     suspend fun findPassword(userEmail: String): Result<Unit>
 
     suspend fun changePassword(userPw: String, newPw: String): Result<Unit>
+
+    suspend fun signInNaver(code: String): Result<Unit>
+
+    suspend fun getNaverId(accessToken: String): Result<String>
 }

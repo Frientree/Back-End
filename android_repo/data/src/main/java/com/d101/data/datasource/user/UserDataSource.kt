@@ -21,4 +21,8 @@ interface UserDataSource {
     suspend fun findPassword(userEmail: String): Result<Boolean>
 
     suspend fun changePassword(userPw: String, newPw: String): Result<Boolean>
+
+    suspend fun getNaverLoginId(accessToken: String): Result<String>
+
+    suspend fun signInNaver(code: String): Result<TokenResponse>
 }

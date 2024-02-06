@@ -27,6 +27,10 @@ object NetworkModule {
     @Retention(AnnotationRetention.BINARY)
     annotation class AuthClient
 
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class SocialLoginClient
+
     @Singleton
     @Provides
     @FrientreeClient
@@ -58,6 +62,19 @@ object NetworkModule {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         builder.apply {
             addInterceptor(authInterceptor)
+            addInterceptor(loggingInterceptor)
+        }
+        return builder.build()
+    }
+
+    @Singleton
+    @Provides
+    @SocialLoginClient
+    fun provideSocialLoginClient6(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        builder.apply {
             addInterceptor(loggingInterceptor)
         }
         return builder.build()

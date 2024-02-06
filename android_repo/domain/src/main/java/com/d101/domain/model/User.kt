@@ -6,4 +6,5 @@ data class User(
     val userLeafStatus: Boolean,
     val userNotification: Boolean,
     val userFruitStatus: Boolean,
+    val isSocial: Boolean,
 )
