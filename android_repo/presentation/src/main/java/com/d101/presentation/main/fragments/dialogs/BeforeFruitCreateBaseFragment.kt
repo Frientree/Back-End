@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -37,54 +38,46 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        viewModel.changeViewEvent(CreateFruitDialogViewEvent.SelectInputTypeViewEvent)
+        viewModel.onGoSelectInputTypeView()
 
         viewLifecycleOwner.repeatOnStarted {
-            viewModel.currentViewState.collect {
+            viewModel.eventFlow.collect {
                 when (it) {
-                    CreateFruitDialogViewEvent.SelectInputTypeViewEvent -> {
+                    is CreateFruitDialogViewEvent.SelectInputTypeViewEvent -> {
                         navigateToDestinationFragment(SelectInputTypeFragment())
                     }
 
-                    CreateFruitDialogViewEvent.FruitCreationBySpeechViewEvent -> {
+                    is CreateFruitDialogViewEvent.FruitCreationBySpeechViewEvent -> {
                         navigateToDestinationFragment(FruitCreationBySpeechFragment())
                     }
 
-                    CreateFruitDialogViewEvent.FruitCreationByTextViewEvent -> {
+                    is CreateFruitDialogViewEvent.FruitCreationByTextViewEvent -> {
                         navigateToDestinationFragment(FruitCreationByTextFragment())
                     }
 
-                    CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent -> {
+                    is CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent -> {
                         navigateToDestinationFragment(FruitCreationLoadingFragment())
                     }
 
-                    CreateFruitDialogViewEvent.AfterFruitCreationViewEvent -> {
+                    is CreateFruitDialogViewEvent.AfterFruitCreationViewEvent -> {
                         navigateToDestinationFragment(AfterFruitCreateFragment())
                     }
 
-                    CreateFruitDialogViewEvent.AppleEvent(true) -> {
-                        navigateToDestinationFragment(AppleFragment())
+                    is CreateFruitDialogViewEvent.AppleEvent -> {
+                        if (it.isApple) {
+                            navigateToDestinationFragment(AppleFragment())
+                        } else {
+                            dialog?.dismiss()
+                        }
                     }
-                    CreateFruitDialogViewEvent.AppleEvent(false) -> {
+
+                    is CreateFruitDialogViewEvent.ShowErrorToastEvent -> {
+                        Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
                         dialog?.dismiss()
                     }
-                    else -> {}
                 }
             }
         }
-
-//        viewLifecycleOwner.repeatOnStarted {
-//            viewModel.appleEvent.collect{
-//                when(it){
-//                    is AppleEvent.isAppleEvent -> {
-//                        navigateToDestinationFragment(AppleFragment())
-//                    }
-//                    is AppleEvent.isNotAppleEvent -> {
-//                        FruitDialogInterface.dialog.dismiss()
-//                    }
-//                }
-//            }
-//        }
     }
 
     private fun navigateToDestinationFragment(destination: Fragment) {

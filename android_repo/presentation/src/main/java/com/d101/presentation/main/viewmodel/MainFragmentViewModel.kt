@@ -43,6 +43,7 @@ class MainFragmentViewModel @Inject constructor(
             manageUserStatusUseCase.updateUserStatus()
         }
     }
+
     fun changeViewState(state: TreeFragmentViewState) {
         _currentViewState.update { state }
     }
@@ -50,15 +51,23 @@ class MainFragmentViewModel @Inject constructor(
     fun getTodayFruitFromDataModule() {
         // 갔다온다.
         viewModelScope.launch(Dispatchers.IO) {
-            val result = getTodayFruitUseCase(
-                String.format(
-                    "%04d-%02d-%02d",
-                    localDate.year,
-                    localDate.monthValue,
-                    localDate.dayOfMonth,
-                ),
-            )
-            _todayFruit.update { result }
+            when (
+                val result = getTodayFruitUseCase(
+                    String.format(
+                        "%04d-%02d-%02d",
+                        localDate.year,
+                        localDate.monthValue,
+                        localDate.dayOfMonth,
+                    ),
+                )
+            ) {
+                is Result.Success -> {
+                    _todayFruit.update { result.data }
+                }
+
+                is Result.Failure -> {
+                }
+            }
         }
     }
 

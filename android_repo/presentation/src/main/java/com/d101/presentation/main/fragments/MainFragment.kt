@@ -45,6 +45,7 @@ class MainFragment : Fragment() {
         binding.mainViewModel = viewModel
 
         viewModel.initTodayDate()
+        viewModel.getUserStatus()
 
         binding.createFruitButton.setOnClickListener {
             when (viewModel.currentViewState.value) {
