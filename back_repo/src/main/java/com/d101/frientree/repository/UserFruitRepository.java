@@ -1,8 +1,6 @@
 package com.d101.frientree.repository;
 
-import com.d101.frientree.entity.fruit.FruitDetail;
 import com.d101.frientree.entity.fruit.UserFruit;
-import com.d101.frientree.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;

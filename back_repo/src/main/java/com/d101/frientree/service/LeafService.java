@@ -18,4 +18,6 @@ public interface LeafService {
     ResponseEntity<LeafComplaintResponse> complain(Long leafId);
 
     ResponseEntity<LeafViewResponse> view();
+
+    void moveAndDeleteOldLeaves();
 }

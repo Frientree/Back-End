@@ -11,10 +11,12 @@ import com.d101.frientree.entity.LeafCategory;
 import com.d101.frientree.entity.leaf.LeafDetail;
 import com.d101.frientree.entity.leaf.LeafReceive;
 import com.d101.frientree.entity.leaf.LeafSend;
+import com.d101.frientree.entity.mongo.leaf.Leaf;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
 import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.*;
+import com.d101.frientree.repository.mongo.MongoLeafRepository;
 import com.d101.frientree.service.LeafService;
 import com.d101.frientree.service.MessageService;
 import jakarta.transaction.Transactional;
@@ -24,10 +26,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -40,6 +41,7 @@ public class LeafServiceImpl implements LeafService {
     private final UserRepository userRepository;
     private final LeafDetailRepository leafDetailRepository;
     private final MessageService messageService;
+    private final MongoLeafRepository mongoLeafRepository;
 
     @Override
     public ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory) {
@@ -112,7 +114,7 @@ public class LeafServiceImpl implements LeafService {
         LocalDateTime leafCreateDate = LocalDateTime.now();
 
         LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
-        newLeaf.setLeafCreateDate(Date.from(leafCreateDate.atZone(ZoneId.systemDefault()).toInstant()));
+        newLeaf.setLeafCreateDate(LocalDate.now());
 
         // LeafDetail 저장
         leafRepository.save(newLeaf);
@@ -198,6 +200,31 @@ public class LeafServiceImpl implements LeafService {
             // response 반환
             return ResponseEntity.ok(response);
 
+    }
+
+    @Transactional
+    @Override
+    public void moveAndDeleteOldLeaves() {
+        //이파리 전체 조회해서 7일이 지난 지난 이파리 들고오기
+        LocalDate sevenDaysAgo = LocalDate.now().minusDays(1);
+        List<LeafDetail> oldLeafs = leafDetailRepository.findAllByLeafCreateDateBefore(sevenDaysAgo);
+
+        //MongoDB에 저장하기
+        oldLeafs.forEach(leafDetail -> {
+            Leaf mongoLeaf = new Leaf(leafDetail);
+            mongoLeafRepository.save(mongoLeaf);
+        });
+
+        //유저 이파리 연관관계 제거하기
+        oldLeafs.forEach(leafDetail -> {
+            //LeafReceive 제거
+            leafReceiveRepository.deleteByLeafDetail(leafDetail);
+            //LeafSend 제거
+            leafSendRepository.deleteByLeafDetail(leafDetail);
+        });
+
+        //기간 지난 이파리 삭제하기
+        leafRepository.deleteAll(oldLeafs);
     }
 
 
