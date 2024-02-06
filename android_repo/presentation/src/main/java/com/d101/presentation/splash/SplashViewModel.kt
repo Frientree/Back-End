@@ -22,6 +22,7 @@ class SplashViewModel @Inject constructor(
     init {
         onSplashSHow()
     }
+
     fun showSplash() {
         viewModelScope.launch {
             delay(3_000L)
@@ -31,9 +32,11 @@ class SplashViewModel @Inject constructor(
 
     private fun checkSignInStatus() {
         viewModelScope.launch {
-            when (getUserInfoUseCase()) {
-                is Result.Success -> onSignInSuccess()
-                is Result.Failure -> onSignInFailed()
+            getUserInfoUseCase().collect {
+                when (it) {
+                    is Result.Success -> onSignInSuccess()
+                    is Result.Failure -> onSignInFailed()
+                }
             }
         }
     }

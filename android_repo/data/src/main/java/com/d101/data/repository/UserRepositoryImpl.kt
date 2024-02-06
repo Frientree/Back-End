@@ -1,5 +1,6 @@
 package com.d101.data.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.d101.data.datasource.user.UserDataSource
 import com.d101.data.datastore.UserPreferences
@@ -9,7 +10,9 @@ import com.d101.domain.model.User
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.repository.UserRepository
 import com.d101.domain.utils.TokenManager
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -31,31 +34,34 @@ class UserRepositoryImpl @Inject constructor(
             is Result.Failure -> Result.Failure(result.errorStatus)
         }
 
-    override suspend fun getUserInfo(): Result<User> {
+    override suspend fun getUserInfo(): Flow<Result<User>> {
         var localUserInfo = userDataStore.data.first()
 
-        return if (localUserInfo.userNickname.isNotEmpty()) {
-            Result.Success(localUserInfo.toUser())
-        } else {
-            when (val result = userDataSource.getUserInfo()) {
-                is Result.Success -> {
-                    result.data.let { data ->
-                        userDataStore.updateData {
-                            UserPreferences.newBuilder()
-                                .setIsSocial(data.social)
-                                .setUserEmail(data.userEmail)
-                                .setUserNickname(data.userNickname)
-                                .setIsNotificationEnabled(data.userNotification)
-                                .setIsBackgroundMusicEnabled(true)
-                                .build()
+        return flow {
+            val result = if (localUserInfo.userNickname.isNotEmpty()) {
+                Result.Success(localUserInfo.toUser())
+            } else {
+                when (val response = userDataSource.getUserInfo()) {
+                    is Result.Success -> {
+                        response.data.let { data ->
+                            userDataStore.updateData {
+                                UserPreferences.newBuilder()
+                                    .setIsSocial(data.social)
+                                    .setUserEmail(data.userEmail)
+                                    .setUserNickname(data.userNickname)
+                                    .setIsNotificationEnabled(data.userNotification)
+                                    .setIsBackgroundMusicEnabled(true)
+                                    .build()
+                            }
                         }
+                        localUserInfo = userDataStore.data.first()
+                        Result.Success(localUserInfo.toUser())
                     }
-                    localUserInfo = userDataStore.data.first()
-                    Result.Success(localUserInfo.toUser())
-                }
 
-                is Result.Failure -> Result.Failure(result.errorStatus)
+                    is Result.Failure -> Result.Failure(response.errorStatus)
+                }
             }
+            emit(result)
         }
     }
 
@@ -64,9 +70,13 @@ class UserRepositoryImpl @Inject constructor(
             is Result.Success -> {
                 userDataStore.updateData {
                     it.toBuilder()
-//                        .setUserNickname(result.data.userNickname)
+                        .setUserNickname(result.data.userNickname)
                         .build()
                 }
+                Log.d(
+                    "유저 닉네임 변경 상태 확인",
+                    "changeUserNickname: ${userDataStore.data.first().toUser()}",
+                )
                 Result.Success(nickname)
             }
 

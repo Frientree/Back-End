@@ -85,7 +85,9 @@
                 android:cursorVisible="true"
                 android:enabled="false"
                 android:inputType="text"
+                android:imeOptions="actionDone"
                 android:textColor="@color/black"
+                android:onEditorAction="@{(v, actionId, event) -> myPageViewModel.onEditorAction(actionId)}"
                 android:text="@{myPageViewModel.uiState.nickname}" />
 
             <ImageView

@@ -1,6 +1,7 @@
 package com.d101.presentation.mypage.viewmodel
 
 import android.util.Log
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
@@ -38,6 +39,27 @@ class MyPageViewModel @Inject constructor(
     val eventFlow = _eventFlow.asEventFlow()
 
     init {
+        viewModelScope.launch {
+            getUserInfoUseCase().collect { result ->
+                when (result) {
+                    is Result.Success -> {
+                        val uiModel = result.data.toUserUiModel()
+                        _uiState.update {
+                            MyPageViewState.Default(
+                                id = uiModel.userEmail,
+                                nickname = uiModel.userNickname,
+                                backgroundMusicStatus = uiModel.backgroundMusicStatus,
+                                alarmStatus = uiModel.alarmStatus,
+                                backgroundMusic = uiModel.backgroundMusicName.ifEmpty { "봄날" },
+                            )
+                        }
+                    }
+
+                    is Result.Failure -> {}
+                }
+            }
+        }
+
         viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.Init) }
     }
 
@@ -96,7 +118,11 @@ class MyPageViewModel @Inject constructor(
     fun onChangeNicknameOccurred(nicknameInput: String) {
         viewModelScope.launch {
             when (val result = changeUserNicknameUseCase(nicknameInput)) {
-                is Result.Success -> onNicknameChanged(result.data)
+                is Result.Success -> {
+//                    onNicknameChanged(result.data)
+                    setDefaultState()
+                }
+
                 is Result.Failure -> when (result.errorStatus) {
                     is ErrorStatus.BadRequest -> {
                         _eventFlow.emit(MyPageViewEvent.OnShowToast("닉네임은 1글자 이상 8글자 이하로 입력해주세요"))
@@ -110,14 +136,22 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
+    fun onEditorAction(actionId: Int): Boolean {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            onTapNicknameConfirmButton()
+            return true
+        }
+        return false
+    }
+
     private fun onNicknameChanged(newNickname: String) {
         _uiState.update {
             MyPageViewState.Default(
-                id = it.id,
-                nickname = newNickname,
-                backgroundMusicStatus = it.backgroundMusicStatus,
-                alarmStatus = it.alarmStatus,
-                backgroundMusic = it.backgroundMusic,
+                it.id,
+                newNickname,
+                it.backgroundMusicStatus,
+                it.alarmStatus,
+                it.backgroundMusic,
             )
         }
     }
@@ -155,22 +189,25 @@ class MyPageViewModel @Inject constructor(
 
     fun onInitOccurred() {
         viewModelScope.launch {
-            when (val result = getUserInfoUseCase()) {
-                is Result.Success -> {
-                    val uiModel = result.data.toUserUiModel()
-                    Log.d("확인", "onInitOccurred: $uiModel")
-                    _uiState.update {
-                        MyPageViewState.Default(
-                            id = uiModel.userEmail,
-                            nickname = uiModel.userNickname,
-                            backgroundMusicStatus = uiModel.backgroundMusicStatus,
-                            alarmStatus = uiModel.alarmStatus,
-                            backgroundMusic = uiModel.backgroundMusicName.ifEmpty { "봄날" },
-                        )
+            getUserInfoUseCase().collect { result ->
+                Log.d("유저 정보 확인", "onInitOccurred: $result")
+                when (result) {
+                    is Result.Success -> {
+                        val uiModel = result.data.toUserUiModel()
+                        Log.d("확인", "마이페이지: $uiModel")
+                        _uiState.update {
+                            MyPageViewState.Default(
+                                id = uiModel.userEmail,
+                                nickname = uiModel.userNickname,
+                                backgroundMusicStatus = uiModel.backgroundMusicStatus,
+                                alarmStatus = uiModel.alarmStatus,
+                                backgroundMusic = uiModel.backgroundMusicName.ifEmpty { "봄날" },
+                            )
+                        }
                     }
-                }
 
-                is Result.Failure -> {}
+                    is Result.Failure -> {}
+                }
             }
         }
     }

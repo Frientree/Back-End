@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,8 @@ class MyPageFragment : Fragment() {
     private val viewModel: MyPageViewModel by viewModels()
     private var _binding: FragmentMypageBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var inputMethodManager: InputMethodManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,11 +70,21 @@ class MyPageFragment : Fragment() {
                         viewModel.onTapNicknameEditButtonOccurred()
                     }
 
-                    is MyPageViewEvent.OnTapNicknameEditCancelButton ->
+                    is MyPageViewEvent.OnTapNicknameEditCancelButton -> {
+                        inputMethodManager.hideSoftInputFromWindow(
+                            binding.nicknameEditText.windowToken,
+                            0,
+                        )
                         viewModel.onTapNicknameEditCancelButtonOccurred()
+                    }
 
-                    is MyPageViewEvent.OnTapNicknameConfirmButton ->
+                    is MyPageViewEvent.OnTapNicknameConfirmButton -> {
+                        inputMethodManager.hideSoftInputFromWindow(
+                            binding.nicknameEditText.windowToken,
+                            0,
+                        )
                         viewModel.onChangeNicknameOccurred(binding.nicknameEditText.text.toString())
+                    }
 
                     is MyPageViewEvent.OnTapAlarmStatusButton ->
                         viewModel.onTapAlarmStatusButtonOccurred(event.alarmStatus)
@@ -113,10 +126,11 @@ class MyPageFragment : Fragment() {
 
     private fun subScribeViewState() {
         viewLifecycleOwner.repeatOnStarted {
-            val inputMethodManager = requireContext().getSystemService(
+            inputMethodManager = requireContext().getSystemService(
                 Context.INPUT_METHOD_SERVICE,
             ) as InputMethodManager
             viewModel.uiState.collect { state ->
+                Log.d("상태 확인", "subScribeViewState: $state")
                 when (state) {
                     is MyPageViewState.Default -> {
                         setBackgroundMusicStatusUI(state)
@@ -148,8 +162,13 @@ class MyPageFragment : Fragment() {
         binding.nicknameConfirmButtonTextView.visibility = View.VISIBLE
         binding.cancelButtonImageView.visibility = View.VISIBLE
         binding.nicknameEditText.isEnabled = true
-        binding.nicknameEditText.requestFocus()
-        inputMethodManager.showSoftInput(binding.nicknameEditText, InputMethodManager.SHOW_IMPLICIT)
+        binding.nicknameEditText.postDelayed({
+            binding.nicknameEditText.requestFocus()
+            inputMethodManager.showSoftInput(
+                binding.nicknameEditText,
+                InputMethodManager.SHOW_IMPLICIT,
+            )
+        }, 100)
     }
 
     private fun setDefaultUI(inputMethodManager: InputMethodManager) {
