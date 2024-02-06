@@ -41,4 +41,6 @@ public interface UserService {
     void updateAllUserFruitAndLeafStatus();
 
     ResponseEntity<UserSignInNaverResponse> userSignInNaver(UserSignInNaverRequest userSignInNaverRequest);
+
+    ResponseEntity<UserFcmTokenUpdateResponse> updateFcmToken(UserFcmTokenUpdateRequest request);
 }

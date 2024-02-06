@@ -676,6 +676,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public ResponseEntity<UserFcmTokenUpdateResponse> updateFcmToken(UserFcmTokenUpdateRequest request) {
+        User user = getUser();
+        user.setFcmToken(request.getFcmToken());
+        userRepository.save(user);
+
+        UserFcmTokenUpdateResponse response =
+                UserFcmTokenUpdateResponse.createUserFcmTokenUpdateResponse("Success", true);
+
+        return ResponseEntity.ok(response);
+    }
 }
 
 

@@ -59,6 +59,9 @@ public class User {
     @Column(name = "user_naver_code")
     private String naverCode;
 
+    @Column(name = "user_fcm_token")
+    private String fcmToken;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<UserFruit> userFruits;
