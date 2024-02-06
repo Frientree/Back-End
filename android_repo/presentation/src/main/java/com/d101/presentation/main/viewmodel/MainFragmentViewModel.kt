@@ -1,6 +1,5 @@
 package com.d101.presentation.main.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.FruitCreated
@@ -42,7 +41,6 @@ class MainFragmentViewModel @Inject constructor(
     lateinit var todayFruit: FruitCreated
 
     init {
-
         // 나무 이름, 메세지 가져오기 작업
 
         viewModelScope.launch {
@@ -78,7 +76,7 @@ class MainFragmentViewModel @Inject constructor(
         }
     }
 
-    private fun updateUserStatus() {
+    fun updateUserStatus() {
         viewModelScope.launch {
             when (val result = manageUserStatusUseCase.updateUserStatus()) {
                 is Result.Success -> {}
@@ -106,24 +104,6 @@ class MainFragmentViewModel @Inject constructor(
             }
         }
     }
-//    onSuccess = {
-//        Result.Success(it)
-//    },
-//    onFailure = { e ->
-//        if (e is FrientreeHttpError) {
-//            when (e.code) {
-//                401 -> Result.Failure(GetUserStatusErrorStatus.Fail)
-//                404 -> Result.Failure(GetUserStatusErrorStatus.UserNotFound)
-//                else -> Result.Failure(ErrorStatus.UnknownError)
-//            }
-//        } else {
-//            if (e is IOException) {
-//                Result.Failure(ErrorStatus.NetworkError)
-//            } else {
-//                Result.Failure(ErrorStatus.UnknownError)
-//            }
-//        }
-//    },
 
     private fun getTodayFruitFromDataModule() {
         val localDate: LocalDate = LocalDate.now()
@@ -195,7 +175,6 @@ class MainFragmentViewModel @Inject constructor(
                 }
             }
         }
-        Log.d("TEST::::", "${_uiState.value}")
     }
 
     fun onButtonClick() {
