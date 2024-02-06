@@ -28,7 +28,7 @@ public class AppVersionController {
             @ApiResponse(responseCode = "200", description = "앱 버전 조회 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = AppVersionResponse.class))),
     })
     @GetMapping
-    public ResponseEntity<AppVersionResponse> appversionConfirm(){
+    public ResponseEntity<AppVersionResponse> appVersionConfirm(){
         return appVersionService.confirm();
     }
 }
