@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/appversion")
+@RequestMapping("/app-version")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 public class AppVersionController {
