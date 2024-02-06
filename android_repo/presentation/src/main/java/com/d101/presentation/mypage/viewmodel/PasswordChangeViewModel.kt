@@ -2,7 +2,9 @@ package com.d101.presentation.mypage.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.d101.domain.usecase.mypage.ChangePasswordUseCase
 import com.d101.presentation.R
+import com.d101.presentation.mypage.event.PasswordChangeEvent
 import com.d101.presentation.mypage.state.PasswordChangeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,11 +15,19 @@ import utils.RegexPattern.PASSWORD_PATTERN
 import javax.inject.Inject
 
 @HiltViewModel
-class PasswordChangeViewModel @Inject constructor() : ViewModel() {
+class PasswordChangeViewModel @Inject constructor(
+    private val changePasswordUseCase: ChangePasswordUseCase
+) : ViewModel() {
 
     private val _uiState: MutableStateFlow<PasswordChangeState> =
         MutableStateFlow(PasswordChangeState())
     val uiState = _uiState.asStateFlow()
+
+
+    private val _eventEvent: MutableStateFlow<PasswordChangeEvent> =
+        MutableStateFlow(PasswordChangeEvent.PasswordChangeAttempt)
+    val eventEvent = _eventEvent.asStateFlow()
+
 
     fun setCurrentPassword(currentPassword: String) {
         viewModelScope.launch {
@@ -58,4 +68,26 @@ class PasswordChangeViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+
+
+
+
+    fun onAttemptPasswordChange() = emitEvent(PasswordChangeEvent.PasswordChangeAttempt)
+    fun onSuccessPasswordChange() = emitEvent(PasswordChangeEvent.PasswordChangeSuccess)
+    private fun emitEvent(event: PasswordChangeEvent) {
+        viewModelScope.launch {
+            _eventEvent.emit(event)
+        }
+    }
+
+    fun changePassword() {
+        viewModelScope.launch {
+//            when(val result = changePasswordUseCase(uiState.value.currentPassword, uiState.value.newPassword)) {
+//                is Result.Success -> onSuccessPasswordChange()
+//                is Result.Failure -> onFailurePasswordChange()
+//            }
+        }
+    }
+
+
 }

@@ -1,11 +1,15 @@
 package com.d101.presentation.mypage
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextWatcher
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.d101.presentation.databinding.ActivityPasswordChangeBinding
+import com.d101.presentation.mypage.event.PasswordChangeEvent
 import com.d101.presentation.mypage.viewmodel.PasswordChangeViewModel
+import com.d101.presentation.welcome.WelcomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
 
@@ -63,4 +67,27 @@ class PasswordChangeActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun collectEvent() {
+        repeatOnStarted {
+            viewModel.eventEvent.collect { event ->
+                when (event) {
+                    PasswordChangeEvent.PasswordChangeAttempt -> viewModel.changePassword()
+                    PasswordChangeEvent.PasswordChangeSuccess -> navigateSignIn()
+                    is PasswordChangeEvent.ShowToast -> showToast(event.message)
+                }
+            }
+        }
+    }
+
+    private fun navigateSignIn() {
+        val intent = Intent(this, WelcomeActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    private fun showToast(message: String) =
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
