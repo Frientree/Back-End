@@ -14,10 +14,12 @@ import com.d101.data.model.user.request.SignUpRequest
 import com.d101.data.model.user.response.NicknameChangeResponse
 import com.d101.data.model.user.response.TokenResponse
 import com.d101.data.model.user.response.UserResponse
+import com.d101.data.model.user.response.UserStatusResponse
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.AuthCodeCreationErrorStatus
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.GetUserErrorStatus
+import com.d101.domain.model.status.GetUserStatusErrorStatus
 import com.d101.domain.model.status.PassWordChangeErrorStatus
 import com.d101.domain.model.status.PasswordFindErrorStatus
 import com.d101.domain.model.status.SignInErrorStatus
@@ -196,6 +198,29 @@ class UserDataSourceImpl @Inject constructor(
         onFailure = { e ->
             if (e is FrientreeHttpError) {
                 when (e.code) {
+                    else -> Result.Failure(ErrorStatus.UnknownError)
+                }
+            } else {
+                if (e is IOException) {
+                    Result.Failure(ErrorStatus.NetworkError)
+                } else {
+                    Result.Failure(ErrorStatus.UnknownError)
+                }
+            }
+        },
+    )
+
+    override suspend fun getUserStatus(): Result<UserStatusResponse> = runCatching {
+        userService.getUserStatus().getOrThrow().data
+    }.fold(
+        onSuccess = {
+            Result.Success(it)
+        },
+        onFailure = { e ->
+            if (e is FrientreeHttpError) {
+                when (e.code) {
+                    401 -> Result.Failure(GetUserStatusErrorStatus.Fail)
+                    404 -> Result.Failure(GetUserStatusErrorStatus.UserNotFound)
                     else -> Result.Failure(ErrorStatus.UnknownError)
                 }
             } else {

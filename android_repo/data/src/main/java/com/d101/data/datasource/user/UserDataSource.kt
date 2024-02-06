@@ -3,6 +3,7 @@ package com.d101.data.datasource.user
 import com.d101.data.model.user.response.NicknameChangeResponse
 import com.d101.data.model.user.response.TokenResponse
 import com.d101.data.model.user.response.UserResponse
+import com.d101.data.model.user.response.UserStatusResponse
 import com.d101.domain.model.Result
 
 interface UserDataSource {
@@ -17,6 +18,8 @@ interface UserDataSource {
     suspend fun checkAuthCode(userEmail: String, code: String): Result<Boolean>
 
     suspend fun signUp(userEmail: String, userPw: String, userNickname: String): Result<Boolean>
+
+    suspend fun getUserStatus(): Result<UserStatusResponse>
 
     suspend fun findPassword(userEmail: String): Result<Boolean>
 

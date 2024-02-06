@@ -13,7 +13,9 @@ import com.d101.data.model.user.request.SignUpRequest
 import com.d101.data.model.user.response.NicknameChangeResponse
 import com.d101.data.model.user.response.TokenResponse
 import com.d101.data.model.user.response.UserResponse
+import com.d101.data.model.user.response.UserStatusResponse
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 
@@ -45,6 +47,9 @@ interface UserService {
     suspend fun signUp(
         @Body signUpRequest: SignUpRequest,
     ): ApiResult<ApiResponse<Boolean>>
+
+    @GET("/users/create-status")
+    suspend fun getUserStatus(): ApiResult<ApiResponse<UserStatusResponse>>
 
     @POST("/users/sign-in-naver")
     suspend fun signInNaver(

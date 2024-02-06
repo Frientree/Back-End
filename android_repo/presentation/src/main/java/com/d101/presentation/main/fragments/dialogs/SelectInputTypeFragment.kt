@@ -20,7 +20,6 @@ import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentSelectInputTypeBinding
 import com.d101.presentation.main.MainActivity
-import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -69,9 +68,9 @@ class SelectInputTypeFragment : Fragment() {
 
     private fun moveToFragment() {
         if (isTextInput) {
-            viewModel.changeViewEvent(CreateFruitDialogViewEvent.FruitCreationByTextViewEvent)
+            viewModel.onGoCreateionByTextView()
         } else {
-            viewModel.changeViewEvent(CreateFruitDialogViewEvent.FruitCreationBySpeechViewEvent)
+            viewModel.onGoCreateionBySpeechView()
         }
     }
 

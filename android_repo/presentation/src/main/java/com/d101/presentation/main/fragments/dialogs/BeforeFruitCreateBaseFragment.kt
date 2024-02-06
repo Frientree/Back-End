@@ -1,11 +1,13 @@
 package com.d101.presentation.main.fragments.dialogs
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,11 +15,13 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentBeforeFruitCreateBaseBinding
 import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
+import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
 class BeforeFruitCreateBaseFragment : DialogFragment() {
+    private val mainViewModel: MainFragmentViewModel by viewModels({ requireParentFragment() })
     private val viewModel: FruitCreateViewModel by viewModels()
     private var _binding: FragmentBeforeFruitCreateBaseBinding? = null
     private val binding get() = _binding!!
@@ -34,54 +38,46 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-        viewModel.changeViewEvent(CreateFruitDialogViewEvent.SelectInputTypeViewEvent)
+        viewModel.onGoSelectInputTypeView()
 
         viewLifecycleOwner.repeatOnStarted {
-            viewModel.currentViewState.collect {
+            viewModel.eventFlow.collect {
                 when (it) {
-                    CreateFruitDialogViewEvent.SelectInputTypeViewEvent -> {
+                    is CreateFruitDialogViewEvent.SelectInputTypeViewEvent -> {
                         navigateToDestinationFragment(SelectInputTypeFragment())
                     }
 
-                    CreateFruitDialogViewEvent.FruitCreationBySpeechViewEvent -> {
+                    is CreateFruitDialogViewEvent.FruitCreationBySpeechViewEvent -> {
                         navigateToDestinationFragment(FruitCreationBySpeechFragment())
                     }
 
-                    CreateFruitDialogViewEvent.FruitCreationByTextViewEvent -> {
+                    is CreateFruitDialogViewEvent.FruitCreationByTextViewEvent -> {
                         navigateToDestinationFragment(FruitCreationByTextFragment())
                     }
 
-                    CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent -> {
+                    is CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent -> {
                         navigateToDestinationFragment(FruitCreationLoadingFragment())
                     }
 
-                    CreateFruitDialogViewEvent.AfterFruitCreationViewEvent -> {
+                    is CreateFruitDialogViewEvent.AfterFruitCreationViewEvent -> {
                         navigateToDestinationFragment(AfterFruitCreateFragment())
                     }
 
-                    CreateFruitDialogViewEvent.AppleEvent(true) -> {
-                        navigateToDestinationFragment(AppleFragment())
+                    is CreateFruitDialogViewEvent.AppleEvent -> {
+                        if (it.isApple) {
+                            navigateToDestinationFragment(AppleFragment())
+                        } else {
+                            dialog?.dismiss()
+                        }
                     }
-                    CreateFruitDialogViewEvent.AppleEvent(false) -> {
+
+                    is CreateFruitDialogViewEvent.ShowErrorToastEvent -> {
+                        Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
                         dialog?.dismiss()
                     }
-                    else -> {}
                 }
             }
         }
-
-//        viewLifecycleOwner.repeatOnStarted {
-//            viewModel.appleEvent.collect{
-//                when(it){
-//                    is AppleEvent.isAppleEvent -> {
-//                        navigateToDestinationFragment(AppleFragment())
-//                    }
-//                    is AppleEvent.isNotAppleEvent -> {
-//                        FruitDialogInterface.dialog.dismiss()
-//                    }
-//                }
-//            }
-//        }
     }
 
     private fun navigateToDestinationFragment(destination: Fragment) {
@@ -94,5 +90,10 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        mainViewModel.getUserStatus()
     }
 }

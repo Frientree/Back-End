@@ -43,6 +43,15 @@ object FruitMapper {
             fruitImageUrl = this.fruitImageUrl,
         )
     }
+    fun FruitEntity.toFruitCreated(): FruitCreated {
+        return FruitCreated(
+            fruitNum = this.id,
+            fruitDescription = this.description,
+            fruitName = this.name,
+            fruitImageUrl = this.imageUrl,
+            fruitFeel = this.emotion.toFruitEmotion(),
+        )
+    }
 
     fun CalendarFruitEntity.toFruitInCalendar(): FruitsOfMonth {
         return FruitsOfMonth(

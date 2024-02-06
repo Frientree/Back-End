@@ -199,6 +199,10 @@ class CalendarFragment : Fragment() {
                 binding.notEnoughFruitsTextView.visibility = View.GONE
                 binding.juiceRequirementsTextView.visibility = View.GONE
                 binding.juiceMakingButtonLinearLayout.isClickable = true
+                binding.juiceMakingButtonLinearLayout.setBackgroundResource(
+                    R.drawable.btn_white_green_36dp,
+                )
+                binding.juiceMakingButtonImageView.setImageResource(R.drawable.juice)
                 binding.juiceMakingButtonTextView.setTextColor(
                     resources.getColor(R.color.black, null),
                 )
@@ -209,8 +213,12 @@ class CalendarFragment : Fragment() {
                 binding.notEnoughFruitsTextView.visibility = View.VISIBLE
                 binding.juiceRequirementsTextView.visibility = View.VISIBLE
                 binding.juiceMakingButtonLinearLayout.isClickable = false
+                binding.juiceMakingButtonLinearLayout.setBackgroundResource(
+                    R.drawable.btn_lightgray_lightgray_36dp,
+                )
+                binding.juiceMakingButtonImageView.setImageResource(R.drawable.juice_stroke)
                 binding.juiceMakingButtonTextView.setTextColor(
-                    resources.getColor(R.color.light_gray, null),
+                    resources.getColor(R.color.gray, null),
                 )
             }
         }

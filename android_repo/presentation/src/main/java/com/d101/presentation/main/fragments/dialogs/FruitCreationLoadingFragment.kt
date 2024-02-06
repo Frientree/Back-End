@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
-import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import utils.repeatOnStarted
 
@@ -47,9 +46,7 @@ class FruitCreationLoadingFragment : Fragment() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.todayFruitList.collect {
                 if (it.isNotEmpty()) {
-                    viewModel.changeViewEvent(
-                        CreateFruitDialogViewEvent.AfterFruitCreationViewEvent,
-                    )
+                    viewModel.onGoReultView()
                 }
             }
         }

@@ -7,6 +7,8 @@ import com.d101.data.mapper.FruitMapper.toFruitCreated
 import com.d101.data.roomdb.entity.FruitEntity
 import com.d101.domain.model.AppleData
 import com.d101.domain.model.FruitCreated
+import com.d101.domain.model.Result
+import com.d101.domain.model.status.FruitErrorStatus
 import com.d101.domain.repository.FruitRepository
 import com.d101.domain.utils.toLongDate
 import java.io.File
@@ -17,37 +19,61 @@ class FruitRepositoryImpl @Inject constructor(
     private val fruitRemoteDataSource: FruitRemoteDataSource,
 
 ) : FruitRepository {
-    override suspend fun sendText(text: String): List<FruitCreated> {
-        return fruitRemoteDataSource.sendText(text).map {
-            it.toFruitCreated()
+    override suspend fun sendText(text: String): Result<List<FruitCreated>> {
+        return when (val result = fruitRemoteDataSource.sendText(text)) {
+            is Result.Success -> {
+                Result.Success(result.data.map { it.toFruitCreated() })
+            }
+
+            is Result.Failure -> {
+                Result.Failure(result.errorStatus)
+            }
         }
     }
 
-    override suspend fun sendFile(file: File): List<FruitCreated> {
-        return fruitRemoteDataSource.sendFile(file).map {
-            it.toFruitCreated()
+    override suspend fun sendFile(file: File): Result<List<FruitCreated>> {
+        return when (val result = fruitRemoteDataSource.sendFile(file)) {
+            is Result.Success -> {
+                Result.Success(result.data.map { it.toFruitCreated() })
+            }
+
+            is Result.Failure -> {
+                Result.Failure(result.errorStatus)
+            }
         }
     }
 
-    override suspend fun saveSelectedFruit(fruitNum: Long): AppleData {
-        val remoteResult = fruitRemoteDataSource.saveFruit(fruitNum)
+    override suspend fun saveSelectedFruit(fruitNum: Long): Result<AppleData> {
+        return when (val remoteResult = fruitRemoteDataSource.saveFruit(fruitNum)) {
+            is Result.Success -> {
+                remoteResult.let {
+                    fruitLocalDataSource.insertFruit(
+                        FruitEntity(
+                            id = fruitNum,
+                            date = it.data.fruitCreateDate.toLongDate(),
+                            name = it.data.fruitName,
+                            description = it.data.fruitDescription,
+                            imageUrl = it.data.fruitImageUrl,
+                            calendarImageUrl = it.data.fruitCalendarImageUrl,
+                            emotion = it.data.fruitFeel,
+                            score = it.data.fruitScore,
+                        ),
+                    )
+                }
+                Result.Success(remoteResult.data.toAppleData())
+            }
 
-        remoteResult.isApple = true
-        remoteResult.let {
-            fruitLocalDataSource.insertFruit(
-                FruitEntity(
-                    id = fruitNum,
-                    date = it.fruitCreateDate.toLongDate(),
-                    name = it.fruitName,
-                    description = it.fruitDescription,
-                    imageUrl = it.fruitImageUrl,
-                    calendarImageUrl = it.fruitCalendarImageUrl,
-                    emotion = it.fruitFeel,
-                    score = it.fruitScore,
-                ),
-            )
+            is Result.Failure -> {
+                Result.Failure(remoteResult.errorStatus)
+            }
         }
-
-        return remoteResult.toAppleData()
     }
+
+    override suspend fun getTodayFruit(date: String): Result<FruitCreated> = runCatching {
+        val dateLong = date.toLongDate()
+        fruitLocalDataSource.getTodayFruit(dateLong)
+    }.fold(
+        onSuccess = { Result.Success(it.toFruitCreated()) },
+        onFailure = { Result.Failure(FruitErrorStatus.LocalGetError) },
+    )
 }
