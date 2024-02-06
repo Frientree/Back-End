@@ -2,6 +2,7 @@ package com.d101.presentation
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.util.Log
 
 object BackgroundMusicPlayer {
     private lateinit var mediaPlayer: MediaPlayer
@@ -19,11 +20,16 @@ object BackgroundMusicPlayer {
     }
 
     fun resumeMusic() {
-        mediaPlayer.start()
+        if(mediaPlayer.isPlaying.not()){
+            Log.d("확인", "resumeMusic: ")
+            mediaPlayer.start()
+        }
     }
 
     fun pauseMusic() {
-        mediaPlayer.pause()
+        if(mediaPlayer.isPlaying){
+            mediaPlayer.pause()
+        }
     }
 
     fun releaseMusicPlayer() {

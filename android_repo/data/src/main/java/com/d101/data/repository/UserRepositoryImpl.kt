@@ -1,5 +1,6 @@
 package com.d101.data.repository
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import com.d101.data.datasource.user.UserDataSource
 import com.d101.data.datastore.UserPreferences
@@ -164,4 +165,17 @@ class UserRepositoryImpl @Inject constructor(
             onSuccess = { Result.Success(Unit) },
             onFailure = { Result.Failure(ErrorStatus.UnknownError) },
         )
+
+    override suspend fun changeBackgroundMusic(musicName: String): Result<Unit> = runCatching {
+        userDataStore.updateData {
+            it.toBuilder()
+                .setBackgroundMusicName(musicName)
+                .build()
+        }
+        Log.d("확인", "changeBackgroundMusic: ${userDataStore.data.first().backgroundMusicName}}")
+    }.fold(
+        onSuccess = { Result.Success(Unit) },
+        onFailure = { Result.Failure(ErrorStatus.UnknownError) },
+    )
+
 }

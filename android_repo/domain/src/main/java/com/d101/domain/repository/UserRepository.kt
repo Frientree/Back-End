@@ -30,4 +30,6 @@ interface UserRepository {
     suspend fun setNotification(isNotificationEnabled: Boolean): Result<Unit>
 
     suspend fun setBackgroundMusicStatus(isBackgroundMusicEnabled: Boolean): Result<Unit>
+
+    suspend fun changeBackgroundMusic(musicName: String): Result<Unit>
 }

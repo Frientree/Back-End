@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
+import com.d101.domain.usecase.mypage.ChangeBackgroundMusicUseCase
 import com.d101.domain.usecase.mypage.ChangeUserNicknameUseCase
 import com.d101.domain.usecase.mypage.LogOutUseCase
 import com.d101.domain.usecase.mypage.SetAlarmStatusUseCase
@@ -31,6 +32,7 @@ class MyPageViewModel @Inject constructor(
     private val changeUserNicknameUseCase: ChangeUserNicknameUseCase,
     private val setAlarmStatusUseCase: SetAlarmStatusUseCase,
     private val setBackgroundMusicStatusUseCase: SetBackgroundMusicStatusUseCase,
+    private val changeBackgroundMusicUseCase: ChangeBackgroundMusicUseCase,
     private val logOutUseCase: LogOutUseCase,
 ) : ViewModel() {
 
@@ -124,7 +126,7 @@ class MyPageViewModel @Inject constructor(
                                 nickname = uiModel.userNickname,
                                 backgroundMusicStatus = uiModel.backgroundMusicStatus,
                                 alarmStatus = uiModel.alarmStatus,
-                                backgroundMusic = uiModel.backgroundMusicName.ifEmpty { "봄날" },
+                                backgroundMusic = uiModel.backgroundMusicName,
                             )
                         }
                     }
@@ -208,14 +210,13 @@ class MyPageViewModel @Inject constructor(
     }
 
     private fun changeBackgroundMusic(newBackgroundMusic: String) {
-        _uiState.update {
-            MyPageViewState.Default(
-                it.id,
-                it.nickname,
-                it.backgroundMusicStatus,
-                it.alarmStatus,
-                newBackgroundMusic,
-            )
+        viewModelScope.launch {
+            when (changeBackgroundMusicUseCase(newBackgroundMusic)) {
+                is Result.Success -> setDefaultState()
+                is Result.Failure -> {
+                    emitEvent(MyPageViewEvent.OnShowToast("배경음악 변경 실패"))
+                }
+            }
         }
     }
 
