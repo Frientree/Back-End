@@ -84,10 +84,17 @@ class UserDataSourceImpl @Inject constructor(
                 Result.Success(it)
             },
             onFailure = { e ->
-                if (e is IOException) {
-                    Result.Failure(ErrorStatus.NetworkError)
+                if (e is FrientreeHttpError) {
+                    when (e.code) {
+                        400 -> Result.Failure(ErrorStatus.BadRequest)
+                        else -> Result.Failure(ErrorStatus.UnknownError)
+                    }
                 } else {
-                    Result.Failure(ErrorStatus.UnknownError)
+                    if (e is IOException) {
+                        Result.Failure(ErrorStatus.NetworkError)
+                    } else {
+                        Result.Failure(ErrorStatus.UnknownError)
+                    }
                 }
             },
         )
