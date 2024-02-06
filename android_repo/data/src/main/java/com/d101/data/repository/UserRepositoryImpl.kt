@@ -6,6 +6,7 @@ import com.d101.data.datastore.UserPreferences
 import com.d101.data.datastore.UserStatusPreferences
 import com.d101.data.mapper.UserMapper.toUser
 import com.d101.data.mapper.UserMapper.toUserStatus
+import com.d101.data.roomdb.AppDatabase
 import com.d101.domain.model.Result
 import com.d101.domain.model.User
 import com.d101.domain.model.UserStatus
@@ -20,6 +21,7 @@ class UserRepositoryImpl @Inject constructor(
     private val userDataStore: DataStore<UserPreferences>,
     private val userStatusDataStore: DataStore<UserStatusPreferences>,
     private val userDataSource: UserDataSource,
+    private val roomDB: AppDatabase,
 ) : UserRepository {
     override suspend fun signIn(userId: String, userPw: String) =
         when (val result = userDataSource.signIn(userId, userPw)) {
@@ -92,6 +94,7 @@ class UserRepositoryImpl @Inject constructor(
         return try {
             userDataStore.updateData { UserPreferences.getDefaultInstance() }
             tokenManager.deleteTokens()
+            roomDB.clearAllTables()
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Failure(ErrorStatus.UnknownError)
