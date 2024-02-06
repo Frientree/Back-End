@@ -7,6 +7,7 @@ import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.usecase.mypage.ChangeUserNicknameUseCase
 import com.d101.domain.usecase.mypage.LogOutUseCase
+import com.d101.domain.usecase.mypage.SetAlarmStatusUseCase
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import com.d101.presentation.mapper.UserMapper.toUserUiModel
 import com.d101.presentation.mypage.event.MyPageViewEvent
@@ -27,6 +28,7 @@ import javax.inject.Inject
 class MyPageViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val changeUserNicknameUseCase: ChangeUserNicknameUseCase,
+    private val setAlarmStatusUseCase: SetAlarmStatusUseCase,
     private val logOutUseCase: LogOutUseCase,
 ) : ViewModel() {
 
@@ -40,7 +42,6 @@ class MyPageViewModel @Inject constructor(
     init {
         viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.Init) }
     }
-
 
     fun onTapNicknameEditButtonOccurred() {
         setEditNicknameState()
@@ -169,13 +170,23 @@ class MyPageViewModel @Inject constructor(
     }
 
     private fun setAlarmStatus(alarmStatus: AlarmStatus) {
-        when (val currentState = _uiState.value) {
-            is MyPageViewState.Default ->
-                _uiState.value =
-                    currentState.copy(alarmStatus = alarmStatus)
+        viewModelScope.launch {
+            when (val result = setAlarmStatusUseCase(alarmStatus == AlarmStatus.ON)) {
+                is Result.Success -> {
+                    setDefaultState()
+                }
 
-            else -> {
-                setDefaultState()
+                is Result.Failure -> {
+                    when (result.errorStatus) {
+                        is ErrorStatus.BadRequest -> {
+                            emitEvent(MyPageViewEvent.OnShowToast("알람 설정 실패"))
+                        }
+
+                        else -> {
+                            emitEvent(MyPageViewEvent.OnShowToast("네트워크 에러"))
+                        }
+                    }
+                }
             }
         }
     }
@@ -210,7 +221,6 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-
     fun onTapNicknameEditButton() = emitEvent(MyPageViewEvent.OnTapNicknameEditButton)
 
     fun onTapNicknameEditCancelButton() = emitEvent(MyPageViewEvent.OnTapNicknameEditCancelButton)
@@ -235,5 +245,7 @@ class MyPageViewModel @Inject constructor(
 
     fun onTapLogOutButton() = emitEvent(MyPageViewEvent.OnTapLogOutButton)
 
-    private fun emitEvent(event: MyPageViewEvent) = viewModelScope.launch { _eventFlow.emit(event) }
+    private fun emitEvent(event: MyPageViewEvent) = viewModelScope.launch {
+        _eventFlow.emit(event)
+    }
 }

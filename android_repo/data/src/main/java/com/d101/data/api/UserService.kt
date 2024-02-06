@@ -6,6 +6,7 @@ import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
 import com.d101.data.model.user.request.NaverLoginRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
+import com.d101.data.model.user.request.NotificationSetRequest
 import com.d101.data.model.user.request.PasswordChangeRequest
 import com.d101.data.model.user.request.PasswordFindRequest
 import com.d101.data.model.user.request.SignInRequest
@@ -59,5 +60,10 @@ interface UserService {
     @POST("/users/password")
     suspend fun changePassword(
         @Body passwordChangeRequest: PasswordChangeRequest,
+    ): ApiResult<ApiResponse<Boolean>>
+
+    @PUT("/users/notification")
+    suspend fun changeNotificationSet(
+        @Body notificationSetRequest: NotificationSetRequest,
     ): ApiResult<ApiResponse<Boolean>>
 }

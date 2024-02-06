@@ -125,6 +125,20 @@ class UserRepositoryImpl @Inject constructor(
             is Result.Failure -> Result.Failure(result.errorStatus)
         }
 
+    override suspend fun setNotification(isNotificationEnabled: Boolean): Result<Unit> =
+        when (val result = userDataSource.setNotification(isNotificationEnabled)) {
+            is Result.Success -> {
+                userDataStore.updateData {
+                    it.toBuilder()
+                        .setIsNotificationEnabled(isNotificationEnabled)
+                        .build()
+                }
+                Result.Success(Unit)
+            }
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
+
     override suspend fun findPassword(userEmail: String): Result<Unit> =
         when (val result = userDataSource.findPassword(userEmail)) {
             is Result.Success -> Result.Success(Unit)

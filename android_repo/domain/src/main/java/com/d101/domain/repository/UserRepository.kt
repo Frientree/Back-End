@@ -26,4 +26,6 @@ interface UserRepository {
     suspend fun signInNaver(code: String): Result<Unit>
 
     suspend fun getNaverId(accessToken: String): Result<String>
+
+    suspend fun setNotification(isNotificationEnabled: Boolean): Result<Unit>
 }
