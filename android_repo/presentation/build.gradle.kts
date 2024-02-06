@@ -29,6 +29,7 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -49,6 +50,7 @@ dependencies {
     implementation(Libraries.appCompat)
     implementation(Libraries.material)
     implementation("com.google.android.gms:play-services-fido:20.1.0")
+    implementation(project(mapOf("path" to ":data")))
     testImplementation(Libraries.junit)
     androidTestImplementation(Libraries.androidxJunit)
     androidTestImplementation(Libraries.espressoCore)
@@ -72,6 +74,8 @@ dependencies {
 
     // Glide
     implementation(Libraries.glide)
+
+    implementation(Libraries.naverOAuth)
 }
 kapt {
     correctErrorTypes = true

@@ -17,4 +17,8 @@ interface UserDataSource {
     suspend fun checkAuthCode(userEmail: String, code: String): Result<Boolean>
 
     suspend fun signUp(userEmail: String, userPw: String, userNickname: String): Result<Boolean>
+
+    suspend fun getNaverLoginId(accessToken: String): Result<String>
+
+    suspend fun signInNaver(code: String): Result<TokenResponse>
 }

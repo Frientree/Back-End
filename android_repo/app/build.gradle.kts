@@ -1,4 +1,5 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -6,6 +7,10 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
+}
+
+val properties = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -26,6 +31,23 @@ android {
             "BASE_URL",
             gradleLocalProperties(rootDir).getProperty("BASE_URL"),
         )
+
+        buildConfigField(
+            "String",
+            "NAVER_LOGIN_CLIENT_ID",
+            "\"${properties["NAVER_LOGIN_CLIENT_ID"]}\"",
+        )
+        buildConfigField(
+            "String",
+            "NAVER_LOGIN_CLIENT_SECRET",
+            "\"${properties["NAVER_LOGIN_CLIENT_SECRET"]}\"",
+        )
+
+        buildConfigField(
+            "String",
+            "NAVER_LOGIN_CLIENT_NAME",
+            "\"${properties["NAVER_LOGIN_CLIENT_NAME"]}\"",
+        )
     }
 
     buildTypes {
@@ -39,6 +61,7 @@ android {
     }
     buildFeatures {
         dataBinding = true
+        buildConfig = true
         buildConfig = true
     }
     compileOptions {
@@ -86,6 +109,8 @@ dependencies {
     implementation(Libraries.dataStore)
     implementation(Libraries.dataStoreCore)
     implementation(Libraries.protoBuf)
+
+    implementation(Libraries.naverOAuth)
 }
 kapt {
     correctErrorTypes = true

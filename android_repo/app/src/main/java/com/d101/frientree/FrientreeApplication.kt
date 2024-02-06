@@ -4,12 +4,19 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.d101.presentation.BackgroundMusicPlayer
+import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class FrientreeApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        NaverIdLoginSDK.initialize(
+            this,
+            BuildConfig.NAVER_LOGIN_CLIENT_ID,
+            BuildConfig.NAVER_LOGIN_CLIENT_SECRET,
+            BuildConfig.NAVER_LOGIN_CLIENT_NAME,
+        )
         registerActivityLifecycleCallbacks(AppLifecycleTracker())
         BackgroundMusicPlayer.initMusicList(this)
         BackgroundMusicPlayer.playMusic(this, BackgroundMusicPlayer.getMusicList()[0])
@@ -36,6 +43,7 @@ class FrientreeApplication : Application() {
                 BackgroundMusicPlayer.releaseMusicPlayer()
             }
         }
+
         override fun onActivityPaused(activity: Activity) {}
         override fun onActivityResumed(activity: Activity) {}
         override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}

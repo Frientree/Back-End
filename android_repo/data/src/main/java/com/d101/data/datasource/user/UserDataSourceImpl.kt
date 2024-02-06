@@ -1,9 +1,11 @@
 package com.d101.data.datasource.user
 
+import com.d101.data.api.NaverLoginService
 import com.d101.data.api.UserService
 import com.d101.data.error.FrientreeHttpError
 import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
+import com.d101.data.model.user.request.NaverLoginRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
 import com.d101.data.model.user.request.SignInRequest
 import com.d101.data.model.user.request.SignUpRequest
@@ -20,6 +22,7 @@ import javax.inject.Inject
 
 class UserDataSourceImpl @Inject constructor(
     private val userService: UserService,
+    private val naverLoginService: NaverLoginService,
 ) : UserDataSource {
     override suspend fun signIn(
         userId: String,
@@ -147,6 +150,48 @@ class UserDataSourceImpl @Inject constructor(
             if (e is FrientreeHttpError) {
                 when (e.code) {
                     400 -> Result.Failure(ErrorStatus.BadRequest)
+                    else -> Result.Failure(ErrorStatus.UnknownError)
+                }
+            } else {
+                if (e is IOException) {
+                    Result.Failure(ErrorStatus.NetworkError)
+                } else {
+                    Result.Failure(ErrorStatus.UnknownError)
+                }
+            }
+        },
+    )
+
+    override suspend fun getNaverLoginId(accessToken: String): Result<String> = runCatching {
+        naverLoginService.getNaverUserId("Bearer $accessToken")
+    }.fold(
+        onSuccess = {
+            Result.Success(it.response.id)
+        },
+        onFailure = { e ->
+            if (e is FrientreeHttpError) {
+                when (e.code) {
+                    else -> Result.Failure(ErrorStatus.UnknownError)
+                }
+            } else {
+                if (e is IOException) {
+                    Result.Failure(ErrorStatus.NetworkError)
+                } else {
+                    Result.Failure(ErrorStatus.UnknownError)
+                }
+            }
+        },
+    )
+
+    override suspend fun signInNaver(code: String): Result<TokenResponse> = runCatching {
+        userService.signInNaver(NaverLoginRequest(code)).getOrThrow().data
+    }.fold(
+        onSuccess = {
+            Result.Success(it)
+        },
+        onFailure = { e ->
+            if (e is FrientreeHttpError) {
+                when (e.code) {
                     else -> Result.Failure(ErrorStatus.UnknownError)
                 }
             } else {

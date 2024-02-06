@@ -1,5 +1,6 @@
 package com.d101.presentation.welcome.fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,13 +10,19 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.d101.domain.model.Result
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentSignInBinding
 import com.d101.presentation.main.MainActivity
 import com.d101.presentation.welcome.event.SignInViewEvent
 import com.d101.presentation.welcome.viewmodel.SignInViewModel
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.OAuthLoginCallback
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.suspendCancellableCoroutine
 import utils.repeatOnStarted
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
@@ -52,10 +59,10 @@ class SignInFragment : Fragment() {
                 when (event) {
                     SignInViewEvent.FindPasswordClicked -> navigateToFindPassword()
                     SignInViewEvent.SignInAttemptByFrientree -> viewModel.signInByFrientree()
-                    SignInViewEvent.SignInAttemptByKakao -> {
-                        // 카카오 로그인
-                        showToast("현재 카카오 로그인 기능 미 구현")
-                    }
+                    SignInViewEvent.SignInAttemptByNaver -> viewModel.onNaverSignInCompleted(
+                        authenticateWithNaver(requireContext()),
+                    )
+
                     is SignInViewEvent.SignInFailed -> showToast(event.message)
                     SignInViewEvent.SignInSuccess -> navigateToMainScreen()
                     SignInViewEvent.SignUpClicked -> navigateToTermsAgree()
@@ -63,6 +70,31 @@ class SignInFragment : Fragment() {
             }
         }
     }
+
+    private suspend fun authenticateWithNaver(context: Context): Result<String> =
+        suspendCancellableCoroutine { continuation ->
+            val callback = object : OAuthLoginCallback {
+                override fun onSuccess() {
+                    val accessToken = NaverIdLoginSDK.getAccessToken() ?: ""
+                    continuation.resume(Result.Success(accessToken))
+                }
+
+                override fun onFailure(httpStatus: Int, message: String) {
+                    continuation.resumeWithException(
+                        Exception("Authentication failed: $message (HTTP $httpStatus)"),
+                    )
+                }
+
+                override fun onError(errorCode: Int, message: String) {
+                    onFailure(errorCode, message)
+                }
+            }
+
+            NaverIdLoginSDK.authenticate(context, callback)
+
+            continuation.invokeOnCancellation {
+            }
+        }
 
     private fun navigateToMainScreen() {
         val intent = Intent(requireContext(), MainActivity::class.java)

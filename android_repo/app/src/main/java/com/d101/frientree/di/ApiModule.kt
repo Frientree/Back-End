@@ -4,6 +4,7 @@ import com.d101.data.api.AuthService
 import com.d101.data.api.CalendarService
 import com.d101.data.api.FruitService
 import com.d101.data.api.JuiceService
+import com.d101.data.api.NaverLoginService
 import com.d101.data.api.TermsService
 import com.d101.data.api.UserService
 import com.d101.data.network.ResultCallAdapter
@@ -18,6 +19,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
+private const val naverLoginBaseUrl = "https://openapi.naver.com/v1/"
+
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
@@ -28,6 +31,10 @@ object ApiModule {
     @Qualifier
     @Retention(AnnotationRetention.BINARY)
     annotation class AuthRetrofit
+
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class NaverRetrofit
 
     @Singleton
     @Provides
@@ -52,6 +59,19 @@ object ApiModule {
         gsonConverterFactory: GsonConverterFactory,
     ): Retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(gsonConverterFactory)
+        .build()
+
+    @Singleton
+    @Provides
+    @NaverRetrofit
+    fun provideNaverRetrofit(
+        @NetworkModule.SocialLoginClient
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory,
+    ): Retrofit = Retrofit.Builder()
+        .baseUrl(naverLoginBaseUrl)
         .client(okHttpClient)
         .addConverterFactory(gsonConverterFactory)
         .build()
@@ -97,4 +117,11 @@ object ApiModule {
         @FrientreeRetrofit
         retrofit: Retrofit,
     ): TermsService = retrofit.create((TermsService::class.java))
+
+    @Singleton
+    @Provides
+    fun provideNaverLogin(
+        @NaverRetrofit
+        retrofit: Retrofit,
+    ): NaverLoginService = retrofit.create((NaverLoginService::class.java))
 }

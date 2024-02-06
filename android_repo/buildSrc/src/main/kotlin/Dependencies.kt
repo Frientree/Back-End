@@ -20,6 +20,7 @@ object Versions {
     const val PROTO_BUF = "3.25.1"
     const val COROUTINES_CORE = "1.7.1"
     const val GLIDE = "4.16.0"
+    const val NAVER_LOGIN = "5.9.0"
 }
 
 object Libraries {
@@ -50,4 +51,5 @@ object Libraries {
     const val protoBuf = "com.google.protobuf:protobuf-javalite:${Versions.PROTO_BUF}"
     const val coroutinesCore = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.COROUTINES_CORE}"
     const val glide = "com.github.bumptech.glide:glide:${Versions.GLIDE}"
+    const val naverOAuth ="com.navercorp.nid:oauth:${Versions.NAVER_LOGIN}"
 }

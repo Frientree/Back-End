@@ -116,4 +116,25 @@ class UserRepositoryImpl @Inject constructor(
         is Result.Success -> Result.Success(Unit)
         is Result.Failure -> Result.Failure(result.errorStatus)
     }
+
+    override suspend fun signInNaver(code: String): Result<Unit> =
+        when (val result = userDataSource.signInNaver(code)) {
+            is Result.Success -> {
+                tokenManager.saveToken(
+                    result.data.accessToken,
+                    result.data.refreshToken,
+                )
+                Result.Success(Unit)
+            }
+
+            is Result.Failure -> {
+                Result.Failure(result.errorStatus)
+            }
+        }
+
+    override suspend fun getNaverId(accessToken: String): Result<String> =
+        when (val result = userDataSource.getNaverLoginId(accessToken)) {
+            is Result.Success -> Result.Success(result.data)
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
 }
