@@ -21,4 +21,6 @@ interface UserRepository {
     suspend fun signUp(userEmail: String, userPw: String, userNickname: String): Result<Unit>
 
     suspend fun findPassword(userEmail: String): Result<Unit>
+
+    suspend fun changePassword(userPw: String, newPw: String): Result<Unit>
 }

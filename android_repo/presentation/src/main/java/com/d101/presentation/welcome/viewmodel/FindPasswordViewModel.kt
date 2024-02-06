@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
-import com.d101.domain.model.status.PassWordErrorStatus
+import com.d101.domain.model.status.PasswordFindErrorStatus
 import com.d101.domain.usecase.usermanagement.FindPasswordUseCase
 import com.d101.presentation.R
 import com.d101.presentation.welcome.event.FindPasswordEvent
@@ -50,7 +50,7 @@ class FindPasswordViewModel @Inject constructor(
             when (val result = findPasswordUseCase(email.value)) {
                 is Result.Success -> onReceivedTemporaryPassword()
                 is Result.Failure -> when (result.errorStatus) {
-                    PassWordErrorStatus.UserNotFound -> onShowToast("해당 이메일로 가입된 계정이 없습니다.")
+                    PasswordFindErrorStatus.UserNotFound -> onShowToast("해당 이메일로 가입된 계정이 없습니다.")
                     ErrorStatus.NetworkError -> onShowToast("네트워크 연결 오류")
                     else -> onShowToast("알 수 없는 오류 발생.")
                 }

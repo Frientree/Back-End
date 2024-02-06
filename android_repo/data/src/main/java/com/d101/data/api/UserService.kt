@@ -5,6 +5,7 @@ import com.d101.data.model.ApiResult
 import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
+import com.d101.data.model.user.request.PasswordChangeRequest
 import com.d101.data.model.user.request.PasswordFindRequest
 import com.d101.data.model.user.request.SignInRequest
 import com.d101.data.model.user.request.SignUpRequest
@@ -47,5 +48,10 @@ interface UserService {
     @POST("/users/temporary-password")
     suspend fun findPassword(
         @Body passwordFindRequest: PasswordFindRequest,
+    ): ApiResult<ApiResponse<Boolean>>
+
+    @POST("/users/password")
+    suspend fun changePassword(
+        @Body passwordChangeRequest: PasswordChangeRequest,
     ): ApiResult<ApiResponse<Boolean>>
 }

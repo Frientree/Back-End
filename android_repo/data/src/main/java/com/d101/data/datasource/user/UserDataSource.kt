@@ -19,4 +19,6 @@ interface UserDataSource {
     suspend fun signUp(userEmail: String, userPw: String, userNickname: String): Result<Boolean>
 
     suspend fun findPassword(userEmail: String): Result<Boolean>
+
+    suspend fun changePassword(userPw: String, newPw: String): Result<Boolean>
 }
