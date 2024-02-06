@@ -42,7 +42,7 @@ class TodayFruitFragment : DialogFragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         val fruitColorValue =
-            FruitResources.values()[viewModel.todayFruit.value.fruitNum.toInt() - 1].color
+            FruitResources.values()[viewModel.todayFruit.fruitNum.toInt() - 1].color
         binding.fruitDescriptionCardView.setCardBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),

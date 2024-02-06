@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -15,7 +16,7 @@ import com.d101.presentation.databinding.FragmentMainBinding
 import com.d101.presentation.main.fragments.dialogs.BeforeFruitCreateBaseFragment
 import com.d101.presentation.main.fragments.dialogs.FruitDialogInterface
 import com.d101.presentation.main.fragments.dialogs.TodayFruitFragment
-import com.d101.presentation.main.state.TreeFragmentViewState
+import com.d101.presentation.main.state.TreeFragmentEvent
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
@@ -44,43 +45,27 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mainViewModel = viewModel
 
-        viewModel.initTodayDate()
-        viewModel.getUserStatus()
-
         binding.createFruitButton.setOnClickListener {
-            when (viewModel.currentViewState.value) {
-                TreeFragmentViewState.FruitNotCreated -> {
-                    dialog = BeforeFruitCreateBaseFragment()
-                    FruitDialogInterface.dialog = dialog
-                    dialog.show(childFragmentManager, "")
-                }
-
-                TreeFragmentViewState.FruitCreated -> {
-                    viewModel.getTodayFruitFromDataModule()
-                    dialog = TodayFruitFragment()
-                    dialog.dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-                    dialog.show(childFragmentManager, "")
-                }
-
-                else -> {
-                }
-            }
+            viewModel.onButtonClick()
         }
 
         viewLifecycleOwner.repeatOnStarted {
-            viewModel.currentViewState.collect {
+            viewModel.eventFlow.collect {
                 when (it) {
-                    is TreeFragmentViewState.FruitNotCreated -> {
-                        binding.fruitStatusTextview.text = "오늘의 열매가 아직 열리지 않았어요!"
-                        binding.createFruitButton.text = "오늘의 열매 만들기"
+                    is TreeFragmentEvent.MakeFruitEvent -> {
+                        dialog = BeforeFruitCreateBaseFragment()
+                        FruitDialogInterface.dialog = dialog
+                        dialog.show(childFragmentManager, "")
                     }
-
-                    is TreeFragmentViewState.FruitCreated -> {
-                        binding.fruitStatusTextview.text = "오늘의 열매를 확인해보세요!"
-                        binding.createFruitButton.text = "오늘의 열매 확인하기"
+                    is TreeFragmentEvent.CheckTodayFruitEvent -> {
+                        dialog = TodayFruitFragment()
+                        dialog.dialog?.window?.setBackgroundDrawable(
+                            ColorDrawable(Color.TRANSPARENT),
+                        )
+                        dialog.show(childFragmentManager, "")
                     }
-
-                    is TreeFragmentViewState.TreeMessageChanged -> {
+                    is TreeFragmentEvent.ShowErrorEvent -> {
+                        Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
