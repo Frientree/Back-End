@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -14,6 +15,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUserEmail(String username);
 
     Optional<User> findByNaverCode(String code);
+
+    @Query("SELECT u FROM User u WHERE u.userFruitStatus = true AND u.userDisabled = false AND u.userNotification = true")
+    List<User> findActiveUsersWithFruitStatusTrueAndNotificationTrue();
 
 
     //유저 열매 상태 수정 (clearAutomatically = true --> 영속성 컨텍스트 초기화 = 데이터 동기화)
