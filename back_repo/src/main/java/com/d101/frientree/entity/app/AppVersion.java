@@ -14,9 +14,6 @@ public class AppVersion {
     @Column(name = "app_version_num")
     private Long appVersionNum;
 
-    @Column(name = "app_pre_version")
-    private String appPreVersion;
-
-    @Column(name = "app_now_version")
-    private String appNowVersion;
+    @Column(name = "app_min_version")
+    private String appMinVersion;
 }

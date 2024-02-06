@@ -140,7 +140,7 @@ public class LeafServiceImpl implements LeafService {
     @Transactional
     public ResponseEntity<LeafComplaintResponse> complain(Long leafId) {
         LeafDetail currentLeaf = leafRepository.findById(leafId)
-                .orElseThrow(() -> new LeafNotFoundException("이파리가 존재하지 않습니다."));
+                .orElseThrow(() -> new LeafNotFoundException("Leaf not found."));
 
         currentLeaf.setLeafComplain(currentLeaf.getLeafComplain() + 1);
 
