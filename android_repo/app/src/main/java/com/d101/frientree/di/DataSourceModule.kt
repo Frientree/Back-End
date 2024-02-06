@@ -1,5 +1,7 @@
 package com.d101.frientree.di
 
+import com.d101.data.datasource.appStatus.AppStatusDataSource
+import com.d101.data.datasource.appStatus.AppStatusDataSourceImpl
 import com.d101.data.datasource.calendar.CalendarLocalDataSource
 import com.d101.data.datasource.calendar.CalendarLocalDataSourceImpl
 import com.d101.data.datasource.calendar.CalendarRemoteDataSource
@@ -71,4 +73,10 @@ abstract class DataSourceModule {
     abstract fun bindTermsDataSource(
         termsDataSourceImpl: TermsDataSourceImpl,
     ): TermsDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindAppStatusDataSource(
+        appStatusDataSourceImpl: AppStatusDataSourceImpl,
+    ): AppStatusDataSource
 }

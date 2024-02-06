@@ -1,5 +1,6 @@
 package com.d101.frientree.di
 
+import com.d101.data.api.AppStatusService
 import com.d101.data.api.AuthService
 import com.d101.data.api.CalendarService
 import com.d101.data.api.FruitService
@@ -120,8 +121,15 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideNaverLogin(
+    fun provideNaverLoginApi(
         @NaverRetrofit
         retrofit: Retrofit,
     ): NaverLoginService = retrofit.create((NaverLoginService::class.java))
+
+    @Singleton
+    @Provides
+    fun provideAppStatusApi(
+        @FrientreeRetrofit
+        retrofit: Retrofit,
+    ): AppStatusService = retrofit.create((AppStatusService::class.java))
 }
