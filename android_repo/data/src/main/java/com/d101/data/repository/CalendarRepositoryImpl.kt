@@ -37,8 +37,8 @@ class CalendarRepositoryImpl @Inject constructor(
         monthDate: Pair<LocalDate, LocalDate>,
     ):
         Result<List<FruitsOfMonth>> {
-        val startDate = monthDate.first.toYearMonthDayFormat()
-        val endDate = monthDate.second.toYearMonthDayFormat()
+        val startDate = monthDate.first.toString()
+        val endDate = monthDate.second.toString()
 
         if (startDate.toLocalDate().isAfter(todayDate)) {
             return Result.Success(emptyList())
@@ -87,8 +87,8 @@ class CalendarRepositoryImpl @Inject constructor(
         weekDate: Pair<LocalDate, LocalDate>,
     ):
         Result<List<Fruit>> {
-        val startDate = weekDate.first.toYearMonthDayFormat()
-        val endDate = weekDate.second.toYearMonthDayFormat()
+        val startDate = weekDate.first.toString()
+        val endDate = weekDate.second.toString()
 
         if (startDate.toLocalDate().isAfter(todayDate)) {
             return Result.Success(emptyList())
@@ -148,8 +148,8 @@ class CalendarRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getJuiceOfWeek(weekDate: Pair<LocalDate, LocalDate>): Result<Juice> {
-        val startDate = weekDate.first.toYearMonthDayFormat()
-        val endDate = weekDate.second.toYearMonthDayFormat()
+        val startDate = weekDate.first.toString()
+        val endDate = weekDate.second.toString()
 
         val localJuiceEntity = juiceLocalDataSource.getJuice((startDate + endDate).toLongDate())
         val localFruitEntityList = calendarLocalDataSource.getFruitsForWeek(

@@ -12,7 +12,6 @@ import com.d101.domain.model.JuiceForCollection
 import com.d101.domain.model.Result
 import com.d101.domain.repository.JuiceRepository
 import com.d101.domain.utils.toLongDate
-import com.d101.domain.utils.toYearMonthDayFormat
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -22,8 +21,8 @@ class JuiceRepositoryImpl @Inject constructor(
     private val juiceLocalDataSource: JuiceLocalDataSource,
 ) : JuiceRepository {
     override suspend fun makeJuice(weekDate: Pair<LocalDate, LocalDate>): Result<Juice> {
-        val startDate = weekDate.first.toYearMonthDayFormat()
-        val endDate = weekDate.second.toYearMonthDayFormat()
+        val startDate = weekDate.first.toString()
+        val endDate = weekDate.second.toString()
 
         return when (val result = juiceRemoteDataSource.makeJuice(startDate, endDate)) {
             is Result.Success -> {
