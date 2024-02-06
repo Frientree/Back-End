@@ -24,4 +24,8 @@ interface UserRepository {
     suspend fun updateUserStatus(): Result<Unit>
 
     suspend fun getUserStatus(): Result<UserStatus>
+
+    suspend fun findPassword(userEmail: String): Result<Unit>
+
+    suspend fun changePassword(userPw: String, newPw: String): Result<Unit>
 }

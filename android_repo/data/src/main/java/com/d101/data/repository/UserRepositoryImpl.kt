@@ -142,4 +142,18 @@ class UserRepositoryImpl @Inject constructor(
 
         return Result.Success(localUserStatus.toUserStatus())
     }
+
+    override suspend fun findPassword(userEmail: String): Result<Unit> =
+        when (val result = userDataSource.findPassword(userEmail)) {
+            is Result.Success -> Result.Success(Unit)
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
+
+    override suspend fun changePassword(userPw: String, newPw: String): Result<Unit> =
+        when (val result = userDataSource.changePassword(userPw, newPw)) {
+            is Result.Success -> Result.Success(Unit)
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
 }
