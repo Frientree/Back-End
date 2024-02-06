@@ -64,11 +64,13 @@ public class LeafServiceImpl implements LeafService {
             leaves = leafRepository.findByLeafCategoryOrderByLeafViewAsc(selectedCategory).stream().findFirst();
         } else {
             // 선택한 카테고리에 속하면서 sentAndReceivedLeafNums에 포함되지 않은 LeafDetail 가져오기
-            leaves = leafRepository.findAllByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(selectedCategory, sentAndReceivedLeafNums).stream().findFirst();
+            leaves = leafRepository.findAllByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(
+                    selectedCategory, sentAndReceivedLeafNums)
+                    .stream()
+                    .findFirst();
         }
 
         Optional<LeafDetail> selectedorderbyLeaf = leaves;
-
 
         // Optional을 사용하니까 isPresent 가 사용이 가능해서 코드 수정했습니다.
         if (selectedorderbyLeaf.isPresent()) {
@@ -106,19 +108,18 @@ public class LeafServiceImpl implements LeafService {
 
     @Override
     @Transactional
-    public ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest) {
+    public ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest, String createDate) {
+        //createDate String --> LocalDate 변경
+        LocalDate date = LocalDate.parse(createDate);
 
         // user 정보를 받아올 때, 유효성 검사까지 함께하는 메서드를 가지고 와서 사용했습니다.
         User currentUser = getUser();
 
-        LocalDateTime leafCreateDate = LocalDateTime.now();
-
         LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
-        newLeaf.setLeafCreateDate(LocalDate.now());
+        newLeaf.setLeafCreateDate(date);
 
         // LeafDetail 저장
         leafRepository.save(newLeaf);
-
 
         LeafSend leafSend = LeafSend.createLeafSend(newLeaf, currentUser);
 
@@ -133,7 +134,6 @@ public class LeafServiceImpl implements LeafService {
 
         // LeafGenerationResponse 반환
         return ResponseEntity.ok(response);
-
     }
 
     @Override
@@ -171,18 +171,15 @@ public class LeafServiceImpl implements LeafService {
     public ResponseEntity<LeafViewResponse> view() {
         // security를 이용해 로그인 정보를 받아옴
         User currentUser = getUser();
-
             Long userId = currentUser.getUserId();
 
             // 1. leaf_send 테이블에서 user_id를 기준으로 leaf_num을 가져오기
             List<Long> leafNumList = leafSendRepository.findLeafNumsByUser(userId);
 
-
             // 보낸 이파리가 없어서 leafNumList가 비어있을 경우 예외처리
             if (leafNumList.isEmpty()) {
                 throw new LeafNotFoundException("보낸 이파리를 찾을 수 없습니다.");
             }
-
 
             // 2. leaf_detail 테이블에서 leaf_num에 해당하는 leaf_view 값 모두 더하기
             long totalLeafView = leafNumList.stream()
@@ -195,7 +192,7 @@ public class LeafServiceImpl implements LeafService {
             // LeafViewResponse를 생성하고 반환
             LeafViewResponse response = LeafViewResponse.createLeafViewResponse(
                     "Success",
-                    Long.valueOf(totalLeafView));
+                    totalLeafView);
 
             // response 반환
             return ResponseEntity.ok(response);

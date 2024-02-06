@@ -68,6 +68,7 @@ jasypt:
 jasypt:
   encryptor:
     aiurl: ENC(S5SsEvmX4X7ncHUDkHz5OJMVfy9wotQhzIz84ER28YKENkB7CNSgQw==)
+    ais3url: ENC(ucZ1Id4mFry6pRqzjz10j81S1ZTDvsMmFupbY18WGu6iHdOYG9NP/zkXMtWiu1It)
 ---
 jasypt:
   encryptor:
