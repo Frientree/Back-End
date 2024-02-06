@@ -9,7 +9,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -68,5 +67,10 @@ public class MongoEmotionServiceImpl implements MongoEmotionService {
                 System.out.println("Error deleting " + csvFile); // 실패한 파일 삭제에 대한 로깅
             }
         }
+    }
+
+    @Override
+    public void deleteEmotion() {
+        mongoEmotionRepository.deleteAll();
     }
 }
