@@ -9,6 +9,7 @@ import com.d101.domain.model.User
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.repository.UserRepository
 import com.d101.domain.utils.TokenManager
+import com.google.protobuf.BoolValue
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
@@ -34,37 +35,26 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserInfo(): Result<User> {
         var localUserInfo = userDataStore.data.first()
 
-        return if (localUserInfo.hasUserNickname()) {
+        return if (localUserInfo.hasIsSocial()) {
             Result.Success(localUserInfo.toUser())
         } else {
-            when (val result = checkSignInStatus()) {
+            when (val result = userDataSource.getUserInfo()) {
                 is Result.Success -> {
+                    result.data.let {
+                        UserPreferences.newBuilder()
+                            .setIsSocial(BoolValue.newBuilder().setValue(it.social))
+                            .setUserEmail(it.userEmail)
+                            .setUserNickname(it.userNickname)
+                            .setIsNotificationEnabled(it.userNotification)
+                            .setIsBackgroundMusicEnabled(true)
+                            .build()
+                    }
                     localUserInfo = userDataStore.data.first()
                     Result.Success(localUserInfo.toUser())
                 }
+
                 is Result.Failure -> Result.Failure(result.errorStatus)
             }
-        }
-    }
-
-    override suspend fun checkSignInStatus(): Result<Unit> {
-        return when (val result = userDataSource.getUserInfo()) {
-            is Result.Success -> {
-                userDataStore.updateData {
-                    result.data.let {
-                        UserPreferences.newBuilder()
-//                            .setUserEmail(it.userEmail)
-//                            .setUserNickname(it.userNickname)
-//                            .setUserLeafStatus(it.userLeafStatus)
-//                            .setUserNotification(it.userNotification)
-//                            .setUserFruitStatus(it.userFruitStatus)
-                            .build()
-                    }
-                }
-                Result.Success(Unit)
-            }
-
-            is Result.Failure -> Result.Failure(result.errorStatus)
         }
     }
 

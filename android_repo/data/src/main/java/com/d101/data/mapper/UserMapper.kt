@@ -10,9 +10,7 @@ object UserMapper {
         User(
             userEmail = this.userEmail,
             userNickname = this.userNickname,
-            userLeafStatus = this.userLeafStatus,
             userNotification = this.userNotification,
-            userFruitStatus = this.userFruitStatus,
             isSocial = this.social,
         )
 
@@ -20,10 +18,7 @@ object UserMapper {
         User(
             userEmail = this.userEmail,
             userNickname = this.userNickname,
-            userLeafStatus = this.userLeafStatus,
-            userNotification = this.userNotification,
-            userFruitStatus = this.userFruitStatus,
-//            Todo: Add isSocial to UserPreferences
+            userNotification = this.isNotificationEnabled,
             isSocial = false,
         )
 }
