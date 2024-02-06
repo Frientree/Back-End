@@ -3,7 +3,6 @@ package com.d101.presentation.main
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -15,7 +14,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.ActivityMainBinding
 import com.d101.presentation.main.state.MainActivityViewState
@@ -44,10 +42,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        BackgroundMusicPlayer.initMusicList(this)
-
-        BackgroundMusicPlayer.playMusic(this, BackgroundMusicPlayer.getMusicList()[0])
 
         initNavigationView()
 
@@ -264,24 +258,6 @@ class MainActivity : AppCompatActivity() {
         right.interpolator = OvershootInterpolator()
 
         return right
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d("확인", "메인 onStart")
-        BackgroundMusicPlayer.resumeMusic()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d("확인", "메인 onStop")
-        BackgroundMusicPlayer.pauseMusic()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("확인", "메인 onDestroy")
-        BackgroundMusicPlayer.releaseMusicPlayer()
     }
 
     companion object {
