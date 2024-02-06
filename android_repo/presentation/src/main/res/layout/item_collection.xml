@@ -32,14 +32,11 @@
 
         <ImageView
             android:id="@+id/juice_image_image_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginHorizontal="40dp"
             android:layout_marginTop="12dp"
-            android:layout_marginBottom="40dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:src="@drawable/juice" />
+            android:layout_marginBottom="40dp" />
 
     </LinearLayout>
 

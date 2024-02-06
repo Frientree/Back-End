@@ -20,8 +20,9 @@ class ChangePasswordFragment : Fragment() {
     private val viewModel: ChangePasswordViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentChangePasswordBinding.inflate(inflater, container, false)
         return binding.root
@@ -41,13 +42,12 @@ class ChangePasswordFragment : Fragment() {
     private fun collectUiState() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.uiState.collect {
-                binding.nowPasswordInputLayout .setInputDataState(it.nowPasswordInputData)
+                binding.nowPasswordInputLayout.setInputDataState(it.nowPasswordInputData)
                 binding.newPasswordInputLayout.setInputDataState(it.newPasswordInputData)
                 binding.confirmPasswordInputLayout.setInputDataState(it.confirmPasswordInputData)
             }
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

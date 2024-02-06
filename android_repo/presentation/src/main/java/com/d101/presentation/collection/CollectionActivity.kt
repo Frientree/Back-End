@@ -2,12 +2,18 @@ package com.d101.presentation.collection
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.d101.domain.model.JuiceForCollection
+import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
+import com.d101.presentation.collection.adapter.CollectionAdapter
+import com.d101.presentation.collection.event.CollectionViewEvent
+import com.d101.presentation.collection.state.CollectionViewState
+import com.d101.presentation.collection.viewmodel.CollectionViewModel
 import com.d101.presentation.databinding.ActivityCollectionBinding
 import com.d101.presentation.databinding.DialogJuiceDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,8 +35,14 @@ class CollectionActivity : AppCompatActivity() {
             viewModel.onTapCollectionItem(juice)
         }
         binding.juiceCollectionRecyclerView.adapter = collectionAdapter
+
+        binding.backButtonImageView.setOnClickListener { viewModel.onTapBackButton() }
         subscribeEvent()
         subscribeViewState()
+
+        repeatOnStarted {
+            BackgroundMusicPlayer.resumeMusic()
+        }
     }
 
     private fun showJuiceDetailDialog(juice: JuiceForCollection) {
@@ -66,7 +78,7 @@ class CollectionActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT,
                     ).show()
 
-                    CollectionViewEvent.OnTapBackButton -> onBackPressed()
+                    CollectionViewEvent.OnTapBackButton -> onBackPressedDispatcher.onBackPressed()
                     is CollectionViewEvent.OnTapCollectionItem ->
                         viewModel.onTapCollectionItemOccurred(event.juice)
                 }
@@ -84,5 +96,17 @@ class CollectionActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("확인", "컬렉션 onResume")
+        BackgroundMusicPlayer.resumeMusic()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("확인", "컬렉션 onPause")
+        BackgroundMusicPlayer.pauseMusic()
     }
 }

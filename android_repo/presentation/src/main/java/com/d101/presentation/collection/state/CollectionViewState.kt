@@ -1,4 +1,4 @@
-package com.d101.presentation.collection
+package com.d101.presentation.collection.state
 
 import com.d101.domain.model.JuiceForCollection
 

@@ -165,7 +165,7 @@ class MyPageFragment : Fragment() {
 
             BackgroundMusicStatus.OFF -> {
                 binding.backgroundMusicOnOffButtonImageView.setImageResource(R.drawable.sound_off)
-                BackgroundMusicPlayer.stopMusic()
+                BackgroundMusicPlayer.pauseMusic()
             }
         }
     }
@@ -218,7 +218,7 @@ class MyPageFragment : Fragment() {
             displayedValues = musicList.toTypedArray()
             value = musicList.indexOf(currentMusic)
             setOnValueChangedListener { _, _, selectedNow ->
-                BackgroundMusicPlayer.stopMusic()
+                BackgroundMusicPlayer.pauseMusic()
                 BackgroundMusicPlayer.releaseMusicPlayer()
                 BackgroundMusicPlayer.playMusic(requireContext(), musicList[selectedNow])
             }

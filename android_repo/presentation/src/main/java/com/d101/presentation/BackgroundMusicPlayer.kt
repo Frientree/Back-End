@@ -22,9 +22,8 @@ object BackgroundMusicPlayer {
         mediaPlayer.start()
     }
 
-    fun stopMusic() {
-        mediaPlayer.stop()
-        mediaPlayer.prepare()
+    fun pauseMusic() {
+        mediaPlayer.pause()
     }
 
     fun releaseMusicPlayer() {

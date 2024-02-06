@@ -3,6 +3,7 @@ package com.d101.presentation.main
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -265,18 +266,21 @@ class MainActivity : AppCompatActivity() {
         return right
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
+        Log.d("확인", "메인 onStart")
         BackgroundMusicPlayer.resumeMusic()
     }
 
-    override fun onStop() {
-        super.onStop()
-        BackgroundMusicPlayer.stopMusic()
+    override fun onPause() {
+        super.onPause()
+        Log.d("확인", "메인 onStop")
+        BackgroundMusicPlayer.pauseMusic()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        Log.d("확인", "메인 onDestroy")
         BackgroundMusicPlayer.releaseMusicPlayer()
     }
 

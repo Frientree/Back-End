@@ -1,4 +1,4 @@
-package com.d101.presentation.collection
+package com.d101.presentation.collection.adapter
 
 import android.graphics.Color
 import android.graphics.PorterDuff

@@ -1,9 +1,11 @@
-package com.d101.presentation.collection
+package com.d101.presentation.collection.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.JuiceForCollection
 import com.d101.domain.usecase.collection.GetCollectionUseCase
+import com.d101.presentation.collection.event.CollectionViewEvent
+import com.d101.presentation.collection.state.CollectionViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +35,7 @@ class CollectionViewModel @Inject constructor(
                 is com.d101.domain.model.Result.Success -> {
                     setJuiceCollection(result.data)
                 }
+
                 is com.d101.domain.model.Result.Failure -> {}
             }
         }
@@ -55,6 +58,12 @@ class CollectionViewModel @Inject constructor(
             when (currentState) {
                 is CollectionViewState.Default -> currentState.copy(juiceList = juiceCollection)
             }
+        }
+    }
+
+    fun onTapBackButton() {
+        viewModelScope.launch {
+            _eventFlow.emit(CollectionViewEvent.OnTapBackButton)
         }
     }
 }

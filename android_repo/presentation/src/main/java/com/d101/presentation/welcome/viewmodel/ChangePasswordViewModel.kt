@@ -10,7 +10,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ChangePasswordViewModel @Inject constructor() : ViewModel() {
 
-    private val _uiState : MutableStateFlow<ChangePasswordState> = MutableStateFlow(ChangePasswordState())
+    private val _uiState: MutableStateFlow<ChangePasswordState> = MutableStateFlow(
+        ChangePasswordState(),
+    )
     val uiState = _uiState.asStateFlow()
 
     val nowPassword = MutableStateFlow("")
