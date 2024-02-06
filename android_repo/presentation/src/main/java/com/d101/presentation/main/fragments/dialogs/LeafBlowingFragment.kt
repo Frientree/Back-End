@@ -20,16 +20,12 @@ import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentLeafBlowingBinding
 import com.d101.presentation.main.MainActivity
 import com.d101.presentation.main.viewmodel.LeafViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import utils.repeatOnStarted
+import kotlin.properties.Delegates
 
 class LeafBlowingFragment : Fragment() {
     private var _binding: FragmentLeafBlowingBinding? = null
@@ -40,6 +36,8 @@ class LeafBlowingFragment : Fragment() {
     private var isRecording = false
     private val sampleRate = 44100 // 샘플링 레이트
     private var audioRecord: AudioRecord? = null
+
+    private var bufferSize by Delegates.notNull<Int>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -65,23 +63,63 @@ class LeafBlowingFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                startRecording()
+        startRecording()
+        setListener()
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.blowing.collect {
+                binding.leafBlowingProgressBar.progress += it
+                if (binding.leafBlowingProgressBar.progress >= binding.leafBlowingProgressBar.max) {
+                    isRecording = false
+                    binding.leafBlowingProgressBar.progress = binding.leafBlowingProgressBar.max
+                    sendLeaf()
+                }
             }
         }
     }
+
+    private fun setListener() {
+        val buffer = ByteArray(bufferSize)
+        isRecording = true
+
+        audioRecord?.setRecordPositionUpdateListener(object :
+            AudioRecord.OnRecordPositionUpdateListener {
+
+            override fun onPeriodicNotification(recorder: AudioRecord) {
+                if (isRecording) {
+                    // 여기서 오디오 데이터를 처리
+                    val readSize = audioRecord?.read(buffer, 0, buffer.size) ?: 0
+                    val volume = calculateVolume(buffer, readSize)
+                    Log.d("MIC TEST:::", "$volume")
+
+                    if (volume > 43) { // 임계값 설정
+                        isRecording = false
+                        viewModel.onBlowing()
+                        binding.leafBlowingLottieView.playAnimation()
+                        stopRecording()
+                    }
+                }
+            }
+
+            override fun onMarkerReached(recorder: AudioRecord) {
+                // 특정 지점에 도달했을 때 호출됩니다.
+            }
+        })
+
+        audioRecord?.positionNotificationPeriod = 1024 // 콜백이 호출될 주기를 설정
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         stopRecording()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
     private fun startRecording() {
-        val bufferSize = AudioRecord.getMinBufferSize(
+        bufferSize = AudioRecord.getMinBufferSize(
             sampleRate,
             AudioFormat.CHANNEL_IN_DEFAULT,
             AudioFormat.ENCODING_PCM_16BIT,
@@ -104,25 +142,8 @@ class LeafBlowingFragment : Fragment() {
         )
 
         audioRecord?.startRecording()
-        isRecording = true
-
-        CoroutineScope(Dispatchers.Default).launch {
-            val buffer = ByteArray(bufferSize)
-            while (isRecording) {
-                val readSize = audioRecord?.read(buffer, 0, buffer.size) ?: 0
-                val volume = calculateVolume(buffer, readSize)
-
-                CoroutineScope(Dispatchers.Main).launch {
-                    if (volume > 38) { // 임계값 설정
-                        binding.leafBlowingProgressBar.progress++
-                    }
-                }
-                if (binding.leafBlowingProgressBar.progress == binding.leafBlowingProgressBar.max) {
-                    sendLeaf()
-                }
-            }
-        }
     }
+
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { permissions ->
@@ -144,12 +165,15 @@ class LeafBlowingFragment : Fragment() {
             }
         }
     }
+
     private fun stopRecording() {
+        audioRecord?.setRecordPositionUpdateListener(null)
         isRecording = false
         audioRecord?.stop()
         audioRecord?.release()
         audioRecord = null
     }
+
     private fun sendLeaf() {
         stopRecording()
         viewModel.onReadyToSend()

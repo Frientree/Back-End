@@ -10,6 +10,7 @@ import com.d101.domain.usecase.main.SendMyLeafUseCase
 import com.d101.presentation.main.event.LeafSendViewEvent
 import com.d101.presentation.main.state.LeafState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -74,16 +75,19 @@ class LeafViewModel @Inject constructor(
         }
     }
 
-    fun onSelectCategory(checkedId: Int) {
-        emitEvent(LeafSendViewEvent.SelectCategory(checkedId))
-    }
-
     fun onSendLeaf() {
         emitEvent(LeafSendViewEvent.SendLeaf)
     }
 
+    private val _blowing = MutableEventFlow<Int>(0)
+    val blowing = _blowing.asEventFlow()
     fun onBlowing() {
-        emitEvent(LeafSendViewEvent.Blowing)
+        viewModelScope.launch {
+            for (i in 1..30) {
+                delay(50)
+                _blowing.emit(1)
+            }
+        }
     }
     fun onReadyToSend() {
         viewModelScope.launch {

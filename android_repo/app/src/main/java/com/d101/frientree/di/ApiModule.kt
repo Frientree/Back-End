@@ -3,8 +3,8 @@ package com.d101.frientree.di
 import com.d101.data.api.AuthService
 import com.d101.data.api.CalendarService
 import com.d101.data.api.FruitService
-import com.d101.data.api.LeafService
 import com.d101.data.api.JuiceService
+import com.d101.data.api.LeafService
 import com.d101.data.api.NaverLoginService
 import com.d101.data.api.TermsService
 import com.d101.data.api.UserService
