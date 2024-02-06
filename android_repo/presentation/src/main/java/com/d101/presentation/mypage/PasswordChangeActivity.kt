@@ -1,6 +1,7 @@
 package com.d101.presentation.mypage
 
 import android.os.Bundle
+import android.text.TextWatcher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.d101.presentation.databinding.ActivityPasswordChangeBinding
@@ -21,7 +22,32 @@ class PasswordChangeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         setBinding()
+        setTextWatcher()
         collectUiState()
+    }
+
+    private fun setTextWatcher() {
+        binding.currentPasswordEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                viewModel.setCurrentPassword(s.toString())
+            }
+        })
+        binding.newPasswordEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                viewModel.setNewPassword(s.toString())
+            }
+        })
+        binding.confirmPasswordEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: android.text.Editable?) {
+                viewModel.setConfirmPassword(s.toString())
+            }
+        })
     }
 
     private fun setBinding() {
@@ -31,6 +57,9 @@ class PasswordChangeActivity : AppCompatActivity() {
     private fun collectUiState() {
         repeatOnStarted {
             viewModel.uiState.collect {
+                binding.currentPasswordErrorTextView.setText(it.currentPasswordDescription)
+                binding.newPasswordErrorTextView.setText(it.newPasswordDescription)
+                binding.confirmPasswordErrorTextView.setText(it.passwordConfirmDescription)
             }
         }
     }
