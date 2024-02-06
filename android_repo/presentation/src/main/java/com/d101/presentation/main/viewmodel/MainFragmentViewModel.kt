@@ -8,6 +8,7 @@ import com.d101.domain.usecase.main.GetTodayFruitUseCase
 import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
 import com.d101.presentation.main.state.TreeFragmentViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,16 +38,21 @@ class MainFragmentViewModel @Inject constructor(
     private val _todayFruit: MutableStateFlow<FruitCreated> = MutableStateFlow(FruitCreated())
     val todayFruit: StateFlow<FruitCreated> = _todayFruit.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            manageUserStatusUseCase.updateUserStatus()
+        }
+    }
     fun changeViewState(state: TreeFragmentViewState) {
         _currentViewState.update { state }
     }
 
     fun getTodayFruitFromDataModule() {
         // 갔다온다.
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val result = getTodayFruitUseCase(
                 String.format(
-                    "%d-%d-%d",
+                    "%04d-%02d-%02d",
                     localDate.year,
                     localDate.monthValue,
                     localDate.dayOfMonth,
@@ -72,9 +78,9 @@ class MainFragmentViewModel @Inject constructor(
             when (val result = manageUserStatusUseCase.getUserStatus()) {
                 is Result.Success -> {
                     if (result.data.userFruitStatus) {
-                        changeViewState(TreeFragmentViewState.FruitCreated)
-                    } else {
                         changeViewState(TreeFragmentViewState.FruitNotCreated)
+                    } else {
+                        changeViewState(TreeFragmentViewState.FruitCreated)
                     }
                 }
 

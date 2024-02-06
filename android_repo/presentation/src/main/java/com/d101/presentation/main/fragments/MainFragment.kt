@@ -70,10 +70,12 @@ class MainFragment : Fragment() {
             viewModel.currentViewState.collect {
                 when (it) {
                     is TreeFragmentViewState.FruitNotCreated -> {
+                        binding.fruitStatusTextview.text = "오늘의 열매가 아직 열리지 않았어요!"
                         binding.createFruitButton.text = "오늘의 열매 만들기"
                     }
 
                     is TreeFragmentViewState.FruitCreated -> {
+                        binding.fruitStatusTextview.text = "오늘의 열매를 확인해보세요!"
                         binding.createFruitButton.text = "오늘의 열매 확인하기"
                     }
 
@@ -86,6 +88,7 @@ class MainFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
         viewModel.getUserStatus()
     }
 
