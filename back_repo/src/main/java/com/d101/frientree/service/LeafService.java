@@ -13,7 +13,7 @@ public interface LeafService {
     // category 선택해서 조회하기
     ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory);
 
-    ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest);
+    ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest, String createDate);
 
     ResponseEntity<LeafComplaintResponse> complain(Long leafId);
 
