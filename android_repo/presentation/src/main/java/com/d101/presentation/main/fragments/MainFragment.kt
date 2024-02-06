@@ -59,6 +59,7 @@ class MainFragment : Fragment() {
                         FruitDialogInterface.dialog = dialog
                         dialog.show(childFragmentManager, "")
                     }
+
                     is TreeFragmentEvent.CheckTodayFruitEvent -> {
                         dialog = TodayFruitFragment()
                         dialog.dialog?.window?.setBackgroundDrawable(
@@ -66,6 +67,7 @@ class MainFragment : Fragment() {
                         )
                         dialog.show(childFragmentManager, "")
                     }
+
                     is TreeFragmentEvent.ShowErrorEvent -> {
                         Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
                     }
