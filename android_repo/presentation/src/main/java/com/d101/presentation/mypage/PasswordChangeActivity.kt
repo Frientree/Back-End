@@ -28,6 +28,7 @@ class PasswordChangeActivity : AppCompatActivity() {
         setBinding()
         setTextWatcher()
         collectUiState()
+        collectEvent()
     }
 
     private fun setTextWatcher() {
@@ -73,7 +74,7 @@ class PasswordChangeActivity : AppCompatActivity() {
             viewModel.eventEvent.collect { event ->
                 when (event) {
                     PasswordChangeEvent.PasswordChangeAttempt -> viewModel.changePassword()
-                    PasswordChangeEvent.PasswordChangeSuccess -> navigateSignIn()
+                    PasswordChangeEvent.LogOut -> navigateSignIn()
                     is PasswordChangeEvent.ShowToast -> showToast(event.message)
                 }
             }

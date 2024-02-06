@@ -6,6 +6,7 @@ import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.PassWordChangeErrorStatus
 import com.d101.domain.usecase.mypage.ChangePasswordUseCase
+import com.d101.domain.usecase.mypage.LogOutUseCase
 import com.d101.presentation.R
 import com.d101.presentation.mypage.event.PasswordChangeEvent
 import com.d101.presentation.mypage.state.PasswordChangeState
@@ -14,21 +15,23 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import utils.MutableEventFlow
 import utils.RegexPattern.PASSWORD_PATTERN
+import utils.asEventFlow
 import javax.inject.Inject
 
 @HiltViewModel
 class PasswordChangeViewModel @Inject constructor(
     private val changePasswordUseCase: ChangePasswordUseCase,
+    private val logOutUseCase: LogOutUseCase,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<PasswordChangeState> =
         MutableStateFlow(PasswordChangeState())
     val uiState = _uiState.asStateFlow()
 
-    private val _eventEvent: MutableStateFlow<PasswordChangeEvent> =
-        MutableStateFlow(PasswordChangeEvent.PasswordChangeAttempt)
-    val eventEvent = _eventEvent.asStateFlow()
+    private val _eventEvent: MutableEventFlow<PasswordChangeEvent> = MutableEventFlow()
+    val eventEvent = _eventEvent.asEventFlow()
 
     fun setCurrentPassword(currentPassword: String) {
         viewModelScope.launch {
@@ -78,7 +81,12 @@ class PasswordChangeViewModel @Inject constructor(
                     uiState.value.newPassword,
                 )
             ) {
-                is Result.Success -> onSuccessPasswordChange()
+                is Result.Success -> {
+                    when (logOutUseCase()) {
+                        is Result.Success -> onLogOut()
+                        is Result.Failure -> onShowToast("로그아웃 실패")
+                    }
+                }
 
                 is Result.Failure -> {
                     when (result.errorStatus) {
@@ -99,7 +107,7 @@ class PasswordChangeViewModel @Inject constructor(
     }
 
     fun onAttemptPasswordChange() = emitEvent(PasswordChangeEvent.PasswordChangeAttempt)
-    private fun onSuccessPasswordChange() = emitEvent(PasswordChangeEvent.PasswordChangeSuccess)
+    private fun onLogOut() = emitEvent(PasswordChangeEvent.LogOut)
 
     private fun onShowToast(message: String) = emitEvent(PasswordChangeEvent.ShowToast(message))
     private fun emitEvent(event: PasswordChangeEvent) {

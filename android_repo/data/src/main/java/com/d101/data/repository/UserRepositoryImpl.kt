@@ -124,12 +124,10 @@ class UserRepositoryImpl @Inject constructor(
             is Result.Failure -> Result.Failure(result.errorStatus)
         }
 
-    override suspend fun changePassword(userPw: String, newPw: String): Result<Unit> = when (
-        val result =
-            userDataSource.changePassword(userPw, newPw)
-    ) {
-        is Result.Success -> Result.Success(Unit)
+    override suspend fun changePassword(userPw: String, newPw: String): Result<Unit> =
+        when (val result = userDataSource.changePassword(userPw, newPw)) {
+            is Result.Success -> Result.Success(Unit)
 
-        is Result.Failure -> Result.Failure(result.errorStatus)
-    }
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
 }
