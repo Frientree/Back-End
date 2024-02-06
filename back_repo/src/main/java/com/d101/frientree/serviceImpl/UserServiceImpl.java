@@ -21,8 +21,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -566,12 +569,13 @@ public class UserServiceImpl implements UserService {
         // 생성된 토큰을 이용하여 이메일 본문에 포함시킬 URL 생성
         String code = generateRandomCode();
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("프렌트리 이메일 인증 확인");
-        message.setText("앱에서 이메일 인증 코드를 입력하세요:\n" + code);
+        String htmlContent = "<div style='text-align:center;'>" +
+                "<h1 style='color:#446dff;'>프렌트리 이메일 인증 확인</h1>" +
+                "<p style='color:#303030; font-size:16px;'>앱에서 이메일 인증 코드를 입력하세요:</p>" +
+                "<p style='font-size:18px; font-weight:bold; color:#ff0000;'>" + code + "</p>" +
+                "</div>";
 
-        javaMailSender.send(message);
+        sendEmailWithHtml(email, "프렌트리 이메일 인증 확인", htmlContent);
 
         emailCodeRepository.save(new EmailCode(email, code));
     }
@@ -579,12 +583,29 @@ public class UserServiceImpl implements UserService {
     private void sendTemporaryPasswordEmail(String email, String newPassword) {
         // 생성된 토큰을 이용하여 이메일 본문에 포함시킬 URL 생성
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("프렌트리 임시 비밀번호 발급");
-        message.setText("새로운 임시 비밀번호 입니다 ㅎㅎ\n" + newPassword);
+        String htmlContent = "<div style='text-align:center;'>" +
+                "<h1 style='color:#446dff;'>프렌트리 임시 비밀번호 발급</h1>" +
+                "<p style='color:#303030; font-size:16px;'>새로운 임시 비밀번호입니다:</p>" +
+                "<p style='font-size:18px; font-weight:bold; color:#ff0000;'>" + newPassword + "</p>" +
+                "</div>";
 
-        javaMailSender.send(message);
+        sendEmailWithHtml(email, "프렌트리 임시 비밀번호 발급", htmlContent);
+    }
+
+    public void sendEmailWithHtml(String to, String subject, String htmlContent) {
+
+        MimeMessagePreparator messagePreparator = mimeMessage -> {
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+            messageHelper.setTo(to);
+            messageHelper.setSubject(subject);
+            messageHelper.setText(htmlContent, true); // 'true' indicates you're writing HTML
+        };
+
+        try {
+            javaMailSender.send(messagePreparator);
+        } catch (MailException e) {
+            // handle exception
+        }
     }
 
     private String generateRandomCode() {

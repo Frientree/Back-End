@@ -178,7 +178,8 @@ public class UserController {
     @Operation(summary = "인증 코드 확인", description = "인증 코드 일치여부를 확인합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserPassEmailCertificationResponse.class)))
+                    content = @Content(schema = @Schema(implementation = UserPassEmailCertificationResponse.class))),
+            @ApiResponse(responseCode = "400", description = "(message : \"Email code not match\", code : 400)\n"),
     })
     @PostMapping("/certification-pass")
     public ResponseEntity<UserPassEmailCertificationResponse> userPassEmailCertification(@RequestBody UserPassEmailCertificationRequest userPassEmailCertificationRequest) {
