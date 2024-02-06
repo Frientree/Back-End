@@ -58,6 +58,13 @@ public class UserGlobalExceptionHandler {
                 .body(stringToGson(e.getMessage()));
     }
 
+    @ExceptionHandler(NewPasswordValidException.class)
+    public ResponseEntity<String> handleNewPasswordValidException(NewPasswordValidException e) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .headers(JSON_HEADERS)
+                .body(stringToGson(e.getMessage()));
+    }
+
     @ExceptionHandler(EmailCodeNotMatchingException.class)
     public ResponseEntity<String> handleEmailCodeNotMatchingException(EmailCodeNotMatchingException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
