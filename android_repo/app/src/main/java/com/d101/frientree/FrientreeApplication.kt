@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.d101.presentation.BackgroundMusicPlayer
+import com.d101.presentation.main.MainActivity
+import com.d101.presentation.splash.SplashActivity
 import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.HiltAndroidApp
 
@@ -19,7 +21,6 @@ class FrientreeApplication : Application() {
         )
         registerActivityLifecycleCallbacks(AppLifecycleTracker())
         BackgroundMusicPlayer.initMusicList(this)
-        BackgroundMusicPlayer.playMusic(this, BackgroundMusicPlayer.getMusicList()[0])
     }
 
     private class AppLifecycleTracker : ActivityLifecycleCallbacks {
@@ -27,7 +28,9 @@ class FrientreeApplication : Application() {
 
         override fun onActivityStarted(activity: Activity) {
             activeActivities++
-            BackgroundMusicPlayer.resumeMusic()
+            if ((activity is SplashActivity).not()) {
+                BackgroundMusicPlayer.resumeMusic()
+            }
         }
 
         override fun onActivityStopped(activity: Activity) {
@@ -37,7 +40,11 @@ class FrientreeApplication : Application() {
             }
         }
 
-        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+            if (activity is MainActivity) {
+                BackgroundMusicPlayer.playMusic(activity, BackgroundMusicPlayer.getMusicList()[0])
+            }
+        }
         override fun onActivityDestroyed(activity: Activity) {
             if (activeActivities == 0) {
                 BackgroundMusicPlayer.releaseMusicPlayer()

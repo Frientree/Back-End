@@ -1,5 +1,6 @@
 package com.d101.presentation.mypage.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
@@ -7,6 +8,7 @@ import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.usecase.mypage.ChangeUserNicknameUseCase
 import com.d101.domain.usecase.mypage.LogOutUseCase
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
+import com.d101.presentation.mapper.UserMapper.toUserUiModel
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
@@ -155,13 +157,15 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = getUserInfoUseCase()) {
                 is Result.Success -> {
+                    val uiModel = result.data.toUserUiModel()
+                    Log.d("확인", "onInitOccurred: $uiModel")
                     _uiState.update {
                         MyPageViewState.Default(
-                            id = result.data.userEmail,
-                            nickname = result.data.userNickname,
-                            backgroundMusicStatus = BackgroundMusicStatus.ON,
-                            alarmStatus = AlarmStatus.ON,
-                            backgroundMusic = "봄날",
+                            id = uiModel.userEmail,
+                            nickname = uiModel.userNickname,
+                            backgroundMusicStatus = uiModel.backgroundMusicStatus,
+                            alarmStatus = uiModel.alarmStatus,
+                            backgroundMusic = uiModel.backgroundMusicName.ifEmpty { "봄날" },
                         )
                     }
                 }

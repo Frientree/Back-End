@@ -9,7 +9,6 @@ import com.d101.domain.model.User
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.repository.UserRepository
 import com.d101.domain.utils.TokenManager
-import com.google.protobuf.BoolValue
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
@@ -35,19 +34,21 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserInfo(): Result<User> {
         var localUserInfo = userDataStore.data.first()
 
-        return if (localUserInfo.hasIsSocial()) {
+        return if (localUserInfo.userNickname.isNotEmpty()) {
             Result.Success(localUserInfo.toUser())
         } else {
             when (val result = userDataSource.getUserInfo()) {
                 is Result.Success -> {
-                    result.data.let {
-                        UserPreferences.newBuilder()
-                            .setIsSocial(BoolValue.newBuilder().setValue(it.social))
-                            .setUserEmail(it.userEmail)
-                            .setUserNickname(it.userNickname)
-                            .setIsNotificationEnabled(it.userNotification)
-                            .setIsBackgroundMusicEnabled(true)
-                            .build()
+                    result.data.let { data ->
+                        userDataStore.updateData {
+                            UserPreferences.newBuilder()
+                                .setIsSocial(data.social)
+                                .setUserEmail(data.userEmail)
+                                .setUserNickname(data.userNickname)
+                                .setIsNotificationEnabled(data.userNotification)
+                                .setIsBackgroundMusicEnabled(true)
+                                .build()
+                        }
                     }
                     localUserInfo = userDataStore.data.first()
                     Result.Success(localUserInfo.toUser())
