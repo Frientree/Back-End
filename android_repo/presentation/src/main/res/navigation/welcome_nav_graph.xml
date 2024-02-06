@@ -21,9 +21,6 @@
         <action
             android:id="@+id/action_signInFragment_to_termsAgreeFragment"
             app:destination="@id/termsAgreeFragment" />
-        <action
-            android:id="@+id/action_signInFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"

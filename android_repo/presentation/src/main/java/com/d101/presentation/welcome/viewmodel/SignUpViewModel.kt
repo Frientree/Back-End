@@ -22,6 +22,8 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import utils.MutableEventFlow
+import utils.RegexPattern.EMAIL_PATTERN
+import utils.RegexPattern.PASSWORD_PATTERN
 import utils.asEventFlow
 import javax.inject.Inject
 
@@ -340,15 +342,12 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun isEmailValid(email: String) =
-        email.matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$".toRegex())
+        email.matches(EMAIL_PATTERN.toRegex())
 
     private fun isNicknameValid(email: String) = email.length in 1..8
 
     private fun isPasswordValid(password: String) =
-        password.matches(
-            "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$"
-                .toRegex(),
-        )
+        password.matches(PASSWORD_PATTERN.toRegex())
 
     private fun emitEvent(event: SignUpEvent) {
         viewModelScope.launch {

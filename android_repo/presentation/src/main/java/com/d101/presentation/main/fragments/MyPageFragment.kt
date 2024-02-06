@@ -16,6 +16,7 @@ import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.DialogBackgroundMusicSelectBinding
 import com.d101.presentation.databinding.FragmentMypageBinding
+import com.d101.presentation.mypage.PasswordChangeActivity
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
@@ -84,7 +85,10 @@ class MyPageFragment : Fragment() {
                     is MyPageViewEvent.OnBackgroundMusicChanged ->
                         viewModel.onBackgroundMusicChangedOccurred(event.musicName)
 
-                    is MyPageViewEvent.OnTapChangePasswordButton -> {}
+                    is MyPageViewEvent.OnTapChangePasswordButton -> {
+                        val intent = Intent(requireContext(), PasswordChangeActivity::class.java)
+                        startActivity(intent)
+                    }
                     is MyPageViewEvent.OnTapLogOutButton -> {
                         viewModel.onTapLogOutButtonOccurred()
                     }

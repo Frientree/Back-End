@@ -115,6 +115,7 @@
 
     <style name="Base.FTR.EditTextExtended" parent="Base.FTR.EditTextInput">
         <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">32dp</item>
     </style>
 
     <style name="Base.FTR.TextView" parent="@style/Widget.AppCompat.TextView">
