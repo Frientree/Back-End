@@ -8,7 +8,7 @@ import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.LeafErrorStatus
 import com.d101.domain.usecase.main.SendMyLeafUseCase
 import com.d101.presentation.main.event.LeafSendViewEvent
-import com.d101.presentation.main.state.LeafState
+import com.d101.presentation.main.state.LeafSendViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,14 +21,14 @@ import utils.asEventFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class LeafViewModel @Inject constructor(
+class LeafSendViewModel @Inject constructor(
     private val sendLeafUseCase: SendMyLeafUseCase,
 ) : ViewModel() {
 
     val inputText = MutableStateFlow("")
     var checkedChipId: Int = 0
-    private val _uiState = MutableStateFlow<LeafState>(LeafState.ZeroViewLeafState())
-    val uiState: StateFlow<LeafState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow<LeafSendViewState>(LeafSendViewState.ZeroViewLeafSendViewState())
+    val uiState: StateFlow<LeafSendViewState> = _uiState.asStateFlow()
 
     private val _leafEventFlow = MutableEventFlow<LeafSendViewEvent>()
     val leafEventFlow = _leafEventFlow.asEventFlow()
@@ -58,11 +58,11 @@ class LeafViewModel @Inject constructor(
                 _uiState.update { it }
             }
             LeafViews.NO_SEND.count -> {
-                _uiState.update { LeafState.NoSendLeafState() }
+                _uiState.update { LeafSendViewState.NoSendLeafSendViewState() }
             }
             else -> {
                 _uiState.update {
-                    LeafState.SomeViewLeafSate(
+                    LeafSendViewState.SomeViewLeafSateSendView(
                         "당신의 이파리가 일주일간 ${count}명에게 힘이 되었어요!",
                     )
                 }

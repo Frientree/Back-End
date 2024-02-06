@@ -14,7 +14,7 @@ import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentLeafSendMessageBaseBinding
 import com.d101.presentation.main.event.LeafSendViewEvent
-import com.d101.presentation.main.viewmodel.LeafViewModel
+import com.d101.presentation.main.viewmodel.LeafSendViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
 
@@ -24,7 +24,7 @@ class LeafMessageBaseFragment : DialogFragment() {
     private var _binding: FragmentLeafSendMessageBaseBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: LeafViewModel by viewModels()
+    private val viewModel: LeafSendViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

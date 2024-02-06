@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentLeafSendBinding
 import com.d101.presentation.main.MainActivity
-import com.d101.presentation.main.viewmodel.LeafViewModel
+import com.d101.presentation.main.viewmodel.LeafSendViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +22,7 @@ class LeafMessageToSendFragment : Fragment() {
     private var _binding: FragmentLeafSendBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: LeafViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: LeafSendViewModel by viewModels({ requireParentFragment() })
 
     private lateinit var activity: MainActivity
     override fun onAttach(context: Context) {

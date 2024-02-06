@@ -57,6 +57,7 @@
             app:layout_constraintBottom_toTopOf="@id/leaf_receive_progress_bar">
             <com.google.android.material.chip.Chip
                 style="@style/Base.FTR.Chip.Leaf"
+                android:checked="true"
                 android:id="@+id/leaf_category_consolation_chip"
                 android:text="@string/leaf_category_consolation"/>
             <com.google.android.material.chip.Chip

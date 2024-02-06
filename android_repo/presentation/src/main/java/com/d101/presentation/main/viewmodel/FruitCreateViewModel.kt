@@ -11,7 +11,7 @@ import com.d101.domain.usecase.main.DecideTodayFruitUseCase
 import com.d101.domain.usecase.main.MakeFruitBySpeechUseCase
 import com.d101.domain.usecase.main.MakeFruitByTextUseCase
 import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
-import com.d101.presentation.main.state.CreateFruitDialogViewEvent
+import com.d101.presentation.main.event.CreateFruitDialogViewEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

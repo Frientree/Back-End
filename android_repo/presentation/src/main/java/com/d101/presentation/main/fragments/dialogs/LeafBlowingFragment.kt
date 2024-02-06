@@ -23,7 +23,7 @@ import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentLeafBlowingBinding
 import com.d101.presentation.main.MainActivity
-import com.d101.presentation.main.viewmodel.LeafViewModel
+import com.d101.presentation.main.viewmodel.LeafSendViewModel
 import utils.repeatOnStarted
 import kotlin.properties.Delegates
 
@@ -31,7 +31,7 @@ class LeafBlowingFragment : Fragment() {
     private var _binding: FragmentLeafBlowingBinding? = null
     private val binding get() = _binding!!
     private lateinit var activity: MainActivity
-    private val viewModel: LeafViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: LeafSendViewModel by viewModels({ requireParentFragment() })
 
     private var isRecording = false
     private val sampleRate = 44100 // 샘플링 레이트
