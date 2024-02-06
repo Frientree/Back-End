@@ -34,7 +34,7 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun getUserInfo(): Result<User> {
         var localUserInfo = userDataStore.data.first()
 
-        return if (localUserInfo.userEmail.isNotEmpty()) {
+        return if (localUserInfo.hasUserNickname()) {
             Result.Success(localUserInfo.toUser())
         } else {
             when (val result = checkSignInStatus()) {
@@ -42,7 +42,6 @@ class UserRepositoryImpl @Inject constructor(
                     localUserInfo = userDataStore.data.first()
                     Result.Success(localUserInfo.toUser())
                 }
-
                 is Result.Failure -> Result.Failure(result.errorStatus)
             }
         }
@@ -54,11 +53,11 @@ class UserRepositoryImpl @Inject constructor(
                 userDataStore.updateData {
                     result.data.let {
                         UserPreferences.newBuilder()
-                            .setUserEmail(it.userEmail)
-                            .setUserNickname(it.userNickname)
-                            .setUserLeafStatus(it.userLeafStatus)
-                            .setUserNotification(it.userNotification)
-                            .setUserFruitStatus(it.userFruitStatus)
+//                            .setUserEmail(it.userEmail)
+//                            .setUserNickname(it.userNickname)
+//                            .setUserLeafStatus(it.userLeafStatus)
+//                            .setUserNotification(it.userNotification)
+//                            .setUserFruitStatus(it.userFruitStatus)
                             .build()
                     }
                 }
@@ -74,7 +73,7 @@ class UserRepositoryImpl @Inject constructor(
             is Result.Success -> {
                 userDataStore.updateData {
                     it.toBuilder()
-                        .setUserNickname(result.data.userNickname)
+//                        .setUserNickname(result.data.userNickname)
                         .build()
                 }
                 Result.Success(nickname)

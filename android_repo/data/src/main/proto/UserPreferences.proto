@@ -3,10 +3,13 @@ syntax = "proto3";
 option java_package = "com.d101.data.datastore";
 option java_multiple_files = true;
 
+import "google/protobuf/wrappers.proto";
+
 message UserPreferences {
-    string userEmail = 1;
-    string userNickname = 2;
-    bool userLeafStatus = 3;
-    bool userNotification = 4;
-    bool userFruitStatus =5;
+    google.protobuf.BoolValue isSocial = 1;
+    google.protobuf.StringValue userEmail = 2;
+    google.protobuf.StringValue userNickname = 3;
+    google.protobuf.BoolValue isNotificationEnabled = 4;
+    google.protobuf.BoolValue backgroundMusicName = 5;
+    google.protobuf.BoolValue isBackgroundMusicEnabled = 6;
 }
