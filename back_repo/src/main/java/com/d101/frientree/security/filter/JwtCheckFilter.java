@@ -89,6 +89,8 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
+        if(path.equals("/s3")){return true;}
+
         return false;
     }
 

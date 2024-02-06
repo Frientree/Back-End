@@ -20,6 +20,9 @@ public class SecretKeyConfig {
     @Value("${jasypt.encryptor.aiurl}")
     private String aiUrl;
 
+    @Value("${jasypt.encryptor.ais3url}")
+    private String aiS3Url;
+
     @Bean
     public ClovaSpeechClient clovaSpeechClient() {
         ClovaSpeechClient client = new ClovaSpeechClient();
@@ -32,6 +35,7 @@ public class SecretKeyConfig {
     public HttpPostAIRequest aiResponse(){
         HttpPostAIRequest httpPostAIRequest = new HttpPostAIRequest();
         httpPostAIRequest.setAiUrlString(aiUrl);
+        httpPostAIRequest.setAiS3UrlString(aiS3Url);
         return httpPostAIRequest;
     }
 }
