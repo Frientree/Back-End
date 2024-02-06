@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import com.d101.data.datasource.user.UserDataSource
 import com.d101.data.datastore.UserPreferences
 import com.d101.data.mapper.UserMapper.toUser
+import com.d101.data.roomdb.AppDatabase
 import com.d101.domain.model.Result
 import com.d101.domain.model.User
 import com.d101.domain.model.status.ErrorStatus
@@ -16,6 +17,7 @@ class UserRepositoryImpl @Inject constructor(
     private val tokenManager: TokenManager,
     private val userDataStore: DataStore<UserPreferences>,
     private val userDataSource: UserDataSource,
+    private val roomDB: AppDatabase,
 ) : UserRepository {
     override suspend fun signIn(userId: String, userPw: String) =
         when (val result = userDataSource.signIn(userId, userPw)) {
@@ -84,10 +86,13 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    // roobDB를 초기화하는 함수를 여기서 호출하고 싶어 함수를 추가했습니다.
+
     override suspend fun logout(): Result<Unit> {
         return try {
             userDataStore.updateData { UserPreferences.getDefaultInstance() }
             tokenManager.deleteTokens()
+            roomDB.clearAllTables()
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Failure(ErrorStatus.UnknownError)

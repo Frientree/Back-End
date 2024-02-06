@@ -12,6 +12,7 @@ import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
 import com.d101.presentation.mypage.state.MyPageViewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -143,7 +144,7 @@ class MyPageViewModel @Inject constructor(
     }
 
     fun onTapLogOutButtonOccurred() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             when (logOutUseCase()) {
                 is Result.Success -> _eventFlow.emit(MyPageViewEvent.OnLogOut)
                 is Result.Failure -> _eventFlow.emit(MyPageViewEvent.OnShowToast("로그아웃 실패"))
