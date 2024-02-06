@@ -40,10 +40,6 @@ class CalendarRepositoryImpl @Inject constructor(
         val startDate = monthDate.first.toString()
         val endDate = monthDate.second.toString()
 
-        if (startDate.toLocalDate().isAfter(todayDate)) {
-            return Result.Success(emptyList())
-        }
-
         val localCalendarFruitEntityList =
             calendarLocalDataSource.getCalendarFruitsFroMonth(
                 startDate.toLongDate(),
@@ -89,10 +85,6 @@ class CalendarRepositoryImpl @Inject constructor(
         Result<List<Fruit>> {
         val startDate = weekDate.first.toString()
         val endDate = weekDate.second.toString()
-
-        if (startDate.toLocalDate().isAfter(todayDate)) {
-            return Result.Success(emptyList())
-        }
 
         val localFruitEntityList =
             calendarLocalDataSource.getFruitsForWeek(startDate.toLongDate(), endDate.toLongDate())
