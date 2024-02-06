@@ -18,10 +18,12 @@ class LittleFruitListAdapter() :
 
     inner class LittleFruitViewHolder(private val binding: ItemLittleFruitBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(fruitPair: Pair<LittleFruitImageUrl, Int>) {
-            binding.littleFruitImageImageView.setImageResource(R.drawable.tree1)
-            binding.fruitCountTextView.text = fruitPair.second.toString()
-            Glide.with(this.itemView).load(fruitPair.first).into(binding.littleFruitImageImageView)
+        fun bind(littleFruitImageUrlPair: Pair<LittleFruitImageUrl, Int>) {
+            binding.littleFruitImageImageView.setImageResource(R.drawable.img_sub_tree)
+            binding.fruitCountTextView.text = littleFruitImageUrlPair.second.toString()
+            Glide.with(this.itemView).load(littleFruitImageUrlPair.first).into(
+                binding.littleFruitImageImageView,
+            )
         }
     }
 

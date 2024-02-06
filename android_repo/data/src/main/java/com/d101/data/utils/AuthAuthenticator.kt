@@ -28,8 +28,10 @@ class AuthAuthenticator @Inject constructor(
                 tokenManager.deleteTokens()
                 null
             } else {
+                val tokens = tokenResponse.body()!!.data
+                tokenManager.saveToken(tokens.accessToken, tokens.refreshToken)
                 response.request.newBuilder()
-                    .header("Authorization", "Bearer ${tokenResponse.body()!!.data.accessToken}")
+                    .header("Authorization", "Bearer ${tokens.accessToken}")
                     .build()
             }
         }

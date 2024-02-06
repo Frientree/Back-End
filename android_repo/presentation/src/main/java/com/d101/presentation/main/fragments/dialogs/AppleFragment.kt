@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentAppleBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
+import com.d101.presentation.model.FruitResources
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,7 +37,12 @@ class AppleFragment : Fragment() {
 
         FruitDialogInterface.dialog.isCancelable = true
 
-        val fruitColorValue = FruitColors.values()[0].color
+        val fruitColorValue =
+            FruitResources.entries.find {
+                it.fruitEmotion == viewModel.selectedFruit.value.fruitFeel
+            }?.color
+                ?: R.color.main_green
+
         binding.fruitDescriptionCardView.setCardBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),

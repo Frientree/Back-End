@@ -14,7 +14,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
-import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.ActivityMainBinding
 import com.d101.presentation.main.state.MainActivityViewState
@@ -43,10 +42,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        BackgroundMusicPlayer.initMusicList(this)
-
-        BackgroundMusicPlayer.playMusic(this, BackgroundMusicPlayer.getMusicList()[0])
 
         initNavigationView()
 
@@ -263,21 +258,6 @@ class MainActivity : AppCompatActivity() {
         right.interpolator = OvershootInterpolator()
 
         return right
-    }
-
-    override fun onStart() {
-        super.onStart()
-        BackgroundMusicPlayer.resumeMusic()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        BackgroundMusicPlayer.stopMusic()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        BackgroundMusicPlayer.releaseMusicPlayer()
     }
 
     companion object {

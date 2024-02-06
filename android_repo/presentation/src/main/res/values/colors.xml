@@ -26,14 +26,14 @@
     <color name="fruit_navy">#1033B2</color>
 
 
-    <color name="fruit_purple_alpha">#33A3A0FF</color>
-    <color name="fruit_red_alpha">#33FD6041</color>
-    <color name="fruit_yellow_alpha">#33FFF57C</color>
-    <color name="fruit_salgu_alpha">#33FFB751</color>
-    <color name="fruit_green_alpha">#33D3FF35</color>
-    <color name="fruit_cherry_alpha">#33D60057</color>
-    <color name="fruit_blue_alpha">#33479FFF</color>
-    <color name="fruit_navy_alpha">#331033B2</color>
+    <color name="fruit_purple_background">#ECECFF</color>
+    <color name="fruit_red_background">#FEDFD9</color>
+    <color name="fruit_yellow_background">#FFFDE4</color>
+    <color name="fruit_salgu_background">#FFF0DC</color>
+    <color name="fruit_green_background">#F6FFD6</color>
+    <color name="fruit_cherry_background">#F6CCDD</color>
+    <color name="fruit_blue_background">#DAEBFF</color>
+    <color name="fruit_navy_background">#CFD6EF</color>
 
     <color name="fruit_chip_selected">#FEFFD5</color>
 </resources>

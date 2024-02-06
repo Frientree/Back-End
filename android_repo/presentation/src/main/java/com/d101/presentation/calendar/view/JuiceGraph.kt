@@ -5,8 +5,10 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
@@ -24,6 +26,8 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
 
     private var fruitList: List<Fruit> = emptyList()
     private val fruitBitmaps = mutableMapOf<LittleFruitImageUrl, Bitmap?>()
+    private val basketDrawable = ContextCompat.getDrawable(context, R.drawable.basket)
+    private val emptyBitmap = drawableToBitmap(basketDrawable)
 
     private val linePaint = Paint().apply {
         color = Color.BLACK
@@ -39,16 +43,16 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
     fun setFruitList(fruitList: List<Fruit>) {
         this.fruitList = fruitList
         fruitList.forEach { fruit ->
-            loadBitmapForFruit(fruit)
+            loadBitmapForFruit(fruit.calendarImageUrl)
         }
         invalidate()
     }
 
-    private fun loadBitmapForFruit(fruit: Fruit) {
-        Glide.with(context).asBitmap().load(fruit.calendarImageUrl).override(80, 80)
+    private fun loadBitmapForFruit(imageUrl: String) {
+        Glide.with(context).asBitmap().load(imageUrl).override(80, 80)
             .into(object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    fruitBitmaps[fruit.calendarImageUrl] = resource
+                    fruitBitmaps[imageUrl] = resource
                     invalidate()
                 }
             })
@@ -95,7 +99,16 @@ class JuiceGraph(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Vi
 
             fruitBitmaps[fruitList[index].calendarImageUrl]?.let { bitmap ->
                 canvas.drawBitmap(bitmap, imageX - 40f, imageY, null)
+            } ?: run {
+                canvas.drawBitmap(emptyBitmap, imageX - 40f, imageY, null)
             }
         }
+    }
+    private fun drawableToBitmap(drawable: Drawable?): Bitmap {
+        val bitmap = Bitmap.createBitmap(70, 70, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        drawable?.setBounds(0, 0, canvas.width, canvas.height)
+        drawable?.draw(canvas)
+        return bitmap
     }
 }

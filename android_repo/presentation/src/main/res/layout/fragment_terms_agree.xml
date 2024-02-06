@@ -1,13 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".welcome.fragments.TermsAgreeFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.d101.presentation.welcome.viewmodel.TermsAgreeViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="약관동의" />
+        tools:context=".welcome.fragments.TermsAgreeFragment">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/terms_icon_image_view"
+            android:layout_width="100dp"
+            android:layout_height="0dp"
+            android:src="@drawable/img_main_tree"
+            app:layout_constraintBottom_toTopOf="@id/terms_greeting_text_view"
+            app:layout_constraintDimensionRatio="1"
+            app:layout_constraintStart_toStartOf="@+id/terms_greeting_text_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/terms_greeting_text_view"
+            style="@style/Base.FTR.TextView.Greeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="@string/greeting"
+            app:layout_constraintBottom_toTopOf="@id/terms_all_check_check_box"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/terms_icon_image_view" />
+
+
+        <CheckBox
+            android:id="@+id/terms_all_check_check_box"
+            style="@style/Base.FTR.CheckBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:layout_marginEnd="12dp"
+            android:button="@drawable/outline_check_circle_24"
+            android:checked="@{viewModel.uiState.allAgree}"
+            android:clickable="false"
+            android:onClick="@{() -> viewModel.onAllCheckedTerms()}"
+            android:padding="12dp"
+            android:text="@string/all_terms_agree"
+            android:textAppearance="@style/Base.FTR.Text.Bold"
+            app:layout_constraintBottom_toTopOf="@id/terms_agree_recycler_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/terms_greeting_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/terms_greeting_text_view" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/terms_agree_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/confirm_button"
+            app:layout_constraintEnd_toEndOf="@+id/terms_all_check_check_box"
+            app:layout_constraintStart_toStartOf="@+id/terms_all_check_check_box"
+            app:layout_constraintTop_toBottomOf="@+id/terms_all_check_check_box"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_terms_agree" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/confirm_button"
+            style="@style/Base.FTR.MainButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginBottom="8dp"
+            android:enabled="@{viewModel.uiState.necessaryTermsAgreed}"
+            android:onClick="@{() -> viewModel.onClickConfirm()}"
+            android:paddingVertical="16dp"
+            android:text="@string/confirm"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,18 +1,21 @@
 package com.d101.presentation.main.fragments
 
-import android.animation.ObjectAnimator
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.d101.domain.model.Fruit
+import com.d101.domain.utils.FruitEmotion
 import com.d101.presentation.R
+import com.d101.presentation.calendar.adapter.FruitInCalendarListAdapter
 import com.d101.presentation.calendar.adapter.FruitListAdapter
 import com.d101.presentation.calendar.adapter.LittleFruitImageUrl
 import com.d101.presentation.calendar.adapter.LittleFruitListAdapter
@@ -21,11 +24,16 @@ import com.d101.presentation.calendar.state.CalendarViewState
 import com.d101.presentation.calendar.state.JuiceCreatableStatus
 import com.d101.presentation.calendar.state.TodayFruitCreationStatus
 import com.d101.presentation.calendar.viewmodel.CalendarViewModel
+import com.d101.presentation.collection.CollectionActivity
+import com.d101.presentation.databinding.DialogFruitDetailBinding
 import com.d101.presentation.databinding.DialogJuiceShakeBinding
 import com.d101.presentation.databinding.FragmentCalendarBinding
+import com.d101.presentation.mapper.CalendarMapper.toFruitInCalendar
+import com.d101.presentation.model.FruitResources
 import dagger.hilt.android.AndroidEntryPoint
 import utils.ShakeEventListener
 import utils.ShakeSensorModule
+import utils.darkenColor
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -55,8 +63,21 @@ class CalendarFragment : Fragment() {
         setBinding()
         subscribeEvent()
         subscribeViewState()
-        fruitListAdapter = FruitListAdapter()
+        fruitListAdapter = FruitListAdapter { fruit -> viewModel.onTapFruitDetailButton(fruit) }
         littleFruitListAdapter = LittleFruitListAdapter()
+        binding.frientreeCalendar.setCalendarAdapter(
+            FruitInCalendarListAdapter {
+                viewModel.onWeekSelected(it)
+            },
+        )
+
+        binding.frientreeCalendar.setOnMonthClickListener {
+            viewModel.onClickNextMonth()
+        }
+
+        binding.frientreeCalendar.setOnPrevMonthClickListener {
+            viewModel.onClickPreviousMonth()
+        }
     }
 
     private fun setBinding() {
@@ -73,27 +94,37 @@ class CalendarFragment : Fragment() {
                     }
 
                     is CalendarViewEvent.OnCompleteJuiceShake -> {
-                        viewModel.onCompleteJuiceShakeOccurred()
+                        viewModel.onCompleteJuiceShakeOccurred(event.weekDate)
                     }
 
-                    is CalendarViewEvent.OnTapCollectionButton -> {}
+                    is CalendarViewEvent.OnTapCollectionButton -> {
+                        val intent = Intent(requireContext(), CollectionActivity::class.java)
+                        startActivity(intent)
+                    }
                     is CalendarViewEvent.OnTapJuiceMakingButton -> {
                         viewModel.onTapJuiceMakingButtonOccurred()
                     }
 
-                    CalendarViewEvent.OnCancelJuiceShake -> {
-                        viewModel.onCancelJuiceShakeOccurred()
-                    }
-
                     is CalendarViewEvent.OnSetMonth -> {
-                        viewModel.onMonthChangedOccurred(2024010120240131)
+                        viewModel.onMonthChangedOccurred(event.monthDate)
                     }
 
-                    CalendarViewEvent.OnSetWeek -> {
-                        viewModel.onWeekChangeOccurred(2024010720240113)
+                    is CalendarViewEvent.OnSetWeek -> {
+                        viewModel.onWeekChangeOccurred(event.weekDate)
                     }
 
                     CalendarViewEvent.OnShowJuiceShakeDialog -> showShakeJuiceDialog()
+                    is CalendarViewEvent.OnShowFruitDetailDialog -> showFruitDetailDialog(
+                        event.fruit,
+                    )
+
+                    is CalendarViewEvent.OnTapFruitDetailButton -> {
+                        viewModel.onTapFruitDetailButtonOccurred(event.fruit)
+                    }
+
+                    is CalendarViewEvent.OnShowToast -> {
+                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -102,6 +133,12 @@ class CalendarFragment : Fragment() {
     private fun subscribeViewState() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.uiState.collect { state ->
+                binding.frientreeCalendar.submitList(
+                    state.fruitListForMonth.map {
+                        it.toFruitInCalendar(state.selectedWeek, state.nowDate.monthValue)
+                    },
+                )
+                binding.frientreeCalendar.setNowDate(state.nowDate)
                 when (state) {
                     is CalendarViewState.JuiceAbsentState -> {
                         setViewsVisibility(isJuicePresent = false)
@@ -122,7 +159,7 @@ class CalendarFragment : Fragment() {
         }
     }
 
-    fun setViewsVisibility(isJuicePresent: Boolean) {
+    private fun setViewsVisibility(isJuicePresent: Boolean) {
         binding.juiceOfWeekTextView.visibility = if (isJuicePresent) View.VISIBLE else View.GONE
         binding.juiceOfWeekInfoConstraintLayout.visibility =
             if (isJuicePresent) View.VISIBLE else View.GONE
@@ -179,6 +216,31 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    private fun showFruitDetailDialog(fruit: Fruit) {
+        dialog = createFullScreenDialog()
+        val dialogBinding = DialogFruitDetailBinding.inflate(layoutInflater)
+        dialog.setContentView(dialogBinding.root)
+        Glide.with(dialogBinding.root).load(fruit.imageUrl).into(dialogBinding.fruitImageView)
+        dialogBinding.fruitNameTextView.text = fruit.name
+        dialogBinding.fruitDescriptionTextView.text = fruit.description
+        FruitResources.entries.find { it.fruitEmotion == fruit.fruitEmotion }
+            ?.let { fruitResources ->
+                val backgroundColor = resources.getColor(fruitResources.color, null)
+                dialogBinding.fruitDescriptionCardView.setCardBackgroundColor(
+                    backgroundColor,
+                )
+
+                dialogBinding.fruitDescriptionCardView.strokeColor =
+                    backgroundColor.darkenColor()
+
+                Glide.with(requireContext())
+                    .asGif()
+                    .load(fruitResources.fallingImage)
+                    .into(dialogBinding.fruitDetailBackgroundImageView)
+                dialog.show()
+            }
+    }
+
     private fun showShakeJuiceDialog() {
         dialog = createFullScreenDialog()
         val dialogBinding = DialogJuiceShakeBinding.inflate(layoutInflater)
@@ -192,32 +254,19 @@ class CalendarFragment : Fragment() {
             object : ShakeEventListener {
                 override fun onShakeSensed() {
                     if (progressBar.progress < progressBar.max) {
-                        val progressAnimator =
-                            ObjectAnimator.ofInt(
-                                progressBar,
-                                "progress",
-                                progressBar.progress,
-                                progressBar.progress + 34,
-                            )
-                        progressAnimator.duration = 300
-                        progressAnimator.interpolator = LinearInterpolator()
-                        progressAnimator.start()
+                        progressBar.progress += 3
                     }
 
                     if (progressBar.progress >= progressBar.max) {
                         progressBar.progress = progressBar.max
                         shakeSensor.stop()
-                        viewModel.onCompleteJuiceShakeOccurred()
+                        viewModel.onCompleteJuiceShake()
                     }
                 }
             },
         )
 
         shakeSensor.start()
-
-        dialog.setOnCancelListener {
-            viewModel.onCancelJuiceShakeDialog()
-        }
 
         dialog.setOnDismissListener {
             shakeSensor.stop()
@@ -235,8 +284,13 @@ class CalendarFragment : Fragment() {
     private fun countFruits(fruits: List<Fruit>): List<Pair<LittleFruitImageUrl, Int>> {
         val counts = mutableMapOf<LittleFruitImageUrl, Int>()
 
-        fruits.forEach { fruit ->
-            counts[fruit.calendarImageUrl] = counts.getOrDefault(fruit.calendarImageUrl, 0) + 1
+        FruitEmotion.entries.forEach { emotion ->
+            fruits.forEach { fruit ->
+                if (fruit.fruitEmotion == emotion) {
+                    counts[fruit.calendarImageUrl] =
+                        counts.getOrDefault(fruit.calendarImageUrl, 0) + 1
+                }
+            }
         }
 
         return counts.map { (key, count) -> Pair(key, count) }

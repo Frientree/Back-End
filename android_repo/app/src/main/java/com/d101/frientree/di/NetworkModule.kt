@@ -3,6 +3,7 @@ package com.d101.frientree.di
 import com.d101.data.api.AuthService
 import com.d101.data.utils.AuthAuthenticator
 import com.d101.data.utils.AuthInterceptor
+import com.d101.data.utils.DateInterceptor
 import com.d101.domain.utils.TokenManager
 import dagger.Module
 import dagger.Provides
@@ -31,6 +32,7 @@ object NetworkModule {
     @FrientreeClient
     fun provideFrientreeClient(
         authInterceptor: AuthInterceptor,
+        dateInterceptor: DateInterceptor,
         authAuthenticator: AuthAuthenticator,
     ): OkHttpClient {
         val builder = OkHttpClient.Builder()
@@ -38,6 +40,7 @@ object NetworkModule {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         builder.apply {
             addInterceptor(authInterceptor)
+            addInterceptor(dateInterceptor)
             authenticator(authAuthenticator)
             addInterceptor(loggingInterceptor)
         }
@@ -70,6 +73,10 @@ object NetworkModule {
     @Provides
     fun providesAuthorizationInterceptor(tokenManager: TokenManager): AuthInterceptor =
         AuthInterceptor(tokenManager)
+
+    @Singleton
+    @Provides
+    fun provideDateInterceptor() = DateInterceptor()
 
     @Singleton
     @Provides

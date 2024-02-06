@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginHorizontal="48dp"
-        android:src="@drawable/tree1"
+        android:src="@drawable/img_sub_tree"
         app:layout_constraintBottom_toTopOf="@id/title_text_view"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"

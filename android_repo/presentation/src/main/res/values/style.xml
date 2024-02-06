@@ -42,8 +42,9 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+
     <style name="Base.FTR.TextView.DialogMain" parent="Base.FTR.TextView">
-        <item name="android:textAppearance" >@style/Base.FTR.Bold_20sp</item>
+        <item name="android:textAppearance">@style/Base.FTR.Bold_20sp</item>
     </style>
 
     <style name="Base.FTR.Title" parent="Base.FTR">
@@ -179,5 +180,29 @@
     <style name="Base.FTR.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/bg_progress_bar</item>
         <item name="layout_constraintCircleRadius">40dp</item>
+    </style>
+
+    <style name="Base.FTR.TextView.Calendar" parent="Base.FTR.TextView">
+        <item name="android:textAppearance">@style/Base.FTR.Text.Small</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Base.FTR.TextView.Calendar.Title" parent="Base.FTR.TextView.Calendar">
+        <item name="android:textAppearance">@style/Base.FTR.Bold_20sp</item>
+    </style>
+
+    <style name="Base.FTR.TextView.Greeting" parent="@style/Widget.AppCompat.TextView">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:shadowColor">@color/gray</item>
+        <item name="android:shadowRadius">8</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">4</item>
+    </style>
+
+    <style name="Base.FTR.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:padding">12dp</item>
+        <item name="buttonTint">@color/bg_checkbox_color_selector</item>
     </style>
 </resources>

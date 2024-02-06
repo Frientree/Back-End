@@ -6,4 +6,5 @@ data class FruitsOfWeekResponse(
     val fruitFeel: String,
     val fruitDescription: String,
     val fruitCalendarImageUrl: String,
+    val fruitImageUrl: String,
 )
