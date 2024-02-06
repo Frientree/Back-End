@@ -56,7 +56,7 @@ public class User {
     @Column(name = "user_fruit_status")
     private Boolean userFruitStatus = true;
 
-    @Column(name = "naver_code")
+    @Column(name = "user_naver_code")
     private String naverCode;
 
     @JsonIgnore

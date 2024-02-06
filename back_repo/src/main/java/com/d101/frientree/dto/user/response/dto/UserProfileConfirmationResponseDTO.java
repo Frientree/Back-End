@@ -20,16 +20,16 @@ public class UserProfileConfirmationResponseDTO {
 
     private boolean userFruitStatus;
 
-    private boolean social;
+    private String userType;
 
-    public static UserProfileConfirmationResponseDTO createUserProfileConfirmationResponseDTO(User user, String email, boolean social) {
+    public static UserProfileConfirmationResponseDTO createUserProfileConfirmationResponseDTO(User user, String email, String userType) {
         return UserProfileConfirmationResponseDTO.builder()
                 .userId(user.getUserId())
                 .userNickname(user.getUserNickname())
                 .userLeafStatus(user.getUserLeafStatus())
                 .userFruitStatus(user.getUserFruitStatus())
                 .userEmail(email)
-                .social(social)
+                .userType(userType)
                 .build();
     }
 }

@@ -186,11 +186,11 @@ public class UserServiceImpl implements UserService {
             decodeEmail = getAESDecoded(currentUser.getUserEmail());
         }
 
-        boolean social = currentUser.getNaverCode() != null;
+        String userType = currentUser.getNaverCode() != null ? "naver" : "local";
 
         UserProfileConfirmationResponse response = UserProfileConfirmationResponse.createUserProfileConfirmationResponse(
                 "Success",
-                UserProfileConfirmationResponseDTO.createUserProfileConfirmationResponseDTO(currentUser, decodeEmail, social)
+                UserProfileConfirmationResponseDTO.createUserProfileConfirmationResponseDTO(currentUser, decodeEmail, userType)
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
