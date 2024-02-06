@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.FruitCreated
 import com.d101.domain.model.Result
+import com.d101.domain.model.status.FruitErrorStatus
 import com.d101.domain.usecase.main.GetTodayFruitUseCase
 import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
 import com.d101.presentation.main.state.TreeFragmentViewState
@@ -66,6 +67,10 @@ class MainFragmentViewModel @Inject constructor(
                 }
 
                 is Result.Failure -> {
+                    when (result.errorStatus) {
+                        is FruitErrorStatus.LocalGetError -> {}
+                        else -> {}
+                    }
                 }
             }
         }

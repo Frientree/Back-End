@@ -17,9 +17,9 @@ import com.d101.domain.model.Result
 import com.d101.domain.model.status.AuthCodeCreationErrorStatus
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.GetUserErrorStatus
+import com.d101.domain.model.status.GetUserStatusErrorStatus
 import com.d101.domain.model.status.PassWordChangeErrorStatus
 import com.d101.domain.model.status.PasswordFindErrorStatus
-import com.d101.domain.model.status.GetUserStatusErrorStatus
 import com.d101.domain.model.status.SignInErrorStatus
 import java.io.IOException
 import javax.inject.Inject
