@@ -196,11 +196,12 @@ class MyPageViewModel @Inject constructor(
     }
 
     private fun setBackgroundMusicStatus() {
-
         viewModelScope.launch {
-            when (setBackgroundMusicStatusUseCase(
-                uiState.value.backgroundMusicStatus != BackgroundMusicStatus.ON
-            )) {
+            when (
+                setBackgroundMusicStatusUseCase(
+                    uiState.value.backgroundMusicStatus != BackgroundMusicStatus.ON,
+                )
+            ) {
                 is Result.Success -> setDefaultState()
                 is Result.Failure -> {
                     emitEvent(MyPageViewEvent.OnShowToast("배경음악 설정 실패"))

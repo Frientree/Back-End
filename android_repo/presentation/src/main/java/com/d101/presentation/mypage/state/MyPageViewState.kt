@@ -8,11 +8,11 @@ sealed class MyPageViewState {
     abstract val backgroundMusic: String
 
     data class Default(
-        override val id: String = "테스트",
-        override val nickname: String = "테스트",
+        override val id: String = "",
+        override val nickname: String = "",
         override val backgroundMusicStatus: BackgroundMusicStatus = BackgroundMusicStatus.ON,
         override val alarmStatus: AlarmStatus = AlarmStatus.ON,
-        override val backgroundMusic: String = "테스트",
+        override val backgroundMusic: String = "",
     ) : MyPageViewState()
 
     data class NicknameEditState(

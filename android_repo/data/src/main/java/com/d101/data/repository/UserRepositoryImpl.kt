@@ -46,7 +46,9 @@ class UserRepositoryImpl @Inject constructor(
                                 .setUserNickname(data.userNickname)
                                 .setIsNotificationEnabled(data.userNotification)
                                 .setIsBackgroundMusicEnabled(true)
+                                .setBackgroundMusicName("default")
                                 .build()
+                            //TODO default 확인
                         }
                     }
                     Result.Success(userDataStore.data.first().toUser())
@@ -177,5 +179,4 @@ class UserRepositoryImpl @Inject constructor(
         onSuccess = { Result.Success(Unit) },
         onFailure = { Result.Failure(ErrorStatus.UnknownError) },
     )
-
 }

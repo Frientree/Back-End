@@ -6,6 +6,9 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.d101.presentation.R
 import com.d101.presentation.main.MainActivity
+import com.d101.presentation.music.BackgroundMusicService
+import com.d101.presentation.music.BackgroundMusicService.Companion.MUSIC_NAME
+import com.d101.presentation.music.BackgroundMusicService.Companion.PLAY
 import com.d101.presentation.welcome.WelcomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
@@ -27,6 +30,7 @@ class SplashActivity : AppCompatActivity() {
                     SplashViewEvent.ShowSplash -> viewModel.showSplash()
                     SplashViewEvent.AutoSignInFailure -> navigateToSignIn()
                     SplashViewEvent.AutoSignInSuccess -> navigateToMain()
+                    is SplashViewEvent.SetBackGroundMusic -> startMusicService(event.musicName)
                 }
             }
         }
@@ -42,5 +46,14 @@ class SplashActivity : AppCompatActivity() {
         val intent = Intent(this, WelcomeActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun startMusicService(musicName: String) {
+        startService(
+            Intent(this, BackgroundMusicService::class.java).apply {
+                action = PLAY
+                putExtra(MUSIC_NAME, musicName)
+            },
+        )
     }
 }

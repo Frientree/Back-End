@@ -12,10 +12,14 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.DialogBackgroundMusicSelectBinding
 import com.d101.presentation.databinding.FragmentMypageBinding
+import com.d101.presentation.main.MainActivity
+import com.d101.presentation.music.BackgroundMusicService
+import com.d101.presentation.music.BackgroundMusicService.Companion.MUSIC_NAME
+import com.d101.presentation.music.BackgroundMusicService.Companion.PLAY
+import com.d101.presentation.music.BackgroundMusicService.Companion.STOP
 import com.d101.presentation.mypage.PasswordChangeActivity
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
@@ -101,15 +105,24 @@ class MyPageFragment : Fragment() {
                         val intent = Intent(requireContext(), PasswordChangeActivity::class.java)
                         startActivity(intent)
                     }
+
                     is MyPageViewEvent.OnTapLogOutButton -> {
                         viewModel.onTapLogOutButtonOccurred()
                     }
+
                     is MyPageViewEvent.OnTapTermsButton -> {}
                     is MyPageViewEvent.OnShowToast -> {
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                     }
 
                     MyPageViewEvent.OnLogOut -> {
+                        requireActivity().startService(
+                            Intent(
+                                requireContext(),
+                                BackgroundMusicService::class.java
+                            ).apply {
+                                action = STOP
+                            })
                         navigateToWelcomeActivity()
                     }
                 }
@@ -184,12 +197,27 @@ class MyPageFragment : Fragment() {
         when (state.backgroundMusicStatus) {
             BackgroundMusicStatus.ON -> {
                 binding.backgroundMusicOnOffButtonImageView.setImageResource(R.drawable.sound_on)
-                BackgroundMusicPlayer.resumeMusic()
+                requireActivity().startService(
+                    Intent(
+                        requireContext(),
+                        BackgroundMusicService::class.java,
+                    ).apply {
+                        action = PLAY
+                        putExtra(MUSIC_NAME, viewModel.uiState.value.backgroundMusic)
+                    },
+                )
             }
 
             BackgroundMusicStatus.OFF -> {
                 binding.backgroundMusicOnOffButtonImageView.setImageResource(R.drawable.sound_off)
-                BackgroundMusicPlayer.pauseMusic()
+                requireActivity().startService(
+                    Intent(
+                        requireContext(),
+                        BackgroundMusicService::class.java,
+                    ).apply {
+                        action = STOP
+                    },
+                )
             }
         }
     }
@@ -215,14 +243,13 @@ class MyPageFragment : Fragment() {
     private fun showBackgroundMusicSelectDialog() {
         val dialog = createFullScreenDialog()
         val dialogBinding = DialogBackgroundMusicSelectBinding.inflate(layoutInflater)
-        val musicList = BackgroundMusicPlayer.getMusicList()
+        val musicList = (requireActivity() as MainActivity).musicService?.musicList ?: emptyList()
 
         dialogBinding.setMusicSelector(musicList, viewModel.uiState.value.backgroundMusic)
         dialog.setContentView(dialogBinding.root)
         dialog.setOnDismissListener {
             viewModel.onBackgroundMusicChanged(musicList[dialogBinding.musicSelector.value])
         }
-        BackgroundMusicPlayer.resumeMusic()
         dialog.show()
     }
 
@@ -242,9 +269,12 @@ class MyPageFragment : Fragment() {
             displayedValues = musicList.toTypedArray()
             value = musicList.indexOf(currentMusic)
             setOnValueChangedListener { _, _, selectedNow ->
-                BackgroundMusicPlayer.pauseMusic()
-                BackgroundMusicPlayer.releaseMusicPlayer()
-                BackgroundMusicPlayer.playMusic(requireContext(), musicList[selectedNow])
+                requireActivity().startService(
+                    Intent(requireContext(), BackgroundMusicService::class.java).apply {
+                        action = PLAY
+                        putExtra(MUSIC_NAME, musicList[selectedNow])
+                    },
+                )
             }
         }
     }

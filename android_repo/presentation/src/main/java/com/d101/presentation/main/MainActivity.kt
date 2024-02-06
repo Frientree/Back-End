@@ -2,7 +2,12 @@ package com.d101.presentation.main
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -18,6 +23,7 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.ActivityMainBinding
 import com.d101.presentation.main.state.MainActivityViewState
 import com.d101.presentation.main.viewmodel.MainActivityViewModel
+import com.d101.presentation.music.BackgroundMusicService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import utils.repeatOnStarted
@@ -30,6 +36,21 @@ class MainActivity : AppCompatActivity() {
     }
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var navController: NavController
+
+    var musicService: BackgroundMusicService? = null
+    private var isBound = false
+
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as BackgroundMusicService.MusicBinder
+            musicService = binder.getService()
+            isBound = true
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            isBound = false
+        }
+    }
 
     private val px by lazy {
         TypedValue.applyDimension(
@@ -258,6 +279,21 @@ class MainActivity : AppCompatActivity() {
         right.interpolator = OvershootInterpolator()
 
         return right
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Intent(this, BackgroundMusicService::class.java).also { intent ->
+            this.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isBound) {
+            unbindService(connection)
+            isBound = false
+        }
     }
 
     companion object {
