@@ -41,49 +41,6 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.Init) }
     }
 
-    fun onTapNicknameEditButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapNicknameEditButton) }
-    }
-
-    fun onTapNicknameEditCancelButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapNicknameEditCancelButton) }
-    }
-
-    fun onTapNicknameConfirmButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapNicknameConfirmButton) }
-    }
-
-    fun onTapAlarmStatusButton(alarmStatus: AlarmStatus) {
-        viewModelScope.launch {
-            _eventFlow.emit(MyPageViewEvent.OnTapAlarmStatusButton(alarmStatus))
-        }
-    }
-
-    fun onTapBackgroundMusicStatusButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapBackgroundMusicStatusButton) }
-    }
-
-    fun onTapBackgroundMusicChangeButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapBackgroundMusicChangeButton) }
-    }
-
-    fun onBackgroundMusicChanged(musicName: String) {
-        viewModelScope.launch {
-            _eventFlow.emit(MyPageViewEvent.OnBackgroundMusicChanged(musicName))
-        }
-    }
-
-    fun onTapTermsButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapTermsButton) }
-    }
-
-    fun onTapChangePasswordButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapChangePasswordButton) }
-    }
-
-    fun onTapLogOutButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapLogOutButton) }
-    }
 
     fun onTapNicknameEditButtonOccurred() {
         setEditNicknameState()
@@ -234,6 +191,7 @@ class MyPageViewModel @Inject constructor(
                     }
                 _uiState.value = currentState.copy(backgroundMusicStatus = newStatus)
             }
+
             else -> {
                 setDefaultState()
             }
@@ -251,4 +209,31 @@ class MyPageViewModel @Inject constructor(
             )
         }
     }
+
+
+    fun onTapNicknameEditButton() = emitEvent(MyPageViewEvent.OnTapNicknameEditButton)
+
+    fun onTapNicknameEditCancelButton() = emitEvent(MyPageViewEvent.OnTapNicknameEditCancelButton)
+
+    fun onTapNicknameConfirmButton() = emitEvent(MyPageViewEvent.OnTapNicknameConfirmButton)
+
+    fun onTapAlarmStatusButton(alarmStatus: AlarmStatus) =
+        emitEvent(MyPageViewEvent.OnTapAlarmStatusButton(alarmStatus))
+
+    fun onTapBackgroundMusicStatusButton() =
+        emitEvent(MyPageViewEvent.OnTapBackgroundMusicStatusButton)
+
+    fun onTapBackgroundMusicChangeButton() =
+        emitEvent(MyPageViewEvent.OnTapBackgroundMusicChangeButton)
+
+    fun onBackgroundMusicChanged(musicName: String) =
+        emitEvent(MyPageViewEvent.OnBackgroundMusicChanged(musicName))
+
+    fun onTapTermsButton() = emitEvent(MyPageViewEvent.OnTapTermsButton)
+
+    fun onTapChangePasswordButton() = emitEvent(MyPageViewEvent.OnTapChangePasswordButton)
+
+    fun onTapLogOutButton() = emitEvent(MyPageViewEvent.OnTapLogOutButton)
+
+    private fun emitEvent(event: MyPageViewEvent) = viewModelScope.launch { _eventFlow.emit(event) }
 }
