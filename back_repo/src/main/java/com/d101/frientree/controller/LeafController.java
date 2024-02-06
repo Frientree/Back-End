@@ -8,6 +8,7 @@ import com.d101.frientree.dto.leaf.response.LeafViewResponse;
 
 import com.d101.frientree.service.LeafService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,8 +52,8 @@ public class LeafController {
             @ApiResponse(responseCode = "500", description = "이파리 생성 실패 (message : \"Server Error\", code : 500, data : null)", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<LeafGenerationResponse> leafGeneration(@RequestBody LeafGenerationRequest leafGenerationRequest) {
-        return leafService.generate(leafGenerationRequest);
+    public ResponseEntity<LeafGenerationResponse> leafGeneration(@RequestHeader ("Date") String createDate, @RequestBody LeafGenerationRequest leafGenerationRequest) {
+        return leafService.generate(leafGenerationRequest, createDate);
     }
 
 
