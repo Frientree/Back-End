@@ -28,4 +28,6 @@ interface UserRepository {
     suspend fun getNaverId(accessToken: String): Result<String>
 
     suspend fun setNotification(isNotificationEnabled: Boolean): Result<Unit>
+
+    suspend fun setBackgroundMusicStatus(isBackgroundMusicEnabled: Boolean): Result<Unit>
 }

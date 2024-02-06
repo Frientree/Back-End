@@ -8,6 +8,7 @@ import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.usecase.mypage.ChangeUserNicknameUseCase
 import com.d101.domain.usecase.mypage.LogOutUseCase
 import com.d101.domain.usecase.mypage.SetAlarmStatusUseCase
+import com.d101.domain.usecase.mypage.SetBackgroundMusicStatusUseCase
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import com.d101.presentation.mapper.UserMapper.toUserUiModel
 import com.d101.presentation.mypage.event.MyPageViewEvent
@@ -29,6 +30,7 @@ class MyPageViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val changeUserNicknameUseCase: ChangeUserNicknameUseCase,
     private val setAlarmStatusUseCase: SetAlarmStatusUseCase,
+    private val setBackgroundMusicStatusUseCase: SetBackgroundMusicStatusUseCase,
     private val logOutUseCase: LogOutUseCase,
 ) : ViewModel() {
 
@@ -192,19 +194,15 @@ class MyPageViewModel @Inject constructor(
     }
 
     private fun setBackgroundMusicStatus() {
-        when (val currentState = _uiState.value) {
-            is MyPageViewState.Default -> {
-                val newStatus =
-                    if (currentState.backgroundMusicStatus == BackgroundMusicStatus.ON) {
-                        BackgroundMusicStatus.OFF
-                    } else {
-                        BackgroundMusicStatus.ON
-                    }
-                _uiState.value = currentState.copy(backgroundMusicStatus = newStatus)
-            }
 
-            else -> {
-                setDefaultState()
+        viewModelScope.launch {
+            when (setBackgroundMusicStatusUseCase(
+                uiState.value.backgroundMusicStatus != BackgroundMusicStatus.ON
+            )) {
+                is Result.Success -> setDefaultState()
+                is Result.Failure -> {
+                    emitEvent(MyPageViewEvent.OnShowToast("배경음악 설정 실패"))
+                }
             }
         }
     }

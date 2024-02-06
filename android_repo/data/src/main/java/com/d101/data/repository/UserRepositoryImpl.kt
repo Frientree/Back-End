@@ -152,4 +152,16 @@ class UserRepositoryImpl @Inject constructor(
 
             is Result.Failure -> Result.Failure(result.errorStatus)
         }
+
+    override suspend fun setBackgroundMusicStatus(isBackgroundMusicEnabled: Boolean): Result<Unit> =
+        runCatching {
+            userDataStore.updateData {
+                it.toBuilder()
+                    .setIsBackgroundMusicEnabled(isBackgroundMusicEnabled)
+                    .build()
+            }
+        }.fold(
+            onSuccess = { Result.Success(Unit) },
+            onFailure = { Result.Failure(ErrorStatus.UnknownError) },
+        )
 }
