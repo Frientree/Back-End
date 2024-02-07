@@ -36,7 +36,7 @@ public class SchedulerServiceImpl {
         mongoEmotionService.deleteEmotion();
     }
 
-    @Scheduled(cron = "0 0 10 * * *")
+    @Scheduled(cron = "0 0 22 * * *") //매일 22:00 실행
     public void notification(){
         fcmService.sendNotificationToActiveUsers("열매 생성!", "아직 열매를 만들지 않았어요!");
     }

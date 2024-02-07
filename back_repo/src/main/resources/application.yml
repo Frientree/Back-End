@@ -99,8 +99,8 @@ spring:
     default-encoding: UTF-8
     host: smtp.gmail.com
     port: 587
-    username: ENC(z1j1Nk1W56xl4DmPRzueB7l/dVzCcNQYkaDFYhWklH8=)
-    password: ENC(NFoW/7TREdbJ07Lvgu2y9G+i2+Lc+ztu1K9a3+7gFG8=)
+    username: ENC(I9h/2otpsvJR0DJ8xeEmseAWT3Dvdgzo0Z1TsZlm6yAKG6Ytm6Drzw==)
+    password: ENC(TQ8TP1LhgRdXrIY7qVHiZTD9U/0aSorjtmlLKAm26zA=)
     properties:
       mail:
         smtp:
@@ -112,3 +112,4 @@ spring:
          transport:
            protocol: smtp
          debug: true
+---
