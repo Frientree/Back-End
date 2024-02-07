@@ -47,7 +47,7 @@ class JuiceRepositoryImpl @Inject constructor(
                     )
                 }
 
-                calendarLocalDataSource.updateFruitEntityList(remoteFruitEntityList).fold(
+                calendarLocalDataSource.insertOrUpdateFruitEntityList(remoteFruitEntityList).fold(
                     onSuccess = {},
                     onFailure = {},
                 )

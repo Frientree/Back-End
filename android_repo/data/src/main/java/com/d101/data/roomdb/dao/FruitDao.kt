@@ -10,21 +10,26 @@ import com.d101.data.roomdb.entity.FruitEntity
 @Dao
 interface FruitDao {
     @Query("SELECT * FROM FruitEntity WHERE date = :date")
-    fun getFruit(date: Long): FruitEntity
+    fun getFruit(date: Long): FruitEntity?
 
     @Query("SELECT * FROM FruitEntity WHERE date BETWEEN :startDate AND :endDate")
     fun getFruitsForWeek(startDate: Long, endDate: Long): List<FruitEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insertFruitsForWeek(fruitEntityList: List<FruitEntity>): List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFruit(fruitEntity: FruitEntity)
 
     @Transaction
-    fun updateFruitEntities(fruits: List<FruitEntity>) {
-        fruits.forEach { fruit ->
-            updateFruit(fruit.date, fruit.score, fruit.calendarImageUrl)
+    fun insertOrUpdateFruitsForWeek(fruitEntityList: List<FruitEntity>) {
+        fruitEntityList.forEach { fruit ->
+            val fetchedFruit = getFruit(fruit.date)
+            if (fetchedFruit == null) {
+                insertFruit(fruit)
+            } else {
+                updateFruit(fruit.date, fruit.score, fruit.calendarImageUrl)
+            }
         }
     }
 
