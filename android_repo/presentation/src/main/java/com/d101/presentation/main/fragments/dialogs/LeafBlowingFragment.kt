@@ -64,7 +64,7 @@ class LeafBlowingFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         startRecording()
-        setListener()
+
         viewLifecycleOwner.repeatOnStarted {
             viewModel.blowing.collect {
                 binding.leafBlowingProgressBar.progress += it
@@ -132,16 +132,21 @@ class LeafBlowingFragment : Fragment() {
         ) {
             val permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
             requestPermissionLauncher.launch(permissions)
-        }
-        audioRecord = AudioRecord(
-            MediaRecorder.AudioSource.MIC,
-            sampleRate,
-            AudioFormat.CHANNEL_IN_DEFAULT,
-            AudioFormat.ENCODING_PCM_16BIT,
-            bufferSize,
-        )
+        } else {
 
-        audioRecord?.startRecording()
+            audioRecord = AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                sampleRate,
+                AudioFormat.CHANNEL_IN_DEFAULT,
+                AudioFormat.ENCODING_PCM_16BIT,
+                bufferSize,
+            )
+
+            audioRecord?.startRecording()
+
+            setListener()
+
+        }
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -162,6 +167,9 @@ class LeafBlowingFragment : Fragment() {
                     intent.data = uri
                     startActivity(intent)
                 }
+            }else{
+                startRecording()
+                setListener()
             }
         }
     }
