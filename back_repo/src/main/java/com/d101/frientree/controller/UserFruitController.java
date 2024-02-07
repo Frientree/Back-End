@@ -1,7 +1,6 @@
 package com.d101.frientree.controller;
 
 
-import com.d101.frientree.dto.user.response.UserConfirmationResponse;
 import com.d101.frientree.dto.userfruit.request.UserFruitTextRequest;
 import com.d101.frientree.dto.userfruit.response.UserFruitCreateResponse;
 import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
@@ -31,7 +30,7 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitCreateResponse.class))),
-            @ApiResponse(responseCode = "503", description = "(message : \"Naver API Error\", code : 503)\n" +
+            @ApiResponse(responseCode = "503", description = "(message : \"Naver API Error\", code : 503)\\n" +
                     "\n" +
                     "(message : \"Python AI API Error\", code : 503)")
     })
@@ -44,7 +43,7 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitCreateResponse.class))),
-            @ApiResponse(responseCode = "503", description = "(message : \"Naver API Error\", code : 503)\n" +
+            @ApiResponse(responseCode = "503", description = "(message : \"Naver API Error\", code : 503)\\n" +
                     "\n" +
                     "(message : \"Python AI API Error\", code : 503)")
     })
@@ -69,7 +68,7 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitTodayInfoResponse.class))),
-            @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)\n" +
+            @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)\\n" +
                     "\n" +
                     "(message : \"User Fruit Not Found\", code : 404)")
     })
