@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -17,6 +16,7 @@ import com.d101.presentation.welcome.event.TermsAgreeEvent
 import com.d101.presentation.welcome.state.TermsAgreeState
 import com.d101.presentation.welcome.viewmodel.TermsAgreeViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -100,7 +100,7 @@ class TermsAgreeFragment : Fragment() {
         findNavController().navigate(R.id.action_termsAgreeFragment_to_signUpFragment)
 
     private fun showToast(message: String) =
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        CustomToast.createAndShow(requireContext(), message)
 
     override fun onDestroyView() {
         super.onDestroyView()

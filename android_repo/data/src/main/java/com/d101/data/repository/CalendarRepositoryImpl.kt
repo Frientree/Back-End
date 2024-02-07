@@ -86,7 +86,7 @@ class CalendarRepositoryImpl @Inject constructor(
             calendarLocalDataSource.getFruitsForWeek(startDate.toLongDate(), endDate.toLongDate())
         if (localFruitEntityList.isNotEmpty() && todayDate.isAfter(endDate.toLocalDate())) {
             val fruitList = localFruitEntityList.mapNotNull {
-                if(it.name.isNotBlank()) it.toFruit() else null
+                if (it.name.isNotBlank()) it.toFruit() else null
             }
             return Result.Success(fruitList)
         }

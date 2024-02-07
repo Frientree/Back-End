@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -22,6 +21,7 @@ import com.d101.presentation.databinding.FragmentSelectInputTypeBinding
 import com.d101.presentation.main.MainActivity
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 
 @AndroidEntryPoint
 class SelectInputTypeFragment : Fragment() {
@@ -102,8 +102,7 @@ class SelectInputTypeFragment : Fragment() {
                 if (shouldShowRequestPermissionRationale(permission)) {
 
                     FruitDialogInterface.dialog.dismiss()
-                    Toast.makeText(activity, "권한을 허용해야 말하기 기능을 이용할 수 있습니다.", Toast.LENGTH_SHORT)
-                        .show()
+                    showToast("권한을 허용해야 말하기 기능을 이용할 수 있습니다.")
                 } else {
                     // '다시 보지 않기' 선택 또는 기타 상황 처리
                     Log.i("Permission", "Permission denied without ask again: $permission")
@@ -115,6 +114,9 @@ class SelectInputTypeFragment : Fragment() {
             }
         }
     }
+
+    private fun showToast(message: String) =
+        CustomToast.createAndShow(requireContext(), message)
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,6 +11,7 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentFruitCreationByTextBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 
 @AndroidEntryPoint
 class FruitCreationByTextFragment : Fragment() {
@@ -47,10 +47,12 @@ class FruitCreationByTextFragment : Fragment() {
                 if (viewModel.inputText.value.isNotEmpty()) {
                     viewModel.onGoFruitLoadingView()
                 } else {
-                    Toast.makeText(context, "텍스트를 채워주세요!", Toast.LENGTH_SHORT).show()
+                    showToast("텍스트를 채워주세요!")
                 }
             }
     }
+
+    private fun showToast(message: String) = CustomToast.createAndShow(requireContext(), message)
 
     override fun onDestroyView() {
         super.onDestroyView()

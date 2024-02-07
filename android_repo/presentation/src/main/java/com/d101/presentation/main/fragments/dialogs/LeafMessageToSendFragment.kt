@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -16,6 +15,7 @@ import com.d101.presentation.main.MainActivity
 import com.d101.presentation.main.state.LeafState
 import com.d101.presentation.main.viewmodel.LeafViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -76,13 +76,14 @@ class LeafMessageToSendFragment : Fragment() {
     private fun sendButton() {
         binding.leafSendButton.setOnClickListener {
             if (binding.leafTextView.text.isNullOrEmpty()) {
-                Toast.makeText(activity, "내용을 채워주세요!", Toast.LENGTH_SHORT).show()
+                showToast("이파리를 입력해주세요!")
             } else {
                 viewModel.onSendLeaf()
             }
         }
     }
 
+    private fun showToast(message: String) = CustomToast.createAndShow(activity, message)
     private fun changeChip() {
         var lastCheckedId = binding.leafCategoryChipGroup.checkedChipId
         binding.leafCategoryChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->

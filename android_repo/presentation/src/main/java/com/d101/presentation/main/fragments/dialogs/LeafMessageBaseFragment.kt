@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -16,6 +15,7 @@ import com.d101.presentation.databinding.FragmentLeafSendMessageBaseBinding
 import com.d101.presentation.main.event.LeafSendViewEvent
 import com.d101.presentation.main.viewmodel.LeafViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -58,18 +58,22 @@ class LeafMessageBaseFragment : DialogFragment() {
 
                     is LeafSendViewEvent.ReadyToSend -> {
                         dialog?.dismiss()
-                        Toast.makeText(activity, "이파리를 보냈어요!", Toast.LENGTH_SHORT).show()
+                        showToast("이파리를 보냈어요!")
                     }
 
                     is LeafSendViewEvent.SendLeaf -> navigateToTargetFragment(LeafBlowingFragment())
 
                     is LeafSendViewEvent.ShowErrorToast -> {
                         dialog?.dismiss()
-                        Toast.makeText(activity, event.message, Toast.LENGTH_SHORT).show()
+                        showToast(event.message)
                     }
                 }
             }
         }
+    }
+
+    private fun showToast(message: String) {
+        CustomToast.createAndShow(requireContext(), message)
     }
 
     private fun navigateToTargetFragment(fragment: Fragment) {

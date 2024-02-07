@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -13,6 +12,7 @@ import com.d101.presentation.databinding.FragmentSignUpBinding
 import com.d101.presentation.welcome.event.SignUpEvent
 import com.d101.presentation.welcome.viewmodel.SignUpViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -76,11 +76,7 @@ class SignUpFragment : Fragment() {
         findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
     }
 
-    private fun showToast(message: String) = Toast.makeText(
-        requireContext(),
-        message,
-        Toast.LENGTH_SHORT,
-    ).show()
+    private fun showToast(message: String) = CustomToast.createAndShow(requireContext(), message)
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -13,7 +13,6 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -30,6 +29,7 @@ import com.d101.presentation.main.viewmodel.MainActivityViewModel
 import com.d101.presentation.music.BackgroundMusicService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.eventFlow.collect { event ->
                 when (event) {
                     is MainActivityEvent.ShowErrorEvent -> {
-                        Toast.makeText(this@MainActivity, event.message, Toast.LENGTH_SHORT).show()
+                        showToast(event.message)
                     }
                 }
             }
@@ -147,6 +147,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun showToast(message: String) = CustomToast.createAndShow(this, message)
 
     private fun initNavigationView() {
         val navHostFragment =
