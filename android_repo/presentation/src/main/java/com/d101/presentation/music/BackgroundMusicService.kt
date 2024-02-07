@@ -59,7 +59,7 @@ class BackgroundMusicService : Service() {
         when (intent.action) {
             PLAY -> {
                 var musicName = intent.getStringExtra(MUSIC_NAME)
-                if(musicName.isNullOrEmpty()){
+                if (musicName.isNullOrEmpty()) {
                     musicName = musicList.first()
                 }
                 playMusic(musicName)

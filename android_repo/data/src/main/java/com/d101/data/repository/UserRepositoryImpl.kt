@@ -48,7 +48,7 @@ class UserRepositoryImpl @Inject constructor(
                                 .setIsBackgroundMusicEnabled(true)
                                 .setBackgroundMusicName("default")
                                 .build()
-                            //TODO default 확인
+                            // TODO default 확인
                         }
                     }
                     Result.Success(userDataStore.data.first().toUser())

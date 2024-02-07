@@ -102,10 +102,11 @@ class SignInFragment : Fragment() {
         requireActivity().startService(
             Intent(
                 requireContext(),
-                BackgroundMusicService::class.java
+                BackgroundMusicService::class.java,
             ).apply {
                 action = PLAY
-            })
+            },
+        )
         val intent = Intent(requireContext(), MainActivity::class.java)
         startActivity(intent)
         requireActivity().finish()

@@ -119,12 +119,15 @@ class MyPageFragment : Fragment() {
                         requireActivity().startService(
                             Intent(
                                 requireContext(),
-                                BackgroundMusicService::class.java
+                                BackgroundMusicService::class.java,
                             ).apply {
                                 action = STOP
-                            })
+                            },
+                        )
                         navigateToWelcomeActivity()
                     }
+
+                    MyPageViewEvent.OnTapSignOutButton -> viewModel.onTapSignOutButton()
                 }
             }
         }

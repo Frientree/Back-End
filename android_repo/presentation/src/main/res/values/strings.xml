@@ -96,5 +96,6 @@
     <string name="now_password">기존 비밀번호</string>
     <string name="new_password">새로운 비밀번호</string>
     <string name="password_mismatch_in_use">현재 사용중인 비밀번호와 일치하지 않습니다.</string>
+    <string name="sign_out">회원 탈퇴</string>
 
 </resources>

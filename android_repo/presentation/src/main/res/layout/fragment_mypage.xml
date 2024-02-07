@@ -9,9 +9,9 @@
             name="myPageViewModel"
             type="com.d101.presentation.mypage.viewmodel.MyPageViewModel" />
 
-        <variable
-            name="alarmStatus"
-            type="com.d101.presentation.mypage.state.AlarmStatus" />
+        <import type="com.d101.presentation.mypage.state.AlarmStatus"/>
+
+        <import type="android.view.View" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -43,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
+            android:visibility="@{myPageViewModel.uiState.isSocial ? View.INVISIBLE : View.VISIBLE}"
             android:orientation="horizontal">
 
             <TextView
@@ -149,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn_small_confirm_green"
                 android:gravity="center"
-                android:onClick="@{() -> myPageViewModel.onTapAlarmStatusButton(alarmStatus.ON)}"
+                android:onClick="@{() -> myPageViewModel.onTapAlarmStatusButton(AlarmStatus.ON)}"
                 android:text="@string/on" />
 
             <TextView
@@ -160,7 +161,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/btn_small_confirm"
-                android:onClick="@{() -> myPageViewModel.onTapAlarmStatusButton(alarmStatus.OFF)}"
+                android:onClick="@{() -> myPageViewModel.onTapAlarmStatusButton(AlarmStatus.OFF)}"
                 android:text="@string/off" />
 
         </LinearLayout>
@@ -236,8 +237,8 @@
             android:orientation="horizontal"
             android:paddingHorizontal="32dp">
 
-            <TextView
-                android:id="@+id/change_password_button_text_view"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/change_password_button"
                 style="@style/Base.FTR.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -249,14 +250,27 @@
                 android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/log_out_button_text_view"
+                android:id="@+id/log_out_button"
                 style="@style/Base.FTR.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/btn_white_lightgray_36dp"
                 android:onClick="@{() -> myPageViewModel.onTapLogOutButton()}"
+                android:layout_marginEnd="16dp"
                 android:text="@string/log_out"
+                android:textSize="16sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/sign_out_button"
+                style="@style/Base.FTR.ElevatedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_white_lightgray_36dp"
+                android:onClick="@{() -> myPageViewModel.onTapLogOutButton()}"
+                android:text="@string/sign_out"
+                android:visibility="@{myPageViewModel.uiState.isSocial ? View.GONE : View.VISIBLE}"
                 android:textSize="16sp" />
 
         </LinearLayout>

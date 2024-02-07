@@ -105,6 +105,10 @@ class MyPageViewModel @Inject constructor(
     fun onTapChangePasswordButtonOccurred() {
     }
 
+    fun onTapSignOutButtonOccurred() {
+        // TODO 회원탈퇴 로직
+    }
+
     fun onTapLogOutButtonOccurred() {
         viewModelScope.launch {
             when (logOutUseCase()) {
@@ -122,6 +126,7 @@ class MyPageViewModel @Inject constructor(
                         val uiModel = result.data.toUserUiModel()
                         _uiState.update {
                             MyPageViewState.Default(
+                                isSocial = uiModel.isSocial,
                                 id = uiModel.userEmail,
                                 nickname = uiModel.userNickname,
                                 backgroundMusicStatus = uiModel.backgroundMusicStatus,
@@ -140,6 +145,7 @@ class MyPageViewModel @Inject constructor(
     private fun setBackgroundMusicSelectState() {
         _uiState.update {
             MyPageViewState.BackgroundMusicSelectState(
+                it.isSocial,
                 it.id,
                 it.nickname,
                 it.backgroundMusicStatus,
@@ -152,6 +158,7 @@ class MyPageViewModel @Inject constructor(
     private fun setEditNicknameState() {
         _uiState.update {
             MyPageViewState.NicknameEditState(
+                it.isSocial,
                 it.id,
                 it.nickname,
                 it.backgroundMusicStatus,
@@ -164,6 +171,7 @@ class MyPageViewModel @Inject constructor(
     private fun setDefaultState() {
         _uiState.update {
             MyPageViewState.Default(
+                it.isSocial,
                 it.id,
                 it.nickname,
                 it.backgroundMusicStatus,
@@ -244,6 +252,7 @@ class MyPageViewModel @Inject constructor(
     fun onTapChangePasswordButton() = emitEvent(MyPageViewEvent.OnTapChangePasswordButton)
 
     fun onTapLogOutButton() = emitEvent(MyPageViewEvent.OnTapLogOutButton)
+    fun onTapSignOutButton() = emitEvent(MyPageViewEvent.OnTapSignOutButton)
 
     private fun emitEvent(event: MyPageViewEvent) = viewModelScope.launch {
         _eventFlow.emit(event)
