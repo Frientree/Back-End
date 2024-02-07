@@ -6,13 +6,13 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserCreateStatusResponse {
+public class UserCreateStatusConfirmationResponse {
 
     private String message;
     private UserCreateStatusResponseDTO data;
 
-    public static UserCreateStatusResponse createUserCreateStatusResponse(String message, UserCreateStatusResponseDTO dto) {
-        return UserCreateStatusResponse.builder()
+    public static UserCreateStatusConfirmationResponse createUserCreateStatusConfirmationResponse(String message, UserCreateStatusResponseDTO dto) {
+        return UserCreateStatusConfirmationResponse.builder()
                 .message(message)
                 .data(dto)
                 .build();

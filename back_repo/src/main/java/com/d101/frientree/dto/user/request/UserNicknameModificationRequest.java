@@ -5,9 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserChangeAlamRequest {
+@AllArgsConstructor
+public class UserNicknameModificationRequest {
 
-    private boolean notification;
+    private String userNickname;
+
 }

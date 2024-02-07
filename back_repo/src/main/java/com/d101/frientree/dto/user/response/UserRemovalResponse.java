@@ -5,13 +5,13 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserDeactivateResponse {
+public class UserRemovalResponse {
 
     private String message;
     private Boolean data;
 
-    public static UserDeactivateResponse createUserDeactivateResponse(String message, Boolean data) {
-        return UserDeactivateResponse.builder()
+    public static UserRemovalResponse createUserRemovalResponse(String message, Boolean data) {
+        return UserRemovalResponse.builder()
                 .message(message)
                 .data(data)
                 .build();

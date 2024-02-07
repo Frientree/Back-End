@@ -5,10 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserChangeNicknameRequest {
+@NoArgsConstructor
+public class UserPasswordModificationRequest {
 
-    private String userNickname;
+    private String userPw;
+    private String newPw;
 
 }

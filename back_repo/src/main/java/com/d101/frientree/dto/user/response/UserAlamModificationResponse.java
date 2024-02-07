@@ -5,13 +5,13 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserChangeAlamResponse {
+public class UserAlamModificationResponse {
 
     private String message;
     private Boolean data;
 
-    public static UserChangeAlamResponse createUserChangeAlamResponse(String message, Boolean data) {
-        return UserChangeAlamResponse.builder()
+    public static UserAlamModificationResponse createUserAlamModificationResponse(String message, Boolean data) {
+        return UserAlamModificationResponse.builder()
                 .message(message)
                 .data(data)
                 .build();
