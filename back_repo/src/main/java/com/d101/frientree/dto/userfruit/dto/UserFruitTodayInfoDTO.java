@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @Builder
 public class UserFruitTodayInfoDTO {
+    private Long fruitNum;
     private String fruitCreateDate;
     private String fruitName;
     private String fruitDescription;
@@ -18,6 +19,7 @@ public class UserFruitTodayInfoDTO {
 
     public static UserFruitTodayInfoDTO createUserFruitTodayInfoDTO(UserFruit userFruit){
         return UserFruitTodayInfoDTO.builder()
+                .fruitNum(userFruit.getFruitDetail().getFruitNum())
                 .fruitCreateDate(userFruit.getUserFruitCreateDate().toString())
                 .fruitName(userFruit.getFruitDetail().getFruitName())
                 .fruitDescription(userFruit.getFruitDetail().getFruitDescription())
