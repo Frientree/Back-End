@@ -1,6 +1,5 @@
 package com.d101.presentation.main.fragments.dialogs
 
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -15,13 +14,11 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentBeforeFruitCreateBaseBinding
 import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
-import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
 class BeforeFruitCreateBaseFragment : DialogFragment() {
-    private val mainViewModel: MainFragmentViewModel by viewModels({ requireParentFragment() })
     private val viewModel: FruitCreateViewModel by viewModels()
     private var _binding: FragmentBeforeFruitCreateBaseBinding? = null
     private val binding get() = _binding!!
@@ -90,10 +87,5 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        mainViewModel.getUserStatus()
     }
 }

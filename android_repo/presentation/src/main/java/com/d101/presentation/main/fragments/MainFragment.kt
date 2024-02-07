@@ -51,8 +51,6 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mainViewModel = viewModel
 
-        viewModel.updateUserStatus()
-
         binding.createFruitButton.setOnClickListener {
             viewModel.onButtonClick()
         }
@@ -119,10 +117,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getUserStatus()
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -6,7 +6,6 @@ import com.d101.domain.model.FruitCreated
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.FruitErrorStatus
-import com.d101.domain.model.status.GetUserStatusErrorStatus
 import com.d101.domain.model.status.TreeErrorStatus
 import com.d101.domain.usecase.main.GetMessageFromTreeUseCase
 import com.d101.domain.usecase.main.GetTodayFruitUseCase
@@ -75,7 +74,6 @@ class MainFragmentViewModel @Inject constructor(
                 }
             }
         }
-        updateUserStatus()
         getUserStatus()
     }
 
@@ -122,48 +120,10 @@ class MainFragmentViewModel @Inject constructor(
         }
     }
 
-    fun updateUserStatus() {
-        viewModelScope.launch {
-            when (val result = manageUserStatusUseCase.updateUserStatus()) {
-                is Result.Success -> {}
-                is Result.Failure -> {
-                    when (result.errorStatus) {
-                        is GetUserStatusErrorStatus.Fail,
-                        -> {
-                            emitEvent(TreeFragmentEvent.ShowErrorEvent("사용자 정보를 업데이트 하는 데 실패했습니다."))
-                        }
-
-                        is GetUserStatusErrorStatus.UserNotFound,
-                        -> {
-                            emitEvent(TreeFragmentEvent.ShowErrorEvent("사용자 정보를 찾을 수 없습니다."))
-                        }
-
-                        is ErrorStatus.NetworkError -> {
-                            emitEvent(TreeFragmentEvent.ShowErrorEvent("네트워크 에러가 발생했습니다."))
-                        }
-
-                        else -> {
-                            emitEvent(TreeFragmentEvent.ShowErrorEvent("알 수 없는 에러가 발생했습니다."))
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun getTodayFruitFromDataModule() {
         val localDate: LocalDate = LocalDate.now()
         viewModelScope.launch(Dispatchers.IO) {
-            when (
-                val result = getTodayFruitUseCase(
-                    String.format(
-                        "%04d-%02d-%02d",
-                        localDate.year,
-                        localDate.monthValue,
-                        localDate.dayOfMonth,
-                    ),
-                )
-            ) {
+            when (val result = getTodayFruitUseCase(localDate.toString())) {
                 is Result.Success -> {
                     todayFruit = result.data
                     emitEvent(TreeFragmentEvent.CheckTodayFruitEvent)
@@ -193,31 +153,23 @@ class MainFragmentViewModel @Inject constructor(
         )
     }
 
-    fun getUserStatus() {
+    private fun getUserStatus() {
         viewModelScope.launch {
-            when (val result = manageUserStatusUseCase.getUserStatus()) {
-                is Result.Success -> {
-                    if (result.data.userFruitStatus) {
-                        _uiState.update {
-                            TreeFragmentViewState.FruitNotCreated(
-                                treeName = it.treeName,
-                                todayDate = it.todayDate,
-                                treeMessage = it.treeMessage,
-                            )
-                        }
-                    } else {
-                        _uiState.update {
-                            TreeFragmentViewState.FruitCreated(
-                                treeName = it.treeName,
-                                todayDate = it.todayDate,
-                                treeMessage = it.treeMessage,
-                            )
-                        }
-                    }
-                }
+            manageUserStatusUseCase.getUserStatus().collect { userStatus ->
+                _uiState.update { currentState ->
+                    when (userStatus.userFruitStatus) {
+                        true -> TreeFragmentViewState.FruitCreated(
+                            treeName = currentState.treeName,
+                            todayDate = initTodayDate(localDate),
+                            treeMessage = currentState.treeMessage,
+                        )
 
-                is Result.Failure -> {
-                    emitEvent(TreeFragmentEvent.ShowErrorEvent("오류가 발생했습니다."))
+                        false -> TreeFragmentViewState.FruitNotCreated(
+                            treeName = currentState.treeName,
+                            todayDate = initTodayDate(localDate),
+                            treeMessage = currentState.treeMessage,
+                        )
+                    }
                 }
             }
         }

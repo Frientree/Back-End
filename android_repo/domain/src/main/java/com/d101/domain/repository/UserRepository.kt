@@ -22,7 +22,7 @@ interface UserRepository {
 
     suspend fun updateUserStatus(): Result<Unit>
 
-    suspend fun getUserStatus(): Result<UserStatus>
+    suspend fun getUserStatus(): Flow<UserStatus>
 
     suspend fun findPassword(userEmail: String): Result<Unit>
 

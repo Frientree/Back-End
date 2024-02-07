@@ -47,9 +47,7 @@ class LeafMessageToSendFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.canSendLeaf()
-
-        sendButton()
+        setSendButton()
         changeChip()
         collectUiState()
     }
@@ -73,7 +71,7 @@ class LeafMessageToSendFragment : Fragment() {
         binding.leafLayout.setBackgroundResource(R.color.main_green)
     }
 
-    private fun sendButton() {
+    private fun setSendButton() {
         binding.leafSendButton.setOnClickListener {
             if (binding.leafTextView.text.isNullOrEmpty()) {
                 Toast.makeText(activity, "내용을 채워주세요!", Toast.LENGTH_SHORT).show()
