@@ -14,6 +14,8 @@ import com.d101.data.datasource.juice.JuiceLocalDataSource
 import com.d101.data.datasource.juice.JuiceLocalDataSourceImpl
 import com.d101.data.datasource.juice.JuiceRemoteDataSource
 import com.d101.data.datasource.juice.JuiceRemoteDataSourceImpl
+import com.d101.data.datasource.leaf.LeafDataSource
+import com.d101.data.datasource.leaf.LeafDataSourceImpl
 import com.d101.data.datasource.terms.TermsDataSource
 import com.d101.data.datasource.terms.TermsDataSourceImpl
 import com.d101.data.datasource.user.UserDataSource
@@ -43,6 +45,12 @@ abstract class DataSourceModule {
     abstract fun bindFruitLocalDataSource(
         fruitLocalDataSourceImpl: FruitLocalDataSourceImpl,
     ): FruitLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindLeafDataSource(
+        leafDataSourceImpl: LeafDataSourceImpl,
+    ): LeafDataSource
 
     @Binds
     @Singleton

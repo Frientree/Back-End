@@ -16,6 +16,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.d101.presentation.R
 import com.d101.presentation.databinding.ActivityMainBinding
+import com.d101.presentation.main.fragments.dialogs.LeafDialogInterface
+import com.d101.presentation.main.fragments.dialogs.LeafMessageBaseFragment
 import com.d101.presentation.main.state.MainActivityViewState
 import com.d101.presentation.main.viewmodel.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -79,6 +81,11 @@ class MainActivity : AppCompatActivity() {
         }
         binding.blur.setOnClickListener {
             controlLeafButton()
+        }
+        binding.writeLeafButton.setOnClickListener {
+            val dialog = LeafMessageBaseFragment()
+            LeafDialogInterface.dialog = dialog
+            dialog.show(supportFragmentManager, "")
         }
         repeatOnStarted {
             viewModel.visibility.collect {

@@ -5,6 +5,7 @@ import com.d101.data.api.AuthService
 import com.d101.data.api.CalendarService
 import com.d101.data.api.FruitService
 import com.d101.data.api.JuiceService
+import com.d101.data.api.LeafService
 import com.d101.data.api.NaverLoginService
 import com.d101.data.api.TermsService
 import com.d101.data.api.UserService
@@ -97,6 +98,13 @@ object ApiModule {
         @FrientreeRetrofit
         retrofit: Retrofit,
     ): FruitService = retrofit.create((FruitService::class.java))
+
+    @Singleton
+    @Provides
+    fun provideLeafApi(
+        @FrientreeRetrofit
+        retrofit: Retrofit,
+    ): LeafService = retrofit.create((LeafService::class.java))
 
     @Singleton
     @Provides

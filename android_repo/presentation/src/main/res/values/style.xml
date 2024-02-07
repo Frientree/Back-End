@@ -176,6 +176,14 @@
         <item name="chipStrokeColor">@color/gray</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:checkable">true</item>
+    </style>
+
+    <style name="Base.FTR.Chip.Leaf" parent="Base.FTR.Chip">
+        <item name="chipBackgroundColor">@color/bg_leaf_chip_selector</item>
+        <item name="chipCornerRadius">16dp</item>
+        <item name="chipStrokeColor">@color/black</item>
+        <item name="android:checkable">true</item>
     </style>
 
     <style name="Base.FTR.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
