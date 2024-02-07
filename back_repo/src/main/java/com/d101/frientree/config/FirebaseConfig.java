@@ -3,31 +3,41 @@ package com.d101.frientree.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 @Configuration
 public class FirebaseConfig {
-    @PostConstruct
-    public void initialize() {
-        try { //Firebase 설정 파일 로드
-            ClassPathResource resource = new ClassPathResource("firebase-service-account.json"); //resources 밑에 있는 json 파일 들고옴
-            GoogleCredentials credentials = GoogleCredentials.fromStream(resource.getInputStream());
+    @Bean
+    FirebaseMessaging firebaseMessaging() throws IOException {
+        ClassPathResource resource = new ClassPathResource("firebase-google-key.json");
 
-            //필요한 추가 설정이 있다면 builder 밑에 추가
+        InputStream refreshToken = resource.getInputStream();
+
+        FirebaseApp firebaseApp = null;
+        List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
+
+        if (firebaseAppList != null && !firebaseAppList.isEmpty()) {
+            for (FirebaseApp app : firebaseAppList) {
+                if (app.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
+                    firebaseApp = app;
+                }
+            }
+        } else {
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(credentials)
+                    .setCredentials(GoogleCredentials.fromStream(refreshToken))
                     .build();
 
-            //FirebaseApp 초기화
-            if (FirebaseApp.getApps().isEmpty()) {
-                FirebaseApp.initializeApp(options);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            firebaseApp = FirebaseApp.initializeApp(options);
         }
+
+        return FirebaseMessaging.getInstance(firebaseApp);
     }
 }
