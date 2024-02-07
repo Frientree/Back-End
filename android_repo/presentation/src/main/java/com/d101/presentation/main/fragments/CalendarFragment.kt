@@ -101,6 +101,7 @@ class CalendarFragment : Fragment() {
                         val intent = Intent(requireContext(), CollectionActivity::class.java)
                         startActivity(intent)
                     }
+
                     is CalendarViewEvent.OnTapJuiceMakingButton -> {
                         viewModel.onTapJuiceMakingButtonOccurred()
                     }

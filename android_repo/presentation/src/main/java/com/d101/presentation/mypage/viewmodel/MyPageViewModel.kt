@@ -11,6 +11,8 @@ import com.d101.domain.usecase.mypage.LogOutUseCase
 import com.d101.domain.usecase.mypage.SetAlarmStatusUseCase
 import com.d101.domain.usecase.mypage.SetBackgroundMusicStatusUseCase
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
+import com.d101.domain.usecase.usermanagement.SignOutUseCase
+import com.d101.domain.usecase.usermanagement.SignOutWithNaverUseCase
 import com.d101.presentation.mapper.UserMapper.toUserUiModel
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
@@ -35,6 +37,8 @@ class MyPageViewModel @Inject constructor(
     private val setBackgroundMusicStatusUseCase: SetBackgroundMusicStatusUseCase,
     private val changeBackgroundMusicUseCase: ChangeBackgroundMusicUseCase,
     private val logOutUseCase: LogOutUseCase,
+    private val signOutUseCase: SignOutUseCase,
+    private val signOutWithNaver: SignOutWithNaverUseCase,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<MyPageViewState> =
@@ -106,8 +110,29 @@ class MyPageViewModel @Inject constructor(
     fun onTapChangePasswordButtonOccurred() {
     }
 
-    fun onTapSignOutButtonOccurred() {
-        // TODO 회원탈퇴 로직
+    fun onSignOutFrientreeUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (signOutUseCase()) {
+                is Result.Success -> logoutAfterSignOut()
+                is Result.Failure -> _eventFlow.emit(MyPageViewEvent.OnShowToast("탈퇴 실패"))
+            }
+        }
+    }
+
+    fun onSignOutWithNaver(naverClientId: String, naverSecret: String, accessToken: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (signOutWithNaver(naverClientId, naverSecret, accessToken)) {
+                is Result.Success -> onSignOutFrientreeUser()
+                is Result.Failure -> _eventFlow.emit(MyPageViewEvent.OnShowToast("탈퇴 실패"))
+            }
+        }
+    }
+
+    private suspend fun logoutAfterSignOut() {
+        when (logOutUseCase()) {
+            is Result.Success -> _eventFlow.emit(MyPageViewEvent.OnLogOut)
+            is Result.Failure -> _eventFlow.emit(MyPageViewEvent.OnShowToast("문제가 발생했습니다"))
+        }
     }
 
     fun onTapLogOutButtonOccurred() {

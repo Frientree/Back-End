@@ -1,9 +1,15 @@
+import java.util.Properties
+
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
+}
+
+val properties = Properties().apply {
+    load(project.rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -20,6 +26,17 @@ android {
             "String",
             "APP_VERSION_NAME",
             "\"${AppConfig.VERSION_NAME}\"",
+        )
+
+        buildConfigField(
+            "String",
+            "NAVER_LOGIN_CLIENT_ID",
+            "\"${properties["NAVER_LOGIN_CLIENT_ID"]}\"",
+        )
+        buildConfigField(
+            "String",
+            "NAVER_LOGIN_CLIENT_SECRET",
+            "\"${properties["NAVER_LOGIN_CLIENT_SECRET"]}\"",
         )
     }
 

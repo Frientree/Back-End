@@ -2,8 +2,8 @@ package com.d101.domain.repository
 
 import com.d101.domain.model.Result
 import com.d101.domain.model.User
-import kotlinx.coroutines.flow.Flow
 import com.d101.domain.model.UserStatus
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
     suspend fun signIn(userId: String, userPw: String): Result<Unit>
@@ -37,4 +37,12 @@ interface UserRepository {
     suspend fun setBackgroundMusicStatus(isBackgroundMusicEnabled: Boolean): Result<Unit>
 
     suspend fun changeBackgroundMusic(musicName: String): Result<Unit>
+
+    suspend fun signOut(): Result<Unit>
+
+    suspend fun signOutWithNaver(
+        naverClientId: String,
+        naverSecret: String,
+        accessToken: String
+    ): Result<Unit>
 }

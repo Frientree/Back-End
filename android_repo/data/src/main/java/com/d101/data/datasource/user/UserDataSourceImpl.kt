@@ -1,5 +1,6 @@
 package com.d101.data.datasource.user
 
+import com.d101.data.api.NaverAuthService
 import com.d101.data.api.NaverLoginService
 import com.d101.data.api.UserService
 import com.d101.data.error.FrientreeHttpError
@@ -24,12 +25,14 @@ import com.d101.domain.model.status.GetUserStatusErrorStatus
 import com.d101.domain.model.status.PassWordChangeErrorStatus
 import com.d101.domain.model.status.PasswordFindErrorStatus
 import com.d101.domain.model.status.SignInErrorStatus
+import kotlinx.coroutines.runBlocking
 import java.io.IOException
 import javax.inject.Inject
 
 class UserDataSourceImpl @Inject constructor(
     private val userService: UserService,
     private val naverLoginService: NaverLoginService,
+    private val naverAuthService: NaverAuthService,
 ) : UserDataSource {
     override suspend fun signIn(
         userId: String,
@@ -299,6 +302,46 @@ class UserDataSourceImpl @Inject constructor(
                 Result.Failure(ErrorStatus.NetworkError)
             } else {
                 Result.Failure(ErrorStatus.UnknownError)
+            }
+        },
+    )
+
+    override suspend fun signOut(): Result<Unit> {
+        return runBlocking {
+            val response = userService.signOut().execute()
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                Result.Failure(ErrorStatus.UnknownError)
+            }
+        }
+    }
+
+    override suspend fun signOutWithNaver(
+        naverClientId: String,
+        naverSecret: String,
+        accessToken: String,
+    ): Result<Unit> = runCatching {
+        naverAuthService.signOutWithNaver(
+            naverClientId,
+            naverSecret,
+            accessToken,
+        )
+    }.fold(
+        onSuccess = {
+            Result.Success(Unit)
+        },
+        onFailure = { e ->
+            if (e is FrientreeHttpError) {
+                when (e.code) {
+                    else -> Result.Failure(ErrorStatus.UnknownError)
+                }
+            } else {
+                if (e is IOException) {
+                    Result.Failure(ErrorStatus.NetworkError)
+                } else {
+                    Result.Failure(ErrorStatus.UnknownError)
+                }
             }
         },
     )
