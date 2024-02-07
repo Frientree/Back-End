@@ -3,7 +3,6 @@ package com.d101.presentation.main.fragments
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentMainBinding
 import com.d101.presentation.main.fragments.dialogs.BeforeFruitCreateBaseFragment
@@ -21,6 +21,10 @@ import com.d101.presentation.main.state.TreeFragmentEvent
 import com.d101.presentation.main.state.TreeMessageState
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -63,6 +67,7 @@ class MainFragment : Fragment() {
                     is TreeMessageState.EnableMessage -> {
                         binding.mainTreeImagebutton.isEnabled = true
                     }
+
                     is TreeMessageState.NoAccessMessage -> {
                         binding.mainTreeImagebutton.isEnabled = false
                     }
@@ -90,6 +95,7 @@ class MainFragment : Fragment() {
                     is TreeFragmentEvent.ShowErrorEvent -> {
                         Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
                     }
+
                     is TreeFragmentEvent.ChangeTreeMessage -> {
                         typingAnimation(it.message)
                     }
@@ -97,16 +103,19 @@ class MainFragment : Fragment() {
             }
         }
     }
+
     private fun typingAnimation(message: String) {
         val sb = StringBuilder()
-        var startDelay: Long = 200
-        for (idx in 0 until message.length) {
-            Handler().postDelayed({
-                sb.append(message[idx])
-                binding.treeSpeechTextview.text = sb
-                if (idx == message.length - 1) viewModel.enableMessage()
-            }, startDelay)
-            startDelay += 50
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            message.forEach {
+                delay(50L)
+                sb.append(it)
+                withContext(Dispatchers.Main) {
+                    binding.treeSpeechTextview.text = sb
+                }
+            }
+            viewModel.enableMessage()
         }
     }
 
