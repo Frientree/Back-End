@@ -1,0 +1,15 @@
+boto3 <=1.15.18
+gluonnlp >= 0.6.0, <=0.10.0
+mxnet >= 1.4.0, <=1.7.0.post2
+onnxruntime == 1.8.0, <=1.8.0
+sentencepiece >= 0.1.6, <=0.1.96
+torch >= 1.7.0, <=1.10.1
+transformers >= 4.8.1, <=4.8.1
+pandas == 1.1.5
+scikit-learn == 1.0.2
+fastapi == 0.103.2
+uvicorn == 0.22.0
+
+# 만약 gpu의 cuda가 sm_86일 경우(rtx3000번대 이상일 경우), 위에서 torch 부분을 지우고
+# pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html
+# 이거로 torch 설치한다음 나머지 pip install -r requirements.txt 하면 된다.
