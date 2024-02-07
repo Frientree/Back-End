@@ -4,9 +4,11 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
@@ -19,6 +21,7 @@ import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -43,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     }
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var navController: NavController
+    private lateinit var tokenReceiver: BroadcastReceiver
 
     var musicService: BackgroundMusicService? = null
     private var isBound = false
@@ -72,6 +76,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initNavigationView()
+        initTokenReceiver()
+
         receiveFCMToken()
 
         repeatOnStarted {
@@ -140,6 +146,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun initTokenReceiver() {
+        tokenReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.getStringExtra("TOKEN")?.let {
+                    uploadToken(it)
+                }
+            }
+        }
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            tokenReceiver,
+            IntentFilter("FCM_NEW_TOKEN"),
+        )
     }
 
     private fun receiveFCMToken() {
@@ -334,9 +355,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun uploadToken(token: String){
+        viewModel.uploadToken(token)
+    }
+
     companion object {
         const val CHANNEL_ID = "FRIENTREE_MESSAGING_CHANNEL"
-        fun uploadToken(token: String) {
+//        fun uploadToken(token: String) {
 //            val storeService = ApplicationClass.retrofit.create(FirebaseTokenService::class.java)
 //            storeService.uploadToken(token).enqueue(object : Callback<String> {
 //                override fun onResponse(call: Call<String>, response: Response<String>) {
@@ -351,7 +376,7 @@ class MainActivity : AppCompatActivity() {
 //                    Log.d(TAG, t.message ?: "토큰 정보 등록 중 통신오류")
 //                }
 //            })
-        }
+//        }
 
         const val DURATION = 400L
         const val WRITE_UP = 0

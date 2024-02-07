@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.d101.presentation.main.MainActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -11,7 +12,11 @@ import com.google.firebase.messaging.RemoteMessage
 class FireBaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        MainActivity.uploadToken(token)
+        Intent().also { intent ->
+            intent.action = "FCM_NEW_TOKEN"
+            intent.putExtra("TOKEN", token)
+            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
+        }
     }
     override fun onMessageReceived(message: RemoteMessage) {
         var messageTitle = ""
