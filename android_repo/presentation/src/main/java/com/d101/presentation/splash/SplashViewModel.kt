@@ -47,7 +47,7 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    private fun checkSignInStatus() {
+    fun checkSignInStatus() {
         viewModelScope.launch {
             getUserInfoUseCase().collect {
                 when (it) {
@@ -64,6 +64,11 @@ class SplashViewModel @Inject constructor(
             }
         }
     }
+
+    private fun onSetBackGroundMusic(backgroundMusicName: String) {
+        emitEvent(SplashViewEvent.SetBackGroundMusic(backgroundMusicName))
+    }
+
     private fun emitEvent(event: SplashViewEvent) {
         viewModelScope.launch {
             _eventFlow.emit(event)
@@ -72,10 +77,6 @@ class SplashViewModel @Inject constructor(
 
     private fun onSignInSuccess() {
         emitEvent(SplashViewEvent.AutoSignInSuccess)
-    }
-
-    private fun onSetBackGroundMusic(musicName: String) {
-        emitEvent(SplashViewEvent.SetBackGroundMusic(musicName))
     }
 
     private fun onSignInFailed() {
