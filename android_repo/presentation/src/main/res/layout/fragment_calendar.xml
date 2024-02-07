@@ -164,7 +164,7 @@
                     android:minHeight="140dp"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="16dp"
-                    android:src="@{viewModel.uiState.juice.juiceImageUrl}"
+                    imageUrl="@{viewModel.uiState.juice.juiceImageUrl}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintWidth_percent="0.33" />
@@ -181,13 +181,12 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginHorizontal="24dp"
                     android:layout_marginVertical="12dp"
                     android:gravity="center_horizontal"
                     android:text="@{viewModel.uiState.juice.juiceDescription}"
-                    android:textAppearance="@style/Base.FTR.Text.Small"
-                    app:layout_constraintBottom_toBottomOf="@id/juice_image_image_view"
+                    android:autoSizeTextType="uniform"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/juice_image_image_view"
                     app:layout_constraintTop_toBottomOf="@id/juice_name_text_view" />

@@ -1,12 +1,17 @@
 package com.d101.presentation.mypage.viewmodel
 
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
+import com.d101.domain.usecase.mypage.ChangeBackgroundMusicUseCase
 import com.d101.domain.usecase.mypage.ChangeUserNicknameUseCase
 import com.d101.domain.usecase.mypage.LogOutUseCase
+import com.d101.domain.usecase.mypage.SetAlarmStatusUseCase
+import com.d101.domain.usecase.mypage.SetBackgroundMusicStatusUseCase
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
+import com.d101.presentation.mapper.UserMapper.toUserUiModel
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
 import com.d101.presentation.mypage.state.BackgroundMusicStatus
@@ -26,6 +31,9 @@ import javax.inject.Inject
 class MyPageViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val changeUserNicknameUseCase: ChangeUserNicknameUseCase,
+    private val setAlarmStatusUseCase: SetAlarmStatusUseCase,
+    private val setBackgroundMusicStatusUseCase: SetBackgroundMusicStatusUseCase,
+    private val changeBackgroundMusicUseCase: ChangeBackgroundMusicUseCase,
     private val logOutUseCase: LogOutUseCase,
 ) : ViewModel() {
 
@@ -40,50 +48,6 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.Init) }
     }
 
-    fun onTapNicknameEditButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapNicknameEditButton) }
-    }
-
-    fun onTapNicknameEditCancelButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapNicknameEditCancelButton) }
-    }
-
-    fun onTapNicknameConfirmButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapNicknameConfirmButton) }
-    }
-
-    fun onTapAlarmStatusButton(alarmStatus: AlarmStatus) {
-        viewModelScope.launch {
-            _eventFlow.emit(MyPageViewEvent.OnTapAlarmStatusButton(alarmStatus))
-        }
-    }
-
-    fun onTapBackgroundMusicStatusButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapBackgroundMusicStatusButton) }
-    }
-
-    fun onTapBackgroundMusicChangeButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapBackgroundMusicChangeButton) }
-    }
-
-    fun onBackgroundMusicChanged(musicName: String) {
-        viewModelScope.launch {
-            _eventFlow.emit(MyPageViewEvent.OnBackgroundMusicChanged(musicName))
-        }
-    }
-
-    fun onTapTermsButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapTermsButton) }
-    }
-
-    fun onTapChangePasswordButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapChangePasswordButton) }
-    }
-
-    fun onTapLogOutButton() {
-        viewModelScope.launch { _eventFlow.emit(MyPageViewEvent.OnTapLogOutButton) }
-    }
-
     fun onTapNicknameEditButtonOccurred() {
         setEditNicknameState()
     }
@@ -95,7 +59,10 @@ class MyPageViewModel @Inject constructor(
     fun onChangeNicknameOccurred(nicknameInput: String) {
         viewModelScope.launch {
             when (val result = changeUserNicknameUseCase(nicknameInput)) {
-                is Result.Success -> onNicknameChanged(result.data)
+                is Result.Success -> {
+                    setDefaultState()
+                }
+
                 is Result.Failure -> when (result.errorStatus) {
                     is ErrorStatus.BadRequest -> {
                         _eventFlow.emit(MyPageViewEvent.OnShowToast("닉네임은 1글자 이상 8글자 이하로 입력해주세요"))
@@ -109,16 +76,12 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-    private fun onNicknameChanged(newNickname: String) {
-        _uiState.update {
-            MyPageViewState.Default(
-                id = it.id,
-                nickname = newNickname,
-                backgroundMusicStatus = it.backgroundMusicStatus,
-                alarmStatus = it.alarmStatus,
-                backgroundMusic = it.backgroundMusic,
-            )
+    fun onEditorAction(actionId: Int): Boolean {
+        if (actionId == EditorInfo.IME_ACTION_DONE) {
+            onTapNicknameConfirmButton()
+            return true
         }
+        return false
     }
 
     fun onTapAlarmStatusButtonOccurred(alarmStatus: AlarmStatus) {
@@ -143,6 +106,10 @@ class MyPageViewModel @Inject constructor(
     fun onTapChangePasswordButtonOccurred() {
     }
 
+    fun onTapSignOutButtonOccurred() {
+        // TODO 회원탈퇴 로직
+    }
+
     fun onTapLogOutButtonOccurred() {
         viewModelScope.launch(Dispatchers.IO) {
             when (logOutUseCase()) {
@@ -154,20 +121,24 @@ class MyPageViewModel @Inject constructor(
 
     fun onInitOccurred() {
         viewModelScope.launch {
-            when (val result = getUserInfoUseCase()) {
-                is Result.Success -> {
-                    _uiState.update {
-                        MyPageViewState.Default(
-                            id = result.data.userEmail,
-                            nickname = result.data.userNickname,
-                            backgroundMusicStatus = BackgroundMusicStatus.ON,
-                            alarmStatus = AlarmStatus.ON,
-                            backgroundMusic = "봄날",
-                        )
+            getUserInfoUseCase().collect { result ->
+                when (result) {
+                    is Result.Success -> {
+                        val uiModel = result.data.toUserUiModel()
+                        _uiState.update {
+                            MyPageViewState.Default(
+                                isSocial = uiModel.isSocial,
+                                id = uiModel.userEmail,
+                                nickname = uiModel.userNickname,
+                                backgroundMusicStatus = uiModel.backgroundMusicStatus,
+                                alarmStatus = uiModel.alarmStatus,
+                                backgroundMusic = uiModel.backgroundMusicName,
+                            )
+                        }
                     }
-                }
 
-                is Result.Failure -> {}
+                    is Result.Failure -> {}
+                }
             }
         }
     }
@@ -175,6 +146,7 @@ class MyPageViewModel @Inject constructor(
     private fun setBackgroundMusicSelectState() {
         _uiState.update {
             MyPageViewState.BackgroundMusicSelectState(
+                it.isSocial,
                 it.id,
                 it.nickname,
                 it.backgroundMusicStatus,
@@ -187,6 +159,7 @@ class MyPageViewModel @Inject constructor(
     private fun setEditNicknameState() {
         _uiState.update {
             MyPageViewState.NicknameEditState(
+                it.isSocial,
                 it.id,
                 it.nickname,
                 it.backgroundMusicStatus,
@@ -199,6 +172,7 @@ class MyPageViewModel @Inject constructor(
     private fun setDefaultState() {
         _uiState.update {
             MyPageViewState.Default(
+                it.isSocial,
                 it.id,
                 it.nickname,
                 it.backgroundMusicStatus,
@@ -209,42 +183,79 @@ class MyPageViewModel @Inject constructor(
     }
 
     private fun setAlarmStatus(alarmStatus: AlarmStatus) {
-        when (val currentState = _uiState.value) {
-            is MyPageViewState.Default ->
-                _uiState.value =
-                    currentState.copy(alarmStatus = alarmStatus)
+        viewModelScope.launch {
+            when (val result = setAlarmStatusUseCase(alarmStatus == AlarmStatus.ON)) {
+                is Result.Success -> {
+                    setDefaultState()
+                }
 
-            is MyPageViewState.NicknameEditState -> {}
-            is MyPageViewState.BackgroundMusicSelectState -> {}
+                is Result.Failure -> {
+                    when (result.errorStatus) {
+                        is ErrorStatus.BadRequest -> {
+                            emitEvent(MyPageViewEvent.OnShowToast("알람 설정 실패"))
+                        }
+
+                        else -> {
+                            emitEvent(MyPageViewEvent.OnShowToast("네트워크 에러"))
+                        }
+                    }
+                }
+            }
         }
     }
 
     private fun setBackgroundMusicStatus() {
-        when (val currentState = _uiState.value) {
-            is MyPageViewState.Default -> {
-                val newStatus =
-                    if (currentState.backgroundMusicStatus == BackgroundMusicStatus.ON) {
-                        BackgroundMusicStatus.OFF
-                    } else {
-                        BackgroundMusicStatus.ON
-                    }
-                _uiState.value = currentState.copy(backgroundMusicStatus = newStatus)
+        viewModelScope.launch {
+            when (
+                setBackgroundMusicStatusUseCase(
+                    uiState.value.backgroundMusicStatus != BackgroundMusicStatus.ON,
+                )
+            ) {
+                is Result.Success -> setDefaultState()
+                is Result.Failure -> {
+                    emitEvent(MyPageViewEvent.OnShowToast("배경음악 설정 실패"))
+                }
             }
-
-            is MyPageViewState.NicknameEditState -> {}
-            is MyPageViewState.BackgroundMusicSelectState -> {}
         }
     }
 
     private fun changeBackgroundMusic(newBackgroundMusic: String) {
-        _uiState.update {
-            MyPageViewState.Default(
-                it.id,
-                it.nickname,
-                it.backgroundMusicStatus,
-                it.alarmStatus,
-                newBackgroundMusic,
-            )
+        viewModelScope.launch {
+            when (changeBackgroundMusicUseCase(newBackgroundMusic)) {
+                is Result.Success -> setDefaultState()
+                is Result.Failure -> {
+                    emitEvent(MyPageViewEvent.OnShowToast("배경음악 변경 실패"))
+                }
+            }
         }
+    }
+
+    fun onTapNicknameEditButton() = emitEvent(MyPageViewEvent.OnTapNicknameEditButton)
+
+    fun onTapNicknameEditCancelButton() = emitEvent(MyPageViewEvent.OnTapNicknameEditCancelButton)
+
+    fun onTapNicknameConfirmButton() = emitEvent(MyPageViewEvent.OnTapNicknameConfirmButton)
+
+    fun onTapAlarmStatusButton(alarmStatus: AlarmStatus) =
+        emitEvent(MyPageViewEvent.OnTapAlarmStatusButton(alarmStatus))
+
+    fun onTapBackgroundMusicStatusButton() =
+        emitEvent(MyPageViewEvent.OnTapBackgroundMusicStatusButton)
+
+    fun onTapBackgroundMusicChangeButton() =
+        emitEvent(MyPageViewEvent.OnTapBackgroundMusicChangeButton)
+
+    fun onBackgroundMusicChanged(musicName: String) =
+        emitEvent(MyPageViewEvent.OnBackgroundMusicChanged(musicName))
+
+    fun onTapTermsButton() = emitEvent(MyPageViewEvent.OnTapTermsButton)
+
+    fun onTapChangePasswordButton() = emitEvent(MyPageViewEvent.OnTapChangePasswordButton)
+
+    fun onTapLogOutButton() = emitEvent(MyPageViewEvent.OnTapLogOutButton)
+    fun onTapSignOutButton() = emitEvent(MyPageViewEvent.OnTapSignOutButton)
+
+    private fun emitEvent(event: MyPageViewEvent) = viewModelScope.launch {
+        _eventFlow.emit(event)
     }
 }

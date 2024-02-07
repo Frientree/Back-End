@@ -10,6 +10,9 @@ import androidx.core.app.ActivityCompat
 import com.d101.presentation.BuildConfig
 import com.d101.presentation.R
 import com.d101.presentation.main.MainActivity
+import com.d101.presentation.music.BackgroundMusicService
+import com.d101.presentation.music.BackgroundMusicService.Companion.MUSIC_NAME
+import com.d101.presentation.music.BackgroundMusicService.Companion.PLAY
 import com.d101.presentation.welcome.WelcomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 import utils.CustomToast
@@ -34,6 +37,7 @@ class SplashActivity : AppCompatActivity() {
                     SplashViewEvent.AutoSignInSuccess -> navigateToMain()
                     is SplashViewEvent.CheckAppStatus -> checkAppStatus(event)
                     SplashViewEvent.OnFailCheckAppStatus -> showToast("App Status check failed")
+                    is SplashViewEvent.SetBackGroundMusic -> startMusicService(event.musicName)
                 }
             }
         }
@@ -97,5 +101,14 @@ class SplashActivity : AppCompatActivity() {
         val intent = Intent(this, WelcomeActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun startMusicService(musicName: String) {
+        startService(
+            Intent(this, BackgroundMusicService::class.java).apply {
+                action = PLAY
+                putExtra(MUSIC_NAME, musicName)
+            },
+        )
     }
 }

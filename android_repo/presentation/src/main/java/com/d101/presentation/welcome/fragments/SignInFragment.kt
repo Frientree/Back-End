@@ -14,6 +14,8 @@ import com.d101.domain.model.Result
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentSignInBinding
 import com.d101.presentation.main.MainActivity
+import com.d101.presentation.music.BackgroundMusicService
+import com.d101.presentation.music.BackgroundMusicService.Companion.PLAY
 import com.d101.presentation.welcome.event.SignInViewEvent
 import com.d101.presentation.welcome.viewmodel.SignInViewModel
 import com.navercorp.nid.NaverIdLoginSDK
@@ -97,6 +99,14 @@ class SignInFragment : Fragment() {
         }
 
     private fun navigateToMainScreen() {
+        requireActivity().startService(
+            Intent(
+                requireContext(),
+                BackgroundMusicService::class.java,
+            ).apply {
+                action = PLAY
+            },
+        )
         val intent = Intent(requireContext(), MainActivity::class.java)
         startActivity(intent)
         requireActivity().finish()

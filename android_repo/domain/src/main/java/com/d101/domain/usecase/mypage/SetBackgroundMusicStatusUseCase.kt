@@ -3,8 +3,8 @@ package com.d101.domain.usecase.mypage
 import com.d101.domain.repository.UserRepository
 import javax.inject.Inject
 
-class ChangeBackgroundMusicUseCase @Inject constructor(
+class SetBackgroundMusicStatusUseCase @Inject constructor(
     private val repository: UserRepository,
 ) {
-    suspend operator fun invoke(musicName: String) = repository.changeBackgroundMusic(musicName)
+    suspend operator fun invoke(status: Boolean) = repository.setBackgroundMusicStatus(status)
 }

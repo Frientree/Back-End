@@ -2,14 +2,13 @@ package com.d101.domain.repository
 
 import com.d101.domain.model.Result
 import com.d101.domain.model.User
+import kotlinx.coroutines.flow.Flow
 import com.d101.domain.model.UserStatus
 
 interface UserRepository {
     suspend fun signIn(userId: String, userPw: String): Result<Unit>
 
-    suspend fun getUserInfo(): Result<User>
-
-    suspend fun checkSignInStatus(): Result<Unit>
+    suspend fun getUserInfo(): Flow<Result<User>>
 
     suspend fun changeUserNickname(nickname: String): Result<String>
 
@@ -32,4 +31,10 @@ interface UserRepository {
     suspend fun signInNaver(code: String): Result<Unit>
 
     suspend fun getNaverId(accessToken: String): Result<String>
+
+    suspend fun setNotification(isNotificationEnabled: Boolean): Result<Unit>
+
+    suspend fun setBackgroundMusicStatus(isBackgroundMusicEnabled: Boolean): Result<Unit>
+
+    suspend fun changeBackgroundMusic(musicName: String): Result<Unit>
 }
