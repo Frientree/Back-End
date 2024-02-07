@@ -3,8 +3,8 @@ package com.d101.presentation.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
-import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import com.d101.domain.usecase.appStatus.GetAppStatusUseCase
+import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay

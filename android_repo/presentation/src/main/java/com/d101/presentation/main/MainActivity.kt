@@ -164,17 +164,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun receiveFCMToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w("FCM", "FCM 토큰 얻기에 실패하였습니다.", task.exception)
-                return@OnCompleteListener
-            }
-            // token log 남기기
-            Log.d("FCM", "token: ${task.result?:"task.result is null"}")
-            if(task.result != null){
-                uploadToken(task.result!!)
-            }
-        })
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("FCM", "FCM 토큰 얻기에 실패하였습니다.", task.exception)
+                    return@OnCompleteListener
+                }
+                // token log 남기기
+                Log.d("FCM", "token: ${task.result ?: "task.result is null"}")
+                if (task.result != null) {
+                    uploadToken(task.result!!)
+                }
+            },
+        )
         createNotificationChannel(CHANNEL_ID, "FRIENTREE")
     }
 
@@ -182,11 +184,10 @@ class MainActivity : AppCompatActivity() {
         val importance = NotificationManager.IMPORTANCE_DEFAULT
         val channel = NotificationChannel(id, name, importance)
 
-        val notificationManager: NotificationManager
-            = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
-
 
     private fun initNavigationView() {
         val navHostFragment =
@@ -355,7 +356,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun uploadToken(token: String){
+    fun uploadToken(token: String) {
         viewModel.uploadToken(token)
     }
 

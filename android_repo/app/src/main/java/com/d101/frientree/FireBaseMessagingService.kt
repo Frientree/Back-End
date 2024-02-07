@@ -22,12 +22,11 @@ class FireBaseMessagingService : FirebaseMessagingService() {
         var messageTitle = ""
         var messageContent = ""
 
-        if(message.notification != null){
-            //foreground
-            messageTitle= message.notification!!.title.toString()
+        if (message.notification != null) {
+            // foreground
+            messageTitle = message.notification!!.title.toString()
             messageContent = message.notification!!.body.toString()
-
-        }else{
+        } else {
             val data = message.data
             Log.d("FCM", "data.message: $data")
             Log.d("FCM", "data.message: ${data["title"]}")
@@ -41,7 +40,12 @@ class FireBaseMessagingService : FirebaseMessagingService() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
 
-        val mainPendingIntent: PendingIntent = PendingIntent.getActivity(this, 0, mainIntent, PendingIntent.FLAG_IMMUTABLE)
+        val mainPendingIntent: PendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            mainIntent,
+            PendingIntent.FLAG_IMMUTABLE,
+        )
 
         val builder1 = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
@@ -49,6 +53,5 @@ class FireBaseMessagingService : FirebaseMessagingService() {
             .setContentText(messageContent)
             .setAutoCancel(true)
             .setContentIntent(mainPendingIntent)
-
     }
 }
