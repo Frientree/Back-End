@@ -105,7 +105,7 @@ class MainFragmentViewModel @Inject constructor(
         }
     }
 
-    private fun getTodayFruitFromDataModule() {
+    private fun getTodayFruit() {
         val localDate: LocalDate = LocalDate.now()
         viewModelScope.launch(Dispatchers.IO) {
             when (
@@ -180,7 +180,7 @@ class MainFragmentViewModel @Inject constructor(
     fun onButtonClick() {
         when (_uiState.value) {
             is TreeFragmentViewState.FruitCreated -> {
-                getTodayFruitFromDataModule()
+                getTodayFruit()
             }
 
             is TreeFragmentViewState.FruitNotCreated -> {

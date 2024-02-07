@@ -9,4 +9,5 @@ sealed class FruitErrorStatus : ErrorStatus {
 
     data object LocalInsertError : FruitErrorStatus()
     data object LocalGetError : FruitErrorStatus()
+    data object UserFruitNotFound : FruitErrorStatus()
 }
