@@ -32,7 +32,7 @@ class MainFragmentViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<TreeFragmentViewState>(
-        TreeFragmentViewState.FruitNotCreated("", "", ""),
+        TreeFragmentViewState.FruitNotCreated("", "", "안녕 난 프렌트리야!"),
     )
     val uiState = _uiState.asStateFlow()
 
