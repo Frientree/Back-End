@@ -2,12 +2,15 @@ package com.d101.presentation.main
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -26,6 +29,8 @@ import com.d101.presentation.main.fragments.dialogs.LeafMessageBaseFragment
 import com.d101.presentation.main.state.MainActivityViewState
 import com.d101.presentation.main.viewmodel.MainActivityViewModel
 import com.d101.presentation.music.BackgroundMusicService
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import utils.repeatOnStarted
@@ -67,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initNavigationView()
+        receiveFCMToken()
 
         repeatOnStarted {
             viewModel.currentViewState.collect {
@@ -135,6 +141,31 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun receiveFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w("FCM", "FCM 토큰 얻기에 실패하였습니다.", task.exception)
+                return@OnCompleteListener
+            }
+            // token log 남기기
+            Log.d("FCM", "token: ${task.result?:"task.result is null"}")
+            if(task.result != null){
+                uploadToken(task.result!!)
+            }
+        })
+        createNotificationChannel(CHANNEL_ID, "FRIENTREE")
+    }
+
+    private fun createNotificationChannel(id: String, name: String) {
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(id, name, importance)
+
+        val notificationManager: NotificationManager
+            = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
 
     private fun initNavigationView() {
         val navHostFragment =
@@ -304,6 +335,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val CHANNEL_ID = "FRIENTREE_MESSAGING_CHANNEL"
+        fun uploadToken(token: String) {
+//            val storeService = ApplicationClass.retrofit.create(FirebaseTokenService::class.java)
+//            storeService.uploadToken(token).enqueue(object : Callback<String> {
+//                override fun onResponse(call: Call<String>, response: Response<String>) {
+//                    if(response.isSuccessful){
+//                        val res = response.body()
+//                        Log.d(TAG, "onResponse: $res")
+//                    } else {
+//                        Log.d(TAG, "onResponse: Error Code ${response.code()}")
+//                    }
+//                }
+//                override fun onFailure(call: Call<String>, t: Throwable) {
+//                    Log.d(TAG, t.message ?: "토큰 정보 등록 중 통신오류")
+//                }
+//            })
+        }
+
         const val DURATION = 400L
         const val WRITE_UP = 0
         const val READ_UP = 1

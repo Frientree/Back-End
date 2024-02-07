@@ -4,7 +4,6 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -56,7 +55,6 @@ dependencies {
     implementation(Libraries.coreKtx)
     implementation(Libraries.appCompat)
     implementation(Libraries.material)
-    implementation("com.google.android.gms:play-services-fido:20.1.0")
     implementation(project(mapOf("path" to ":data")))
     testImplementation(Libraries.junit)
     androidTestImplementation(Libraries.androidxJunit)
@@ -84,9 +82,8 @@ dependencies {
 
     implementation(Libraries.naverOAuth)
 
-    // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
-    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.android.gms:play-services-fido:20.1.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
 }
 kapt {
     correctErrorTypes = true
