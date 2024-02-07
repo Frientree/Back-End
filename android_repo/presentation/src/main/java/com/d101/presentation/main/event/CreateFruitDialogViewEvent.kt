@@ -1,4 +1,4 @@
-package com.d101.presentation.main.state
+package com.d101.presentation.main.event
 
 sealed class CreateFruitDialogViewEvent {
     data object SelectInputTypeViewEvent : CreateFruitDialogViewEvent()

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.d101.presentation.main.viewmodel.LeafViewModel" />
+            type="com.d101.presentation.main.viewmodel.LeafSendViewModel" />
 
     </data>
 
