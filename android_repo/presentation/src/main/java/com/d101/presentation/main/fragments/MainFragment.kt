@@ -17,7 +17,6 @@ import com.d101.presentation.main.event.TreeFragmentEvent
 import com.d101.presentation.main.fragments.dialogs.BeforeFruitCreateBaseFragment
 import com.d101.presentation.main.fragments.dialogs.FruitDialogInterface
 import com.d101.presentation.main.fragments.dialogs.TodayFruitFragment
-import com.d101.presentation.main.state.TreeFragmentEvent
 import com.d101.presentation.main.state.TreeMessageState
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint

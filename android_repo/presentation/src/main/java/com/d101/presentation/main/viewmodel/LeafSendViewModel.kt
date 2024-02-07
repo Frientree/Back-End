@@ -42,7 +42,7 @@ class LeafSendViewModel @Inject constructor(
             manageUserStatusUseCase.getUserStatus().collect {
                 if (it.userLeafStatus.not()) {
                     _uiState.update { currentState ->
-                        LeafState.AlreadySendState(
+                        LeafSendViewState.AlreadySendState(
                             currentState.leafSendTitle,
                             currentState.leafSendTitle
                         )
@@ -59,45 +59,18 @@ class LeafSendViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = sendLeafUseCase.getMyLeafViews()) {
                 is Result.Success -> {
-                    setLeafTitle(result.data)
-                }
-                is Result.Failure -> {
-                    when (result.errorStatus) {
-                        LeafErrorStatus.NoSendLeaf -> {
-                            setLeafTitle(LeafViews.NO_SEND.count)
-                        }
-                        else -> {
-                        }
-                    }
-                }
-            }
-        }
-    }
-    private fun setLeafTitle(count: Int) {
-        when (count) {
-            LeafViews.ZERO_VIEW.count -> {
-                _uiState.update { it }
-            }
-            LeafViews.NO_SEND.count -> {
-                _uiState.update { LeafSendViewState.NoSendLeafSendViewState() }
-            }
-            else -> {
-                _uiState.update {
-                    LeafSendViewState.SomeViewLeafSateSendView(
-                        "당신의 이파리가 일주일간 ${count}명에게 힘이 되었어요!",
-                    )
                     when (result.data) {
                         LeafViews.ZERO_VIEW.count -> {
-                            _uiState.update { LeafState.ZeroViewLeafState() }
+                            _uiState.update { LeafSendViewState.ZeroViewLeafSendViewState() }
                         }
 
                         LeafViews.NO_SEND.count -> {
-                            _uiState.update { LeafState.NoSendLeafState() }
+                            _uiState.update { LeafSendViewState.NoSendLeafSendViewState() }
                         }
 
                         else -> {
                             _uiState.update {
-                                LeafState.SomeViewLeafState(
+                                LeafSendViewState.SomeViewLeafSateSendView(
                                     "당신의 이파리가 일주일간 ${result.data}명에게 힘이 되었어요!",
                                 )
                             }
@@ -108,7 +81,7 @@ class LeafSendViewModel @Inject constructor(
                 is Result.Failure -> {
                     when (result.errorStatus) {
                         LeafErrorStatus.NoSendLeaf -> {
-                            _uiState.update { LeafState.NoSendLeafState() }
+                            _uiState.update { LeafSendViewState.NoSendLeafSendViewState() }
                         }
 
                         else -> {
@@ -124,21 +97,6 @@ class LeafSendViewModel @Inject constructor(
             _leafEventFlow.emit(event)
         }
     }
-    fun canSendLeaf() {
-        viewModelScope.launch {
-            when (val result = manageUserStatusUseCase.getUserStatus()) {
-                is Result.Success -> {
-                    if (!result.data.userLeafStatus) {
-                        _uiState.update {
-                            LeafSendViewState.AlreadySendState(it.leafSendTitle, it.leafSendTitle)
-                        }
-                    }
-                }
-                is Result.Failure -> {}
-            }
-        }
-    }
-
     fun onSendLeaf() {
         emitEvent(LeafSendViewEvent.SendLeaf)
     }
