@@ -15,7 +15,7 @@ public interface UserFruitService {
 
     ResponseEntity<UserFruitCreateResponse> speechToTextText(UserFruitTextRequest textFile) throws Exception;
 
-    ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum, String createDate);
+    ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum);
 
     ResponseEntity<UserFruitTodayInfoResponse> userFruitTodayInfo(String createDate);
 }

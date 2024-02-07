@@ -142,13 +142,9 @@ public class UserFruitServiceImpl implements UserFruitService {
     }
 
     @Override
-    public ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum, String createDate) {
-        //헤더에 들어온 Client 기준 Date 값을 변환
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(createDate, formatter);
-
+    public ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum) {
         // LocalDate를 java.sql.Date로 변환
-        Date date = java.sql.Date.valueOf(localDate);
+        Date date = java.sql.Date.valueOf(LocalDate.now());
 
         //반환 객체 미리 생성
         UserFruitSaveResponse userFruitSaveResponse;
@@ -158,7 +154,7 @@ public class UserFruitServiceImpl implements UserFruitService {
 
         //열매 디테일 들고오기
         Optional<FruitDetail> optionalFruitDetail = fruitDetailRepository.findById(fruitNum);
-        FruitDetail fruitDetail = new FruitDetail();
+        FruitDetail fruitDetail;
         if(optionalFruitDetail.isPresent()){
             fruitDetail = optionalFruitDetail.get();
         }else{ //열매 디테일 정보 없음
@@ -246,7 +242,6 @@ public class UserFruitServiceImpl implements UserFruitService {
         Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
                 user.get().getUserId(), date);
         if(userFruit.isEmpty()){throw new UserFruitNotFoundException("User Fruit Not Found");}
-
 
 
         UserFruitTodayInfoResponse response =

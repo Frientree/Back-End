@@ -239,4 +239,8 @@ public class UserController {
         return userService.userSignInNaver(userSignInNaverRequest);
     }
 
+    @PostMapping("/update-fcm-token")
+    public ResponseEntity<UserFcmTokenUpdateResponse> updateFcmToken(@RequestBody UserFcmTokenUpdateRequest request){
+        return userService.updateFcmToken(request);
+    }
 }

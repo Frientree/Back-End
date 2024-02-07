@@ -571,6 +571,18 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    @Override
+    public ResponseEntity<UserFcmTokenUpdateResponse> updateFcmToken(UserFcmTokenUpdateRequest request) {
+        User user = getUser();
+        user.setFcmToken(request.getFcmToken());
+        userRepository.save(user);
+
+        UserFcmTokenUpdateResponse response =
+                UserFcmTokenUpdateResponse.createUserFcmTokenUpdateResponse("Success", true);
+
+        return ResponseEntity.ok(response);
+    }
+
     // refresh 토큰의 유효기간 체크
     private boolean checkTime(String exp) {
 
@@ -737,7 +749,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Error occurred while decrypting data", e);
         }
     }
-
 }
 
 

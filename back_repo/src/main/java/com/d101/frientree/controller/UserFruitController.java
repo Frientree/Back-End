@@ -60,8 +60,8 @@ public class UserFruitController {
             @ApiResponse(responseCode = "500", description = "(message : \"User Modify Exception\", code : 500)"),
     })
     @PostMapping
-    public ResponseEntity<UserFruitSaveResponse> userFruitSave(@RequestHeader("Date") String CreateDate, @RequestParam("fruitNum") Long fruitNum){
-        return userFruitService.userFruitSave(fruitNum, CreateDate);
+    public ResponseEntity<UserFruitSaveResponse> userFruitSave(@RequestParam("fruitNum") Long fruitNum){
+        return userFruitService.userFruitSave(fruitNum);
     }
 
     @Operation(summary = "금일 유저 열매 조회", description = "금일 유저가 생성한 열매 정보를 조회합니다.")
