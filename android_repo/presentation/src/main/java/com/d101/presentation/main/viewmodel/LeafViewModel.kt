@@ -7,6 +7,7 @@ import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.LeafErrorStatus
 import com.d101.domain.usecase.main.SendMyLeafUseCase
+import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
 import com.d101.presentation.main.event.LeafSendViewEvent
 import com.d101.presentation.main.state.LeafState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LeafViewModel @Inject constructor(
     private val sendLeafUseCase: SendMyLeafUseCase,
+    private val manageUserStatusUseCase: ManageUserStatusUseCase,
 ) : ViewModel() {
 
     val inputText = MutableStateFlow("")
@@ -62,7 +64,7 @@ class LeafViewModel @Inject constructor(
             }
             else -> {
                 _uiState.update {
-                    LeafState.SomeViewLeafSate(
+                    LeafState.SomeViewLeafState(
                         "당신의 이파리가 일주일간 ${count}명에게 힘이 되었어요!",
                     )
                 }
@@ -72,6 +74,20 @@ class LeafViewModel @Inject constructor(
     private fun emitEvent(event: LeafSendViewEvent) {
         viewModelScope.launch {
             _leafEventFlow.emit(event)
+        }
+    }
+    fun canSendLeaf() {
+        viewModelScope.launch {
+            when (val result = manageUserStatusUseCase.getUserStatus()) {
+                is Result.Success -> {
+                    if (!result.data.userLeafStatus) {
+                        _uiState.update {
+                            LeafState.AlreadySendState(it.leafSendTitle, it.leafSendTitle)
+                        }
+                    }
+                }
+                is Result.Failure -> {}
+            }
         }
     }
 
@@ -93,6 +109,7 @@ class LeafViewModel @Inject constructor(
         viewModelScope.launch {
             when (val result = sendLeafUseCase.sendLeaf(checkedChipId, inputText.value)) {
                 is Result.Success -> {
+                    manageUserStatusUseCase.updateUserStatus()
                     emitEvent(LeafSendViewEvent.ReadyToSend)
                 }
                 is Result.Failure -> {

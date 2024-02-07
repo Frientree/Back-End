@@ -11,8 +11,9 @@
     </data>
 
     <FrameLayout
+        android:id="@+id/leaf_layout"
         android:layout_width="360dp"
-        android:layout_height="500dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         tools:context=".main.fragments.dialogs.LeafMessageToSendFragment">
 
@@ -64,11 +65,24 @@
                 android:id="@+id/leaf_category_free_chip"
                 android:text="@string/leaf_category_free"/>
         </com.google.android.material.chip.ChipGroup>
+            <TextView
+                android:id="@+id/already_send_text_view"
+                style="@style/Base.FTR.TextView"
+                android:gravity="center"
+                android:layout_marginVertical="28dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/leaf_already_send"
+                android:visibility="gone"
+                android:layout_marginHorizontal="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/leaf_title_text_view"/>
 
-        <LinearLayout
+
+            <LinearLayout
             android:id="@+id/leaf_text_layout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="280dp"
             android:layout_marginHorizontal="32dp"
             android:layout_marginTop="32dp"
             android:background="@drawable/bg_edit_text"

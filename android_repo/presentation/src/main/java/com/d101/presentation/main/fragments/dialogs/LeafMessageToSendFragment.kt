@@ -13,8 +13,10 @@ import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentLeafSendBinding
 import com.d101.presentation.main.MainActivity
+import com.d101.presentation.main.state.LeafState
 import com.d101.presentation.main.viewmodel.LeafViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.repeatOnStarted
 
 @AndroidEntryPoint
 class LeafMessageToSendFragment : Fragment() {
@@ -29,6 +31,7 @@ class LeafMessageToSendFragment : Fragment() {
         super.onAttach(context)
         activity = context as MainActivity
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,8 +47,30 @@ class LeafMessageToSendFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.canSendLeaf()
+
         sendButton()
         changeChip()
+        collectUiState()
+    }
+
+    private fun collectUiState() {
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is LeafState.AlreadySendState -> setVisibility()
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun setVisibility() {
+        binding.leafCategoryChipGroup.visibility = View.GONE
+        binding.leafTextLayout.visibility = View.GONE
+        binding.leafSendButton.visibility = View.GONE
+        binding.alreadySendTextView.visibility = View.VISIBLE
+        binding.leafLayout.setBackgroundResource(R.color.main_green)
     }
 
     private fun sendButton() {

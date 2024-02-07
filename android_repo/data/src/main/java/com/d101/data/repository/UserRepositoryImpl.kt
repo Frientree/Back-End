@@ -9,7 +9,6 @@ import com.d101.data.mapper.UserMapper.toUser
 import com.d101.data.mapper.UserMapper.toUserStatus
 import com.d101.data.roomdb.AppDatabase
 import com.d101.domain.model.Result
-import com.d101.domain.model.User
 import com.d101.domain.model.UserStatus
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.repository.UserRepository

@@ -88,7 +88,6 @@ class LeafBlowingFragment : Fragment() {
                     // 여기서 오디오 데이터를 처리
                     val readSize = audioRecord?.read(buffer, 0, buffer.size) ?: 0
                     val volume = calculateVolume(buffer, readSize)
-                    Log.d("MIC TEST:::", "$volume")
 
                     if (volume > 43) { // 임계값 설정
                         isRecording = false

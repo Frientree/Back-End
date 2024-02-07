@@ -104,5 +104,6 @@
     <string name="new_password">새로운 비밀번호</string>
     <string name="password_mismatch_in_use">현재 사용중인 비밀번호와 일치하지 않습니다.</string>
     <string name="sign_out">회원 탈퇴</string>
+    <string name="leaf_already_send">이파리는 하루에 한 번 보낼 수 있어요!\n내일 다시 보내러 와주세요 :)</string>
 
 </resources>

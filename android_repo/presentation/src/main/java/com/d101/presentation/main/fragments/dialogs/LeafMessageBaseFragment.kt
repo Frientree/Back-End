@@ -46,9 +46,6 @@ class LeafMessageBaseFragment : DialogFragment() {
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         collectEvent()
-//        childFragmentManager.beginTransaction()
-//            .replace(R.id.leaf_fragment_container_view, LeafMessageToSendFragment())
-//            .commit()
     }
 
     private fun collectEvent() {

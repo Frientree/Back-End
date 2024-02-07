@@ -13,6 +13,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -21,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.d101.presentation.R
 import com.d101.presentation.databinding.ActivityMainBinding
+import com.d101.presentation.main.event.MainActivityEvent
 import com.d101.presentation.main.fragments.dialogs.LeafDialogInterface
 import com.d101.presentation.main.fragments.dialogs.LeafMessageBaseFragment
 import com.d101.presentation.main.state.MainActivityViewState
@@ -67,6 +69,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initNavigationView()
+
+        repeatOnStarted {
+            viewModel.eventFlow.collect { event ->
+                when (event) {
+                    is MainActivityEvent.ShowErrorEvent -> {
+                        Toast.makeText(this@MainActivity, event.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
 
         repeatOnStarted {
             viewModel.currentViewState.collect {
@@ -179,8 +191,6 @@ class MainActivity : AppCompatActivity() {
             animationSet[READ_UP] = upAnimation(it, 0f, -px, 600)
             animationSet.put(READ_RIGHT, rightAnimation(it, 0f, px * 1.5f, 600))
         }
-//        val endWidth = resources.getDimension(R.dimen.full_width)
-//            .toInt()
 
         val animator = AnimatorSet()
         animator.playTogether(
@@ -189,35 +199,14 @@ class MainActivity : AppCompatActivity() {
             animationSet[READ_UP],
             animationSet[READ_RIGHT],
         )
-//        animator.play(changeButtonWidth(binding.writeLeafButton, 50, endWidth))
-//            .with(changeButtonWidth(binding.readLeafButton, 50, endWidth))
-//            .after(animationSet[READ_RIGHT])
 
         animator.start()
     }
 
-    // 열심히 만들었는데 별로 안예뻐서 일단 보류함.
-//    private fun changeButtonWidth(button : Button, startWidth: Int, endWidth: Int) : ValueAnimator{
-//        return ValueAnimator.ofInt(startWidth, endWidth).apply {
-//            duration = 100
-//            addUpdateListener { animation ->
-//                val animatedValue = animation.animatedValue as Int
-//                val layoutParams = button.layoutParams
-//                layoutParams.width = animatedValue
-//                button.layoutParams = layoutParams
-//            }
-//        }
-//    }
     private fun endLeafAnimation() {
         val animation = AnimationUtils.loadAnimation(this, R.anim.rotate_close_to_plus)
         binding.leafFloatingActionButton.animation = animation
         binding.leafFloatingActionButton.startAnimation(animation)
-
-        // 버튼의 시작 너비와 끝 너비를 정의합니다.
-//        val startWidth = binding.writeLeafButton.width
-
-//        changeButtonWidth(binding.writeLeafButton, startWidth, 0).start()
-//        changeButtonWidth(binding.readLeafButton, startWidth, 0).start()
 
         val animationSet = HashMap<Int, ObjectAnimator>()
         binding.writeLeafButton.let {
