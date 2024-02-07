@@ -106,4 +106,8 @@ class LeafViewModel @Inject constructor(
             }
         }
     }
+
+    fun onNeedPermission(message: String) {
+        emitEvent(LeafSendViewEvent.ShowErrorToast(message))
+    }
 }

@@ -55,17 +55,21 @@ class LeafMessageBaseFragment : DialogFragment() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.leafEventFlow.collect { event ->
                 when (event) {
-                    LeafSendViewEvent.FirstPage -> navigateToTargetFragment(
+                    is LeafSendViewEvent.FirstPage -> navigateToTargetFragment(
                         LeafMessageToSendFragment(),
                     )
 
-                    LeafSendViewEvent.ReadyToSend -> {
+                    is LeafSendViewEvent.ReadyToSend -> {
                         dialog?.dismiss()
                         Toast.makeText(activity, "이파리를 보냈어요!", Toast.LENGTH_SHORT).show()
                     }
 
-                    LeafSendViewEvent.SendLeaf -> navigateToTargetFragment(LeafBlowingFragment())
-                    else -> {}
+                    is LeafSendViewEvent.SendLeaf -> navigateToTargetFragment(LeafBlowingFragment())
+
+                    is LeafSendViewEvent.ShowErrorToast -> {
+                        dialog?.dismiss()
+                        Toast.makeText(activity, event.message, Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }

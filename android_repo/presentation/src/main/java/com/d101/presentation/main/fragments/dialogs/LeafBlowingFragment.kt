@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -154,15 +153,14 @@ class LeafBlowingFragment : Fragment() {
             if (!granted) {
                 // 권한이 거부된 경우
                 if (shouldShowRequestPermissionRationale(permission)) {
-                    LeafDialogInterface.dialog.dismiss()
-                    Toast.makeText(activity, "권한을 허용해야 보내기 기능을 이용할 수 있습니다.", Toast.LENGTH_SHORT)
-                        .show()
+                    viewModel.onNeedPermission("권한을 허용해야 보내기 기능을 이용할 수 있습니다.")
                 } else {
                     // '다시 보지 않기' 선택 또는 기타 상황 처리
                     Log.i("Permission", "Permission denied without ask again: $permission")
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     val uri = Uri.fromParts("package", activity.packageName, null)
                     intent.data = uri
+                    viewModel.onNeedPermission("권한을 허용해야 보내기 기능을 이용할 수 있습니다.")
                     startActivity(intent)
                 }
             } else {
