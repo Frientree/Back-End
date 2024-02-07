@@ -22,5 +22,5 @@ sealed class LeafSendViewState {
     data class AlreadySendState(
         override val leafSendTitle: String,
         override val restrictedSend: String,
-    ) : LeafState()
+    ) : LeafSendViewState()
 }

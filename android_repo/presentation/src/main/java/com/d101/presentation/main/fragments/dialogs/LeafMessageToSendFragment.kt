@@ -14,8 +14,7 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentLeafSendBinding
 import com.d101.presentation.main.MainActivity
 import com.d101.presentation.main.viewmodel.LeafSendViewModel
-import com.d101.presentation.main.state.LeafState
-import com.d101.presentation.main.viewmodel.LeafViewModel
+import com.d101.presentation.main.state.LeafSendViewState
 import dagger.hilt.android.AndroidEntryPoint
 import utils.repeatOnStarted
 
@@ -59,7 +58,7 @@ class LeafMessageToSendFragment : Fragment() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.uiState.collect { state ->
                 when (state) {
-                    is LeafState.AlreadySendState -> setVisibility()
+                    is LeafSendViewState.AlreadySendState -> setVisibility()
                     else -> {}
                 }
             }

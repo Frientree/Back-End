@@ -84,7 +84,7 @@ class LeafSendViewModel @Inject constructor(
                 is Result.Success -> {
                     if (!result.data.userLeafStatus) {
                         _uiState.update {
-                            LeafState.AlreadySendState(it.leafSendTitle, it.leafSendTitle)
+                            LeafSendViewState.AlreadySendState(it.leafSendTitle, it.leafSendTitle)
                         }
                     }
                 }
