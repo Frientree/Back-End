@@ -18,6 +18,8 @@ import com.d101.data.datasource.leaf.LeafDataSource
 import com.d101.data.datasource.leaf.LeafDataSourceImpl
 import com.d101.data.datasource.terms.TermsDataSource
 import com.d101.data.datasource.terms.TermsDataSourceImpl
+import com.d101.data.datasource.tree.TreeRemoteDataSource
+import com.d101.data.datasource.tree.TreeRemoteDataSourceImpl
 import com.d101.data.datasource.user.UserDataSource
 import com.d101.data.datasource.user.UserDataSourceImpl
 import dagger.Binds
@@ -87,4 +89,10 @@ abstract class DataSourceModule {
     abstract fun bindAppStatusDataSource(
         appStatusDataSourceImpl: AppStatusDataSourceImpl,
     ): AppStatusDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindTreeRemoteDataSource(
+        treeRemoteDataSourceImpl: TreeRemoteDataSourceImpl,
+    ): TreeRemoteDataSource
 }

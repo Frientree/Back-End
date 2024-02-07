@@ -7,10 +7,13 @@ import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.FruitErrorStatus
 import com.d101.domain.model.status.GetUserStatusErrorStatus
+import com.d101.domain.model.status.TreeErrorStatus
+import com.d101.domain.usecase.main.GetMessageFromTreeUseCase
 import com.d101.domain.usecase.main.GetTodayFruitUseCase
 import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
 import com.d101.presentation.main.state.TreeFragmentEvent
 import com.d101.presentation.main.state.TreeFragmentViewState
+import com.d101.presentation.main.state.TreeMessageState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,12 +29,18 @@ import javax.inject.Inject
 class MainFragmentViewModel @Inject constructor(
     private val manageUserStatusUseCase: ManageUserStatusUseCase,
     private val getTodayFruitUseCase: GetTodayFruitUseCase,
+    private val getMessageFromTreeUseCase: GetMessageFromTreeUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<TreeFragmentViewState>(
         TreeFragmentViewState.FruitNotCreated("", "", ""),
     )
     val uiState = _uiState.asStateFlow()
+
+    private val _messageState = MutableStateFlow<TreeMessageState>(
+        TreeMessageState.EnableMessage,
+    )
+    val messageState = _messageState.asStateFlow()
 
     private val _eventFlow = MutableEventFlow<TreeFragmentEvent>()
     val eventFlow = _eventFlow.asEventFlow()
@@ -73,6 +82,43 @@ class MainFragmentViewModel @Inject constructor(
     private fun emitEvent(event: TreeFragmentEvent) {
         viewModelScope.launch {
             _eventFlow.emit(event)
+        }
+    }
+
+    fun enableMessage() {
+        _messageState.update { TreeMessageState.EnableMessage }
+    }
+
+    fun onGetTreeMessage() {
+        if (messageState.value is TreeMessageState.EnableMessage) {
+            viewModelScope.launch {
+                when (val result = getMessageFromTreeUseCase()) {
+                    is Result.Success -> {
+                        _messageState.update { TreeMessageState.NoAccessMessage }
+                        emitEvent(TreeFragmentEvent.ChangeTreeMessage(result.data))
+                    }
+
+                    is Result.Failure -> {
+                        when (result.errorStatus) {
+                            is TreeErrorStatus.MessageNotFound -> emitEvent(
+                                TreeFragmentEvent.ShowErrorEvent(
+                                    "나무 메세지를 가져올 수 없습니다.",
+                                ),
+                            )
+
+                            is ErrorStatus.NetworkError -> emitEvent(
+                                TreeFragmentEvent.ShowErrorEvent(
+                                    "네트워크 에러입니다.",
+                                ),
+                            )
+
+                            else -> {
+                                emitEvent(TreeFragmentEvent.ShowErrorEvent("알 수 없는 에러가 발생했습니다."))
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

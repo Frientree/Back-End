@@ -8,6 +8,7 @@ import com.d101.data.api.JuiceService
 import com.d101.data.api.LeafService
 import com.d101.data.api.NaverLoginService
 import com.d101.data.api.TermsService
+import com.d101.data.api.TreeService
 import com.d101.data.api.UserService
 import com.d101.data.network.ResultCallAdapter
 import com.d101.frientree.BuildConfig
@@ -126,6 +127,13 @@ object ApiModule {
         @FrientreeRetrofit
         retrofit: Retrofit,
     ): TermsService = retrofit.create((TermsService::class.java))
+
+    @Singleton
+    @Provides
+    fun provideaTreeApi(
+        @FrientreeRetrofit
+        retrofit: Retrofit,
+    ): TreeService = retrofit.create((TreeService::class.java))
 
     @Singleton
     @Provides
