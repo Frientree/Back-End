@@ -86,6 +86,7 @@ class UserRepositoryImpl @Inject constructor(
             tokenManager.deleteTokens()
             roomDB.clearAllTables()
             userDataStore.updateData { UserPreferences.getDefaultInstance() }
+            userStatusDataStore.updateData { UserStatusPreferences.getDefaultInstance() }
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Failure(ErrorStatus.UnknownError)
@@ -157,6 +158,7 @@ class UserRepositoryImpl @Inject constructor(
                     it.toBuilder()
                         .setUserFruitStatus(result.data.userFruitStatus)
                         .setUserLeafStatus(result.data.userLeafStatus)
+                        .setTreeName(it.treeName.ifEmpty { "프렌트리" })
                         .build()
                 }
                 Result.Success(Unit)
@@ -166,7 +168,7 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserStatus(): Flow<UserStatus>  = userStatusDataStore.data.map {
+    override suspend fun getUserStatus(): Flow<UserStatus> = userStatusDataStore.data.map {
         it.toUserStatus()
     }
 

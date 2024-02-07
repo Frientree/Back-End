@@ -21,5 +21,6 @@ object UserMapper {
         UserStatus(
             userFruitStatus = this.userFruitStatus,
             userLeafStatus = this.userLeafStatus,
+            treeName = this.treeName,
         )
 }

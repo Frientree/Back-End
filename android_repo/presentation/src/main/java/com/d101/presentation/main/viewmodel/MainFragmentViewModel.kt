@@ -49,32 +49,8 @@ class MainFragmentViewModel @Inject constructor(
     lateinit var todayFruit: FruitCreated
 
     init {
-        // 나무 이름, 메세지 가져오기 작업
-
-        viewModelScope.launch {
-            _uiState.update { currentViewState ->
-                when (currentViewState) {
-                    is TreeFragmentViewState.FruitNotCreated -> {
-                        currentViewState
-                            .copy(
-                                todayDate = initTodayDate(localDate),
-                                treeName = "default treename",
-                                treeMessage = "안녕 나는 프렌트리야",
-                            )
-                    }
-
-                    is TreeFragmentViewState.FruitCreated -> {
-                        currentViewState
-                            .copy(
-                                todayDate = initTodayDate(localDate),
-                                treeName = "default treename",
-                                treeMessage = "안녕 나는 프렌트리야",
-                            )
-                    }
-                }
-            }
-        }
         getUserStatus()
+        onGetTreeMessage()
     }
 
     private fun emitEvent(event: TreeFragmentEvent) {
@@ -157,15 +133,15 @@ class MainFragmentViewModel @Inject constructor(
         viewModelScope.launch {
             manageUserStatusUseCase.getUserStatus().collect { userStatus ->
                 _uiState.update { currentState ->
-                    when (userStatus.userFruitStatus) {
-                        true -> TreeFragmentViewState.FruitCreated(
-                            treeName = currentState.treeName,
+                    if (userStatus.userFruitStatus.not()) {
+                        TreeFragmentViewState.FruitCreated(
+                            treeName = userStatus.treeName,
                             todayDate = initTodayDate(localDate),
                             treeMessage = currentState.treeMessage,
                         )
-
-                        false -> TreeFragmentViewState.FruitNotCreated(
-                            treeName = currentState.treeName,
+                    }else {
+                        TreeFragmentViewState.FruitNotCreated(
+                            treeName = userStatus.treeName,
                             todayDate = initTodayDate(localDate),
                             treeMessage = currentState.treeMessage,
                         )
