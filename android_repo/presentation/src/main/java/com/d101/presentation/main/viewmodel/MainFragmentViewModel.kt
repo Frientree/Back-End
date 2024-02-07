@@ -139,7 +139,7 @@ class MainFragmentViewModel @Inject constructor(
                             todayDate = initTodayDate(localDate),
                             treeMessage = currentState.treeMessage,
                         )
-                    }else {
+                    } else {
                         TreeFragmentViewState.FruitNotCreated(
                             treeName = userStatus.treeName,
                             todayDate = initTodayDate(localDate),

@@ -47,7 +47,10 @@ class FireBaseMessagingService : FirebaseMessagingService() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
 
         val mainPendingIntent: PendingIntent = PendingIntent.getActivity(
-            this, 0, mainIntent, pendingIntentFlags
+            this,
+            0,
+            mainIntent,
+            pendingIntentFlags,
         )
 
         val builder = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID)
@@ -59,7 +62,8 @@ class FireBaseMessagingService : FirebaseMessagingService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ActivityCompat.checkSelfPermission(
-                    this, Manifest.permission.POST_NOTIFICATIONS
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS,
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 // 권한이 없으므로 알림을 보낼 수 없습니다.

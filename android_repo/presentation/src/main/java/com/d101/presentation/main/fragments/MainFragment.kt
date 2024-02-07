@@ -20,11 +20,11 @@ import com.d101.presentation.main.fragments.dialogs.TodayFruitFragment
 import com.d101.presentation.main.state.TreeMessageState
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import utils.CustomToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -120,7 +120,6 @@ class MainFragment : Fragment() {
             viewModel.enableMessage()
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
