@@ -82,9 +82,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun logout(): Result<Unit> {
         return try {
-            userDataStore.updateData { UserPreferences.getDefaultInstance() }
             tokenManager.deleteTokens()
             roomDB.clearAllTables()
+            userDataStore.updateData { UserPreferences.getDefaultInstance() }
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Failure(ErrorStatus.UnknownError)
