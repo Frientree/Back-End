@@ -1,13 +1,16 @@
 package com.d101.presentation.main.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.AppleData
 import com.d101.domain.model.FruitCreated
+import com.d101.domain.model.Result
+import com.d101.domain.model.status.ErrorStatus
+import com.d101.domain.model.status.FruitErrorStatus
 import com.d101.domain.usecase.main.DecideTodayFruitUseCase
 import com.d101.domain.usecase.main.MakeFruitBySpeechUseCase
 import com.d101.domain.usecase.main.MakeFruitByTextUseCase
+import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
 import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +20,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import utils.MutableEventFlow
+import utils.asEventFlow
 import java.io.File
 import javax.inject.Inject
 
@@ -25,6 +30,7 @@ class FruitCreateViewModel @Inject constructor(
     private val makeFruitByTextUseCase: MakeFruitByTextUseCase,
     private val makeFruitBySpeechUseCase: MakeFruitBySpeechUseCase,
     private val decideTodayFruitUseCase: DecideTodayFruitUseCase,
+    private val manageUserStatusUseCase: ManageUserStatusUseCase,
 ) : ViewModel() {
     private val _todayFruitList: MutableStateFlow<List<FruitCreated>> = MutableStateFlow(listOf())
     val todayFruitList: StateFlow<List<FruitCreated>> = _todayFruitList.asStateFlow()
@@ -37,9 +43,8 @@ class FruitCreateViewModel @Inject constructor(
 
     var isTextInput = true
 
-    // Event Flow를 사용하고 싶었으나...
-//    private val _appleEvent: MutableStateFlow<AppleEvent> = MutableStateFlow(AppleEvent.isNotAppleEvent)
-//    val appleEvent: StateFlow<AppleEvent> = _appleEvent.asStateFlow()
+    val _eventFlow = MutableEventFlow<CreateFruitDialogViewEvent>()
+    val eventFlow = _eventFlow.asEventFlow()
 
     private var _apple: AppleData? = null
     val apple get() = _apple!!
@@ -47,15 +52,67 @@ class FruitCreateViewModel @Inject constructor(
     fun setTodayFruitList() {
         viewModelScope.launch {
             delay(3_000L)
-            val result = if (isTextInput) {
-                makeFruitByTextUseCase(inputText.value)
-                // 성공 실패 로직 추가
-            } else {
-                makeFruitBySpeechUseCase(audioFile)
-                // 성공 실패 로직 추가
-            }
+            if (isTextInput) {
+                when (val result = makeFruitByTextUseCase(inputText.value)) {
+                    is Result.Success -> {
+                        _todayFruitList.update { result.data }
+                    }
 
-            _todayFruitList.update { result }
+                    is Result.Failure -> {
+                        when (result.errorStatus) {
+                            is FruitErrorStatus.ApiError -> emitEvent(
+                                CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                    "결과를 받아오는 데 문제가 발생했습니다.",
+                                ),
+                            )
+
+                            is ErrorStatus.NetworkError -> emitEvent(
+                                CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                    "네트워크 에러입니다.",
+                                ),
+                            )
+
+                            else -> {
+                                emitEvent(
+                                    CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                        "예기치 못한 에러가 발생했습니다.",
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }
+            } else {
+                when (val result = makeFruitBySpeechUseCase(audioFile)) {
+                    is Result.Success -> {
+                        _todayFruitList.update { result.data }
+                    }
+
+                    is Result.Failure -> {
+                        when (result.errorStatus) {
+                            is FruitErrorStatus.ApiError -> emitEvent(
+                                CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                    "결과를 받아오는 데 문제가 발생했습니다.",
+                                ),
+                            )
+
+                            is ErrorStatus.NetworkError -> emitEvent(
+                                CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                    "네트워크 에러입니다.",
+                                ),
+                            )
+
+                            else -> {
+                                emitEvent(
+                                    CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                        "예기치 못한 에러가 발생했습니다.",
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -69,30 +126,64 @@ class FruitCreateViewModel @Inject constructor(
 
     fun saveSelectedFruit() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = decideTodayFruitUseCase(selectedFruit.value.fruitNum)
-            Log.d("apple test", "$result")
-            if (result.isApple) {
-                _apple = result
-                changeViewEvent(CreateFruitDialogViewEvent.AppleEvent(true))
-                // event(AppleEvent.isAppleEvent)
-            } else {
-                changeViewEvent(CreateFruitDialogViewEvent.AppleEvent(false))
-                // event(AppleEvent.isNotAppleEvent)
+            when (val result = decideTodayFruitUseCase(selectedFruit.value.fruitNum)) {
+                is Result.Success -> {
+                    manageUserStatusUseCase.updateUserStatus()
+                    if (result.data.isApple) {
+                        _apple = result.data
+                        emitEvent(CreateFruitDialogViewEvent.AppleEvent(true))
+                    } else {
+                        emitEvent(CreateFruitDialogViewEvent.AppleEvent(false))
+                    }
+                }
+
+                is Result.Failure -> {
+                    when (result.errorStatus) {
+                        is FruitErrorStatus.LocalInsertError -> emitEvent(
+                            CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                "결과가 저장되지 못했습니다.",
+                            ),
+                        )
+
+                        is ErrorStatus.NetworkError -> emitEvent(
+                            CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                "네트워크 에러입니다.",
+                            ),
+                        )
+
+                        else -> {
+                            emitEvent(
+                                CreateFruitDialogViewEvent
+                                    .ShowErrorToastEvent("예기치 못한 에러가 발생했습니다."),
+                            )
+                        }
+                    }
+                }
             }
         }
     }
-    // 실패 ...
-//    private fun event(event: AppleEvent) {
-//        viewModelScope.launch {
-//            _appleEvent.emit(event)
-//        }
-//    }
 
-    private val _currentViewState: MutableStateFlow<CreateFruitDialogViewEvent> =
-        MutableStateFlow(CreateFruitDialogViewEvent.SelectInputTypeViewEvent)
-    val currentViewState: StateFlow<CreateFruitDialogViewEvent> = _currentViewState.asStateFlow()
+    private fun emitEvent(event: CreateFruitDialogViewEvent) {
+        viewModelScope.launch { _eventFlow.emit(event) }
+    }
 
-    fun changeViewEvent(state: CreateFruitDialogViewEvent) {
-        _currentViewState.update { state }
+    fun onGoSelectInputTypeView() {
+        emitEvent(CreateFruitDialogViewEvent.SelectInputTypeViewEvent)
+    }
+
+    fun onGoFruitLoadingView() {
+        emitEvent(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
+    }
+
+    fun onGoReultView() {
+        emitEvent(CreateFruitDialogViewEvent.AfterFruitCreationViewEvent)
+    }
+
+    fun onGoCreateionByTextView() {
+        emitEvent(CreateFruitDialogViewEvent.FruitCreationByTextViewEvent)
+    }
+
+    fun onGoCreateionBySpeechView() {
+        emitEvent(CreateFruitDialogViewEvent.FruitCreationBySpeechViewEvent)
     }
 }

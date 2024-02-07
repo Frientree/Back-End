@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentFruitCreationBySpeechBinding
-import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import java.io.File
 import java.io.IOException
@@ -64,7 +63,7 @@ class FruitCreationBySpeechFragment : Fragment() {
         timerTask.cancel()
         stopRecording()
         viewModel.setAudioFile(audioFile)
-        viewModel.changeViewEvent(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
+        viewModel.onGoFruitLoadingView()
     }
 
     private fun startRecording() {
@@ -97,9 +96,14 @@ class FruitCreationBySpeechFragment : Fragment() {
             val sec = time / 100 // 나눗셈의 몫 : 초 부분
 
             // UI 조작을 위한 메서드
+
             activity?.runOnUiThread {
-                binding.speechProgressBar.progress = time
-                binding.speechSecondTextView.text = String.format("%d %s", sec, secText)
+                try {
+                    binding.speechProgressBar.progress = time
+                    binding.speechSecondTextView.text = String.format("%d %s", sec, secText)
+                } catch (e: NullPointerException) {
+                    timerTask.cancel()
+                }
             }
             if (sec >= 30) {
                 createFruitBySpeech()

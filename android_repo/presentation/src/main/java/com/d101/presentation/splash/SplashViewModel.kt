@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
+import com.d101.domain.usecase.appStatus.GetAppStatusUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import utils.MutableEventFlow
@@ -14,19 +16,34 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val getAppStatusUseCase: GetAppStatusUseCase,
 ) : ViewModel() {
 
     private val _eventFlow = MutableEventFlow<SplashViewEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
     init {
-        onSplashSHow()
+        onSplashShow()
     }
 
     fun showSplash() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             delay(3_000L)
-            checkSignInStatus()
+            checkAppVersion()
+        }
+    }
+
+    private suspend fun checkAppVersion() {
+        when (val result = getAppStatusUseCase()) {
+            is Result.Success -> emitEvent(
+                SplashViewEvent.CheckAppStatus(
+                    result.data.appAvailable,
+                    result.data.minVersion,
+                    result.data.storeUrl,
+                ),
+            )
+
+            is Result.Failure -> emitEvent(SplashViewEvent.OnFailCheckAppStatus)
         }
     }
 
@@ -65,7 +82,7 @@ class SplashViewModel @Inject constructor(
         emitEvent(SplashViewEvent.AutoSignInFailure)
     }
 
-    private fun onSplashSHow() {
+    private fun onSplashShow() {
         emitEvent(SplashViewEvent.ShowSplash)
     }
 }

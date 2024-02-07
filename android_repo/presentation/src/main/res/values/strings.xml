@@ -79,6 +79,13 @@
     <string name="empty_text"> </string>
     <string name="network_error">네트워크 연결 실패</string>
     <string name="unknown_error">알 수 없는 에러</string>
+    <string name="leaf_category_consolation">위로</string>
+    <string name="leaf_category_cheering">응원</string>
+    <string name="leaf_category_free">자유</string>
+    <string name="leaf_send_text">날려보내기!</string>
+    <string name="leaf_blowing_text">후 불어서 이파리를 날려보세요!</string>
+    <string name="leaf_receive_text">이파리 받기</string>
+    <string name="shaking_leaf_text">흔들어서 이파리를 받아보세요!</string>
     <string name="sending_temp_password">임시 비밀번호를 전송 중 입니다.</string>
 
     <string name="sunday">일</string>

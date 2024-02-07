@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentFruitCreationByTextBinding
-import com.d101.presentation.main.state.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,9 +45,7 @@ class FruitCreationByTextFragment : Fragment() {
         binding.createFruitByTextButton
             .setOnClickListener {
                 if (viewModel.inputText.value.isNotEmpty()) {
-                    viewModel.changeViewEvent(
-                        CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent,
-                    )
+                    viewModel.onGoFruitLoadingView()
                 } else {
                     Toast.makeText(context, "텍스트를 채워주세요!", Toast.LENGTH_SHORT).show()
                 }

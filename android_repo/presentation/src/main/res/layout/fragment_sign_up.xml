@@ -98,7 +98,6 @@
             android:layout_height="wrap_content"
             style="@style/Base.FTR.MainButton"
             android:onClick="@{() -> viewModel.onSignUpAttempt()}"
-            android:paddingVertical="16dp"
             android:layout_marginBottom="8dp"
             android:layout_marginHorizontal="24dp"
             android:text="@string/confirm"

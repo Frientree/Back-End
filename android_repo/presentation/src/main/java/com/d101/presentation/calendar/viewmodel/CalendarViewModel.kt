@@ -198,22 +198,7 @@ class CalendarViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = getFruitsOfMonthUseCase(LocalDate.now(), monthDate)) {
                 is Result.Success -> {
-                    val fruitListForMonth = ArrayList<FruitsOfMonth>()
-
-                    var localStartDate = monthDate.first
-                    val localEndDate = monthDate.second
-
-                    while (localStartDate <= localEndDate) {
-                        val dateStr = localStartDate.toString()
-                        val fruit = result.data.find { it.day == dateStr }
-                        if (fruit != null) {
-                            fruitListForMonth.add(fruit)
-                        } else {
-                            fruitListForMonth.add(FruitsOfMonth(dateStr, ""))
-                        }
-                        localStartDate = localStartDate.plusDays(1)
-                    }
-                    setFruitListForMonth(fruitListForMonth)
+                    setFruitListForMonth(result.data)
                 }
 
                 is Result.Failure -> {

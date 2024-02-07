@@ -52,7 +52,6 @@ class AfterFruitCreateFragment : Fragment() {
         binding.viewModel = viewModel
 
         val fruitList = viewModel.todayFruitList.value
-        fruitList[0].fruitName = "생각이 많은 " + fruitList[0].fruitName
 
         viewModel.setSelectedFruit(fruitList[0])
 
