@@ -10,10 +10,12 @@ import com.d101.domain.model.status.JuiceErrorStatus
 import com.d101.domain.usecase.calendar.GetFruitsOfMonthUseCase
 import com.d101.domain.usecase.calendar.GetFruitsOfWeekUseCase
 import com.d101.domain.usecase.calendar.GetJuiceOfWeekUseCase
+import com.d101.domain.usecase.calendar.GetTodayStatisticUseCase
 import com.d101.domain.usecase.calendar.MakeJuiceUseCase
 import com.d101.presentation.calendar.event.CalendarViewEvent
 import com.d101.presentation.calendar.state.CalendarViewState
 import com.d101.presentation.calendar.state.JuiceCreatableStatus
+import com.d101.presentation.calendar.state.TodayFruitCreationStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +35,7 @@ class CalendarViewModel @Inject constructor(
     val getFruitsOfWeekUseCase: GetFruitsOfWeekUseCase,
     val getJuiceOfWeekUseCase: GetJuiceOfWeekUseCase,
     val makeJuiceUseCase: MakeJuiceUseCase,
+    val getTodayStatisticUseCase: GetTodayStatisticUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<CalendarViewState>(CalendarViewState.JuiceAbsentState())
     val uiState = _uiState.asStateFlow()
@@ -101,6 +104,7 @@ class CalendarViewModel @Inject constructor(
             _eventFlow.emit(CalendarViewEvent.OnTapCollectionButton)
         }
     }
+
     fun onWeekSelected(selectDate: LocalDate) {
         val weekDate = getFirstAndLastDayOfWeek(selectDate)
         _uiState.update { currentState ->
@@ -136,7 +140,7 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun onInitOccurred() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val monthDate = getFirstAndLastDayOfMonth()
             val weekDate = getFirstAndLastDayOfWeek(LocalDate.now())
             _eventFlow.emit(
@@ -145,6 +149,7 @@ class CalendarViewModel @Inject constructor(
             _eventFlow.emit(
                 CalendarViewEvent.OnSetWeek(weekDate),
             )
+            getTodayStatistics()
         }
     }
 
@@ -228,6 +233,14 @@ class CalendarViewModel @Inject constructor(
         getJuiceOfWeek(weekDate)
     }
 
+    private suspend fun getTodayStatistics() {
+        val today = LocalDate.now()
+        when (val result = getTodayStatisticUseCase(today.toString())) {
+            is Result.Success -> setTodayStatistics(result.data.ratio)
+            is Result.Failure -> {}
+        }
+    }
+
     private fun getFruitsOfWeek(weekDate: Pair<LocalDate, LocalDate>) {
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = getFruitsOfWeekUseCase(LocalDate.now(), weekDate)) {
@@ -256,6 +269,28 @@ class CalendarViewModel @Inject constructor(
                             _eventFlow.emit(CalendarViewEvent.OnShowToast("네트워크 연결 실패"))
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private fun setTodayStatistics(statistics: Int) {
+        when (val currentState = _uiState.value) {
+            is CalendarViewState.JuiceAbsentState -> {
+                _uiState.update {
+                    currentState.copy(
+                        todayFruitCreationStatus = TodayFruitCreationStatus.Created,
+                        todayFruitStatistics = statistics.toString(),
+                    )
+                }
+            }
+
+            is CalendarViewState.JuicePresentState -> {
+                _uiState.update {
+                    currentState.copy(
+                        todayFruitCreationStatus = TodayFruitCreationStatus.Created,
+                        todayFruitStatistics = statistics.toString(),
+                    )
                 }
             }
         }

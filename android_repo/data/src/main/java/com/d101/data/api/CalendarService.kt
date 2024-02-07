@@ -26,9 +26,9 @@ interface CalendarService {
         @Body fruitsOfWeekRequest: FruitsOfWeekRequest,
     ): ApiResult<ApiListResponse<FruitsOfWeekResponse>>
 
-    @GET("/calendar")
+    @GET("/calendar/today-feel-statistics")
     suspend fun getTodayFruitStatistics(
-        @Query("today-feel-statistics") date: String,
+        @Query("todayDate") date: String,
     ): ApiResult<ApiResponse<TodayFeelStatisticsResponse>>
 
     @POST("/calendar/weekly-juice")

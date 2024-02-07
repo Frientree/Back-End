@@ -101,6 +101,7 @@ class CalendarFragment : Fragment() {
                         val intent = Intent(requireContext(), CollectionActivity::class.java)
                         startActivity(intent)
                     }
+
                     is CalendarViewEvent.OnTapJuiceMakingButton -> {
                         viewModel.onTapJuiceMakingButtonOccurred()
                     }
@@ -187,6 +188,8 @@ class CalendarFragment : Fragment() {
         when (state.todayFruitCreationStatus) {
             TodayFruitCreationStatus.Created -> {
                 binding.todayFruitStatisticsTextView.visibility = View.VISIBLE
+                binding.todayFruitStatisticsTextView.text =
+                    getString(R.string.today_statistics).format(state.todayFruitStatistics)
             }
 
             TodayFruitCreationStatus.NotCreated -> {

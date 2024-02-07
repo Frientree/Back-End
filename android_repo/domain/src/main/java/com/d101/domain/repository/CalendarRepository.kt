@@ -18,7 +18,7 @@ interface CalendarRepository {
         weekDate: Pair<LocalDate, LocalDate>,
     ): Result<List<Fruit>>
 
-    suspend fun getTodayFruitStatistics(date: Long): Result<TodayStatistics>
+    suspend fun getTodayFruitStatistics(date: String): Result<TodayStatistics>
 
     suspend fun getJuiceOfWeek(weekDate: Pair<LocalDate, LocalDate>): Result<Juice>
 }

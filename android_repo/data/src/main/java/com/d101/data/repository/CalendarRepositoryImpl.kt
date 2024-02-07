@@ -17,7 +17,6 @@ import com.d101.domain.model.TodayStatistics
 import com.d101.domain.repository.CalendarRepository
 import com.d101.domain.utils.toLocalDate
 import com.d101.domain.utils.toLongDate
-import com.d101.domain.utils.toYearMonthDayFormat
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -116,10 +115,10 @@ class CalendarRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getTodayFruitStatistics(date: Long): Result<TodayStatistics> {
+    override suspend fun getTodayFruitStatistics(date: String): Result<TodayStatistics> {
         return when (
             val result =
-                calendarRemoteDataSource.getTodayFruitStatistics(date.toYearMonthDayFormat())
+                calendarRemoteDataSource.getTodayFruitStatistics(date)
         ) {
             is Result.Success -> {
                 Result.Success(
