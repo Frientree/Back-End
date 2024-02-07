@@ -27,7 +27,9 @@ class LeafSendViewModel @Inject constructor(
 
     val inputText = MutableStateFlow("")
     var checkedChipId: Int = 0
-    private val _uiState = MutableStateFlow<LeafSendViewState>(LeafSendViewState.ZeroViewLeafSendViewState())
+    private val _uiState = MutableStateFlow<LeafSendViewState>(
+        LeafSendViewState.ZeroViewLeafSendViewState(),
+    )
     val uiState: StateFlow<LeafSendViewState> = _uiState.asStateFlow()
 
     private val _leafEventFlow = MutableEventFlow<LeafSendViewEvent>()

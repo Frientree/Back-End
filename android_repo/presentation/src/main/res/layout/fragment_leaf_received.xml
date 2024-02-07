@@ -28,25 +28,39 @@
                 app:layout_constraintEnd_toEndOf="parent" />
 
 
+            <TextView
+                style="@style/Base.FTR.TextView"
+                android:id="@+id/report_button"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginEnd="12dp"
+                android:textColor="@color/gray"
+                android:text="@string/leaf_report"
+                android:textSize="12sp"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/leaf_content_card_view"/>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/fruit_description_card_view"
+                android:id="@+id/leaf_content_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:cardCornerRadius="40dp"
+                app:cardCornerRadius="36dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="@color/white"
                 app:layout_constraintTop_toBottomOf="@id/leaf_icon_image_view"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/report_button"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
                 android:layout_marginHorizontal="28dp"
                 >
                 <TextView
-                    android:id="@+id/fruit_description_text_view"
+                    android:id="@+id/leaf_description_text_view"
                     style="@style/Base.FTR.Text"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:padding="16dp"
+                    android:text="@{viewModel.leaf.leafContent}"
                     tools:text="힘내세요!!" />
 
             </com.google.android.material.card.MaterialCardView>

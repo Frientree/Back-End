@@ -6,4 +6,8 @@ sealed class LeafReceiveEvent {
     data object ReadyToReceive : LeafReceiveEvent()
 
     data object ReportLeafComplete : LeafReceiveEvent()
+
+    data class ShowErrorToast(
+        val message: String,
+    ) : LeafReceiveEvent()
 }

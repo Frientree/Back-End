@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -51,15 +52,21 @@ class LeafReceiveBaseFragment : DialogFragment() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.leafEventFlow.collect { event ->
                 when (event) {
-                    LeafReceiveEvent.ShakingLeafPage -> navigateToTargetFragment(
+                    is LeafReceiveEvent.ShakingLeafPage -> navigateToTargetFragment(
                         LeafReceiveFragment(),
                     )
 
-                    LeafReceiveEvent.ReadyToReceive -> {
+                    is LeafReceiveEvent.ReadyToReceive -> {
                         navigateToTargetFragment(LeafReceivedFragment())
                     }
 
-                    LeafReceiveEvent.ReportLeafComplete -> {
+                    is LeafReceiveEvent.ReportLeafComplete -> {
+                        Toast.makeText(activity, "성공적으로 신고되었습니다.", Toast.LENGTH_SHORT).show()
+                        LeafDialogInterface.dialog.dismiss()
+                    }
+                    is LeafReceiveEvent.ShowErrorToast -> {
+                        Toast.makeText(activity, event.message, Toast.LENGTH_SHORT).show()
+                        LeafDialogInterface.dialog.dismiss()
                     }
                 }
             }
