@@ -6,4 +6,6 @@ public interface MongoEmotionService {
     void createEmotion(String userPK, String text, String emotionResult);
 
     String makeFileCsv() throws IOException;
+
+    void deleteEmotion();
 }
