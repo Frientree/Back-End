@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -82,6 +83,10 @@ dependencies {
     implementation(Libraries.glide)
 
     implementation(Libraries.naverOAuth)
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-messaging-ktx")
 }
 kapt {
     correctErrorTypes = true
