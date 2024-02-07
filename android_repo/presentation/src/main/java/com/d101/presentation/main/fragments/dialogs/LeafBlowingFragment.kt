@@ -133,7 +133,6 @@ class LeafBlowingFragment : Fragment() {
             val permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
             requestPermissionLauncher.launch(permissions)
         } else {
-
             audioRecord = AudioRecord(
                 MediaRecorder.AudioSource.MIC,
                 sampleRate,
@@ -145,7 +144,6 @@ class LeafBlowingFragment : Fragment() {
             audioRecord?.startRecording()
 
             setListener()
-
         }
     }
 
@@ -167,7 +165,7 @@ class LeafBlowingFragment : Fragment() {
                     intent.data = uri
                     startActivity(intent)
                 }
-            }else{
+            } else {
                 startRecording()
                 setListener()
             }
