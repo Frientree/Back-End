@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentBeforeFruitCreateBaseBinding
-import com.d101.presentation.main.state.CreateFruitDialogViewEvent
+import com.d101.presentation.main.event.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
