@@ -3,6 +3,11 @@
 
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application android:theme="@style/Theme.Frientree">
+        <service
+            android:name=".music.BackgroundMusicService"
+            android:enabled="true"
+            android:exported="true"/>
+
         <activity
             android:name=".mypage.PasswordChangeActivity"
             android:exported="false" />

@@ -3,10 +3,12 @@ syntax = "proto3";
 option java_package = "com.d101.data.datastore";
 option java_multiple_files = true;
 
+
 message UserPreferences {
-    string userEmail = 1;
-    string userNickname = 2;
-    bool userLeafStatus = 3;
-    bool userNotification = 4;
-    bool userFruitStatus =5;
+    bool isSocial = 1;
+    string userEmail = 2;
+    string userNickname = 3;
+    bool isNotificationEnabled = 4;
+    string backgroundMusicName = 5;
+    bool isBackgroundMusicEnabled = 6;
 }

@@ -3,8 +3,8 @@ package com.d101.presentation.splash
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
+import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import com.d101.domain.usecase.appStatus.GetAppStatusUseCase
-import com.d101.domain.usecase.usermanagement.CheckSignInUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val checkSignInUseCase: CheckSignInUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
     private val getAppStatusUseCase: GetAppStatusUseCase,
 ) : ViewModel() {
 
@@ -48,12 +48,25 @@ class SplashViewModel @Inject constructor(
     }
 
     fun checkSignInStatus() {
-        viewModelScope.launch(Dispatchers.IO) {
-            when (checkSignInUseCase()) {
-                is Result.Success -> onSignInSuccess()
-                is Result.Failure -> onSignInFailed()
+        viewModelScope.launch {
+            getUserInfoUseCase().collect {
+                when (it) {
+                    is Result.Success -> {
+                        if (it.data.isBackgroundMusicEnabled) {
+                            onSetBackGroundMusic(it.data.backgroundMusicName)
+                        }
+                        onSignInSuccess()
+                    }
+                    is Result.Failure -> {
+                        onSignInFailed()
+                    }
+                }
             }
         }
+    }
+
+    private fun onSetBackGroundMusic(backgroundMusicName: String) {
+        emitEvent(SplashViewEvent.SetBackGroundMusic(backgroundMusicName))
     }
 
     private fun emitEvent(event: SplashViewEvent) {

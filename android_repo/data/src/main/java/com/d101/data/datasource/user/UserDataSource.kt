@@ -28,4 +28,6 @@ interface UserDataSource {
     suspend fun getNaverLoginId(accessToken: String): Result<String>
 
     suspend fun signInNaver(code: String): Result<TokenResponse>
+
+    suspend fun setNotification(isNotificationEnabled: Boolean): Result<Boolean>
 }

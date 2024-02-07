@@ -12,10 +12,14 @@ import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.d101.presentation.BackgroundMusicPlayer
 import com.d101.presentation.R
 import com.d101.presentation.databinding.DialogBackgroundMusicSelectBinding
 import com.d101.presentation.databinding.FragmentMypageBinding
+import com.d101.presentation.main.MainActivity
+import com.d101.presentation.music.BackgroundMusicService
+import com.d101.presentation.music.BackgroundMusicService.Companion.MUSIC_NAME
+import com.d101.presentation.music.BackgroundMusicService.Companion.PLAY
+import com.d101.presentation.music.BackgroundMusicService.Companion.STOP
 import com.d101.presentation.mypage.PasswordChangeActivity
 import com.d101.presentation.mypage.event.MyPageViewEvent
 import com.d101.presentation.mypage.state.AlarmStatus
@@ -31,6 +35,8 @@ class MyPageFragment : Fragment() {
     private val viewModel: MyPageViewModel by viewModels()
     private var _binding: FragmentMypageBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var inputMethodManager: InputMethodManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,11 +73,21 @@ class MyPageFragment : Fragment() {
                         viewModel.onTapNicknameEditButtonOccurred()
                     }
 
-                    is MyPageViewEvent.OnTapNicknameEditCancelButton ->
+                    is MyPageViewEvent.OnTapNicknameEditCancelButton -> {
+                        inputMethodManager.hideSoftInputFromWindow(
+                            binding.nicknameEditText.windowToken,
+                            0,
+                        )
                         viewModel.onTapNicknameEditCancelButtonOccurred()
+                    }
 
-                    is MyPageViewEvent.OnTapNicknameConfirmButton ->
+                    is MyPageViewEvent.OnTapNicknameConfirmButton -> {
+                        inputMethodManager.hideSoftInputFromWindow(
+                            binding.nicknameEditText.windowToken,
+                            0,
+                        )
                         viewModel.onChangeNicknameOccurred(binding.nicknameEditText.text.toString())
+                    }
 
                     is MyPageViewEvent.OnTapAlarmStatusButton ->
                         viewModel.onTapAlarmStatusButtonOccurred(event.alarmStatus)
@@ -89,17 +105,29 @@ class MyPageFragment : Fragment() {
                         val intent = Intent(requireContext(), PasswordChangeActivity::class.java)
                         startActivity(intent)
                     }
+
                     is MyPageViewEvent.OnTapLogOutButton -> {
                         viewModel.onTapLogOutButtonOccurred()
                     }
+
                     is MyPageViewEvent.OnTapTermsButton -> {}
                     is MyPageViewEvent.OnShowToast -> {
                         Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
                     }
 
                     MyPageViewEvent.OnLogOut -> {
+                        requireActivity().startService(
+                            Intent(
+                                requireContext(),
+                                BackgroundMusicService::class.java,
+                            ).apply {
+                                action = STOP
+                            },
+                        )
                         navigateToWelcomeActivity()
                     }
+
+                    MyPageViewEvent.OnTapSignOutButton -> viewModel.onTapSignOutButton()
                 }
             }
         }
@@ -113,7 +141,7 @@ class MyPageFragment : Fragment() {
 
     private fun subScribeViewState() {
         viewLifecycleOwner.repeatOnStarted {
-            val inputMethodManager = requireContext().getSystemService(
+            inputMethodManager = requireContext().getSystemService(
                 Context.INPUT_METHOD_SERVICE,
             ) as InputMethodManager
             viewModel.uiState.collect { state ->
@@ -148,8 +176,16 @@ class MyPageFragment : Fragment() {
         binding.nicknameConfirmButtonTextView.visibility = View.VISIBLE
         binding.cancelButtonImageView.visibility = View.VISIBLE
         binding.nicknameEditText.isEnabled = true
-        binding.nicknameEditText.requestFocus()
-        inputMethodManager.showSoftInput(binding.nicknameEditText, InputMethodManager.SHOW_IMPLICIT)
+        binding.nicknameEditText.postDelayed({
+            binding.nicknameEditText.requestFocus()
+            inputMethodManager.showSoftInput(
+                binding.nicknameEditText,
+                InputMethodManager.SHOW_IMPLICIT,
+            )
+        }, 100)
+        binding.nicknameEditText.apply {
+            setSelection(text.length)
+        }
     }
 
     private fun setDefaultUI(inputMethodManager: InputMethodManager) {
@@ -164,12 +200,27 @@ class MyPageFragment : Fragment() {
         when (state.backgroundMusicStatus) {
             BackgroundMusicStatus.ON -> {
                 binding.backgroundMusicOnOffButtonImageView.setImageResource(R.drawable.sound_on)
-                BackgroundMusicPlayer.resumeMusic()
+                requireActivity().startService(
+                    Intent(
+                        requireContext(),
+                        BackgroundMusicService::class.java,
+                    ).apply {
+                        action = PLAY
+                        putExtra(MUSIC_NAME, viewModel.uiState.value.backgroundMusic)
+                    },
+                )
             }
 
             BackgroundMusicStatus.OFF -> {
                 binding.backgroundMusicOnOffButtonImageView.setImageResource(R.drawable.sound_off)
-                BackgroundMusicPlayer.pauseMusic()
+                requireActivity().startService(
+                    Intent(
+                        requireContext(),
+                        BackgroundMusicService::class.java,
+                    ).apply {
+                        action = STOP
+                    },
+                )
             }
         }
     }
@@ -195,14 +246,13 @@ class MyPageFragment : Fragment() {
     private fun showBackgroundMusicSelectDialog() {
         val dialog = createFullScreenDialog()
         val dialogBinding = DialogBackgroundMusicSelectBinding.inflate(layoutInflater)
-        val musicList = BackgroundMusicPlayer.getMusicList()
+        val musicList = (requireActivity() as MainActivity).musicService?.musicList ?: emptyList()
 
         dialogBinding.setMusicSelector(musicList, viewModel.uiState.value.backgroundMusic)
         dialog.setContentView(dialogBinding.root)
         dialog.setOnDismissListener {
             viewModel.onBackgroundMusicChanged(musicList[dialogBinding.musicSelector.value])
         }
-        BackgroundMusicPlayer.resumeMusic()
         dialog.show()
     }
 
@@ -222,9 +272,12 @@ class MyPageFragment : Fragment() {
             displayedValues = musicList.toTypedArray()
             value = musicList.indexOf(currentMusic)
             setOnValueChangedListener { _, _, selectedNow ->
-                BackgroundMusicPlayer.pauseMusic()
-                BackgroundMusicPlayer.releaseMusicPlayer()
-                BackgroundMusicPlayer.playMusic(requireContext(), musicList[selectedNow])
+                requireActivity().startService(
+                    Intent(requireContext(), BackgroundMusicService::class.java).apply {
+                        action = PLAY
+                        putExtra(MUSIC_NAME, musicList[selectedNow])
+                    },
+                )
             }
         }
     }

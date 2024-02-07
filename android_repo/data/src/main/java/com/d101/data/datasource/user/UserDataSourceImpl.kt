@@ -7,6 +7,7 @@ import com.d101.data.model.user.request.AuthCodeCheckRequest
 import com.d101.data.model.user.request.AuthCodeCreationRequest
 import com.d101.data.model.user.request.NaverLoginRequest
 import com.d101.data.model.user.request.NicknameChangeRequest
+import com.d101.data.model.user.request.NotificationSetRequest
 import com.d101.data.model.user.request.PasswordChangeRequest
 import com.d101.data.model.user.request.PasswordFindRequest
 import com.d101.data.model.user.request.SignInRequest
@@ -86,10 +87,17 @@ class UserDataSourceImpl @Inject constructor(
                 Result.Success(it)
             },
             onFailure = { e ->
-                if (e is IOException) {
-                    Result.Failure(ErrorStatus.NetworkError)
+                if (e is FrientreeHttpError) {
+                    when (e.code) {
+                        400 -> Result.Failure(ErrorStatus.BadRequest)
+                        else -> Result.Failure(ErrorStatus.UnknownError)
+                    }
                 } else {
-                    Result.Failure(ErrorStatus.UnknownError)
+                    if (e is IOException) {
+                        Result.Failure(ErrorStatus.NetworkError)
+                    } else {
+                        Result.Failure(ErrorStatus.UnknownError)
+                    }
                 }
             },
         )
@@ -278,4 +286,20 @@ class UserDataSourceImpl @Inject constructor(
                 }
             },
         )
+
+    override suspend fun setNotification(isNotificationEnabled: Boolean) = runCatching {
+        userService.changeNotificationSet(NotificationSetRequest(isNotificationEnabled))
+            .getOrThrow().data
+    }.fold(
+        onSuccess = {
+            Result.Success(it)
+        },
+        onFailure = { e ->
+            if (e is IOException) {
+                Result.Failure(ErrorStatus.NetworkError)
+            } else {
+                Result.Failure(ErrorStatus.UnknownError)
+            }
+        },
+    )
 }

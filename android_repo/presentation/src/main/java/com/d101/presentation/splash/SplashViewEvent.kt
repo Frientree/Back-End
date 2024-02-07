@@ -11,4 +11,5 @@ sealed class SplashViewEvent {
         val storeUrl: String,
     ) : SplashViewEvent()
     data object OnFailCheckAppStatus : SplashViewEvent()
+    data class SetBackGroundMusic(val musicName: String) : SplashViewEvent()
 }
