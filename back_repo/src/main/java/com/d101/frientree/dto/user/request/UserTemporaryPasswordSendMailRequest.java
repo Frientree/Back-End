@@ -5,11 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserChangePasswordRequest {
+@AllArgsConstructor
+public class UserTemporaryPasswordSendMailRequest {
 
-    private String userPw;
-    private String newPw;
-
+    private String userEmail;
 }

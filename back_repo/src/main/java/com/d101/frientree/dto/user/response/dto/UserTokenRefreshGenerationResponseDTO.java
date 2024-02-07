@@ -5,13 +5,13 @@ import lombok.Data;
 
 @Builder
 @Data
-public class UserTokenRefreshResponseDTO {
+public class UserTokenRefreshGenerationResponseDTO {
 
     private String accessToken;
     private String refreshToken;
 
-    public static UserTokenRefreshResponseDTO createUserTokenRefreshResponseDTO(String accessToken, String refreshToken) {
-        return UserTokenRefreshResponseDTO.builder()
+    public static UserTokenRefreshGenerationResponseDTO createUserTokenRefreshGenerationResponseDTO(String accessToken, String refreshToken) {
+        return UserTokenRefreshGenerationResponseDTO.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

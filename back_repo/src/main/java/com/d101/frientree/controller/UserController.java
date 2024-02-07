@@ -49,12 +49,12 @@ public class UserController {
     // 유저 생성
     @Operation(summary = "회원 가입", description = "새로운 유저를 생성합니다.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "(message : \"Success\", code : 201)", content = @Content(schema = @Schema(implementation = UserCreateResponse.class))),
+            @ApiResponse(responseCode = "201", description = "(message : \"Success\", code : 201)", content = @Content(schema = @Schema(implementation = UserGenerationResponse.class))),
             @ApiResponse(responseCode = "400", description = "(message : \"Email, Nickname, Password Error\", code : 400)\n")
     })
     @PostMapping("/sign-up")
-    public ResponseEntity<UserCreateResponse> userGeneration(@RequestBody UserCreateRequest userCreateRequest) {
-        return userService.generateUser(userCreateRequest);
+    public ResponseEntity<UserGenerationResponse> userGeneration(@RequestBody UserGenerationRequest userGenerationRequest) {
+        return userService.userGenerate(userGenerationRequest);
     }
 
     // 로그인
@@ -66,7 +66,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "(message : \"Email not found\", code : 404)\n")
     })
     @PostMapping("/sign-in")
-    public ResponseEntity<UserSignInResponse> signIn(@RequestBody UserSignInRequest userSignInRequest) {
+    public ResponseEntity<UserSignInResponse> userSignIn(@RequestBody UserSignInRequest userSignInRequest) {
         return userService.signIn(userSignInRequest);
     }
 
@@ -74,27 +74,27 @@ public class UserController {
     @Operation(summary = "토큰 재발급", description = "만료된 accessToken을 재발급합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserTokenRefreshResponse.class))),
+                    content = @Content(schema = @Schema(implementation = UserTokenRefreshGenerationResponse.class))),
             @ApiResponse(responseCode = "400", description = "(message : \"RefreshToken error\", code : 400)\n")
     })
     @PostMapping("/tokens-refresh")
-    public ResponseEntity<UserTokenRefreshResponse> tokenRefreshGeneration(@RequestBody UserTokenRefreshRequest userTokenRefreshRequest) {
-        return userService.tokenRefreshGenerate(userTokenRefreshRequest);
+    public ResponseEntity<UserTokenRefreshGenerationResponse> userTokenRefreshGeneration(@RequestBody UserTokenRefreshGenerationRequest userTokenRefreshGenerationRequest) {
+        return userService.tokenRefreshGenerate(userTokenRefreshGenerationRequest);
     }
 
     // 닉네임 변경
     @Operation(summary = "닉네임 변경", description = "유저 닉네임을 변경합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserChangeNicknameResponse.class))),
+                    content = @Content(schema = @Schema(implementation = UserNicknameModificationResponse.class))),
             @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n"),
             @ApiResponse(responseCode = "400", description = "(message : \"nickname valid error\", code : 400)\n"),
             @ApiResponse(responseCode = "404", description = "(message : \"User not found\", code : 404)\n")
     })
     @PreAuthorize("isAuthenticated()")
     @PutMapping
-    public ResponseEntity<UserChangeNicknameResponse> userNicknameModification(@RequestBody UserChangeNicknameRequest userChangeNicknameRequest) {
-        return userService.modifyNickname(userChangeNicknameRequest);
+    public ResponseEntity<UserNicknameModificationResponse> userNicknameModification(@RequestBody UserNicknameModificationRequest userNicknameModificationRequest) {
+        return userService.nicknameModify(userNicknameModificationRequest);
     }
 
     // 프로필 조회
@@ -107,7 +107,7 @@ public class UserController {
     })
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public ResponseEntity<UserProfileConfirmationResponse> profileConfirmation() {
+    public ResponseEntity<UserProfileConfirmationResponse> userProfileConfirmation() {
         return userService.profileConfirm();
     }
 
@@ -115,40 +115,40 @@ public class UserController {
     @Operation(summary = "알람 설정", description = "유저 알람 활성화 or 비활성화 처리합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserChangeAlamResponse.class))),
+                    content = @Content(schema = @Schema(implementation = UserAlamModificationResponse.class))),
             @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n")
     })
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/notification")
-    public ResponseEntity<UserChangeAlamResponse> userAlamModification(@RequestBody UserChangeAlamRequest userChangeAlamRequest) {
-        return userService.modifyAlam(userChangeAlamRequest);
+    public ResponseEntity<UserAlamModificationResponse> userAlamModification(@RequestBody UserAlamModificationRequest userAlamModificationRequest) {
+        return userService.alamModify(userAlamModificationRequest);
     }
 
     // 유저 삭제
     @Operation(summary = "유저 삭제", description = "유저를 삭제합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserDeleteResponse.class))),
+                    content = @Content(schema = @Schema(implementation = UserRemovalResponse.class))),
             @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n"),
             @ApiResponse(responseCode = "404", description = "(message : \"User not found\", code : 404)\n")
     })
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping
-    public ResponseEntity<UserDeleteResponse> userRemoval() {
-        return userService.removal();
+    public ResponseEntity<UserRemovalResponse> userRemoval() {
+        return userService.remove();
     }
 
     // 유저 비활성화
     @Operation(summary = "유저 비활성화", description = "유저를 비활성화합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserDeactivateResponse.class))),
+                    content = @Content(schema = @Schema(implementation = UserDeactivationResponse.class))),
             @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n"),
             @ApiResponse(responseCode = "404", description = "(message : \"User not found\", code : 404)\n")
     })
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/deactivation")
-    public ResponseEntity<UserDeactivateResponse> userDeactivation() {
+    public ResponseEntity<UserDeactivationResponse> userDeactivation() {
         return userService.deactivate();
     }
 
@@ -178,7 +178,8 @@ public class UserController {
     @Operation(summary = "인증 코드 확인", description = "인증 코드 일치여부를 확인합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserPassEmailCertificationResponse.class)))
+                    content = @Content(schema = @Schema(implementation = UserPassEmailCertificationResponse.class))),
+            @ApiResponse(responseCode = "400", description = "(message : \"Email code not match\", code : 400)\n"),
     })
     @PostMapping("/certification-pass")
     public ResponseEntity<UserPassEmailCertificationResponse> userPassEmailCertification(@RequestBody UserPassEmailCertificationRequest userPassEmailCertificationRequest) {
@@ -189,7 +190,7 @@ public class UserController {
     @Operation(summary = "패스워드 변경", description = "새로운 패스워드로 변경합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserChangePasswordResponse.class))),
+                    content = @Content(schema = @Schema(implementation = UserPasswordModificationResponse.class))),
             @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n"),
             @ApiResponse(responseCode = "404", description = "(message : \"User not found\", code : 404)\n"),
             @ApiResponse(responseCode = "400", description = "(message : \"Current password not match\", code : 400)\n"),
@@ -197,33 +198,33 @@ public class UserController {
     })
     @PostMapping("/password")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserChangePasswordResponse> userPasswordModification(@RequestBody UserChangePasswordRequest userChangePasswordRequest) {
-        return userService.passwordModify(userChangePasswordRequest);
+    public ResponseEntity<UserPasswordModificationResponse> userPasswordModification(@RequestBody UserPasswordModificationRequest userPasswordModificationRequest) {
+        return userService.passwordModify(userPasswordModificationRequest);
     }
 
     // 임시 비밀번호 발급
     @Operation(summary = "임시 비밀번호 발급", description = "해당 이메일로 임시 비밀번호를 발급합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserTemporaryPasswordSendResponse.class))),
+                    content = @Content(schema = @Schema(implementation = UserTemporaryPasswordSendMailResponse.class))),
             @ApiResponse(responseCode = "404", description = "(message : \"User not found\", code : 404)\n")
     })
     @PostMapping("/temporary-password")
-    public ResponseEntity<UserTemporaryPasswordSendResponse> userTemporaryPasswordSendMail(@RequestBody UserTemporaryPasswordSendRequest userTemporaryPasswordSendRequest) {
-        return userService.temporaryPasswordSend(userTemporaryPasswordSendRequest);
+    public ResponseEntity<UserTemporaryPasswordSendMailResponse> userTemporaryPasswordSendMail(@RequestBody UserTemporaryPasswordSendMailRequest userTemporaryPasswordSendMailRequest) {
+        return userService.temporaryPasswordSend(userTemporaryPasswordSendMailRequest);
     }
 
     // 유저 열매, 이파리 생성 가능 여부
     @Operation(summary = "유저 열매, 이파리 생성 가능 여부 조회", description = "유저 열매, 이파리 생성 가능 여부를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserCreateStatusResponse.class))),
+                    content = @Content(schema = @Schema(implementation = UserCreateStatusConfirmationResponse.class))),
             @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n"),
             @ApiResponse(responseCode = "404", description = "(message : \"User not found\", code : 404)\n")
     })
     @GetMapping("/create-status")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<UserCreateStatusResponse> userCreateStatusConfirmation() {
+    public ResponseEntity<UserCreateStatusConfirmationResponse> userCreateStatusConfirmation() {
         return userService.createStatusConfirm();
     }
 
@@ -231,7 +232,7 @@ public class UserController {
     @Operation(summary = "네이버 소셜 로그인", description = "네이버 계정으로 소셜 로그인을 진행합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
-                    content = @Content(schema = @Schema(implementation = UserCreateStatusResponse.class)))
+                    content = @Content(schema = @Schema(implementation = UserCreateStatusConfirmationResponse.class)))
     })
     @PostMapping("/sign-in-naver")
     public ResponseEntity<UserSignInNaverResponse> userSignInNaver(@RequestBody UserSignInNaverRequest userSignInNaverRequest) {

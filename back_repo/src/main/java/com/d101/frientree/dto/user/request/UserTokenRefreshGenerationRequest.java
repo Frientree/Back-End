@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserTokenRefreshRequest {
+public class UserTokenRefreshGenerationRequest {
 
     private String refreshToken;
 }
