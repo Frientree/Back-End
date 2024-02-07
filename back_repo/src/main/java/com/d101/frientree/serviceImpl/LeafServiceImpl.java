@@ -15,6 +15,7 @@ import com.d101.frientree.entity.mongo.leaf.Leaf;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.leaf.CategoryNotFoundException;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
+import com.d101.frientree.exception.leaf.LeafCreationFailedException;
 import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.*;
 import com.d101.frientree.repository.mongo.MongoLeafRepository;
@@ -29,7 +30,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -56,7 +56,7 @@ public class LeafServiceImpl implements LeafService {
 
         // 2. leaf_detail 테이블에서 leaf_category에 해당하는 이파리 중에서
         //    로그인한 사용자가 보낸 및 받은 leaf를 제외한 이파리들 가져오기
-        LeafCategory selectedCategory = LeafCategory.findByValue(leafCategoryValue+ 1 );
+        LeafCategory selectedCategory = LeafCategory.findByValue(leafCategoryValue);
 
         Optional<LeafDetail> leaves;
 
@@ -73,7 +73,6 @@ public class LeafServiceImpl implements LeafService {
 
         Optional<LeafDetail> selectedorderbyLeaf = leaves;
 
-        // Optional을 사용하니까 isPresent 가 사용이 가능해서 코드 수정했습니다.
         if (selectedorderbyLeaf.isPresent()) {
             // 선택된 leaf의 leaf_view 값을 1 증가
             LeafDetail selectedLeaf = selectedorderbyLeaf.get();
@@ -119,30 +118,38 @@ public class LeafServiceImpl implements LeafService {
         //createDate String --> LocalDate 변경
         LocalDate date = LocalDate.parse(createDate);
 
-        // user 정보를 받아올 때, 유효성 검사까지 함께하는 메서드를 가지고 와서 사용했습니다.
         User currentUser = getUser();
 
-        LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
+        // 유저의 leaf_status가 true 일 경우에만 이파리 생성 가능
+        if(currentUser.getUserLeafStatus()){
+
+            LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
+            newLeaf.setLeafCreateDate(date);
+
+            // LeafDetail 저장
+            leafRepository.save(newLeaf);
+            LeafSend leafSend = LeafSend.createLeafSend(newLeaf, currentUser);
+
+            // LeafSend 테이블에 추가
+            leafSendRepository.save(leafSend);
+
+            // 이파리 생성할 때 user의 leaf_status를 false로 변경
+            currentUser.setUserLeafStatus(false);
+            userRepository.save(currentUser);
 
 
-        newLeaf.setLeafCreateDate(date);
+            // LeafGenerationResponse 생성
+            LeafGenerationResponse response = LeafGenerationResponse.createLeafGenerationResponse(
+                    "Success",
+                    true
+            );
 
-        // LeafDetail 저장
-        leafRepository.save(newLeaf);
-
-        LeafSend leafSend = LeafSend.createLeafSend(newLeaf, currentUser);
-
-        // LeafSend 테이블에 추가
-        leafSendRepository.save(leafSend);
-
-        // LeafGenerationResponse 생성
-        LeafGenerationResponse response = LeafGenerationResponse.createLeafGenerationResponse(
-                "Success",
-                true
-        );
-
-        // LeafGenerationResponse 반환
-        return ResponseEntity.ok(response);
+            // LeafGenerationResponse 반환
+            return ResponseEntity.ok(response);
+        }
+        else {
+            throw new LeafCreationFailedException("Leaf creation failed");
+        }
     }
 
     @Override
@@ -246,7 +253,6 @@ public class LeafServiceImpl implements LeafService {
         if (currentUser.getUserDisabled()) {
             throw new UserNotFoundException("user disabled");
         }
-
         return currentUser;
     }
 }

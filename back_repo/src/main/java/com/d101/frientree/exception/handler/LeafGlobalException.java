@@ -1,5 +1,7 @@
 package com.d101.frientree.exception.handler;
 
+import com.d101.frientree.exception.leaf.CategoryNotFoundException;
+import com.d101.frientree.exception.leaf.LeafCreationFailedException;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,20 @@ public class LeafGlobalException {
     public ResponseEntity<String> handleLeafNotFoundException(LeafNotFoundException e) {
         //HttpStatus.NOT_FOUND 만 바꾸면서 반복 내보내는 대로
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .headers(JSON_HEADERS)
+                .body(stringToGson(e.getMessage()));
+    }
+
+    @ExceptionHandler(LeafCreationFailedException.class)
+    public ResponseEntity<String> handleLeafCreationFailedException(LeafCreationFailedException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .headers(JSON_HEADERS)
+                .body(stringToGson(e.getMessage()));
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<String> handleCategoryNotFoundException(CategoryNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .headers(JSON_HEADERS)
                 .body(stringToGson(e.getMessage()));
     }
