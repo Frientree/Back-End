@@ -7,7 +7,7 @@ import lombok.Getter;
 public enum LeafCategory {
     ENCOURAGEMENT(1),
     COMFORT(2),
-    FREEDOM(3);
+    FREEDOM(0);
 
     private final int value;
 
@@ -21,7 +21,6 @@ public enum LeafCategory {
                 return category;
             }
         }
-        // 존재하지 않는 카테고리를 선택했을 때 null로 처리
-        return null;
+        throw new CategoryNotFoundException("Category not found");
     }
 }
