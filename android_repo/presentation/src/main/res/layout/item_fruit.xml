@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/fruit_item_linear_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
@@ -45,7 +47,6 @@
         android:textSize="12sp" />
 
     <ImageView
-        android:id="@+id/fruit_detail_button_image_view"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginStart="8dp"

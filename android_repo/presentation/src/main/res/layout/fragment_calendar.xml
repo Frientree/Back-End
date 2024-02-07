@@ -96,7 +96,6 @@
                 android:layout_marginTop="4dp"
                 android:drawablePadding="2dp"
                 android:gravity="center_vertical"
-                android:text="@string/juice_requirements"
                 android:textColor="@color/gray"
                 app:drawableLeftCompat="@drawable/outline_info_24" />
 
