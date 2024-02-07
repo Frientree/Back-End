@@ -3,10 +3,14 @@ package com.d101.frientree.entity.leaf;
 import com.d101.frientree.entity.user.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "leaf_receive")
 @Data
+@Getter
+@Setter
 public class LeafReceive {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +32,6 @@ public class LeafReceive {
         leafReceive.setLeafDetail(selectedLeaf);
         return leafReceive;
     }
+
 
 }

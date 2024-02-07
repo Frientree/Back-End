@@ -13,6 +13,7 @@ import com.d101.frientree.entity.leaf.LeafReceive;
 import com.d101.frientree.entity.leaf.LeafSend;
 import com.d101.frientree.entity.mongo.leaf.Leaf;
 import com.d101.frientree.entity.user.User;
+import com.d101.frientree.exception.leaf.CategoryNotFoundException;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
 import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.*;
@@ -44,7 +45,7 @@ public class LeafServiceImpl implements LeafService {
     private final MongoLeafRepository mongoLeafRepository;
 
     @Override
-    public ResponseEntity<LeafConfirmationResponse> confirm(String leafCategory) {
+    public ResponseEntity<LeafConfirmationResponse> confirm(int leafCategoryValue) {
         User currentUser = getUser();
         Long userId = currentUser.getUserId();
 
@@ -55,7 +56,7 @@ public class LeafServiceImpl implements LeafService {
 
         // 2. leaf_detail 테이블에서 leaf_category에 해당하는 이파리 중에서
         //    로그인한 사용자가 보낸 및 받은 leaf를 제외한 이파리들 가져오기
-        LeafCategory selectedCategory = LeafCategory.valueOf(leafCategory.toUpperCase());
+        LeafCategory selectedCategory = LeafCategory.findByValue(leafCategoryValue+ 1 );
 
         Optional<LeafDetail> leaves;
 
@@ -65,7 +66,7 @@ public class LeafServiceImpl implements LeafService {
         } else {
             // 선택한 카테고리에 속하면서 sentAndReceivedLeafNums에 포함되지 않은 LeafDetail 가져오기
             leaves = leafRepository.findAllByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(
-                    selectedCategory, sentAndReceivedLeafNums)
+                            selectedCategory, sentAndReceivedLeafNums)
                     .stream()
                     .findFirst();
         }
@@ -76,10 +77,16 @@ public class LeafServiceImpl implements LeafService {
         if (selectedorderbyLeaf.isPresent()) {
             // 선택된 leaf의 leaf_view 값을 1 증가
             LeafDetail selectedLeaf = selectedorderbyLeaf.get();
+
             selectedLeaf.setLeafView(selectedLeaf.getLeafView() + 1);
 
             // leaf 업데이트
             leafRepository.save(selectedLeaf);
+
+            // leaf_receive 테이블에 이파리 추가
+
+            LeafReceive leafReceive = LeafReceive.createLeafReceive(selectedLeaf, currentUser);
+            leafReceiveRepository.save(leafReceive);
 
             LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
                     "Success",
@@ -116,6 +123,8 @@ public class LeafServiceImpl implements LeafService {
         User currentUser = getUser();
 
         LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
+
+
         newLeaf.setLeafCreateDate(date);
 
         // LeafDetail 저장

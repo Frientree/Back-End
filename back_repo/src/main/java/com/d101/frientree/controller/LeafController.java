@@ -6,6 +6,7 @@ import com.d101.frientree.dto.leaf.response.LeafConfirmationResponse;
 import com.d101.frientree.dto.leaf.response.LeafGenerationResponse;
 import com.d101.frientree.dto.leaf.response.LeafViewResponse;
 
+import com.d101.frientree.entity.LeafCategory;
 import com.d101.frientree.service.LeafService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -38,10 +39,10 @@ public class LeafController {
             @ApiResponse(responseCode = "200", description = "조회 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafConfirmationResponse.class))),
     })
     @GetMapping("/{category}")
-    public ResponseEntity<LeafConfirmationResponse> leafConfirmation(@PathVariable String category){
+    public ResponseEntity<LeafConfirmationResponse> leafConfirmation(@PathVariable int category) {
+        // 여기서 category를 사용하여 작업 수행
         return leafService.confirm(category);
     }
-
 
     // 이파리 작성
     @PreAuthorize("isAuthenticated()")
