@@ -71,9 +71,9 @@ class FruitRepositoryImpl @Inject constructor(
 
     override suspend fun getTodayFruit(date: String): Result<FruitCreated> = runCatching {
         val dateLong = date.toLongDate()
-        fruitLocalDataSource.getTodayFruit(dateLong)
+        fruitLocalDataSource.getTodayFruit(dateLong).toFruitCreated()
     }.fold(
-        onSuccess = { Result.Success(it.toFruitCreated()) },
+        onSuccess = { Result.Success(it) },
         onFailure = { Result.Failure(FruitErrorStatus.LocalGetError) },
     )
 }
