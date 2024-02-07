@@ -8,7 +8,6 @@ import com.d101.data.roomdb.entity.FruitEntity
 import com.d101.domain.model.AppleData
 import com.d101.domain.model.FruitCreated
 import com.d101.domain.model.Result
-import com.d101.domain.model.status.FruitErrorStatus
 import com.d101.domain.repository.FruitRepository
 import com.d101.domain.utils.toLongDate
 import java.io.File
@@ -75,6 +74,40 @@ class FruitRepositoryImpl @Inject constructor(
         fetchedFruit.toFruitCreated()
     }.fold(
         onSuccess = { Result.Success(it) },
-        onFailure = { Result.Failure(FruitErrorStatus.LocalGetError) },
+        onFailure = {
+            when (val result = getTodayFruitFromRemote()) {
+                is Result.Success -> {
+                    return Result.Success(result.data.toFruitCreated())
+                }
+                is Result.Failure -> {
+                    return Result.Failure(result.errorStatus)
+                }
+            }
+        },
     )
+
+    private suspend fun getTodayFruitFromRemote(): Result<FruitEntity> {
+        return when (val remoteResult = fruitRemoteDataSource.getTodayFruit()) {
+            is Result.Success -> {
+                val fruitEntity = remoteResult.let {
+                    FruitEntity(
+                        id = it.data.fruitNum,
+                        date = it.data.fruitCreateDate.toLongDate(),
+                        name = it.data.fruitName,
+                        description = it.data.fruitDescription,
+                        imageUrl = it.data.fruitImageUrl,
+                        calendarImageUrl = it.data.fruitCalendarImageUrl,
+                        emotion = it.data.fruitFeel,
+                        score = it.data.fruitScore,
+                    )
+                }
+                fruitLocalDataSource.insertFruit(fruitEntity)
+                Result.Success(fruitEntity)
+            }
+
+            is Result.Failure -> {
+                Result.Failure(remoteResult.errorStatus)
+            }
+        }
+    }
 }

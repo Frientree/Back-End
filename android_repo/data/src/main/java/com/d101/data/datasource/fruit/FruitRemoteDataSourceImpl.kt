@@ -5,6 +5,7 @@ import com.d101.data.error.FrientreeHttpError
 import com.d101.data.model.fruit.request.FruitCreationByTextRequest
 import com.d101.data.model.fruit.response.FruitCreationResponse
 import com.d101.data.model.fruit.response.FruitSaveResponse
+import com.d101.data.model.fruit.response.FruitTodayResponse
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.FruitErrorStatus
@@ -69,6 +70,24 @@ class FruitRemoteDataSourceImpl @Inject constructor(
                     404 -> Result.Failure(FruitErrorStatus.FruitNotFound)
                     500 -> Result.Failure(FruitErrorStatus.UserModifyException)
                     else -> Result.Failure(ErrorStatus.UnknownError)
+                }
+            } else if (e is IOException) {
+                Result.Failure(ErrorStatus.NetworkError)
+            } else {
+                Result.Failure(ErrorStatus.UnknownError)
+            }
+        },
+    )
+
+    override suspend fun getTodayFruit(): Result<FruitTodayResponse> = runCatching {
+        fruitService.getTodayFruit().getOrThrow().data
+    }.fold(
+        onSuccess = { Result.Success(it) },
+        onFailure = { e ->
+            if (e is FrientreeHttpError) {
+                when (e.code) {
+                    404 -> { Result.Failure(FruitErrorStatus.UserFruitNotFound) }
+                    else -> { Result.Failure(ErrorStatus.UnknownError) }
                 }
             } else if (e is IOException) {
                 Result.Failure(ErrorStatus.NetworkError)
