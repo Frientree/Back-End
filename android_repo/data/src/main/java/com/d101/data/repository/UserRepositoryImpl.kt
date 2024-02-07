@@ -9,7 +9,6 @@ import com.d101.data.mapper.UserMapper.toUser
 import com.d101.data.mapper.UserMapper.toUserStatus
 import com.d101.data.roomdb.AppDatabase
 import com.d101.domain.model.Result
-import com.d101.domain.model.User
 import com.d101.domain.model.UserStatus
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.repository.UserRepository
@@ -83,9 +82,9 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun logout(): Result<Unit> {
         return try {
-            userDataStore.updateData { UserPreferences.getDefaultInstance() }
             tokenManager.deleteTokens()
             roomDB.clearAllTables()
+            userDataStore.updateData { UserPreferences.getDefaultInstance() }
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Failure(ErrorStatus.UnknownError)
