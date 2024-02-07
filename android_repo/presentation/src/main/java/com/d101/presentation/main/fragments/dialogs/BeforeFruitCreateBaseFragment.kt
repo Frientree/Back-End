@@ -6,15 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentBeforeFruitCreateBaseBinding
-import com.d101.presentation.main.state.CreateFruitDialogViewEvent
+import com.d101.presentation.main.event.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -69,13 +69,16 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
                     }
 
                     is CreateFruitDialogViewEvent.ShowErrorToastEvent -> {
-                        Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+                        showToast(it.message)
                         dialog?.dismiss()
                     }
                 }
             }
         }
     }
+
+    private fun showToast(message: String) =
+        CustomToast.createAndShow(requireContext(), message)
 
     private fun navigateToDestinationFragment(destination: Fragment) {
         childFragmentManager.beginTransaction()

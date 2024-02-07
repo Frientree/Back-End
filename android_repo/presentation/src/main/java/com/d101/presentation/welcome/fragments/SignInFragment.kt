@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -22,6 +21,7 @@ import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.suspendCancellableCoroutine
+import utils.CustomToast
 import utils.repeatOnStarted
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -119,7 +119,7 @@ class SignInFragment : Fragment() {
         findNavController().navigate(R.id.action_signInFragment_to_findPasswordFragment)
 
     private fun showToast(message: String) =
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        CustomToast.createAndShow(requireContext(), message)
 
     override fun onDestroyView() {
         super.onDestroyView()

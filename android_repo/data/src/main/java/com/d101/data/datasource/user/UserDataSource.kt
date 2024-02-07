@@ -30,4 +30,6 @@ interface UserDataSource {
     suspend fun signInNaver(code: String): Result<TokenResponse>
 
     suspend fun setNotification(isNotificationEnabled: Boolean): Result<Boolean>
+
+    suspend fun updateFcmToken(fcmToken: String): Result<Boolean>
 }

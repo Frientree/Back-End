@@ -2,21 +2,26 @@ package com.d101.presentation.main
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -25,11 +30,15 @@ import com.d101.presentation.databinding.ActivityMainBinding
 import com.d101.presentation.main.event.MainActivityEvent
 import com.d101.presentation.main.fragments.dialogs.LeafDialogInterface
 import com.d101.presentation.main.fragments.dialogs.LeafMessageBaseFragment
+import com.d101.presentation.main.fragments.dialogs.LeafReceiveBaseFragment
 import com.d101.presentation.main.state.MainActivityViewState
 import com.d101.presentation.main.viewmodel.MainActivityViewModel
 import com.d101.presentation.music.BackgroundMusicService
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -40,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     }
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var navController: NavController
+    private lateinit var tokenReceiver: BroadcastReceiver
 
     var musicService: BackgroundMusicService? = null
     private var isBound = false
@@ -69,12 +79,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initNavigationView()
+        initTokenReceiver()
+
+        receiveFCMToken()
+        initEvent()
 
         repeatOnStarted {
             viewModel.eventFlow.collect { event ->
                 when (event) {
                     is MainActivityEvent.ShowErrorEvent -> {
-                        Toast.makeText(this@MainActivity, event.message, Toast.LENGTH_SHORT).show()
+                        showToast(event.message)
                     }
                 }
             }
@@ -112,14 +126,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        binding.blur.setOnClickListener {
-            controlLeafButton()
-        }
-        binding.writeLeafButton.setOnClickListener {
-            val dialog = LeafMessageBaseFragment()
-            LeafDialogInterface.dialog = dialog
-            dialog.show(supportFragmentManager, "")
-        }
+
         repeatOnStarted {
             viewModel.visibility.collect {
                 delay(100)
@@ -129,7 +136,9 @@ class MainActivity : AppCompatActivity() {
                 if (it) binding.blur.visibility = View.GONE
             }
         }
+    }
 
+    private fun initEvent() {
         binding.leafFloatingActionButton.setOnClickListener {
             when (viewModel.currentViewState.value) {
                 MainActivityViewState.TreeView -> {
@@ -146,6 +155,62 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        binding.blur.setOnClickListener {
+            controlLeafButton()
+        }
+        binding.writeLeafButton.setOnClickListener {
+            val dialog = LeafMessageBaseFragment()
+            LeafDialogInterface.dialog = dialog
+            dialog.show(supportFragmentManager, "")
+        }
+        binding.readLeafButton.setOnClickListener {
+            val dialog = LeafReceiveBaseFragment()
+            LeafDialogInterface.dialog = dialog
+            dialog.show(supportFragmentManager, "")
+        }
+    }
+
+    private fun showToast(message: String) = CustomToast.createAndShow(this, message)
+
+    private fun initTokenReceiver() {
+        tokenReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.getStringExtra("TOKEN")?.let {
+                    uploadToken(it)
+                }
+            }
+        }
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            tokenReceiver,
+            IntentFilter("FCM_NEW_TOKEN"),
+        )
+    }
+
+    private fun receiveFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("FCM", "FCM 토큰 얻기에 실패하였습니다.", task.exception)
+                    return@OnCompleteListener
+                }
+                // token log 남기기
+                Log.d("FCM", "token: ${task.result ?: "task.result is null"}")
+                if (task.result != null) {
+                    uploadToken(task.result!!)
+                }
+            },
+        )
+        createNotificationChannel(CHANNEL_ID, "FRIENTREE")
+    }
+
+    private fun createNotificationChannel(id: String, name: String) {
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(id, name, importance)
+
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun initNavigationView() {
@@ -292,7 +357,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun uploadToken(token: String) {
+        viewModel.uploadToken(token)
+    }
+
     companion object {
+        const val CHANNEL_ID = "FRIENTREE_MESSAGING_CHANNEL"
         const val DURATION = 400L
         const val WRITE_UP = 0
         const val READ_UP = 1

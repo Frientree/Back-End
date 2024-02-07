@@ -5,5 +5,5 @@ import com.d101.domain.model.Result
 
 interface FruitLocalDataSource {
     suspend fun insertFruit(fruitEntity: FruitEntity): Result<Boolean>
-    suspend fun getTodayFruit(date: Long): FruitEntity
+    suspend fun getTodayFruit(date: Long): FruitEntity?
 }

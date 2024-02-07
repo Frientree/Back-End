@@ -10,7 +10,7 @@ class CalendarLocalDataSourceImpl @Inject constructor(
     private val fruitDao: FruitDao,
     private val calendarFruitDao: CalendarFruitDao,
 ) : CalendarLocalDataSource {
-    override fun getFruit(date: Long): FruitEntity {
+    override fun getFruit(date: Long): FruitEntity? {
         return fruitDao.getFruit(date)
     }
 
@@ -42,9 +42,9 @@ class CalendarLocalDataSourceImpl @Inject constructor(
             Result.failure(e)
         }
 
-    override fun updateFruitEntityList(fruitEntityList: List<FruitEntity>): Result<Unit> =
+    override fun insertOrUpdateFruitEntityList(fruitEntityList: List<FruitEntity>): Result<Unit> =
         try {
-            val result = fruitDao.updateFruitEntities(fruitEntityList)
+            val result = fruitDao.insertOrUpdateFruitsForWeek(fruitEntityList)
             Result.success(result)
         } catch (e: Exception) {
             Result.failure(e)

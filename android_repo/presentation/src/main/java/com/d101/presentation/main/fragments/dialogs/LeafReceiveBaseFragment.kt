@@ -6,25 +6,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.d101.presentation.R
-import com.d101.presentation.databinding.FragmentLeafSendMessageBaseBinding
-import com.d101.presentation.main.event.LeafSendViewEvent
-import com.d101.presentation.main.viewmodel.LeafSendViewModel
+import com.d101.presentation.databinding.FragmentLeafReceiveBaseBinding
+import com.d101.presentation.main.event.LeafReceiveEvent
+import com.d101.presentation.main.viewmodel.LeafReceiveViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
-class LeafMessageBaseFragment : DialogFragment() {
+class LeafReceiveBaseFragment : DialogFragment() {
 
-    private var _binding: FragmentLeafSendMessageBaseBinding? = null
+    private var _binding: FragmentLeafReceiveBaseBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: LeafSendViewModel by viewModels()
+    private val viewModel: LeafReceiveViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +33,7 @@ class LeafMessageBaseFragment : DialogFragment() {
     ): View {
         _binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_leaf_send_message_base,
+            R.layout.fragment_leaf_receive_base,
             container,
             false,
         )
@@ -52,28 +52,25 @@ class LeafMessageBaseFragment : DialogFragment() {
         viewLifecycleOwner.repeatOnStarted {
             viewModel.leafEventFlow.collect { event ->
                 when (event) {
-                    is LeafSendViewEvent.FirstPage -> navigateToTargetFragment(
-                        LeafMessageToSendFragment(),
+                    is LeafReceiveEvent.ShakingLeafPage -> navigateToTargetFragment(
+                        LeafReceiveFragment(),
                     )
 
-                    is LeafSendViewEvent.ReadyToSend -> {
-                        dialog?.dismiss()
-                        showToast("이파리를 보냈어요!")
+                    is LeafReceiveEvent.ReadyToReceive -> {
+                        navigateToTargetFragment(LeafReceivedFragment())
                     }
 
-                    is LeafSendViewEvent.SendLeaf -> navigateToTargetFragment(LeafBlowingFragment())
-
-                    is LeafSendViewEvent.ShowErrorToast -> {
-                        dialog?.dismiss()
-                        showToast(event.message)
+                    is LeafReceiveEvent.ReportLeafComplete -> {
+                        Toast.makeText(activity, "성공적으로 신고되었습니다.", Toast.LENGTH_SHORT).show()
+                        LeafDialogInterface.dialog.dismiss()
+                    }
+                    is LeafReceiveEvent.ShowErrorToast -> {
+                        Toast.makeText(activity, event.message, Toast.LENGTH_SHORT).show()
+                        LeafDialogInterface.dialog.dismiss()
                     }
                 }
             }
         }
-    }
-
-    private fun showToast(message: String) {
-        CustomToast.createAndShow(requireContext(), message)
     }
 
     private fun navigateToTargetFragment(fragment: Fragment) {

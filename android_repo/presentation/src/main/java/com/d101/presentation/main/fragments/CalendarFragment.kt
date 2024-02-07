@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -31,6 +30,7 @@ import com.d101.presentation.databinding.FragmentCalendarBinding
 import com.d101.presentation.mapper.CalendarMapper.toFruitInCalendar
 import com.d101.presentation.model.FruitResources
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 import utils.ShakeEventListener
 import utils.ShakeSensorModule
 import utils.darkenColor
@@ -123,12 +123,15 @@ class CalendarFragment : Fragment() {
                     }
 
                     is CalendarViewEvent.OnShowToast -> {
-                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
+                        showToast(event.message)
                     }
                 }
             }
         }
     }
+
+    private fun showToast(message: String) =
+        CustomToast.createAndShow(requireContext(), message)
 
     private fun subscribeViewState() {
         viewLifecycleOwner.repeatOnStarted {

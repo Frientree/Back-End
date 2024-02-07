@@ -37,4 +37,6 @@ interface UserRepository {
     suspend fun setBackgroundMusicStatus(isBackgroundMusicEnabled: Boolean): Result<Unit>
 
     suspend fun changeBackgroundMusic(musicName: String): Result<Unit>
+
+    suspend fun updateFcmToken(fcmToken: String): Result<Unit>
 }

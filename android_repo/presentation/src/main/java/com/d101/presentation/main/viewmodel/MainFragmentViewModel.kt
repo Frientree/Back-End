@@ -10,7 +10,7 @@ import com.d101.domain.model.status.TreeErrorStatus
 import com.d101.domain.usecase.main.GetMessageFromTreeUseCase
 import com.d101.domain.usecase.main.GetTodayFruitUseCase
 import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
-import com.d101.presentation.main.state.TreeFragmentEvent
+import com.d101.presentation.main.event.TreeFragmentEvent
 import com.d101.presentation.main.state.TreeFragmentViewState
 import com.d101.presentation.main.state.TreeMessageState
 import dagger.hilt.android.lifecycle.HiltViewModel

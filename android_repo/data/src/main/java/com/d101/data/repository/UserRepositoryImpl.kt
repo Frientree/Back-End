@@ -207,4 +207,11 @@ class UserRepositoryImpl @Inject constructor(
         onSuccess = { Result.Success(Unit) },
         onFailure = { Result.Failure(ErrorStatus.UnknownError) },
     )
+
+    override suspend fun updateFcmToken(fcmToken: String): Result<Unit> =
+        when (val result = userDataSource.updateFcmToken(fcmToken)) {
+            is Result.Success -> Result.Success(Unit)
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
 }

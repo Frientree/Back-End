@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -14,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentMainBinding
+import com.d101.presentation.main.event.TreeFragmentEvent
 import com.d101.presentation.main.fragments.dialogs.BeforeFruitCreateBaseFragment
 import com.d101.presentation.main.fragments.dialogs.FruitDialogInterface
 import com.d101.presentation.main.fragments.dialogs.TodayFruitFragment
@@ -21,6 +21,7 @@ import com.d101.presentation.main.state.TreeFragmentEvent
 import com.d101.presentation.main.state.TreeMessageState
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -91,7 +92,7 @@ class MainFragment : Fragment() {
                     }
 
                     is TreeFragmentEvent.ShowErrorEvent -> {
-                        Toast.makeText(activity, it.message, Toast.LENGTH_SHORT).show()
+                        showToast(it.message)
                     }
 
                     is TreeFragmentEvent.ChangeTreeMessage -> {
@@ -100,6 +101,10 @@ class MainFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun showToast(message: String) {
+        CustomToast.createAndShow(requireContext(), message)
     }
 
     private fun typingAnimation(message: String) {
