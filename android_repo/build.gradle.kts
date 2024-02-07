@@ -6,4 +6,5 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version Versions.KOTLIN_VERSION apply false
     id("com.google.protobuf") version "0.9.4" apply false
     id("com.google.dagger.hilt.android") version Versions.HILT apply false
+    id("com.google.gms.google-services") version "4.3.15" apply false
 }

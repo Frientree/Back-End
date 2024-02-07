@@ -10,15 +10,21 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentMainBinding
 import com.d101.presentation.main.event.TreeFragmentEvent
 import com.d101.presentation.main.fragments.dialogs.BeforeFruitCreateBaseFragment
 import com.d101.presentation.main.fragments.dialogs.FruitDialogInterface
 import com.d101.presentation.main.fragments.dialogs.TodayFruitFragment
+import com.d101.presentation.main.state.TreeMessageState
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import utils.CustomToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -45,10 +51,26 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.mainViewModel = viewModel
 
-        viewModel.updateUserStatus()
-
         binding.createFruitButton.setOnClickListener {
             viewModel.onButtonClick()
+        }
+
+        binding.mainTreeImagebutton.setOnClickListener {
+            viewModel.onGetTreeMessage()
+        }
+
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.messageState.collect {
+                when (it) {
+                    is TreeMessageState.EnableMessage -> {
+                        binding.mainTreeImagebutton.isEnabled = true
+                    }
+
+                    is TreeMessageState.NoAccessMessage -> {
+                        binding.mainTreeImagebutton.isEnabled = false
+                    }
+                }
+            }
         }
 
         viewLifecycleOwner.repeatOnStarted {
@@ -71,6 +93,10 @@ class MainFragment : Fragment() {
                     is TreeFragmentEvent.ShowErrorEvent -> {
                         showToast(it.message)
                     }
+
+                    is TreeFragmentEvent.ChangeTreeMessage -> {
+                        typingAnimation(it.message)
+                    }
                 }
             }
         }
@@ -80,10 +106,21 @@ class MainFragment : Fragment() {
         CustomToast.createAndShow(requireContext(), message)
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getUserStatus()
+    private fun typingAnimation(message: String) {
+        val sb = StringBuilder()
+
+        lifecycleScope.launch(Dispatchers.Default) {
+            message.forEach {
+                delay(50L)
+                sb.append(it)
+                withContext(Dispatchers.Main) {
+                    binding.treeSpeechTextview.text = sb
+                }
+            }
+            viewModel.enableMessage()
+        }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

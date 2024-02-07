@@ -2,6 +2,7 @@ package com.d101.presentation.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.d101.domain.usecase.usermanagement.UpdateFcmTokenUseCase
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.GetUserStatusErrorStatus
@@ -20,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
+    private val updateFcmTokenUseCase: UpdateFcmTokenUseCase,
     private val manageUserStatusUseCase: ManageUserStatusUseCase,
 ) : ViewModel() {
 
@@ -48,6 +50,12 @@ class MainActivityViewModel @Inject constructor(
 
     fun finishAnimation(add: Boolean) {
         _visibility.update { add }
+    }
+
+    fun uploadToken(token: String) {
+        viewModelScope.launch {
+            updateFcmTokenUseCase(token)
+        }
     }
     private fun updateUserStatus() {
         viewModelScope.launch {

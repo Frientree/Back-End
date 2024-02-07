@@ -55,7 +55,6 @@ dependencies {
     implementation(Libraries.coreKtx)
     implementation(Libraries.appCompat)
     implementation(Libraries.material)
-    implementation("com.google.android.gms:play-services-fido:20.1.0")
     implementation(project(mapOf("path" to ":data")))
     testImplementation(Libraries.junit)
     androidTestImplementation(Libraries.androidxJunit)
@@ -82,6 +81,9 @@ dependencies {
     implementation(Libraries.glide)
 
     implementation(Libraries.naverOAuth)
+
+    implementation("com.google.android.gms:play-services-fido:20.1.0")
+    implementation("com.google.firebase:firebase-messaging-ktx:23.4.0")
 }
 kapt {
     correctErrorTypes = true

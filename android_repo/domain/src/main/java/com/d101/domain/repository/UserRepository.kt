@@ -22,7 +22,7 @@ interface UserRepository {
 
     suspend fun updateUserStatus(): Result<Unit>
 
-    suspend fun getUserStatus(): Result<UserStatus>
+    suspend fun getUserStatus(): Flow<UserStatus>
 
     suspend fun findPassword(userEmail: String): Result<Unit>
 
@@ -37,4 +37,6 @@ interface UserRepository {
     suspend fun setBackgroundMusicStatus(isBackgroundMusicEnabled: Boolean): Result<Unit>
 
     suspend fun changeBackgroundMusic(musicName: String): Result<Unit>
+
+    suspend fun updateFcmToken(fcmToken: String): Result<Unit>
 }

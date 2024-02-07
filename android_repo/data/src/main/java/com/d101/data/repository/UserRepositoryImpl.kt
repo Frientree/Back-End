@@ -13,6 +13,7 @@ import com.d101.domain.model.UserStatus
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.repository.UserRepository
 import com.d101.domain.utils.TokenManager
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -165,10 +166,8 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserStatus(): Result<UserStatus> {
-        val localUserStatus = userStatusDataStore.data.first()
-
-        return Result.Success(localUserStatus.toUserStatus())
+    override suspend fun getUserStatus(): Flow<UserStatus>  = userStatusDataStore.data.map {
+        it.toUserStatus()
     }
 
     override suspend fun findPassword(userEmail: String): Result<Unit> =
@@ -208,4 +207,11 @@ class UserRepositoryImpl @Inject constructor(
         onSuccess = { Result.Success(Unit) },
         onFailure = { Result.Failure(ErrorStatus.UnknownError) },
     )
+
+    override suspend fun updateFcmToken(fcmToken: String): Result<Unit> =
+        when (val result = userDataSource.updateFcmToken(fcmToken)) {
+            is Result.Success -> Result.Success(Unit)
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
 }

@@ -11,6 +11,7 @@ import com.d101.data.model.user.request.PasswordChangeRequest
 import com.d101.data.model.user.request.PasswordFindRequest
 import com.d101.data.model.user.request.SignInRequest
 import com.d101.data.model.user.request.SignUpRequest
+import com.d101.data.model.user.request.UpdateFcmTokenRequest
 import com.d101.data.model.user.response.NicknameChangeResponse
 import com.d101.data.model.user.response.TokenResponse
 import com.d101.data.model.user.response.UserResponse
@@ -70,5 +71,10 @@ interface UserService {
     @PUT("/users/notification")
     suspend fun changeNotificationSet(
         @Body notificationSetRequest: NotificationSetRequest,
+    ): ApiResult<ApiResponse<Boolean>>
+
+    @POST("/users/update-fcm-token")
+    suspend fun updateFcmToken(
+        @Body fcmToken: UpdateFcmTokenRequest,
     ): ApiResult<ApiResponse<Boolean>>
 }

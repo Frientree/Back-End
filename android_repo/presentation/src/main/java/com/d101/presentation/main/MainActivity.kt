@@ -2,12 +2,17 @@ package com.d101.presentation.main
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -16,6 +21,7 @@ import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -28,6 +34,8 @@ import com.d101.presentation.main.fragments.dialogs.LeafReceiveBaseFragment
 import com.d101.presentation.main.state.MainActivityViewState
 import com.d101.presentation.main.viewmodel.MainActivityViewModel
 import com.d101.presentation.music.BackgroundMusicService
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import utils.CustomToast
@@ -41,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     }
     private val viewModel: MainActivityViewModel by viewModels()
     private lateinit var navController: NavController
+    private lateinit var tokenReceiver: BroadcastReceiver
 
     var musicService: BackgroundMusicService? = null
     private var isBound = false
@@ -70,6 +79,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initNavigationView()
+        initTokenReceiver()
+
+        receiveFCMToken()
         initEvent()
 
         repeatOnStarted {
@@ -159,6 +171,47 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showToast(message: String) = CustomToast.createAndShow(this, message)
+
+    private fun initTokenReceiver() {
+        tokenReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                intent?.getStringExtra("TOKEN")?.let {
+                    uploadToken(it)
+                }
+            }
+        }
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            tokenReceiver,
+            IntentFilter("FCM_NEW_TOKEN"),
+        )
+    }
+
+    private fun receiveFCMToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w("FCM", "FCM 토큰 얻기에 실패하였습니다.", task.exception)
+                    return@OnCompleteListener
+                }
+                // token log 남기기
+                Log.d("FCM", "token: ${task.result ?: "task.result is null"}")
+                if (task.result != null) {
+                    uploadToken(task.result!!)
+                }
+            },
+        )
+        createNotificationChannel(CHANNEL_ID, "FRIENTREE")
+    }
+
+    private fun createNotificationChannel(id: String, name: String) {
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel(id, name, importance)
+
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
 
     private fun initNavigationView() {
         val navHostFragment =
@@ -304,7 +357,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun uploadToken(token: String) {
+        viewModel.uploadToken(token)
+    }
+
     companion object {
+        const val CHANNEL_ID = "FRIENTREE_MESSAGING_CHANNEL"
         const val DURATION = 400L
         const val WRITE_UP = 0
         const val READ_UP = 1
