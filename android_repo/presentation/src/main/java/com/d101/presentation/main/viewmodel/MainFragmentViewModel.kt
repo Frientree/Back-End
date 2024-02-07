@@ -50,7 +50,6 @@ class MainFragmentViewModel @Inject constructor(
 
     init {
         getUserStatus()
-        onGetTreeMessage()
     }
 
     private fun emitEvent(event: TreeFragmentEvent) {

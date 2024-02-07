@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.d101.presentation.R
@@ -149,7 +150,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    navController.navigate(R.id.treeFragment)
+                    val navOptions = NavOptions.Builder()
+                        .setPopUpTo(R.id.treeFragment, true)
+                        .build()
+                    navController.navigate(R.id.treeFragment, null, navOptions)
                     binding.bottomNavigationView.selectedItemId = R.id.treeFragment
                     viewModel.changeViewState(MainActivityViewState.TreeView)
                 }
@@ -222,12 +226,35 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.calendarFragment -> viewModel.changeViewState(
-                    MainActivityViewState.CalendarView,
-                )
+                R.id.calendarFragment -> {
+                    viewModel.changeViewState(
+                        MainActivityViewState.CalendarView,
+                    )
+                }
 
-                R.id.myPageFragment -> viewModel.changeViewState(MainActivityViewState.MyPageView)
+                R.id.myPageFragment -> {
+                    viewModel.changeViewState(MainActivityViewState.MyPageView)
+                }
+
+                R.id.treeFragment -> {
+                    viewModel.changeViewState(MainActivityViewState.TreeView)
+                }
             }
+        }
+    }
+
+    private var backPressedTime: Long = 0
+    override fun onBackPressed() {
+        if (viewModel.currentViewState.value == MainActivityViewState.TreeView) {
+            if (backPressedTime + 2000 > System.currentTimeMillis()) {
+                super.onBackPressed()
+                return
+            } else {
+                showToast("뒤로 버튼을 한 번 더 누르면 종료됩니다.")
+            }
+            backPressedTime = System.currentTimeMillis()
+        } else {
+            super.onBackPressed()
         }
     }
 
