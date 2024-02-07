@@ -5,6 +5,7 @@ import com.d101.frientree.dto.user.response.UserConfirmationResponse;
 import com.d101.frientree.dto.userfruit.request.UserFruitTextRequest;
 import com.d101.frientree.dto.userfruit.response.UserFruitCreateResponse;
 import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
+import com.d101.frientree.dto.userfruit.response.UserFruitTodayInfoResponse;
 import com.d101.frientree.service.UserFruitService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -56,11 +57,24 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitSaveResponse.class))),
-            @ApiResponse(responseCode = "404", description = "(message : \"Fruit Not Found\", code : 503)"),
+            @ApiResponse(responseCode = "404", description = "(message : \"Fruit Not Found\", code : 404)"),
             @ApiResponse(responseCode = "500", description = "(message : \"User Modify Exception\", code : 500)"),
     })
     @PostMapping
     public ResponseEntity<UserFruitSaveResponse> userFruitSave(@RequestHeader("Date") String CreateDate, @RequestParam("fruitNum") Long fruitNum){
         return userFruitService.userFruitSave(fruitNum, CreateDate);
+    }
+
+    @Operation(summary = "금일 유저 열매 조회", description = "금일 유저가 생성한 열매 정보를 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
+                    content = @Content(schema = @Schema(implementation = UserFruitTodayInfoResponse.class))),
+            @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)\n" +
+                    "\n" +
+                    "(message : \"User Fruit Not Found\", code : 404)")
+    })
+    @GetMapping
+    public ResponseEntity<UserFruitTodayInfoResponse> userFruitTodayInfo(@RequestHeader("Date") String CreateDate){
+        return userFruitService.userFruitTodayInfo(CreateDate);
     }
 }

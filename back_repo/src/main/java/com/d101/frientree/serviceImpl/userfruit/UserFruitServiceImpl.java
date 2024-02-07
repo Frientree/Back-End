@@ -1,17 +1,21 @@
 package com.d101.frientree.serviceImpl.userfruit;
 
 import com.d101.frientree.dto.userfruit.dto.UserFruitSaveDTO;
+import com.d101.frientree.dto.userfruit.dto.UserFruitTodayInfoDTO;
 import com.d101.frientree.dto.userfruit.request.UserFruitTextRequest;
 import com.d101.frientree.dto.userfruit.response.UserFruitCreateResponse;
 import com.d101.frientree.dto.userfruit.response.UserFruitSaveResponse;
+import com.d101.frientree.dto.userfruit.response.UserFruitTodayInfoResponse;
 import com.d101.frientree.entity.fruit.FruitDetail;
 import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.mongo.emotion.Emotion;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.user.UserModifyException;
+import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import com.d101.frientree.exception.userfruit.PythonAPIException;
 import com.d101.frientree.exception.fruit.FruitNotFoundException;
+import com.d101.frientree.exception.userfruit.UserFruitNotFoundException;
 import com.d101.frientree.repository.FruitDetailRepository;
 import com.d101.frientree.repository.UserFruitRepository;
 import com.d101.frientree.repository.UserRepository;
@@ -224,5 +228,33 @@ public class UserFruitServiceImpl implements UserFruitService {
 
         //UserFruitSaveResponse 반환
         return ResponseEntity.ok(userFruitSaveResponse);
+    }
+
+    @Override
+    public ResponseEntity<UserFruitTodayInfoResponse> userFruitTodayInfo(String createDate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
+        if(user.isEmpty()){throw new UserNotFoundException("User Not Found");}
+
+        //헤더에 들어온 Client 기준 Date 값을 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(createDate, formatter);
+
+        // LocalDate를 java.sql.Date로 변환
+        Date date = java.sql.Date.valueOf(localDate);
+
+        Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
+                user.get().getUserId(), date);
+        if(userFruit.isEmpty()){throw new UserFruitNotFoundException("User Fruit Not Found");}
+
+
+
+        UserFruitTodayInfoResponse response =
+                UserFruitTodayInfoResponse.createUserFruitTodayInfoResponse(
+                "Success",
+                UserFruitTodayInfoDTO.createUserFruitTodayInfoDTO(userFruit.get())
+        );
+
+        return ResponseEntity.ok(response);
     }
 }
