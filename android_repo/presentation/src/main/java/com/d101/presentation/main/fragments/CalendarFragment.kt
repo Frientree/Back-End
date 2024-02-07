@@ -214,10 +214,11 @@ class CalendarFragment : Fragment() {
                 )
             }
 
-            JuiceCreatableStatus.JuiceUnCreatable -> {
+            else -> {
                 binding.juiceReadyTextView.visibility = View.GONE
                 binding.notEnoughFruitsTextView.visibility = View.VISIBLE
                 binding.juiceRequirementsTextView.visibility = View.VISIBLE
+                binding.juiceRequirementsTextView.text = state.juiceCreatableStatus.message
                 binding.juiceMakingButtonLinearLayout.isClickable = false
                 binding.juiceMakingButtonLinearLayout.setBackgroundResource(
                     R.drawable.btn_lightgray_lightgray_36dp,

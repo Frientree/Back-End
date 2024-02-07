@@ -41,7 +41,7 @@ sealed class CalendarViewState {
             TodayFruitCreationStatus.NotCreated,
         override val todayFruitStatistics: String = "",
         override val juiceCreatableStatus: JuiceCreatableStatus =
-            JuiceCreatableStatus.JuiceCreatable,
+            JuiceCreatableStatus.NotEnoughFruits,
         override val nowDate: LocalDate = LocalDate.now(),
         override val selectedWeek: Pair<LocalDate, LocalDate> = Pair(
             LocalDate.now(),
