@@ -5,13 +5,13 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserTemporaryPasswordSendResponse {
+public class UserPasswordModificationResponse {
 
     private String message;
     private Boolean data;
 
-    public static UserTemporaryPasswordSendResponse createUserTemporaryPasswordSendResponse(String message, Boolean data) {
-        return UserTemporaryPasswordSendResponse.builder()
+    public static UserPasswordModificationResponse createUserPasswordModificationResponse(String message, Boolean data) {
+        return UserPasswordModificationResponse.builder()
                 .message(message)
                 .data(data)
                 .build();

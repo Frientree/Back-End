@@ -10,21 +10,21 @@ public interface UserService {
 
     ResponseEntity<UserListConfirmationResponse> listConfirm();
 
-    ResponseEntity<UserCreateResponse> generateUser(UserCreateRequest userCreateRequest);
+    ResponseEntity<UserGenerationResponse> userGenerate(UserGenerationRequest userGenerationRequest);
 
     ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest);
 
-    ResponseEntity<UserTokenRefreshResponse> tokenRefreshGenerate(UserTokenRefreshRequest userTokenRefreshRequest);
+    ResponseEntity<UserTokenRefreshGenerationResponse> tokenRefreshGenerate(UserTokenRefreshGenerationRequest userTokenRefreshGenerationRequest);
 
-    ResponseEntity<UserChangeNicknameResponse> modifyNickname(UserChangeNicknameRequest userChangeNicknameRequest);
+    ResponseEntity<UserNicknameModificationResponse> nicknameModify(UserNicknameModificationRequest userNicknameModificationRequest);
 
     ResponseEntity<UserProfileConfirmationResponse> profileConfirm();
 
-    ResponseEntity<UserChangeAlamResponse> modifyAlam(UserChangeAlamRequest userChangeAlamRequest);
+    ResponseEntity<UserAlamModificationResponse> alamModify(UserAlamModificationRequest userAlamModificationRequest);
 
-    ResponseEntity<UserDeleteResponse> removal();
+    ResponseEntity<UserRemovalResponse> remove();
 
-    ResponseEntity<UserDeactivateResponse> deactivate();
+    ResponseEntity<UserDeactivationResponse> deactivate();
 
     ResponseEntity<UserDuplicateCheckResponse> duplicateCheck(UserDuplicateCheckRequest userDuplicateCheckRequest);
 
@@ -32,11 +32,11 @@ public interface UserService {
 
     ResponseEntity<UserPassEmailCertificationResponse> passEmailCertificate(UserPassEmailCertificationRequest userPassEmailCertificationRequest);
 
-    ResponseEntity<UserChangePasswordResponse> passwordModify(UserChangePasswordRequest userChangePasswordRequest);
+    ResponseEntity<UserPasswordModificationResponse> passwordModify(UserPasswordModificationRequest userPasswordModificationRequest);
 
-    ResponseEntity<UserTemporaryPasswordSendResponse> temporaryPasswordSend(UserTemporaryPasswordSendRequest userTemporaryPasswordSendRequest);
+    ResponseEntity<UserTemporaryPasswordSendMailResponse> temporaryPasswordSend(UserTemporaryPasswordSendMailRequest userTemporaryPasswordSendMailRequest);
 
-    ResponseEntity<UserCreateStatusResponse> createStatusConfirm();
+    ResponseEntity<UserCreateStatusConfirmationResponse> createStatusConfirm();
 
     void updateAllUserFruitAndLeafStatus();
 

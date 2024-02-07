@@ -22,7 +22,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -109,9 +108,9 @@ public class UserServiceImpl implements UserService {
 
     // 토큰 재발급 로직
     @Override
-    public ResponseEntity<UserTokenRefreshResponse> tokenRefreshGenerate(UserTokenRefreshRequest userTokenRefreshRequest) {
+    public ResponseEntity<UserTokenRefreshGenerationResponse> tokenRefreshGenerate(UserTokenRefreshGenerationRequest userTokenRefreshGenerationRequest) {
 
-        String clientRefreshToken = userTokenRefreshRequest.getRefreshToken();
+        String clientRefreshToken = userTokenRefreshGenerationRequest.getRefreshToken();
 
         Optional<RefreshToken> refreshTokenOptional =
                 refreshTokenRepository.findById(clientRefreshToken);
@@ -139,16 +138,16 @@ public class UserServiceImpl implements UserService {
             serverRefreshToken.setRefreshToken(newRefreshToken);
             serverRefreshToken.setExpiryDate(formattedExpiryDate);
             refreshTokenRepository.save(serverRefreshToken);
-            UserTokenRefreshResponse response = UserTokenRefreshResponse.createUserTokenRefreshResponse(
+            UserTokenRefreshGenerationResponse response = UserTokenRefreshGenerationResponse.createUserTokenRefreshGenerationResponse(
                     "Success",
-                    UserTokenRefreshResponseDTO.createUserTokenRefreshResponseDTO(newAccessToken, newRefreshToken)
+                    UserTokenRefreshGenerationResponseDTO.createUserTokenRefreshGenerationResponseDTO(newAccessToken, newRefreshToken)
             );
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }
 
-        UserTokenRefreshResponse response = UserTokenRefreshResponse.createUserTokenRefreshResponse(
+        UserTokenRefreshGenerationResponse response = UserTokenRefreshGenerationResponse.createUserTokenRefreshGenerationResponse(
                 "Success",
-                UserTokenRefreshResponseDTO.createUserTokenRefreshResponseDTO(newAccessToken, serverRefreshToken.getRefreshToken())
+                UserTokenRefreshGenerationResponseDTO.createUserTokenRefreshGenerationResponseDTO(newAccessToken, serverRefreshToken.getRefreshToken())
         );
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -156,23 +155,23 @@ public class UserServiceImpl implements UserService {
     // 유저 닉네임 변경
     @Override
     @Transactional
-    public ResponseEntity<UserChangeNicknameResponse> modifyNickname(UserChangeNicknameRequest userChangeNicknameRequest) {
+    public ResponseEntity<UserNicknameModificationResponse> nicknameModify(UserNicknameModificationRequest userNicknameModificationRequest) {
 
         User currentUser = getUser();
 
-        if (userChangeNicknameRequest.getUserNickname() == null || userChangeNicknameRequest.getUserNickname().isEmpty()) {
+        if (userNicknameModificationRequest.getUserNickname() == null || userNicknameModificationRequest.getUserNickname().isEmpty()) {
             throw new NicknameValidateException("nickname valid error");
         }
 
-        if (userChangeNicknameRequest.getUserNickname().length() > 8) {
+        if (userNicknameModificationRequest.getUserNickname().length() > 8) {
             throw new NicknameValidateException("nickname valid error");
         }
 
-        currentUser.setUserNickname(userChangeNicknameRequest.getUserNickname());
+        currentUser.setUserNickname(userNicknameModificationRequest.getUserNickname());
 
-        UserChangeNicknameResponse response = UserChangeNicknameResponse.createUserChangeNicknameResponse(
+        UserNicknameModificationResponse response = UserNicknameModificationResponse.createUserNicknameModificationResponse(
                 "Success",
-                UserChangeNicknameResponseDTO.creatUserChangeNicknameResponseDTO(currentUser));
+                UserNicknameModificationResponseDTO.creatUserNicknameModificationResponseDTO(currentUser));
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
@@ -189,11 +188,11 @@ public class UserServiceImpl implements UserService {
             decodeEmail = getAESDecoded(currentUser.getUserEmail());
         }
 
-        String userType = currentUser.getNaverCode() != null ? "naver" : "local";
+        boolean social = currentUser.getNaverCode() != null;
 
         UserProfileConfirmationResponse response = UserProfileConfirmationResponse.createUserProfileConfirmationResponse(
                 "Success",
-                UserProfileConfirmationResponseDTO.createUserProfileConfirmationResponseDTO(currentUser, decodeEmail, userType)
+                UserProfileConfirmationResponseDTO.createUserProfileConfirmationResponseDTO(currentUser, decodeEmail, social)
         );
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -202,12 +201,12 @@ public class UserServiceImpl implements UserService {
     // 유저 알림 설정
     @Override
     @Transactional
-    public ResponseEntity<UserChangeAlamResponse> modifyAlam(UserChangeAlamRequest userChangeAlamRequest) {
+    public ResponseEntity<UserAlamModificationResponse> alamModify(UserAlamModificationRequest userAlamModificationRequest) {
 
         User currentUser = getUser();
-        currentUser.setUserNotification(userChangeAlamRequest.isNotification());
+        currentUser.setUserNotification(userAlamModificationRequest.isNotification());
 
-        UserChangeAlamResponse response = UserChangeAlamResponse.createUserChangeAlamResponse(
+        UserAlamModificationResponse response = UserAlamModificationResponse.createUserAlamModificationResponse(
                 "Success",
                 true
         );
@@ -218,12 +217,12 @@ public class UserServiceImpl implements UserService {
     // 유저 삭제
     @Override
     @Transactional
-    public ResponseEntity<UserDeleteResponse> removal() {
+    public ResponseEntity<UserRemovalResponse> remove() {
 
         User currentUser = getUser();
         userRepository.delete(currentUser);
 
-        UserDeleteResponse response = UserDeleteResponse.createUserDeleteResponse(
+        UserRemovalResponse response = UserRemovalResponse.createUserRemovalResponse(
                 "Success",
                 true
         );
@@ -234,12 +233,12 @@ public class UserServiceImpl implements UserService {
     // 유저 비활성화
     @Override
     @Transactional
-    public ResponseEntity<UserDeactivateResponse> deactivate() {
+    public ResponseEntity<UserDeactivationResponse> deactivate() {
 
         User currentUser = getUser();
         currentUser.setUserDisabled(true);
 
-        UserDeactivateResponse response = UserDeactivateResponse.createUserDeactivateResponse(
+        UserDeactivationResponse response = UserDeactivationResponse.createUserDeactivationResponse(
                 "Success",
                 true
         );
@@ -321,21 +320,21 @@ public class UserServiceImpl implements UserService {
     // 패스워드 변경
     @Transactional
     @Override
-    public ResponseEntity<UserChangePasswordResponse> passwordModify(UserChangePasswordRequest userChangePasswordRequest) {
+    public ResponseEntity<UserPasswordModificationResponse> passwordModify(UserPasswordModificationRequest userPasswordModificationRequest) {
 
         User currentUser = getUser();
 
-        if (!passwordEncoder.matches(userChangePasswordRequest.getUserPw(), currentUser.getUserPassword())) {
+        if (!passwordEncoder.matches(userPasswordModificationRequest.getUserPw(), currentUser.getUserPassword())) {
             throw new CustomValidationException("current password not match");
         }
 
-        if (!userChangePasswordRequest.getNewPw().matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$")) {
+        if (!userPasswordModificationRequest.getNewPw().matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$")) {
             throw new NewPasswordValidException("password valid error");
         }
 
-        currentUser.setUserPassword(passwordEncoder.encode(userChangePasswordRequest.getNewPw()));
+        currentUser.setUserPassword(passwordEncoder.encode(userPasswordModificationRequest.getNewPw()));
 
-        UserChangePasswordResponse response = UserChangePasswordResponse.createUserChangePasswordResponse(
+        UserPasswordModificationResponse response = UserPasswordModificationResponse.createUserPasswordModificationResponse(
                 "Success",
                 true
         );
@@ -346,20 +345,20 @@ public class UserServiceImpl implements UserService {
     // 임시 비밀번호 이메일로 발송
     @Override
     @Transactional
-    public ResponseEntity<UserTemporaryPasswordSendResponse> temporaryPasswordSend(UserTemporaryPasswordSendRequest userTemporaryPasswordSendRequest) {
+    public ResponseEntity<UserTemporaryPasswordSendMailResponse> temporaryPasswordSend(UserTemporaryPasswordSendMailRequest userTemporaryPasswordSendMailRequest) {
 
-        String hashingEmail = getAESEncoded(userTemporaryPasswordSendRequest.getUserEmail());
+        String hashingEmail = getAESEncoded(userTemporaryPasswordSendMailRequest.getUserEmail());
 
         User currentUser = userRepository.findByUserEmail(hashingEmail)
                 .orElseThrow(() -> new UserNotFoundException("user not found"));
 
         // 임시 비밀번호 생성
         String temporaryPassword = generatePassword();
-        sendTemporaryPasswordEmail(userTemporaryPasswordSendRequest.getUserEmail(), temporaryPassword);
+        sendTemporaryPasswordEmail(userTemporaryPasswordSendMailRequest.getUserEmail(), temporaryPassword);
 
         currentUser.setUserPassword(passwordEncoder.encode(temporaryPassword));
 
-        UserTemporaryPasswordSendResponse response = UserTemporaryPasswordSendResponse.createUserTemporaryPasswordSendResponse(
+        UserTemporaryPasswordSendMailResponse response = UserTemporaryPasswordSendMailResponse.createUserTemporaryPasswordSendMailResponse(
                 "Success",
                 true
         );
@@ -369,11 +368,11 @@ public class UserServiceImpl implements UserService {
 
     // 이파리, 열매 생성 가능 여부 조회
     @Override
-    public ResponseEntity<UserCreateStatusResponse> createStatusConfirm() {
+    public ResponseEntity<UserCreateStatusConfirmationResponse> createStatusConfirm() {
 
         User currentUser = getUser();
 
-        UserCreateStatusResponse result = UserCreateStatusResponse.createUserCreateStatusResponse(
+        UserCreateStatusConfirmationResponse result = UserCreateStatusConfirmationResponse.createUserCreateStatusConfirmationResponse(
                 "Success",
                 UserCreateStatusResponseDTO.createUserCreateStatusResponseDTO(currentUser)
         );
@@ -506,23 +505,23 @@ public class UserServiceImpl implements UserService {
 
     // 유저 가입
     @Override
-    public ResponseEntity<UserCreateResponse> generateUser(UserCreateRequest userCreateRequest) {
+    public ResponseEntity<UserGenerationResponse> userGenerate(UserGenerationRequest userGenerationRequest) {
         // 입력 정보의 유효성 검증
-        validateUserCreateRequest(userCreateRequest);
+        validateUserCreateRequest(userGenerationRequest);
 
         // 유저 정보 생성
         LocalDateTime userCreateDate = LocalDateTime.now();
         User newUser = User.builder()
-                .userNickname(userCreateRequest.getUserNickname())
-                .userPassword(passwordEncoder.encode(userCreateRequest.getUserPw()))
+                .userNickname(userGenerationRequest.getUserNickname())
+                .userPassword(passwordEncoder.encode(userGenerationRequest.getUserPw()))
                 // 이메일 값을 해싱하여 저장합니다.
-                .userEmail(getAESEncoded(userCreateRequest.getUserEmail()))
+                .userEmail(getAESEncoded(userGenerationRequest.getUserEmail()))
                 .userCreateDate(Date.from(userCreateDate.atZone(ZoneId.systemDefault()).toInstant()))
                 .build();
 
         userRepository.save(newUser);
 
-        UserCreateResponse result = UserCreateResponse.createUserCreateResponse(
+        UserGenerationResponse result = UserGenerationResponse.createUserGenerationResponse(
                 "Sign-up Success",
                 true
         );
@@ -615,20 +614,20 @@ public class UserServiceImpl implements UserService {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes).substring(0, VERIFICATION_CODE_LENGTH);
     }
 
-    private void validateUserCreateRequest(UserCreateRequest userCreateRequest) {
-        if (userCreateRequest.getUserNickname() == null || userCreateRequest.getUserNickname().isEmpty()) {
+    private void validateUserCreateRequest(UserGenerationRequest userGenerationRequest) {
+        if (userGenerationRequest.getUserNickname() == null || userGenerationRequest.getUserNickname().isEmpty()) {
             throw new CustomValidationException("nickname valid error");
         }
 
-        if (!userCreateRequest.getUserEmail().matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
+        if (!userGenerationRequest.getUserEmail().matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
             throw new CustomValidationException("email valid error");
         }
 
-        if (!userCreateRequest.getUserPw().matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$")) {
+        if (!userGenerationRequest.getUserPw().matches("^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!~#$%^&*?])(?!.*[^!~#$%^&*?a-zA-Z0-9]).{8,16}$")) {
             throw new CustomValidationException("password valid error");
         }
 
-        if (userCreateRequest.getUserNickname().length() > 8) {
+        if (userGenerationRequest.getUserNickname().length() > 8) {
             throw new CustomValidationException("nickname");
         }
     }

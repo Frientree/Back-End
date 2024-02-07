@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserTemporaryPasswordSendRequest {
+@NoArgsConstructor
+public class UserAlamModificationRequest {
 
-    private String userEmail;
+    private boolean notification;
 }

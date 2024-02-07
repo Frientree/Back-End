@@ -6,12 +6,12 @@ import lombok.Data;
 
 @Data
 @Builder
-public class UserChangeNicknameResponseDTO {
+public class UserNicknameModificationResponseDTO {
 
     private String userNickname;
 
-    public static UserChangeNicknameResponseDTO creatUserChangeNicknameResponseDTO(User user) {
-        return UserChangeNicknameResponseDTO.builder()
+    public static UserNicknameModificationResponseDTO creatUserNicknameModificationResponseDTO(User user) {
+        return UserNicknameModificationResponseDTO.builder()
                 .userNickname(user.getUserNickname())
                 .build();
     }
