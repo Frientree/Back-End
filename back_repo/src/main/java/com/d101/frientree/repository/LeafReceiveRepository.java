@@ -19,4 +19,6 @@ public interface LeafReceiveRepository extends JpaRepository<LeafReceive, Long> 
     boolean existsByUserAndLeafDetail(User user, LeafDetail selectedLeaf);
 
     void deleteByLeafDetail(LeafDetail leafDetail);
+
+    List<LeafReceive> findAllByUser(User user);
 }

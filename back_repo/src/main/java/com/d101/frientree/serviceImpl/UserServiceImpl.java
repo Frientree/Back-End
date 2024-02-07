@@ -6,11 +6,17 @@ import com.d101.frientree.dto.user.response.*;
 import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.entity.EmailCode;
 import com.d101.frientree.entity.RefreshToken;
+import com.d101.frientree.entity.fruit.UserFruit;
+import com.d101.frientree.entity.juice.JuiceDetail;
+import com.d101.frientree.entity.juice.UserJuice;
+import com.d101.frientree.entity.leaf.LeafDetail;
+import com.d101.frientree.entity.leaf.LeafReceive;
+import com.d101.frientree.entity.leaf.LeafSend;
+import com.d101.frientree.entity.mongo.leaf.Leaf;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.user.*;
-import com.d101.frientree.repository.EmailCodeRepository;
-import com.d101.frientree.repository.RefreshTokenRepository;
-import com.d101.frientree.repository.UserRepository;
+import com.d101.frientree.repository.*;
+import com.d101.frientree.repository.mongo.MongoLeafRepository;
 import com.d101.frientree.security.CustomUserDetailsService;
 import com.d101.frientree.service.UserService;
 import com.d101.frientree.util.JwtUtil;
@@ -54,6 +60,12 @@ public class UserServiceImpl implements UserService {
     private final JavaMailSender javaMailSender;
     private final EmailCodeRepository emailCodeRepository;
     private final RedisTemplate<String, String> redisTemplate;
+    private final UserFruitRepository userFruitRepository;
+    private final UserJuiceRepository userJuiceRepository;
+    private final LeafRepository leafRepository;
+    private final MongoLeafRepository mongoLeafRepository;
+    private final LeafReceiveRepository leafReceiveRepository;
+    private final LeafSendRepository leafSendRepository;
 
     private static final int VERIFICATION_CODE_LENGTH = 6;
 
@@ -237,6 +249,36 @@ public class UserServiceImpl implements UserService {
 
         User currentUser = getUser();
         currentUser.setUserDisabled(true);
+
+        // 내가 생성한 과일과 생성한 주스 삭제, 그리고 내가 받은 이파리 수신 테이블에서 삭제
+        List<UserJuice> deleteJuices = userJuiceRepository.findAllByUser(currentUser);
+        List<UserFruit> deleteFruits = userFruitRepository.findAllByUser(currentUser);
+        List<LeafReceive> deleteReceives = leafReceiveRepository.findAllByUser(currentUser);
+        userJuiceRepository.deleteAllInBatch(deleteJuices);
+        userFruitRepository.deleteAllInBatch(deleteFruits);
+        leafReceiveRepository.deleteAllInBatch(deleteReceives);
+
+        // 내가 보낸 이파리 송수신 테이블에서 삭제하고 이파리 객체도 삭제
+        List<LeafSend> sendsLeaf = leafSendRepository.findAllByUser(currentUser);
+        List<LeafDetail> deleteLeafs = new ArrayList<>();
+        sendsLeaf.forEach(leafSend -> deleteLeafs.add(leafSend.getLeafDetail()));
+
+        //MongoDB에 저장하기
+        deleteLeafs.forEach(leafDetail -> {
+            Leaf mongoLeaf = new Leaf(leafDetail);
+            mongoLeafRepository.save(mongoLeaf);
+        });
+
+        //유저 이파리 연관관계 제거하기
+        deleteLeafs.forEach(leafDetail -> {
+            //LeafReceive 제거
+            leafReceiveRepository.deleteByLeafDetail(leafDetail);
+            //LeafSend 제거
+            leafSendRepository.deleteByLeafDetail(leafDetail);
+        });
+
+        //기간 지난 이파리 삭제하기
+        leafRepository.deleteAllInBatch(deleteLeafs);
 
         UserDeactivationResponse response = UserDeactivationResponse.createUserDeactivationResponse(
                 "Success",
