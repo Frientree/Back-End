@@ -28,10 +28,6 @@ class CalendarRepositoryImpl @Inject constructor(
     private val calendarRemoteDataSource: CalendarRemoteDataSource,
     private val juiceLocalDataSource: JuiceLocalDataSource,
 ) : CalendarRepository {
-    override suspend fun getFruit(date: Long): Fruit {
-        return calendarLocalDataSource.getFruit(date).toFruit()
-    }
-
     override suspend fun getFruitsOfMonth(
         todayDate: LocalDate,
         monthDate: Pair<LocalDate, LocalDate>,
@@ -89,8 +85,8 @@ class CalendarRepositoryImpl @Inject constructor(
         val localFruitEntityList =
             calendarLocalDataSource.getFruitsForWeek(startDate.toLongDate(), endDate.toLongDate())
         if (localFruitEntityList.isNotEmpty() && todayDate.isAfter(endDate.toLocalDate())) {
-            val fruitList = localFruitEntityList.map {
-                it.toFruit()
+            val fruitList = localFruitEntityList.mapNotNull {
+                if (it.name.isNotBlank()) it.toFruit() else null
             }
             return Result.Success(fruitList)
         }
@@ -109,7 +105,7 @@ class CalendarRepositoryImpl @Inject constructor(
                         score = 0,
                     )
                 }
-                calendarLocalDataSource.updateFruitEntityList(remoteFruitEntityList).fold(
+                calendarLocalDataSource.insertOrUpdateFruitEntityList(remoteFruitEntityList).fold(
                     onSuccess = {},
                     onFailure = {},
                 )
@@ -181,7 +177,7 @@ class CalendarRepositoryImpl @Inject constructor(
                     )
                 }
 
-                calendarLocalDataSource.updateFruitEntityList(remoteFruitEntityList).fold(
+                calendarLocalDataSource.insertOrUpdateFruitEntityList(remoteFruitEntityList).fold(
                     onSuccess = {},
                     onFailure = {},
                 )

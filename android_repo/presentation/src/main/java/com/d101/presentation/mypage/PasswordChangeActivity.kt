@@ -3,7 +3,6 @@ package com.d101.presentation.mypage
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextWatcher
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.d101.presentation.databinding.ActivityPasswordChangeBinding
@@ -11,6 +10,7 @@ import com.d101.presentation.mypage.event.PasswordChangeEvent
 import com.d101.presentation.mypage.viewmodel.PasswordChangeViewModel
 import com.d101.presentation.welcome.WelcomeActivity
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -90,5 +90,5 @@ class PasswordChangeActivity : AppCompatActivity() {
     }
 
     private fun showToast(message: String) =
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        CustomToast.createAndShow(this, message)
 }

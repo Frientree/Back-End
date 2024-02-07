@@ -4,7 +4,7 @@ import com.d101.data.roomdb.entity.CalendarFruitEntity
 import com.d101.data.roomdb.entity.FruitEntity
 
 interface CalendarLocalDataSource {
-    fun getFruit(date: Long): FruitEntity
+    fun getFruit(date: Long): FruitEntity?
 
     fun getFruitsForWeek(startDate: Long, endDate: Long): List<FruitEntity>
 
@@ -14,5 +14,5 @@ interface CalendarLocalDataSource {
 
     fun insertCalendarFruitsForMonth(fruitEntityList: List<CalendarFruitEntity>): Result<List<Long>>
 
-    fun updateFruitEntityList(fruitEntityList: List<FruitEntity>): Result<Unit>
+    fun insertOrUpdateFruitEntityList(fruitEntityList: List<FruitEntity>): Result<Unit>
 }

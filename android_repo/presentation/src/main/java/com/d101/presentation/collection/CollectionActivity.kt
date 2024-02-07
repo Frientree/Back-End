@@ -2,7 +2,6 @@ package com.d101.presentation.collection
 
 import android.app.Dialog
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -16,6 +15,7 @@ import com.d101.presentation.databinding.ActivityCollectionBinding
 import com.d101.presentation.databinding.DialogJuiceDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -57,6 +57,10 @@ class CollectionActivity : AppCompatActivity() {
         }
     }
 
+    private fun showToast(message: String) {
+        CustomToast.createAndShow(this, message)
+    }
+
     private fun subscribeEvent() {
         this.repeatOnStarted {
             viewModel.eventFlow.collectLatest { event ->
@@ -66,11 +70,7 @@ class CollectionActivity : AppCompatActivity() {
                         showJuiceDetailDialog(event.juice)
                     }
 
-                    is CollectionViewEvent.OnShowToast -> Toast.makeText(
-                        this@CollectionActivity,
-                        event.message,
-                        Toast.LENGTH_SHORT,
-                    ).show()
+                    is CollectionViewEvent.OnShowToast -> showToast(event.message)
 
                     CollectionViewEvent.OnTapBackButton -> onBackPressedDispatcher.onBackPressed()
                     is CollectionViewEvent.OnTapCollectionItem ->

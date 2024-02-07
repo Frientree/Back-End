@@ -27,8 +27,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.d101.presentation.R
 import com.d101.presentation.databinding.ActivityMainBinding
+import com.d101.presentation.main.event.MainActivityEvent
 import com.d101.presentation.main.fragments.dialogs.LeafDialogInterface
 import com.d101.presentation.main.fragments.dialogs.LeafMessageBaseFragment
+import com.d101.presentation.main.fragments.dialogs.LeafReceiveBaseFragment
 import com.d101.presentation.main.state.MainActivityViewState
 import com.d101.presentation.main.viewmodel.MainActivityViewModel
 import com.d101.presentation.music.BackgroundMusicService
@@ -36,6 +38,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -79,6 +82,17 @@ class MainActivity : AppCompatActivity() {
         initTokenReceiver()
 
         receiveFCMToken()
+        initEvent()
+
+        repeatOnStarted {
+            viewModel.eventFlow.collect { event ->
+                when (event) {
+                    is MainActivityEvent.ShowErrorEvent -> {
+                        showToast(event.message)
+                    }
+                }
+            }
+        }
 
         repeatOnStarted {
             viewModel.currentViewState.collect {
@@ -112,14 +126,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        binding.blur.setOnClickListener {
-            controlLeafButton()
-        }
-        binding.writeLeafButton.setOnClickListener {
-            val dialog = LeafMessageBaseFragment()
-            LeafDialogInterface.dialog = dialog
-            dialog.show(supportFragmentManager, "")
-        }
+
         repeatOnStarted {
             viewModel.visibility.collect {
                 delay(100)
@@ -129,7 +136,9 @@ class MainActivity : AppCompatActivity() {
                 if (it) binding.blur.visibility = View.GONE
             }
         }
+    }
 
+    private fun initEvent() {
         binding.leafFloatingActionButton.setOnClickListener {
             when (viewModel.currentViewState.value) {
                 MainActivityViewState.TreeView -> {
@@ -146,7 +155,22 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        binding.blur.setOnClickListener {
+            controlLeafButton()
+        }
+        binding.writeLeafButton.setOnClickListener {
+            val dialog = LeafMessageBaseFragment()
+            LeafDialogInterface.dialog = dialog
+            dialog.show(supportFragmentManager, "")
+        }
+        binding.readLeafButton.setOnClickListener {
+            val dialog = LeafReceiveBaseFragment()
+            LeafDialogInterface.dialog = dialog
+            dialog.show(supportFragmentManager, "")
+        }
     }
+
+    private fun showToast(message: String) = CustomToast.createAndShow(this, message)
 
     private fun initTokenReceiver() {
         tokenReceiver = object : BroadcastReceiver() {
@@ -232,8 +256,6 @@ class MainActivity : AppCompatActivity() {
             animationSet[READ_UP] = upAnimation(it, 0f, -px, 600)
             animationSet.put(READ_RIGHT, rightAnimation(it, 0f, px * 1.5f, 600))
         }
-//        val endWidth = resources.getDimension(R.dimen.full_width)
-//            .toInt()
 
         val animator = AnimatorSet()
         animator.playTogether(
@@ -242,35 +264,14 @@ class MainActivity : AppCompatActivity() {
             animationSet[READ_UP],
             animationSet[READ_RIGHT],
         )
-//        animator.play(changeButtonWidth(binding.writeLeafButton, 50, endWidth))
-//            .with(changeButtonWidth(binding.readLeafButton, 50, endWidth))
-//            .after(animationSet[READ_RIGHT])
 
         animator.start()
     }
 
-    // 열심히 만들었는데 별로 안예뻐서 일단 보류함.
-//    private fun changeButtonWidth(button : Button, startWidth: Int, endWidth: Int) : ValueAnimator{
-//        return ValueAnimator.ofInt(startWidth, endWidth).apply {
-//            duration = 100
-//            addUpdateListener { animation ->
-//                val animatedValue = animation.animatedValue as Int
-//                val layoutParams = button.layoutParams
-//                layoutParams.width = animatedValue
-//                button.layoutParams = layoutParams
-//            }
-//        }
-//    }
     private fun endLeafAnimation() {
         val animation = AnimationUtils.loadAnimation(this, R.anim.rotate_close_to_plus)
         binding.leafFloatingActionButton.animation = animation
         binding.leafFloatingActionButton.startAnimation(animation)
-
-        // 버튼의 시작 너비와 끝 너비를 정의합니다.
-//        val startWidth = binding.writeLeafButton.width
-
-//        changeButtonWidth(binding.writeLeafButton, startWidth, 0).start()
-//        changeButtonWidth(binding.readLeafButton, startWidth, 0).start()
 
         val animationSet = HashMap<Int, ObjectAnimator>()
         binding.writeLeafButton.let {
@@ -362,23 +363,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val CHANNEL_ID = "FRIENTREE_MESSAGING_CHANNEL"
-//        fun uploadToken(token: String) {
-//            val storeService = ApplicationClass.retrofit.create(FirebaseTokenService::class.java)
-//            storeService.uploadToken(token).enqueue(object : Callback<String> {
-//                override fun onResponse(call: Call<String>, response: Response<String>) {
-//                    if(response.isSuccessful){
-//                        val res = response.body()
-//                        Log.d(TAG, "onResponse: $res")
-//                    } else {
-//                        Log.d(TAG, "onResponse: Error Code ${response.code()}")
-//                    }
-//                }
-//                override fun onFailure(call: Call<String>, t: Throwable) {
-//                    Log.d(TAG, t.message ?: "토큰 정보 등록 중 통신오류")
-//                }
-//            })
-//        }
-
         const val DURATION = 400L
         const val WRITE_UP = 0
         const val READ_UP = 1

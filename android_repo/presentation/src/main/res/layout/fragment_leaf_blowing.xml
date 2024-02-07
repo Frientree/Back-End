@@ -21,7 +21,7 @@
             app:layout_constraintBottom_toTopOf="@+id/leaf_blowing_text_view"
             app:layout_constraintTop_toTopOf="parent"
             app:lottie_loop="true"
-            app:lottie_rawRes="@raw/lottie_leaf_blowing"
+            app:lottie_rawRes="@raw/lottie_blowing_leaf"
             tools:layout_editor_absoluteX="20dp" />
 
         <TextView

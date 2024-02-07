@@ -8,8 +8,6 @@ import com.d101.domain.model.TodayStatistics
 import java.time.LocalDate
 
 interface CalendarRepository {
-    suspend fun getFruit(date: Long): Fruit
-
     suspend fun getFruitsOfMonth(
         todayDate: LocalDate,
         monthDate: Pair<LocalDate, LocalDate>,

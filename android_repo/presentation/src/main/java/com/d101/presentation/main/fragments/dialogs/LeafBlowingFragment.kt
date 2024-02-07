@@ -22,7 +22,7 @@ import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentLeafBlowingBinding
 import com.d101.presentation.main.MainActivity
-import com.d101.presentation.main.viewmodel.LeafViewModel
+import com.d101.presentation.main.viewmodel.LeafSendViewModel
 import utils.repeatOnStarted
 import kotlin.properties.Delegates
 
@@ -30,7 +30,7 @@ class LeafBlowingFragment : Fragment() {
     private var _binding: FragmentLeafBlowingBinding? = null
     private val binding get() = _binding!!
     private lateinit var activity: MainActivity
-    private val viewModel: LeafViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: LeafSendViewModel by viewModels({ requireParentFragment() })
 
     private var isRecording = false
     private val sampleRate = 44100 // 샘플링 레이트
@@ -88,7 +88,6 @@ class LeafBlowingFragment : Fragment() {
                     // 여기서 오디오 데이터를 처리
                     val readSize = audioRecord?.read(buffer, 0, buffer.size) ?: 0
                     val volume = calculateVolume(buffer, readSize)
-                    Log.d("MIC TEST:::", "$volume")
 
                     if (volume > 43) { // 임계값 설정
                         isRecording = false

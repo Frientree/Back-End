@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -13,8 +12,11 @@ import androidx.fragment.app.viewModels
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentLeafSendBinding
 import com.d101.presentation.main.MainActivity
-import com.d101.presentation.main.viewmodel.LeafViewModel
+import com.d101.presentation.main.viewmodel.LeafSendViewModel
+import com.d101.presentation.main.state.LeafSendViewState
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
+import utils.repeatOnStarted
 
 @AndroidEntryPoint
 class LeafMessageToSendFragment : Fragment() {
@@ -22,13 +24,14 @@ class LeafMessageToSendFragment : Fragment() {
     private var _binding: FragmentLeafSendBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: LeafViewModel by viewModels({ requireParentFragment() })
+    private val viewModel: LeafSendViewModel by viewModels({ requireParentFragment() })
 
     private lateinit var activity: MainActivity
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activity = context as MainActivity
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,20 +47,43 @@ class LeafMessageToSendFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
+        viewModel.canSendLeaf()
+
         sendButton()
         changeChip()
+        collectUiState()
+    }
+
+    private fun collectUiState() {
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.uiState.collect { state ->
+                when (state) {
+                    is LeafSendViewState.AlreadySendState -> setVisibility()
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun setVisibility() {
+        binding.leafCategoryChipGroup.visibility = View.GONE
+        binding.leafTextLayout.visibility = View.GONE
+        binding.leafSendButton.visibility = View.GONE
+        binding.alreadySendTextView.visibility = View.VISIBLE
+        binding.leafLayout.setBackgroundResource(R.color.main_green)
     }
 
     private fun sendButton() {
         binding.leafSendButton.setOnClickListener {
             if (binding.leafTextView.text.isNullOrEmpty()) {
-                Toast.makeText(activity, "내용을 채워주세요!", Toast.LENGTH_SHORT).show()
+                showToast("이파리를 입력해주세요!")
             } else {
                 viewModel.onSendLeaf()
             }
         }
     }
 
+    private fun showToast(message: String) = CustomToast.createAndShow(activity, message)
     private fun changeChip() {
         var lastCheckedId = binding.leafCategoryChipGroup.checkedChipId
         binding.leafCategoryChipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
