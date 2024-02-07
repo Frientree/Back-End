@@ -245,7 +245,7 @@ class CalendarViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = getFruitsOfWeekUseCase(LocalDate.now(), weekDate)) {
                 is Result.Success -> {
-                    setFruitListForWeek(result.data)
+                    setFruitListForWeek(result.data, weekDate)
                 }
 
                 is Result.Failure -> {
@@ -337,11 +337,15 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
-    private fun setFruitListForWeek(fruitListForWeek: List<Fruit>) {
-        val juiceCreatableStatus: JuiceCreatableStatus = if (fruitListForWeek.size >= 4) {
-            JuiceCreatableStatus.JuiceCreatable
-        } else {
-            JuiceCreatableStatus.JuiceUnCreatable
+    private fun setFruitListForWeek(
+        fruitListForWeek: List<Fruit>,
+        weekDate: Pair<LocalDate, LocalDate>,
+    ) {
+        val todayDate = LocalDate.now()
+        val juiceCreatableStatus: JuiceCreatableStatus = when {
+            fruitListForWeek.size < 4 -> JuiceCreatableStatus.NotEnoughFruits
+            weekDate.second.isAfter(todayDate) -> JuiceCreatableStatus.MoreTimeNeeded
+            else -> JuiceCreatableStatus.JuiceCreatable
         }
 
         when (val currentState = _uiState.value) {

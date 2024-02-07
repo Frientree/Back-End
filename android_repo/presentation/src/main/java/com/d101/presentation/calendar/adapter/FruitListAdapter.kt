@@ -23,7 +23,7 @@ class FruitListAdapter(private val fruitClickListener: ((Fruit) -> Unit)) :
             binding.emotionTextView.text = fruit.fruitEmotion.korean
             binding.dateTextView.text = fruit.date.toMonthDayFormat()
             Glide.with(this.itemView).load(fruit.calendarImageUrl).into(binding.fruitImageImageView)
-            binding.fruitDetailButtonImageView.setOnClickListener {
+            binding.fruitItemLinearLayout.setOnClickListener {
                 fruitClickListener(fruit)
             }
         }

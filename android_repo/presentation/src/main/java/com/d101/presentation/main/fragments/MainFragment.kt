@@ -20,11 +20,12 @@ import com.d101.presentation.main.fragments.dialogs.TodayFruitFragment
 import com.d101.presentation.main.state.TreeMessageState
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import utils.CustomToast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import utils.CustomToast
 import utils.repeatOnStarted
 
 @AndroidEntryPoint
@@ -34,6 +35,8 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var dialog: DialogFragment
+
+    private var messageTypingJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -109,7 +112,7 @@ class MainFragment : Fragment() {
     private fun typingAnimation(message: String) {
         val sb = StringBuilder()
 
-        lifecycleScope.launch(Dispatchers.Default) {
+        messageTypingJob = lifecycleScope.launch(Dispatchers.Default) {
             message.forEach {
                 delay(50L)
                 sb.append(it)
@@ -121,9 +124,10 @@ class MainFragment : Fragment() {
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
+        messageTypingJob?.cancel()
+        messageTypingJob = null
         _binding = null
     }
 }
