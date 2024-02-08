@@ -22,7 +22,6 @@ public class AppVersionController {
 
     private final AppVersionService appVersionService;
 
-
     @Operation(summary = "앱 버전 조회", description = "앱 버전을 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "앱 버전 조회 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = AppVersionResponse.class))),
