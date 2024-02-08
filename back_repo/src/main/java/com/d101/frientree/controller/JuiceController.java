@@ -28,9 +28,12 @@ public class JuiceController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "(message : \"Success\", code : 201)",
                     content = @Content(schema = @Schema(implementation = JuiceGenerationResponse.class))),
-            @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n"),
-            @ApiResponse(responseCode = "422", description = "(message : \"Input Data Error\", code : 422)\n"),
-            @ApiResponse(responseCode = "409", description = "(message : \"Date Error\", code : 409)\n")
+            @ApiResponse(responseCode = "401", description = """
+                    (message : "Access Token Error", code : 401)""", content = @Content),
+            @ApiResponse(responseCode = "422", description = """
+                    (message : "Input Data Error", code : 422)""", content = @Content),
+            @ApiResponse(responseCode = "409", description = """
+                    (message : "Date Error", code : 409)""", content = @Content)
     })
     @PostMapping
     public ResponseEntity<JuiceGenerationResponse> juiceGeneration(@RequestBody JuiceGenerationRequest juiceGenerationRequest) throws ParseException {
@@ -41,7 +44,8 @@ public class JuiceController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "(message : \"Success\", code : 201)",
                     content = @Content(schema = @Schema(implementation = JuiceListConfirmationResponse.class))),
-            @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n")
+            @ApiResponse(responseCode = "401", description = """
+                    (message : "Access Token Error", code : 401)""", content = @Content)
     })
     @GetMapping("/entirety")
     public ResponseEntity<JuiceListConfirmationResponse> juiceListConfirmation() {
@@ -52,7 +56,10 @@ public class JuiceController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "(message : \"Success\", code : 201)",
                     content = @Content(schema = @Schema(implementation = JuiceConfirmationResponse.class))),
-            @ApiResponse(responseCode = "401", description = "(message : \"Fail\", code : 401)\n")
+            @ApiResponse(responseCode = "401", description = """
+                    (message : "Access Token Error", code : 401)""", content = @Content),
+            @ApiResponse(responseCode = "400", description = """
+                    (message : "Juice Not Found", code : 400)""", content = @Content)
     })
     @GetMapping("/{juiceId}")
     public ResponseEntity<JuiceConfirmationResponse> juiceConfirmation(@PathVariable Long juiceId) {
