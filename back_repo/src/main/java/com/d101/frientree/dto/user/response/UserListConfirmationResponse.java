@@ -1,6 +1,7 @@
 package com.d101.frientree.dto.user.response;
 
 import com.d101.frientree.entity.user.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +15,9 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserListConfirmationResponse {
-
+    @Schema(description = "상태 메시지", example = "Success")
     private String message;
+    @Schema(description = "데이터")
     private List<UserInfo> data;
 
     public static UserListConfirmationResponse createUserListConfirmationResponse(String message, List<User> users) {
