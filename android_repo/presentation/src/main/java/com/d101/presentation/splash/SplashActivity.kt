@@ -72,10 +72,8 @@ class SplashActivity : AppCompatActivity() {
         val (appMajor, appMinor, appPatch) = BuildConfig.APP_VERSION_NAME.split(".")
             .map { it.toInt() }
 
-        val minVersionArr = minVersion.split(".")
-        val minMajor = minVersionArr[0].toInt()
-        val minMinor = minVersionArr[1].toInt()
-        val minPatch = minVersionArr[2].toInt()
+        val (minMajor, minMinor, minPatch) = minVersion.split(".")
+            .map { it.toInt() }
 
         if (appMajor < minMajor) return true
         if (appMinor < minMinor) return true
