@@ -17,6 +17,7 @@ import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -51,6 +52,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var tokenReceiver: BroadcastReceiver
 
+    private var lastBackPressedTime = 0L
+
     var musicService: BackgroundMusicService? = null
     private var isBound = false
 
@@ -83,6 +86,7 @@ class MainActivity : AppCompatActivity() {
 
         receiveFCMToken()
         initEvent()
+        setOnBackPressed()
 
         repeatOnStarted {
             viewModel.eventFlow.collect { event ->
@@ -136,6 +140,28 @@ class MainActivity : AppCompatActivity() {
                 if (it) binding.blur.visibility = View.GONE
             }
         }
+    }
+
+    private fun setOnBackPressed() {
+        val backPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (viewModel.currentViewState.value == MainActivityViewState.TreeView) {
+                    if (canLaunchMenu.not()) {
+                        controlLeafButton()
+                    } else if (System.currentTimeMillis() - lastBackPressedTime < BACK_PRESS_INTERVAL) {
+                        isEnabled = false
+                        onBackPressed()
+                    } else {
+                        showToast("뒤로 버튼을 한 번 더 누르면 종료됩니다.")
+                        lastBackPressedTime = System.currentTimeMillis()
+                    }
+                } else {
+                    isEnabled = false
+                    onBackPressed()
+                }
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, backPressedCallback)
     }
 
     private fun initEvent() {
@@ -236,21 +262,6 @@ class MainActivity : AppCompatActivity() {
                     viewModel.changeViewState(MainActivityViewState.TreeView)
                 }
             }
-        }
-    }
-
-    private var backPressedTime: Long = 0
-    override fun onBackPressed() {
-        if (viewModel.currentViewState.value == MainActivityViewState.TreeView) {
-            if (backPressedTime + 2000 > System.currentTimeMillis()) {
-                super.onBackPressed()
-                return
-            } else {
-                showToast("뒤로 버튼을 한 번 더 누르면 종료됩니다.")
-            }
-            backPressedTime = System.currentTimeMillis()
-        } else {
-            super.onBackPressed()
         }
     }
 
@@ -386,6 +397,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val CHANNEL_ID = "FRIENTREE_MESSAGING_CHANNEL"
+        const val BACK_PRESS_INTERVAL = 2000L
         const val DURATION = 400L
         const val WRITE_UP = 0
         const val READ_UP = 1
