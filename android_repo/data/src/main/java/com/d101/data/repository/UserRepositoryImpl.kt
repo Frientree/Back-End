@@ -53,9 +53,8 @@ class UserRepositoryImpl @Inject constructor(
                                 .setUserNickname(data.userNickname)
                                 .setIsNotificationEnabled(data.userNotification)
                                 .setIsBackgroundMusicEnabled(true)
-                                .setBackgroundMusicName("default")
+                                .setBackgroundMusicName("aldebaran_50meru")
                                 .build()
-                            // TODO default 확인
                         }
                     }
                     Result.Success(userDataStore.data.first().toUser())

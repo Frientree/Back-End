@@ -3,6 +3,7 @@ package com.d101.presentation.main.fragments
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -113,7 +114,9 @@ class MyPageFragment : Fragment() {
                         viewModel.onTapLogOutButtonOccurred()
                     }
 
-                    is MyPageViewEvent.OnTapTermsButton -> {}
+                    is MyPageViewEvent.OnTapTermsButton -> {
+                        showTerms()
+                    }
                     is MyPageViewEvent.OnShowToast -> {
                         showToast(event.message)
                     }
@@ -137,6 +140,14 @@ class MyPageFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun showTerms() {
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://sites.google.com/view/frientreetotal"),
+        )
+        startActivity(intent)
     }
 
     private fun showSignOutDialog() {
