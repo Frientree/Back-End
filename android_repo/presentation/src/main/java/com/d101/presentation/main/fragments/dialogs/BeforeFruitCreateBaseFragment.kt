@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,6 +14,7 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentBeforeFruitCreateBaseBinding
 import com.d101.presentation.main.event.CreateFruitDialogViewEvent
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
+import com.navercorp.nid.NaverIdLoginSDK.getApplicationContext
 import dagger.hilt.android.AndroidEntryPoint
 import utils.CustomToast
 import utils.repeatOnStarted
@@ -22,6 +24,8 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
     private val viewModel: FruitCreateViewModel by viewModels()
     private var _binding: FragmentBeforeFruitCreateBaseBinding? = null
     private val binding get() = _binding!!
+
+    private var flip = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +40,10 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         viewModel.onGoSelectInputTypeView()
+
+        val scale: Float = getApplicationContext().getResources().getDisplayMetrics().density
+        val distance: Float =
+            binding.fruitDialogCardView.getCameraDistance() * (scale + (scale / 3))
 
         viewLifecycleOwner.repeatOnStarted {
             viewModel.eventFlow.collect {
@@ -72,9 +80,39 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
                         showToast(it.message)
                         dialog?.dismiss()
                     }
+
+                    is CreateFruitDialogViewEvent.CardFlipEvent -> {
+                        flipAnimation(it.color, flip, distance)
+                        flip = !flip
+                    }
                 }
             }
         }
+    }
+    private fun flipAnimation(fruitColorValue: Int, flip: Boolean, distance: Float) {
+        binding.fruitDialogCardView.setCameraDistance(distance)
+        binding.fruitDialogCardView.animate().withLayer()
+            .rotationY(90F)
+            .setDuration(150)
+            .withEndAction {
+                if (flip) {
+                    binding.fruitDialogCardView.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            fruitColorValue,
+                        ),
+                    )
+                    viewModel.setAppleViewVisibility(flip)
+                } else {
+                    binding.fruitDialogCardView.setCardBackgroundColor(Color.WHITE)
+                    viewModel.setAppleViewVisibility(flip)
+                }
+                binding.fruitDialogCardView.setRotationY(-90F)
+                binding.fruitDialogCardView.animate().withLayer()
+                    .rotationY(0F)
+                    .setDuration(250)
+                    .start()
+            }.start()
     }
 
     private fun showToast(message: String) =

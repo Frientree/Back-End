@@ -6,6 +6,9 @@ sealed class CreateFruitDialogViewEvent {
     data object FruitCreationBySpeechViewEvent : CreateFruitDialogViewEvent()
     data object FruitCreationLoadingViewEvent : CreateFruitDialogViewEvent()
     data object AfterFruitCreationViewEvent : CreateFruitDialogViewEvent()
+    data class CardFlipEvent(
+        val color: Int,
+    ) : CreateFruitDialogViewEvent()
 
     data class ShowErrorToastEvent(
         val message: String,

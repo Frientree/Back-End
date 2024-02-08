@@ -116,6 +116,16 @@ class FruitCreateViewModel @Inject constructor(
         }
     }
 
+    private val _appleUiState: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val appleUiState: StateFlow<Boolean> = _appleUiState.asStateFlow()
+
+    fun setAppleViewVisibility(flip: Boolean) {
+        _appleUiState.update { flip }
+    }
+    fun cardFlip(fruitColorValue: Int) {
+        emitEvent(CreateFruitDialogViewEvent.CardFlipEvent(fruitColorValue))
+    }
+
     fun setAudioFile(file: File) {
         audioFile = file
     }

@@ -48,7 +48,6 @@ class FruitRepositoryImpl @Inject constructor(
                 remoteResult.let {
                     fruitLocalDataSource.insertFruit(
                         FruitEntity(
-                            id = fruitNum,
                             date = it.data.fruitCreateDate.toLongDate(),
                             name = it.data.fruitName,
                             description = it.data.fruitDescription,
@@ -91,7 +90,6 @@ class FruitRepositoryImpl @Inject constructor(
             is Result.Success -> {
                 val fruitEntity = remoteResult.let {
                     FruitEntity(
-                        id = it.data.fruitNum,
                         date = it.data.fruitCreateDate.toLongDate(),
                         name = it.data.fruitName,
                         description = it.data.fruitDescription,
