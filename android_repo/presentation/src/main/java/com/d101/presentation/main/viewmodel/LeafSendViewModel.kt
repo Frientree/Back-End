@@ -40,6 +40,7 @@ class LeafSendViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             manageUserStatusUseCase.getUserStatus().collect {
+                setLeafTitle()
                 if (it.userLeafStatus.not()) {
                     _uiState.update { currentState ->
                         LeafSendViewState.AlreadySendState(
@@ -47,8 +48,6 @@ class LeafSendViewModel @Inject constructor(
                             currentState.leafSendTitle,
                         )
                     }
-                } else {
-                    setLeafTitle()
                 }
             }
         }
