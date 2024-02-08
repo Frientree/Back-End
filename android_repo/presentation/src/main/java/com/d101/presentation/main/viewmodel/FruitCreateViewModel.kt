@@ -14,6 +14,7 @@ import com.d101.domain.usecase.usermanagement.ManageUserStatusUseCase
 import com.d101.presentation.main.event.CreateFruitDialogViewEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,68 +52,74 @@ class FruitCreateViewModel @Inject constructor(
 
     fun setTodayFruitList() {
         viewModelScope.launch {
-            delay(3_000L)
-            if (isTextInput) {
-                when (val result = makeFruitByTextUseCase(inputText.value)) {
-                    is Result.Success -> {
-                        _todayFruitList.update { result.data }
-                    }
+            val delay = async {
+                delay(3_000L)
+            }
+            val result = async {
+                if (isTextInput) {
+                    when (val result = makeFruitByTextUseCase(inputText.value)) {
+                        is Result.Success -> {
+                            _todayFruitList.update { result.data }
+                        }
 
-                    is Result.Failure -> {
-                        when (result.errorStatus) {
-                            is FruitErrorStatus.ApiError -> emitEvent(
-                                CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                    "결과를 받아오는 데 문제가 발생했습니다.",
-                                ),
-                            )
-
-                            is ErrorStatus.NetworkError -> emitEvent(
-                                CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                    "네트워크 에러입니다.",
-                                ),
-                            )
-
-                            else -> {
-                                emitEvent(
+                        is Result.Failure -> {
+                            when (result.errorStatus) {
+                                is FruitErrorStatus.ApiError -> emitEvent(
                                     CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                        "예기치 못한 에러가 발생했습니다.",
+                                        "결과를 받아오는 데 문제가 발생했습니다.",
                                     ),
                                 )
+
+                                is ErrorStatus.NetworkError -> emitEvent(
+                                    CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                        "네트워크 에러입니다.",
+                                    ),
+                                )
+
+                                else -> {
+                                    emitEvent(
+                                        CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                            "예기치 못한 에러가 발생했습니다.",
+                                        ),
+                                    )
+                                }
                             }
                         }
                     }
-                }
-            } else {
-                when (val result = makeFruitBySpeechUseCase(audioFile)) {
-                    is Result.Success -> {
-                        _todayFruitList.update { result.data }
-                    }
+                } else {
+                    when (val result = makeFruitBySpeechUseCase(audioFile)) {
+                        is Result.Success -> {
+                            _todayFruitList.update { result.data }
+                        }
 
-                    is Result.Failure -> {
-                        when (result.errorStatus) {
-                            is FruitErrorStatus.ApiError -> emitEvent(
-                                CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                    "결과를 받아오는 데 문제가 발생했습니다.",
-                                ),
-                            )
-
-                            is ErrorStatus.NetworkError -> emitEvent(
-                                CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                    "네트워크 에러입니다.",
-                                ),
-                            )
-
-                            else -> {
-                                emitEvent(
+                        is Result.Failure -> {
+                            when (result.errorStatus) {
+                                is FruitErrorStatus.ApiError -> emitEvent(
                                     CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                        "예기치 못한 에러가 발생했습니다.",
+                                        "결과를 받아오는 데 문제가 발생했습니다.",
                                     ),
                                 )
+
+                                is ErrorStatus.NetworkError -> emitEvent(
+                                    CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                        "네트워크 에러입니다.",
+                                    ),
+                                )
+
+                                else -> {
+                                    emitEvent(
+                                        CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                            "예기치 못한 에러가 발생했습니다.",
+                                        ),
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
+            result.await()
+            delay.await()
         }
     }
 

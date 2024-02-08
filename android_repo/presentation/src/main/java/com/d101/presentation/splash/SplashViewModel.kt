@@ -34,7 +34,7 @@ class SplashViewModel @Inject constructor(
             }
 
             val delay = async {
-                delay(1_000L)
+                delay(3_000L)
             }
 
             check.await()

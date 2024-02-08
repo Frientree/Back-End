@@ -1,6 +1,5 @@
 package com.d101.data.repository
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import com.d101.data.datasource.user.UserDataSource
 import com.d101.data.datastore.UserPreferences
@@ -201,7 +200,6 @@ class UserRepositoryImpl @Inject constructor(
                 .setBackgroundMusicName(musicName)
                 .build()
         }
-        Log.d("확인", "changeBackgroundMusic: ${userDataStore.data.first().backgroundMusicName}}")
     }.fold(
         onSuccess = { Result.Success(Unit) },
         onFailure = { Result.Failure(ErrorStatus.UnknownError) },

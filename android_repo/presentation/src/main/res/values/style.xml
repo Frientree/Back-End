@@ -197,6 +197,7 @@
 
     <style name="Base.FTR.TextView.Calendar.Title" parent="Base.FTR.TextView.Calendar">
         <item name="android:textAppearance">@style/Base.FTR.Bold_20sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="Base.FTR.TextView.Greeting" parent="@style/Widget.AppCompat.TextView">

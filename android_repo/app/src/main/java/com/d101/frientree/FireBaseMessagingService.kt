@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -33,7 +32,6 @@ class FireBaseMessagingService : FirebaseMessagingService() {
             messageContent = it.body.toString()
         } ?: run {
             message.data.isNotEmpty().let {
-                Log.d("FCM", "data.message: ${message.data}")
                 messageTitle = message.data["title"].toString()
                 messageContent = message.data["body"].toString()
             }
@@ -66,9 +64,6 @@ class FireBaseMessagingService : FirebaseMessagingService() {
                     Manifest.permission.POST_NOTIFICATIONS,
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // 권한이 없으므로 알림을 보낼 수 없습니다.
-                // 이 경우, 알림 권한을 요청하는 로직을 액티비티에 구현해야 합니다.
-                Log.d("FCM", "POST_NOTIFICATIONS permission is not granted")
                 return
             }
         }

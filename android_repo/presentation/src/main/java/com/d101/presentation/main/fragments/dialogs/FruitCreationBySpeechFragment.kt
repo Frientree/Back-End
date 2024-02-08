@@ -13,7 +13,6 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentFruitCreationBySpeechBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -53,7 +52,6 @@ class FruitCreationBySpeechFragment : Fragment() {
         secText = getString(R.string.speech_second_text)
         startRecording()
 
-        // 버튼을 누르거나 30초가 끝나면 그만
         binding.createFruitBySpeechButton.setOnClickListener {
             createFruitBySpeech()
         }
@@ -79,11 +77,8 @@ class FruitCreationBySpeechFragment : Fragment() {
             setOutputFile(audioFile.absolutePath)
             setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
-            try {
-                prepare()
-            } catch (e: IOException) {
-                // 에러 처리
-            }
+            prepare()
+
             start()
             startTimer()
         }
@@ -92,10 +87,8 @@ class FruitCreationBySpeechFragment : Fragment() {
     private fun startTimer() {
         var time = 0
         timerTask = kotlin.concurrent.timer(period = 10) {
-            time++ // period = 10 : 0.01초마다 time 을 1씩 증가
-            val sec = time / 100 // 나눗셈의 몫 : 초 부분
-
-            // UI 조작을 위한 메서드
+            time++
+            val sec = time / 100
 
             activity?.runOnUiThread {
                 try {
