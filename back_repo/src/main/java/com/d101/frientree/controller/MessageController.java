@@ -29,7 +29,6 @@ public class MessageController {
     })
     @GetMapping
     public ResponseEntity<MessageResponse> messageConfirm() {
-
         return messageService.confirm();
     }}
 
