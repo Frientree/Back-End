@@ -8,21 +8,21 @@ import lombok.Data;
 @Data
 @Builder
 public class UserFruitSaveDTO {
-    @Schema(description = "사과 생성 여부", nullable = false, example = "false")
+    @Schema(description = "사과 생성 여부", example = "false")
     private Boolean isApple;
-    @Schema(description = "열매 생성 날짜", nullable = false, example = "2024-01-01")
+    @Schema(description = "열매 생성 날짜", example = "2024-01-01")
     private String fruitCreateDate;
-    @Schema(description = "열매 이름", nullable = false, example = "딸기")
+    @Schema(description = "열매 이름", example = "딸기")
     private String fruitName;
-    @Schema(description = "열매 세부 내용", nullable = false, example = "딸기는 기분이 좋아지는 열매일까?")
+    @Schema(description = "열매 세부 내용", example = "딸기는 기분이 좋아지는 열매일까?")
     private String fruitDescription;
-    @Schema(description = "열매 기본 이미지 URL", nullable = false, example = "www.abcd.com")
+    @Schema(description = "열매 기본 이미지 URL", example = "www.abcd.com")
     private String fruitImageUrl;
-    @Schema(description = "열매 캘린더 이미지 URL", nullable = false, example = "www.efgh.com")
+    @Schema(description = "열매 캘린더 이미지 URL", example = "www.efgh.com")
     private String fruitCalendarImageUrl;
-    @Schema(description = "기분", nullable = false, example = "행복")
+    @Schema(description = "기분", example = "행복")
     private String fruitFeel;
-    @Schema(description = "열매 점수", nullable = false, example = "21")
+    @Schema(description = "열매 점수", example = "21")
     private Long fruitScore;
 
     public static UserFruitSaveDTO createUserFruitSaveDTO(Boolean isApple, String fruitCreateDate, FruitDetail fruitDetail, Long score){

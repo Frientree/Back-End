@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class UserFruitTextRequest {
-    @Schema(description = "사용자 입력 텍스트", nullable = false, example = "오늘도 화이팅해보자!")
+    @Schema(description = "사용자 입력 텍스트", example = "오늘도 화이팅해보자!")
     private String content;
 }

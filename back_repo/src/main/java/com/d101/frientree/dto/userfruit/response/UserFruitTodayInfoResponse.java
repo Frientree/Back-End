@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 @Builder
 public class UserFruitTodayInfoResponse {
-    @Schema(description = "상태 코드", nullable = false, example = "Success")
+    @Schema(description = "상태 코드", example = "Success")
     private String message;
-    @Schema(description = "데이터", nullable = false)
+    @Schema(description = "데이터")
     private UserFruitTodayInfoDTO data;
 
     public static UserFruitTodayInfoResponse createUserFruitTodayInfoResponse(String message, UserFruitTodayInfoDTO data){

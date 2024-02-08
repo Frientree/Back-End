@@ -8,15 +8,15 @@ import lombok.Data;
 @Data
 @Builder
 public class UserFruitCreateDTO {
-    @Schema(description = "열매 PK 번호", nullable = false, example = "2")
+    @Schema(description = "열매 PK 번호", example = "2")
     private Long fruitNum;
-    @Schema(description = "열매 이름", nullable = false, example = "딸기")
+    @Schema(description = "열매 이름", example = "딸기")
     private String fruitName;
-    @Schema(description = "열매 세부 내용", nullable = false, example = "딸기는 맛있어요~!~!")
+    @Schema(description = "열매 세부 내용", example = "딸기는 맛있어요~!~!")
     private String fruitDescription;
-    @Schema(description = "열매 기본 이미지 URL", nullable = false, example = "www.abcd.com")
+    @Schema(description = "열매 기본 이미지 URL", example = "www.abcd.com")
     private String fruitImageUrl;
-    @Schema(description = "기분", nullable = false, example = "행복")
+    @Schema(description = "기분", example = "행복")
     private String fruitFeel;
 
     public static UserFruitCreateDTO createUserFruitCreateDTO(FruitDetail fruitDetail){
