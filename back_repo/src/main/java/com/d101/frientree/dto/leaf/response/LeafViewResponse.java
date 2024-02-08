@@ -1,5 +1,6 @@
 package com.d101.frientree.dto.leaf.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
@@ -7,8 +8,9 @@ import lombok.Data;
 @Builder
 @Data
 public class LeafViewResponse {
-
+    @Schema(description = "상태 메시지", example = "Success")
     private String message;
+    @Schema(description = "데이터")
     private Long data;
 
 
@@ -18,12 +20,5 @@ public class LeafViewResponse {
                 .data(data)
                 .build();
     }
-
-    public static LeafViewResponse createLeafViewErrorResponse(String message) {
-        return LeafViewResponse.builder()
-                .message(message)
-                .build();
-    }
-
 
 }

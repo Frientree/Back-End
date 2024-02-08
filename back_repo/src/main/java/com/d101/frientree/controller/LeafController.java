@@ -37,6 +37,8 @@ public class LeafController {
     @Operation(summary = "이파리 랜덤 조회", description = "선택한 카테고리에 해당하는 이파리를 랜덤으로 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafConfirmationResponse.class))),
+            @ApiResponse(responseCode = "401", description = """
+                    (message : "Access Token Error", code : 401)""", content = @Content)
     })
     @GetMapping("/{category}")
     public ResponseEntity<LeafConfirmationResponse> leafConfirmation(@PathVariable int category) {
@@ -49,8 +51,10 @@ public class LeafController {
     @Operation(summary = "이파리 생성", description = "이파리 카테고리와 내용을 기입해 이파리를 생성합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "이파리 생성 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafGenerationResponse.class))),
-            @ApiResponse(responseCode = "400", description = "이파리 생성 실패 (message : \"Bad Request\", code : 400, data : null)", content = @Content),
-            @ApiResponse(responseCode = "500", description = "이파리 생성 실패 (message : \"Server Error\", code : 500, data : null)", content = @Content)
+            @ApiResponse(responseCode = "401", description = """
+                    (message : "Access Token Error", code : 401)""", content = @Content),
+            @ApiResponse(responseCode = "400", description = """
+                    (message : "input data error", code : 400)""", content = @Content)
     })
     @PostMapping
     public ResponseEntity<LeafGenerationResponse> leafGeneration(@RequestHeader ("Date") String createDate, @RequestBody LeafGenerationRequest leafGenerationRequest) {
@@ -59,23 +63,27 @@ public class LeafController {
 
 
     // 이파리 신고
-
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "이파리 신고", description = "이파리의 신고 횟수를 증가 시킵니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "이파리 신고 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafComplaintResponse.class))),
-            @ApiResponse(responseCode = "404", description = "이파리 신고 실패 (message : \"Leaf not Found\", code : 400, data : null)", content = @Content),
-            @ApiResponse(responseCode = "500", description = "이파리 신고 실패 (message : \"Server Error\", code : 500, data : null)", content = @Content)
+            @ApiResponse(responseCode = "401", description = """
+                    (message : "Access Token Error", code : 401)""", content = @Content),
+            @ApiResponse(responseCode = "404", description = """
+                    (message : "leaf not found", code : 404)""", content = @Content)
     })    @PostMapping("/{leafId}")
     public ResponseEntity<LeafComplaintResponse> leafComplaint(@PathVariable Long leafId){
         return leafService.complain(leafId);
     }
 
-
+    // 이파리 조회수 확인
     @Operation(summary = "이파리 조회수 확인", description = "이파리의 전체 조회수를 확인합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회수 확인 성공 (message : \"Success\", code : 200)", content = @Content(schema = @Schema(implementation = LeafViewResponse.class))),
-            @ApiResponse(responseCode = "404", description = "조회수 확인 실패 (message : \"User not Found\", code : 404, data : null)", content = @Content),
+            @ApiResponse(responseCode = "401", description = """
+                    (message : "Access Token Error", code : 401)""", content = @Content),
+            @ApiResponse(responseCode = "404", description = """
+                    (message : "leaf not found", code : 404)""", content = @Content)
     })
     @GetMapping("/view")
     public ResponseEntity<LeafViewResponse> leafView() {
