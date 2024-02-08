@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.d101.domain.model.Result
 import com.d101.presentation.R
@@ -20,6 +21,7 @@ import com.d101.presentation.welcome.viewmodel.SignInViewModel
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.OAuthLoginCallback
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import utils.CustomToast
 import utils.repeatOnStarted
@@ -61,13 +63,27 @@ class SignInFragment : Fragment() {
                 when (event) {
                     SignInViewEvent.FindPasswordClicked -> navigateToFindPassword()
                     SignInViewEvent.SignInAttemptByFrientree -> viewModel.signInByFrientree()
-                    SignInViewEvent.SignInAttemptByNaver -> viewModel.onNaverSignInCompleted(
-                        authenticateWithNaver(requireContext()),
-                    )
+                    SignInViewEvent.SignInAttemptByNaver -> checkNaverId()
 
                     is SignInViewEvent.SignInFailed -> showToast(event.message)
                     SignInViewEvent.SignInSuccess -> navigateToMainScreen()
                     SignInViewEvent.SignUpClicked -> navigateToTermsAgree()
+                }
+            }
+        }
+    }
+
+    private fun checkNaverId() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            when (
+                val result = authenticateWithNaver(requireContext())
+            ) {
+                is Result.Success -> {
+                    viewModel.onNaverSignInCompleted(result)
+                }
+
+                is Result.Failure -> {
+                    showToast("네이버 로그인에 실패했습니다")
                 }
             }
         }

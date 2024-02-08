@@ -80,7 +80,9 @@ class SignInViewModel @Inject constructor(
     fun onNaverSignInCompleted(loginResult: Result<String>) {
         viewModelScope.launch(Dispatchers.IO) {
             when (loginResult) {
-                is Result.Success -> getNaverUserId(loginResult.data)
+                is Result.Success -> {
+                    getNaverUserId(loginResult.data)
+                }
                 is Result.Failure -> onSignInFailed("네이버 로그인 실패")
             }
         }
@@ -95,7 +97,9 @@ class SignInViewModel @Inject constructor(
 
     private suspend fun signInByNaver(naverId: String) {
         when (val result = signInNaverUseCase(naverId)) {
-            is Result.Success -> onSignInSuccess()
+            is Result.Success -> {
+                onSignInSuccess()
+            }
 
             is Result.Failure -> {
                 when (result.errorStatus) {
