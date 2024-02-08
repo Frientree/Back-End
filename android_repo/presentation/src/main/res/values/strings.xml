@@ -112,6 +112,6 @@
     <string name="dialog_cancel">취소</string>
     <string name="dialog_ok">확인</string>
     <string name="leaf_report">신고하기</string>
-    <string name="today_statistics">오늘 나와 같은 감정을 지닌 사람이 %s명 있어요!</string>
+    <string name="today_statistics">오늘 나와 같은 감정을 지닌 사람이\n%s명 있어요!</string>
 
 </resources>

@@ -101,7 +101,6 @@ class FindPasswordViewModel @Inject constructor(
     private fun emitEvent(event: FindPasswordEvent) {
         viewModelScope.launch {
             _eventFlow.emit(event)
-            Log.d("확인", "emitEvent: $event")
         }
     }
 }

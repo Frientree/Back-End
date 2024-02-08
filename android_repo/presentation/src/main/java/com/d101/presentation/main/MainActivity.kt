@@ -12,7 +12,6 @@ import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
-import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.animation.AnimationUtils
@@ -195,11 +194,8 @@ class MainActivity : AppCompatActivity() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(
             OnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Log.w("FCM", "FCM 토큰 얻기에 실패하였습니다.", task.exception)
                     return@OnCompleteListener
                 }
-                // token log 남기기
-                Log.d("FCM", "token: ${task.result ?: "task.result is null"}")
                 if (task.result != null) {
                     uploadToken(task.result!!)
                 }

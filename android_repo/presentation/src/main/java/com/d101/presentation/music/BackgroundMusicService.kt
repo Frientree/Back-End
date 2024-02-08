@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.d101.presentation.R
 import java.lang.reflect.Field
@@ -77,21 +76,17 @@ class BackgroundMusicService : Service() {
             return
         }
 
-        try {
-            val musicRes = R.raw::class.java.getField(prefix + musicName).getInt(null)
+        val musicRes = R.raw::class.java.getField(prefix + musicName).getInt(null)
 
-            mediaPlayer?.stop()
-            mediaPlayer?.release()
-            mediaPlayer = MediaPlayer.create(
-                this,
-                musicRes,
-            )
-            lastMusicName = musicName
-            mediaPlayer?.isLooping = true
-            mediaPlayer?.start()
-        } catch (e: Exception) {
-            Log.d("Can't play music", "$e")
-        }
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = MediaPlayer.create(
+            this,
+            musicRes,
+        )
+        lastMusicName = musicName
+        mediaPlayer?.isLooping = true
+        mediaPlayer?.start()
     }
 
     private fun stopMusic() {

@@ -89,6 +89,7 @@
                 android:enabled="false"
                 android:imeOptions="actionDone"
                 android:inputType="text"
+                android:textColorHighlight="@color/darken_main_green"
                 android:onEditorAction="@{(v, actionId, event) -> myPageViewModel.onEditorAction(actionId)}"
                 android:text="@{myPageViewModel.uiState.nickname}"
                 android:textColor="@color/black" />

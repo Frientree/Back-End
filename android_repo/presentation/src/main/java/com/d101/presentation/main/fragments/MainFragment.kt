@@ -110,6 +110,7 @@ class MainFragment : Fragment() {
     }
 
     private fun typingAnimation(message: String) {
+        messageTypingJob?.cancel()
         val sb = StringBuilder()
 
         messageTypingJob = lifecycleScope.launch(Dispatchers.Default) {
