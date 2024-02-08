@@ -86,7 +86,6 @@ class UserRepositoryImpl @Inject constructor(
             tokenManager.deleteTokens()
             roomDB.clearAllTables()
             userDataStore.updateData { UserPreferences.getDefaultInstance() }
-            userStatusDataStore.updateData { UserStatusPreferences.getDefaultInstance() }
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Failure(ErrorStatus.UnknownError)
@@ -158,7 +157,6 @@ class UserRepositoryImpl @Inject constructor(
                     it.toBuilder()
                         .setUserFruitStatus(result.data.userFruitStatus)
                         .setUserLeafStatus(result.data.userLeafStatus)
-                        .setTreeName(it.treeName.ifEmpty { "프렌트리" })
                         .build()
                 }
                 Result.Success(Unit)
@@ -168,8 +166,10 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserStatus(): Flow<UserStatus> = userStatusDataStore.data.map {
-        it.toUserStatus()
+    override suspend fun getUserStatus(): Result<UserStatus> {
+        val localUserStatus = userStatusDataStore.data.first()
+
+        return Result.Success(localUserStatus.toUserStatus())
     }
 
     override suspend fun findPassword(userEmail: String): Result<Unit> =
@@ -209,6 +209,34 @@ class UserRepositoryImpl @Inject constructor(
         onSuccess = { Result.Success(Unit) },
         onFailure = { Result.Failure(ErrorStatus.UnknownError) },
     )
+
+    override suspend fun signOut(): Result<Unit> {
+        return when (val result = userDataSource.signOut()) {
+            is Result.Success -> {
+                Result.Success(Unit)
+            }
+
+            is Result.Failure -> Result.Failure(result.errorStatus)
+        }
+    }
+
+    override suspend fun signOutWithNaver(
+        naverClientId: String,
+        naverSecret: String,
+        accessToken: String,
+    ): Result<Unit> =
+        when (
+            val result =
+                userDataSource.signOutWithNaver(naverClientId, naverSecret, accessToken)
+        ) {
+            is Result.Success -> {
+                Result.Success(Unit)
+            }
+
+            is Result.Failure -> {
+                Result.Failure(result.errorStatus)
+            }
+        }
 
     override suspend fun updateFcmToken(fcmToken: String): Result<Unit> =
         when (val result = userDataSource.updateFcmToken(fcmToken)) {

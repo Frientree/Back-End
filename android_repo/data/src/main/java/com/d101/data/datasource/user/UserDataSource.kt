@@ -32,4 +32,12 @@ interface UserDataSource {
     suspend fun setNotification(isNotificationEnabled: Boolean): Result<Boolean>
 
     suspend fun updateFcmToken(fcmToken: String): Result<Boolean>
+
+    suspend fun signOut(): Result<Unit>
+
+    suspend fun signOutWithNaver(
+        naverClientId: String,
+        naverSecret: String,
+        accessToken: String
+    ): Result<Unit>
 }

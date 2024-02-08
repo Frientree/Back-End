@@ -8,11 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.d101.presentation.BuildConfig
 import com.d101.presentation.R
 import com.d101.presentation.databinding.DialogBackgroundMusicSelectBinding
+import com.d101.presentation.databinding.DialogSignOutBinding
 import com.d101.presentation.databinding.FragmentMypageBinding
 import com.d101.presentation.main.MainActivity
 import com.d101.presentation.music.BackgroundMusicService
@@ -26,6 +29,7 @@ import com.d101.presentation.mypage.state.BackgroundMusicStatus
 import com.d101.presentation.mypage.state.MyPageViewState
 import com.d101.presentation.mypage.viewmodel.MyPageViewModel
 import com.d101.presentation.welcome.WelcomeActivity
+import com.navercorp.nid.NaverIdLoginSDK
 import dagger.hilt.android.AndroidEntryPoint
 import utils.CustomToast
 import utils.repeatOnStarted
@@ -127,10 +131,37 @@ class MyPageFragment : Fragment() {
                         navigateToWelcomeActivity()
                     }
 
-                    MyPageViewEvent.OnTapSignOutButton -> viewModel.onTapSignOutButton()
+                    MyPageViewEvent.OnTapSignOutButton -> showSignOutDialog()
+                    MyPageViewEvent.OnSignOut -> {
+                        viewModel.onTapLogOutButtonOccurred()
+                    }
                 }
             }
         }
+    }
+
+    private fun showSignOutDialog() {
+        val dialog = createFullScreenDialog()
+        val dialogBinding = DialogSignOutBinding.inflate(layoutInflater)
+        dialogBinding.confirmButtonTextTiew.setOnClickListener {
+            when (viewModel.uiState.value.isSocial) {
+                true -> {
+                    viewModel.onSignOutWithNaver(
+                        NaverIdLoginSDK.getAccessToken().orEmpty(),
+                        BuildConfig.NAVER_LOGIN_CLIENT_ID,
+                        BuildConfig.NAVER_LOGIN_CLIENT_SECRET,
+                    )
+                }
+
+                false -> {
+                    viewModel.onSignOutFrientreeUser()
+                }
+            }
+            dialog.dismiss()
+        }
+        dialogBinding.cancelButtonTextView.setOnClickListener { dialog.dismiss() }
+        dialog.setContentView(dialogBinding.root)
+        dialog.show()
     }
 
     private fun showToast(message: String) {

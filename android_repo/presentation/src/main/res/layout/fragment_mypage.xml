@@ -9,7 +9,7 @@
             name="myPageViewModel"
             type="com.d101.presentation.mypage.viewmodel.MyPageViewModel" />
 
-        <import type="com.d101.presentation.mypage.state.AlarmStatus"/>
+        <import type="com.d101.presentation.mypage.state.AlarmStatus" />
 
         <import type="android.view.View" />
     </data>
@@ -43,8 +43,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:visibility="@{myPageViewModel.uiState.isSocial ? View.INVISIBLE : View.VISIBLE}"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="@{myPageViewModel.uiState.isSocial ? View.GONE : View.VISIBLE}"
+            >
 
             <TextView
                 style="@style/Base.FTR.MenuText"
@@ -85,11 +86,11 @@
                 android:background="@null"
                 android:cursorVisible="true"
                 android:enabled="false"
-                android:inputType="text"
                 android:imeOptions="actionDone"
-                android:textColor="@color/black"
+                android:inputType="text"
                 android:onEditorAction="@{(v, actionId, event) -> myPageViewModel.onEditorAction(actionId)}"
-                android:text="@{myPageViewModel.uiState.nickname}" />
+                android:text="@{myPageViewModel.uiState.nickname}"
+                android:textColor="@color/black" />
 
             <ImageView
                 android:id="@+id/pencil_button_image_view"
@@ -106,8 +107,8 @@
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:src="@drawable/baseline_close_24"
                 android:onClick="@{() -> myPageViewModel.onTapNicknameEditCancelButton()}"
+                android:src="@drawable/baseline_close_24"
                 android:visibility="gone" />
 
             <TextView
@@ -117,10 +118,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/btn_small_confirm"
-                android:text="@string/confirm"
-                android:visibility="gone"
                 android:onClick="@{() -> myPageViewModel.onTapNicknameConfirmButton()}"
-                />
+                android:text="@string/confirm"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -206,7 +206,6 @@
 
             <TextView
                 android:id="@+id/background_music_change_button_text_view"
-                android:textAppearance="@style/Base.FTR.SmallButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
@@ -214,7 +213,8 @@
                 android:background="@drawable/btn_small_confirm_green"
                 android:gravity="center"
                 android:onClick="@{() -> myPageViewModel.onTapBackgroundMusicChangeButton()}"
-                android:text="@string/background_music" />
+                android:text="@string/background_music"
+                android:textAppearance="@style/Base.FTR.SmallButtonText" />
 
         </LinearLayout>
 
@@ -247,17 +247,18 @@
                 android:background="@drawable/btn_white_lightgray_36dp"
                 android:onClick="@{() -> myPageViewModel.onTapChangePasswordButton()}"
                 android:text="@string/change_password"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:visibility="@{myPageViewModel.uiState.isSocial ? View.GONE : View.VISIBLE}" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/log_out_button"
                 style="@style/Base.FTR.ElevatedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_white_lightgray_36dp"
                 android:onClick="@{() -> myPageViewModel.onTapLogOutButton()}"
-                android:layout_marginEnd="16dp"
                 android:text="@string/log_out"
                 android:textSize="16sp" />
 
@@ -268,9 +269,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/btn_white_lightgray_36dp"
-                android:onClick="@{() -> myPageViewModel.onTapLogOutButton()}"
+                android:onClick="@{() -> myPageViewModel.onTapSignOutButton()}"
                 android:text="@string/sign_out"
-                android:visibility="@{myPageViewModel.uiState.isSocial ? View.GONE : View.VISIBLE}"
                 android:textSize="16sp" />
 
         </LinearLayout>
