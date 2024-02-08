@@ -7,6 +7,7 @@ import com.d101.domain.usecase.appStatus.GetAppStatusUseCase
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import utils.MutableEventFlow
@@ -28,8 +29,16 @@ class SplashViewModel @Inject constructor(
 
     fun showSplash() {
         viewModelScope.launch(Dispatchers.IO) {
-            delay(3_000L)
-            checkAppVersion()
+            val check = async {
+                checkAppVersion()
+            }
+
+            val delay = async {
+                delay(1_000L)
+            }
+
+            check.await()
+            delay.await()
         }
     }
 

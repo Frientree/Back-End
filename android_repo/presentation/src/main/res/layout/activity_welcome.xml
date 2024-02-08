@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".welcome.WelcomeActivity">
+    tools:context=".welcome.WelcomeActivity"
+    android:background="@color/main_green"
+    >
+
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/welcome_fragment_container_view"
