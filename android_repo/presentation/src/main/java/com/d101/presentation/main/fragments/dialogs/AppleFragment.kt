@@ -13,6 +13,7 @@ import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentAppleBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import utils.CustomToast
 import utils.repeatOnStarted
 import java.util.Timer
 import java.util.TimerTask
@@ -90,9 +91,12 @@ class AppleFragment : Fragment() {
             }
         }
     }
+    private fun showToast(message: String) =
+        CustomToast.createAndShow(requireContext(), message)
 
     override fun onDestroyView() {
         super.onDestroyView()
+        showToast("열매가 저장되었습니다!")
         timer.cancel()
         _binding = null
     }
