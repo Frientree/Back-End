@@ -36,7 +36,6 @@ class JuiceRepositoryImpl @Inject constructor(
 
                 val remoteFruitEntityList = result.data.fruitsGraphData.map {
                     FruitEntity(
-                        id = 0L,
                         date = it.fruitDate.toLongDate(),
                         name = "",
                         description = "",

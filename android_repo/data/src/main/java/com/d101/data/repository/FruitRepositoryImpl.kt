@@ -3,9 +3,11 @@ package com.d101.data.repository
 import com.d101.data.datasource.fruit.FruitLocalDataSource
 import com.d101.data.datasource.fruit.FruitRemoteDataSource
 import com.d101.data.mapper.FruitMapper.toAppleData
+import com.d101.data.mapper.FruitMapper.toFruit
 import com.d101.data.mapper.FruitMapper.toFruitCreated
 import com.d101.data.roomdb.entity.FruitEntity
 import com.d101.domain.model.AppleData
+import com.d101.domain.model.Fruit
 import com.d101.domain.model.FruitCreated
 import com.d101.domain.model.Result
 import com.d101.domain.repository.FruitRepository
@@ -48,7 +50,6 @@ class FruitRepositoryImpl @Inject constructor(
                 remoteResult.let {
                     fruitLocalDataSource.insertFruit(
                         FruitEntity(
-                            id = fruitNum,
                             date = it.data.fruitCreateDate.toLongDate(),
                             name = it.data.fruitName,
                             description = it.data.fruitDescription,
@@ -68,16 +69,16 @@ class FruitRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getTodayFruit(date: String): Result<FruitCreated> = runCatching {
+    override suspend fun getTodayFruit(date: String): Result<Fruit> = runCatching {
         val dateLong = date.toLongDate()
         val fetchedFruit = fruitLocalDataSource.getTodayFruit(dateLong) ?: throw Exception()
-        fetchedFruit.toFruitCreated()
+        fetchedFruit.toFruit()
     }.fold(
         onSuccess = { Result.Success(it) },
         onFailure = {
             when (val result = getTodayFruitFromRemote()) {
                 is Result.Success -> {
-                    return Result.Success(result.data.toFruitCreated())
+                    return Result.Success(result.data.toFruit())
                 }
                 is Result.Failure -> {
                     return Result.Failure(result.errorStatus)
@@ -91,7 +92,6 @@ class FruitRepositoryImpl @Inject constructor(
             is Result.Success -> {
                 val fruitEntity = remoteResult.let {
                     FruitEntity(
-                        id = it.data.fruitNum,
                         date = it.data.fruitCreateDate.toLongDate(),
                         name = it.data.fruitName,
                         description = it.data.fruitDescription,

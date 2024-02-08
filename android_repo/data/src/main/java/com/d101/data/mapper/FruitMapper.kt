@@ -14,7 +14,6 @@ import com.d101.domain.utils.toYearMonthDayFormat
 object FruitMapper {
     fun FruitEntity.toFruit(): Fruit {
         return Fruit(
-            id = this.id,
             date = this.date,
             name = this.name,
             description = this.description,
@@ -41,15 +40,6 @@ object FruitMapper {
             fruitDescription = this.fruitDescription,
             fruitName = this.fruitName,
             fruitImageUrl = this.fruitImageUrl,
-        )
-    }
-    fun FruitEntity.toFruitCreated(): FruitCreated {
-        return FruitCreated(
-            fruitNum = this.id,
-            fruitDescription = this.description,
-            fruitName = this.name,
-            fruitImageUrl = this.imageUrl,
-            fruitFeel = this.emotion.toFruitEmotion(),
         )
     }
 

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.d101.domain.model.Fruit
+import com.d101.domain.model.FruitResources
 import com.d101.domain.utils.FruitEmotion
 import com.d101.presentation.R
 import com.d101.presentation.calendar.adapter.FruitInCalendarListAdapter
@@ -28,7 +29,6 @@ import com.d101.presentation.databinding.DialogFruitDetailBinding
 import com.d101.presentation.databinding.DialogJuiceShakeBinding
 import com.d101.presentation.databinding.FragmentCalendarBinding
 import com.d101.presentation.mapper.CalendarMapper.toFruitInCalendar
-import com.d101.presentation.model.FruitResources
 import dagger.hilt.android.AndroidEntryPoint
 import utils.CustomToast
 import utils.ShakeEventListener

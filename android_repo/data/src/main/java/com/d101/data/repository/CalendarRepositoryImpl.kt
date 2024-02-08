@@ -94,7 +94,6 @@ class CalendarRepositoryImpl @Inject constructor(
             is Result.Success -> {
                 val remoteFruitEntityList = result.data.map {
                     FruitEntity(
-                        id = 0L,
                         date = it.fruitDay.toLongDate(),
                         name = it.fruitName,
                         description = it.fruitDescription,
@@ -165,7 +164,6 @@ class CalendarRepositoryImpl @Inject constructor(
                 )
                 val remoteFruitEntityList = result.data.fruitGraphData.map {
                     FruitEntity(
-                        id = 0L,
                         date = it.fruitDate.toLongDate(),
                         name = "",
                         description = "",

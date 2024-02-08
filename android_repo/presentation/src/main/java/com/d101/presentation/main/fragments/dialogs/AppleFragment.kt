@@ -8,17 +8,23 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.d101.domain.model.FruitResources
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentAppleBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
-import com.d101.presentation.model.FruitResources
 import dagger.hilt.android.AndroidEntryPoint
+import utils.repeatOnStarted
+import java.util.Timer
+import java.util.TimerTask
 
 @AndroidEntryPoint
 class AppleFragment : Fragment() {
 
     private var _binding: FragmentAppleBinding? = null
     private val binding get() = _binding!!
+    val timer = Timer()
+
+    var flip = true
 
     private val viewModel: FruitCreateViewModel by viewModels({ requireParentFragment() })
     override fun onCreateView(
@@ -37,11 +43,9 @@ class AppleFragment : Fragment() {
 
         FruitDialogInterface.dialog.isCancelable = true
 
-        val fruitColorValue =
-            FruitResources.entries.find {
-                it.fruitEmotion == viewModel.selectedFruit.value.fruitFeel
-            }?.color
-                ?: R.color.main_green
+        setVisibility(true)
+
+        val fruitColorValue = FruitResources.APPLE.color
 
         binding.fruitDescriptionCardView.setCardBackgroundColor(
             ContextCompat.getColor(
@@ -49,10 +53,47 @@ class AppleFragment : Fragment() {
                 fruitColorValue,
             ),
         )
+
+        viewLifecycleOwner.repeatOnStarted {
+            viewModel.appleUiState.collect {
+                setVisibility(it)
+            }
+        }
+
+        var repeatCnt = 0
+        val timerTask = object : TimerTask() {
+            override fun run() {
+                viewModel.cardFlip(fruitColorValue)
+                repeatCnt++
+                if (repeatCnt == 6) timer.cancel()
+            }
+        }
+        timer.schedule(timerTask, 0, 200)
+    }
+
+    private fun setVisibility(flip: Boolean) {
+        if (flip) {
+            View.GONE.let {
+                binding.fruitImageView.visibility = it
+                binding.fruitNameTextView.visibility = it
+                binding.fruitDescriptionTextView.visibility = it
+                binding.fruitDescriptionCardView.visibility = it
+                binding.fruitNameTextView.visibility = it
+            }
+        } else {
+            View.VISIBLE.let {
+                binding.fruitImageView.visibility = it
+                binding.fruitNameTextView.visibility = it
+                binding.fruitDescriptionTextView.visibility = it
+                binding.fruitDescriptionCardView.visibility = it
+                binding.fruitNameTextView.visibility = it
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        timer.cancel()
         _binding = null
     }
 }

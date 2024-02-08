@@ -10,10 +10,10 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import com.d101.domain.model.FruitResources
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentTodayFruitBinding
 import com.d101.presentation.main.viewmodel.MainFragmentViewModel
-import com.d101.presentation.model.FruitResources
 
 class TodayFruitFragment : DialogFragment() {
 
@@ -41,14 +41,14 @@ class TodayFruitFragment : DialogFragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        val fruitColorValue =
-            FruitResources.values()[viewModel.todayFruit.fruitNum.toInt() - 1].color
-        binding.fruitDescriptionCardView.setCardBackgroundColor(
-            ContextCompat.getColor(
-                requireContext(),
-                fruitColorValue,
-            ),
-        )
+        FruitResources.entries.find { it.fruitEmotion == viewModel.todayFruit.fruitEmotion }?.let {
+            binding.fruitDescriptionCardView.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    it.color,
+                ),
+            )
+        }
     }
 
     override fun onDestroyView() {

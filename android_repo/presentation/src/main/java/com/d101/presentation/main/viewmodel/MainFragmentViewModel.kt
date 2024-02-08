@@ -2,7 +2,7 @@ package com.d101.presentation.main.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.d101.domain.model.FruitCreated
+import com.d101.domain.model.Fruit
 import com.d101.domain.model.Result
 import com.d101.domain.model.status.ErrorStatus
 import com.d101.domain.model.status.FruitErrorStatus
@@ -46,7 +46,7 @@ class MainFragmentViewModel @Inject constructor(
 
     private val localDate: LocalDate = LocalDate.now()
 
-    lateinit var todayFruit: FruitCreated
+    lateinit var todayFruit: Fruit
 
     init {
         getUserStatus()
