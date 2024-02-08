@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 @Builder
 public class UserFruitTodayInfoDTO {
-    @Schema(description = "열매 PK 번호", example = "2")
-    private Long fruitNum;
     @Schema(description = "열매 생성 날짜", example = "2024-01-01")
     private String fruitCreateDate;
     @Schema(description = "열매 이름", example = "딸기")
@@ -27,7 +25,6 @@ public class UserFruitTodayInfoDTO {
 
     public static UserFruitTodayInfoDTO createUserFruitTodayInfoDTO(UserFruit userFruit){
         return UserFruitTodayInfoDTO.builder()
-                .fruitNum(userFruit.getFruitDetail().getFruitNum())
                 .fruitCreateDate(userFruit.getUserFruitCreateDate().toString())
                 .fruitName(userFruit.getFruitDetail().getFruitName())
                 .fruitDescription(userFruit.getFruitDetail().getFruitDescription())

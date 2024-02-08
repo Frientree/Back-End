@@ -11,8 +11,8 @@ import org.springframework.http.ResponseEntity;
 import java.text.ParseException;
 
 public interface CalendarService {
-    ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request) throws ParseException;
-    ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(CalendarDateRequest request) throws ParseException;
-    ResponseEntity<CalendarTodayFeelStatisticsResponse> todayFeelStatistics(String todayDate) throws ParseException;
-    ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(CalendarDateRequest request) throws ParseException;
+    ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request);
+    ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(CalendarDateRequest request);
+    ResponseEntity<CalendarTodayFeelStatisticsResponse> todayFeelStatistics(String todayDate);
+    ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(CalendarDateRequest request);
 }

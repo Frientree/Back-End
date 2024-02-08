@@ -72,13 +72,10 @@ public class UserFruitServiceImpl implements UserFruitService {
     @Async("taskExecutor")
     @Override
     public CompletableFuture<ResponseEntity<UserFruitCreateResponse>> speechToTextAudio(MultipartFile file) {
-        // LocalDate를 java.sql.Date로 변환
-        Date date = java.sql.Date.valueOf(LocalDate.now());
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
                 Long.valueOf(authentication.getName()),
-                date
+                LocalDate.now()
         );
         if(userFruit.isPresent()){throw new UserFruitCreateException("Already produced fruit");}
         try{
@@ -143,13 +140,10 @@ public class UserFruitServiceImpl implements UserFruitService {
     }
     @Override
     public ResponseEntity<UserFruitCreateResponse> speechToTextText(UserFruitTextRequest textFile) throws Exception {
-        // LocalDate를 java.sql.Date로 변환
-        Date date = java.sql.Date.valueOf(LocalDate.now());
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
                 Long.valueOf(authentication.getName()),
-                date
+                LocalDate.now()
         );
         if(userFruit.isPresent()){throw new UserFruitCreateException("Already produced fruit");}
         try { //Python 감정 분석 API 호출
@@ -161,9 +155,6 @@ public class UserFruitServiceImpl implements UserFruitService {
 
     @Override
     public ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum) {
-        // LocalDate를 java.sql.Date로 변환
-        Date date = java.sql.Date.valueOf(LocalDate.now());
-
         //반환 객체 미리 생성
         UserFruitSaveResponse userFruitSaveResponse;
 
@@ -220,7 +211,7 @@ public class UserFruitServiceImpl implements UserFruitService {
             try{ //유저 열매 생성 상태 변경
                 int isChange = userRepository.updateUserFruitStatusById(user.get().getUserId(), false);
                 if(isChange>0){ //수정 성공
-                    newUserFruit = UserFruit.createUserFruit(user.get(), fruitDetail, date, userScore);
+                    newUserFruit = UserFruit.createUserFruit(user.get(), fruitDetail, LocalDate.now(), userScore);
                 }
             }catch (UserModifyException e){ //수정 실패
                 throw new UserModifyException("User Modify Exception");
@@ -250,11 +241,8 @@ public class UserFruitServiceImpl implements UserFruitService {
         Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
         if(user.isEmpty()){throw new UserNotFoundException("User Not Found");}
 
-        // LocalDate를 java.sql.Date로 변환
-        Date date = java.sql.Date.valueOf(LocalDate.now());
-
         Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
-                user.get().getUserId(), date);
+                user.get().getUserId(), LocalDate.now());
         if(userFruit.isEmpty()){throw new UserFruitNotFoundException("User Fruit Not Found");}
 
 

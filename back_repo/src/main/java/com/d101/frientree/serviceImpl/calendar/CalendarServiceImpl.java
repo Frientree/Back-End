@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -36,11 +37,9 @@ public class CalendarServiceImpl implements CalendarService {
     private final UserJuiceRepository userJuiceRepository;
 
     @Override
-    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request) throws ParseException {
-        //request startDate, endDate --> Date 타입으로 변환
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = dateFormat.parse(request.getStartDate());
-        Date endDate = dateFormat.parse(request.getEndDate());
+    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request) {
+        LocalDate startDate = LocalDate.parse(request.getStartDate());
+        LocalDate endDate = LocalDate.parse(request.getEndDate());
 
         //사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -52,23 +51,17 @@ public class CalendarServiceImpl implements CalendarService {
         List<UserFruit> userFruits = userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(
                 user.get().getUserId(), startDate, endDate);
 
-        // Calendar 인스턴스를 startDate와 endDate에 맞춰 설정
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTime(startDate);
-
-        Calendar endCal = Calendar.getInstance();
-        endCal.setTime(endDate);
-
         List<CalendarMonthlyFruitsDTO> calendarMonthlyFruitsDTOList = new ArrayList<>();
 
-        while(!startCal.after(endCal)){
-            Date loopDate = startCal.getTime();
-            String formattedDate = dateFormat.format(loopDate);
+        LocalDate currentDate = startDate;
+
+        while(!currentDate.isAfter(endDate)){
+            String formattedDate = currentDate.toString();
 
             UserFruit matchingUserFruit = null;
             // 해당 날짜에 맞는 데이터 찾기
             for(UserFruit userFruit : userFruits){
-                String findFruitDate = dateFormat.format(userFruit.getUserFruitCreateDate());
+                String findFruitDate = userFruit.getUserFruitCreateDate().toString();
                 if(findFruitDate.equals(formattedDate)){
                     matchingUserFruit = userFruit;
                     break;
@@ -89,7 +82,7 @@ public class CalendarServiceImpl implements CalendarService {
                         ));
             }
             // 다음 날짜로 이동
-            startCal.add(Calendar.DATE, 1);
+            currentDate = currentDate.plusDays(1);
         }
         //Response 형식으로 저장
         CalendarMonthlyFruitsResponse response = CalendarMonthlyFruitsResponse
@@ -101,10 +94,9 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public ResponseEntity<CalendarTodayFeelStatisticsResponse> todayFeelStatistics(String todayDate) throws ParseException {
-        //request todayDate --> Date 타입으로 변환
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date today = dateFormat.parse(todayDate);
+    public ResponseEntity<CalendarTodayFeelStatisticsResponse> todayFeelStatistics(String todayDate) {
+        //request todayDate --> LocalDate 타입으로 변환
+        LocalDate today = LocalDate.parse(todayDate);
 
         //사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -126,7 +118,7 @@ public class CalendarServiceImpl implements CalendarService {
                 .createCalendarTodayFeelStatisticsResponse(
                 "Success",
                 CalendarTodayFeelStatisticsDTO.createCalendarTodayFeelStatisticsDTO(
-                        dateFormat.format(today),
+                        today.toString(),
                         userFruit.get().getFruitDetail().getFruitFeel(),
                         userFruitStatistics
                 )
@@ -137,13 +129,10 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(CalendarDateRequest request) throws ParseException {
+    public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(CalendarDateRequest request) {
         //주간 주스 조회
-
-        //request startDate, endDate --> Date 타입으로 변환
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = dateFormat.parse(request.getStartDate());
-        Date endDate = dateFormat.parse(request.getEndDate());
+        LocalDate startDate = LocalDate.parse(request.getStartDate());
+        LocalDate endDate = LocalDate.parse(request.getEndDate());
 
         //사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -168,24 +157,18 @@ public class CalendarServiceImpl implements CalendarService {
                 user.get().getUserId(), startDate, endDate
         );
 
-        // Calendar 인스턴스를 startDate와 endDate에 맞춰 설정
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTime(startDate);
-
-        Calendar endCal = Calendar.getInstance();
-        endCal.setTime(endDate);
-
         List<CalendarWeeklyJuiceFruitsGraphDTO> calendarWeeklyJuiceFruitsGraphDTOList = new ArrayList<>();
 
-        while (!startCal.after(endCal)){
-            Date loopDate = startCal.getTime();
-            String formattedDate = dateFormat.format(loopDate);
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)){
+            String formattedDate = currentDate.toString();
 
             UserFruit matchingUserFruit = null;
 
             // 해당 날짜에 맞는 데이터 찾기
             for(UserFruit userFruit : userFruitList){
-                String findFruitDate = dateFormat.format(userFruit.getUserFruitCreateDate());
+                String findFruitDate = userFruit.getUserFruitCreateDate().toString();
                 if(findFruitDate.equals(formattedDate)){
                     matchingUserFruit = userFruit;
                     break;
@@ -208,8 +191,7 @@ public class CalendarServiceImpl implements CalendarService {
                 );
             }
             // 다음 날짜로 이동
-            startCal.add(Calendar.DATE, 1);
-
+            currentDate = currentDate.plusDays(1);
         }
 
         //DTO 2개 저장하는 DTO에 담기
@@ -229,13 +211,10 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(CalendarDateRequest request) throws ParseException {
+    public ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(CalendarDateRequest request) {
         //주간 열매 리스트 조회
-
-        //request startDate, endDate --> Date 타입으로 변환
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = dateFormat.parse(request.getStartDate());
-        Date endDate = dateFormat.parse(request.getEndDate());
+        LocalDate startDate = LocalDate.parse(request.getStartDate());
+        LocalDate endDate = LocalDate.parse(request.getEndDate());
 
         //사용자 정보 가져오기
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -253,7 +232,7 @@ public class CalendarServiceImpl implements CalendarService {
         for(UserFruit userFruit : userFruits){
             calendarWeeklyFruitsDTOList.add(
                     CalendarWeeklyFruitsDTO.createCalendarWeeklyFruitsDTO(
-                            dateFormat.format(userFruit.getUserFruitCreateDate()),
+                            userFruit.getUserFruitCreateDate().toString(),
                             userFruit
                     )
             );

@@ -3,8 +3,11 @@ package com.d101.frientree.dto.juice.response.dto;
 import com.d101.frientree.entity.fruit.UserFruit;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.cglib.core.Local;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Data
@@ -15,18 +18,18 @@ public class JuiceFruitsGraphDataDTO {
     private String fruitCalendarImageUrl;
     private Long fruitScore;
 
-    public static List<JuiceFruitsGraphDataDTO> createJuiceFruitsGraphDataDTO(Date startDate, Date endDate, List<UserFruit> userFruits) {
-        Map<Date, JuiceFruitsGraphDataDTO> dateToDTO = new TreeMap<>();
+    public static List<JuiceFruitsGraphDataDTO> createJuiceFruitsGraphDataDTO(LocalDate startDate, LocalDate endDate, List<UserFruit> userFruits) {
+        Map<LocalDate, JuiceFruitsGraphDataDTO> dateToDTO = new TreeMap<>();
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startDate);
-        while (!cal.getTime().after(endDate)) {
-            dateToDTO.put(cal.getTime(), JuiceFruitsGraphDataDTO.builder()
-                    .fruitDate(new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime()))
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(endDate)) {
+            dateToDTO.put(currentDate, JuiceFruitsGraphDataDTO.builder()
+                    .fruitDate(currentDate.toString())
                     .fruitCalendarImageUrl("")
                     .fruitScore(11L)
                     .build());
-            cal.add(Calendar.DATE, 1);
+            currentDate = currentDate.plusDays(1);
         }
 
         for (UserFruit fruit : userFruits) {

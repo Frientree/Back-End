@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigInteger;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -27,11 +28,11 @@ public class UserFruit {
     private FruitDetail fruitDetail;
 
     @Temporal(TemporalType.DATE)
-    private Date userFruitCreateDate;
+    private LocalDate userFruitCreateDate;
 
     private Long userFruitScore;
 
-    public static UserFruit createUserFruit(User user, FruitDetail fruitDetail, Date userFruitCreateDate, Long userFruitScore) {
+    public static UserFruit createUserFruit(User user, FruitDetail fruitDetail, LocalDate userFruitCreateDate, Long userFruitScore) {
         return UserFruit.builder()
                 .user(user)
                 .fruitDetail(fruitDetail)

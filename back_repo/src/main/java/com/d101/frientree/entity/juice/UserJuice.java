@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -28,7 +29,7 @@ public class UserJuice {
     private JuiceDetail juiceDetail;
 
     @Temporal(TemporalType.DATE)
-    private Date userJuiceCreateDate;
+    private LocalDate userJuiceCreateDate;
 
     @Column(name = "user_juice_message")
     private String userJuiceMessage;

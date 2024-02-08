@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -80,7 +81,7 @@ public class UserFruitController {
                     (message : "User Fruit Not Found", code : 404)""", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<UserFruitTodayInfoResponse> userFruitTodayInfo(@RequestHeader("Date") String CreateDate){
-        return userFruitService.userFruitTodayInfo(CreateDate);
+    public ResponseEntity<UserFruitTodayInfoResponse> userFruitTodayInfo(){
+        return userFruitService.userFruitTodayInfo(LocalDate.now().toString());
     }
 }

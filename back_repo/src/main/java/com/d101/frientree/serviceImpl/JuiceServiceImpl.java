@@ -25,6 +25,9 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -78,9 +81,9 @@ public class JuiceServiceImpl implements JuiceService {
     public ResponseEntity<JuiceGenerationResponse> generate(JuiceGenerationRequest juiceGenerationRequest) throws ParseException {
 
         User currentUser = getUser();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate = dateFormat.parse(juiceGenerationRequest.getStartDate());
-        Date endDate = dateFormat.parse(juiceGenerationRequest.getEndDate());
+        LocalDate startDate = LocalDate.parse(juiceGenerationRequest.getStartDate());
+        LocalDate endDate = LocalDate.parse(juiceGenerationRequest.getEndDate());
+
 
         // 만약 해당 기간 사이에서 주스를 조회해서 이미 만든게 있으면 커스텀 예외처리
         Optional<UserJuice> existJuice = userJuiceRepository.findByUser_UserIdAndUserJuiceCreateDate(currentUser.getUserId(), endDate);
@@ -90,7 +93,7 @@ public class JuiceServiceImpl implements JuiceService {
         }
 
         // 만약 endDate가 미래면 커스텀 예외처리
-        if (endDate.after(new Date())) {
+        if (LocalDate.now().isBefore(endDate)) {
             throw new InvalidDateException("End date cannot be in the future");
         }
 
@@ -99,8 +102,11 @@ public class JuiceServiceImpl implements JuiceService {
             throw new InvalidDateException("Invalid date range");
         }
 
-        // 만약 startDate와 endDate가 일주일 이상 차이나면 커스텀 예외 처리
-        if (endDate.getTime() - startDate.getTime() > 7 * 24 * 60 * 60 * 1000) {
+        // startDate와 endDate 사이의 일수를 계산합니다.
+        long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+
+        // 만약 일수 차이가 7일 이상이라면 커스텀 예외를 발생시킵니다.
+        if (daysBetween > 7) {
             throw new InvalidDateException("Date range should be within 7 days");
         }
 
@@ -119,7 +125,8 @@ public class JuiceServiceImpl implements JuiceService {
         JuiceDetail createdJuice = juiceDetailRepository.findJuicesByScore(scoreSum);
 
         // 유저가 주스를 만들기 위해 가져온 과일들이 들어간 dto
-        List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO = JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(startDate, endDate, userFruits);
+        List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO =
+                JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(startDate, endDate, userFruits);
 
         // Message data 중 랜덤으로 하나 가져와야 됨.
         List<Message> allMessages = messageRepository.findAll();
@@ -147,7 +154,6 @@ public class JuiceServiceImpl implements JuiceService {
     }
 
     private User getUser() {
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userId = authentication.getName();
 
@@ -167,17 +173,11 @@ public class JuiceServiceImpl implements JuiceService {
         return list.get(randomIndex);
     }
 
-    private Boolean isSunday(Date startDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        return dayOfWeek == Calendar.SUNDAY;
+    private Boolean isSunday(LocalDate startDate) {
+        return startDate.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
-    private Boolean isSaturday(Date endDate) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(endDate);
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        return dayOfWeek == Calendar.SATURDAY;
+    private Boolean isSaturday(LocalDate endDate) {
+        return endDate.getDayOfWeek() == DayOfWeek.SATURDAY;
     }
 }

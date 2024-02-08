@@ -23,6 +23,7 @@ import java.text.ParseException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/calendar")
+@CrossOrigin("*")
 public class CalendarController {
     private final CalendarService calendarService;
     @Operation(summary = "유저 열매 월간 이미지 조회", description = "startDate, endDate 기준으로 유저가 생성한 캘린더 열매 이미지를 조회합니다.")
@@ -32,7 +33,7 @@ public class CalendarController {
             @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)", content = @Content)
     })
     @PostMapping("/monthly-fruits")
-    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(@RequestBody CalendarDateRequest request) throws ParseException {
+    public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(@RequestBody CalendarDateRequest request){
         return calendarService.monthlyFruits(request);
     }
 
@@ -43,7 +44,7 @@ public class CalendarController {
             @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)", content = @Content)
     })
     @PostMapping("/weekly-fruits")
-    public ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(@RequestBody CalendarDateRequest request) throws ParseException{
+    public ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(@RequestBody CalendarDateRequest request){
         return calendarService.weeklyFruits(request);
     }
 
@@ -55,7 +56,7 @@ public class CalendarController {
     })
     @GetMapping("/today-feel-statistics")
     public ResponseEntity<CalendarTodayFeelStatisticsResponse> todayFeelStatistics(
-            @RequestParam("todayDate") String todayDate) throws ParseException {
+            @RequestParam("todayDate") String todayDate){
         return calendarService.todayFeelStatistics(todayDate);
     }
 
@@ -69,7 +70,7 @@ public class CalendarController {
                     (message : "User Juice Not Found", code : 404)""", content = @Content)
     })
     @PostMapping("/weekly-juice")
-    public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(@RequestBody CalendarDateRequest request) throws ParseException{
+    public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(@RequestBody CalendarDateRequest request){
         return calendarService.weeklyJuice(request);
     }
 }
