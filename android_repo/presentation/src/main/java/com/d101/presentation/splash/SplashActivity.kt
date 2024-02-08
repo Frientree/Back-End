@@ -66,15 +66,11 @@ class SplashActivity : AppCompatActivity() {
             ActivityCompat.finishAffinity(this)
             return
         }
-
-        viewModel.checkSignInStatus()
     }
 
     private fun needToUpdate(minVersion: String): Boolean {
-        val appVersionArr = BuildConfig.APP_VERSION_NAME.split(".")
-        val appMajor = appVersionArr[0].toInt()
-        val appMinor = appVersionArr[1].toInt()
-        val appPatch = appVersionArr[2].toInt()
+        val (appMajor, appMinor, appPatch) = BuildConfig.APP_VERSION_NAME.split(".")
+            .map { it.toInt() }
 
         val minVersionArr = minVersion.split(".")
         val minMajor = minVersionArr[0].toInt()

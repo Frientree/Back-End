@@ -1,5 +1,6 @@
 package com.d101.presentation.splash
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
@@ -7,7 +8,6 @@ import com.d101.domain.usecase.appStatus.GetAppStatusUseCase
 import com.d101.domain.usecase.usermanagement.GetUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import utils.MutableEventFlow
@@ -29,16 +29,9 @@ class SplashViewModel @Inject constructor(
 
     fun showSplash() {
         viewModelScope.launch(Dispatchers.IO) {
-            val check = async {
-                checkAppVersion()
-            }
-
-            val delay = async {
-                delay(3_000L)
-            }
-
-            check.await()
-            delay.await()
+            delay(1000L)
+            checkAppVersion()
+            checkSignInStatus()
         }
     }
 
@@ -56,19 +49,20 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    fun checkSignInStatus() {
-        viewModelScope.launch {
-            getUserInfoUseCase().collect {
-                when (it) {
-                    is Result.Success -> {
-                        if (it.data.isBackgroundMusicEnabled) {
-                            onSetBackGroundMusic(it.data.backgroundMusicName)
-                        }
-                        onSignInSuccess()
+    private suspend fun checkSignInStatus() {
+        getUserInfoUseCase().collect {
+            when (it) {
+                is Result.Success -> {
+                    if (it.data.isBackgroundMusicEnabled) {
+                        onSetBackGroundMusic(it.data.backgroundMusicName)
                     }
-                    is Result.Failure -> {
-                        onSignInFailed()
-                    }
+                    Log.d("확인", "checkSignInStatus: 로그인 성공")
+                    onSignInSuccess()
+                }
+
+                is Result.Failure -> {
+                    Log.d("확인", "checkSignInStatus: 로그인 실패")
+                    onSignInFailed()
                 }
             }
         }

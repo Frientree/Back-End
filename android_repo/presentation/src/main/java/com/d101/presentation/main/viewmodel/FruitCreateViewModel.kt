@@ -44,7 +44,7 @@ class FruitCreateViewModel @Inject constructor(
 
     var isTextInput = true
 
-    val _eventFlow = MutableEventFlow<CreateFruitDialogViewEvent>()
+    private val _eventFlow = MutableEventFlow<CreateFruitDialogViewEvent>()
     val eventFlow = _eventFlow.asEventFlow()
 
     private var _apple: AppleData? = null
@@ -55,71 +55,46 @@ class FruitCreateViewModel @Inject constructor(
             val delay = async {
                 delay(3_000L)
             }
-            val result = async {
-                if (isTextInput) {
-                    when (val result = makeFruitByTextUseCase(inputText.value)) {
-                        is Result.Success -> {
-                            _todayFruitList.update { result.data }
-                        }
 
-                        is Result.Failure -> {
-                            when (result.errorStatus) {
-                                is FruitErrorStatus.ApiError -> emitEvent(
-                                    CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                        "결과를 받아오는 데 문제가 발생했습니다.",
-                                    ),
-                                )
+            val fruitResult = if (isTextInput) {
+                async {
+                    makeFruitByTextUseCase(inputText.value)
+                }
+            } else {
+                async {
+                    makeFruitBySpeechUseCase(audioFile)
+                }
+            }
+            delay.await()
+            when (val result = fruitResult.await()) {
+                is Result.Success -> {
+                    _todayFruitList.update { result.data }
+                    emitEvent(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
+                }
 
-                                is ErrorStatus.NetworkError -> emitEvent(
-                                    CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                        "네트워크 에러입니다.",
-                                    ),
-                                )
+                is Result.Failure -> {
+                    when (result.errorStatus) {
+                        is FruitErrorStatus.LocalInsertError -> emitEvent(
+                            CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                "결과가 저장되지 못했습니다.",
+                            ),
+                        )
 
-                                else -> {
-                                    emitEvent(
-                                        CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                            "예기치 못한 에러가 발생했습니다.",
-                                        ),
-                                    )
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    when (val result = makeFruitBySpeechUseCase(audioFile)) {
-                        is Result.Success -> {
-                            _todayFruitList.update { result.data }
-                        }
+                        is ErrorStatus.NetworkError -> emitEvent(
+                            CreateFruitDialogViewEvent.ShowErrorToastEvent(
+                                "네트워크 에러입니다.",
+                            ),
+                        )
 
-                        is Result.Failure -> {
-                            when (result.errorStatus) {
-                                is FruitErrorStatus.ApiError -> emitEvent(
-                                    CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                        "결과를 받아오는 데 문제가 발생했습니다.",
-                                    ),
-                                )
-
-                                is ErrorStatus.NetworkError -> emitEvent(
-                                    CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                        "네트워크 에러입니다.",
-                                    ),
-                                )
-
-                                else -> {
-                                    emitEvent(
-                                        CreateFruitDialogViewEvent.ShowErrorToastEvent(
-                                            "예기치 못한 에러가 발생했습니다.",
-                                        ),
-                                    )
-                                }
-                            }
+                        else -> {
+                            emitEvent(
+                                CreateFruitDialogViewEvent
+                                    .ShowErrorToastEvent("예기치 못한 에러가 발생했습니다."),
+                            )
                         }
                     }
                 }
             }
-            result.await()
-            delay.await()
         }
     }
 
@@ -129,6 +104,7 @@ class FruitCreateViewModel @Inject constructor(
     fun setAppleViewVisibility(flip: Boolean) {
         _appleUiState.update { flip }
     }
+
     fun cardFlip(fruitColorValue: Int) {
         emitEvent(CreateFruitDialogViewEvent.CardFlipEvent(fruitColorValue))
     }
