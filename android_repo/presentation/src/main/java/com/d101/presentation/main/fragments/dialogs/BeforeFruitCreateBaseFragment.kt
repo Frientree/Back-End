@@ -72,6 +72,7 @@ class BeforeFruitCreateBaseFragment : DialogFragment() {
                         if (it.isApple) {
                             navigateToDestinationFragment(AppleFragment())
                         } else {
+                            showToast("열매가 저장되었습니다!")
                             dialog?.dismiss()
                         }
                     }
