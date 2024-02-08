@@ -133,8 +133,7 @@ public class UserFruitServiceImpl implements UserFruitService {
     }
     @Override
     public ResponseEntity<UserFruitCreateResponse> speechToTextText(UserFruitTextRequest textFile) throws Exception {
-        try {
-            //Python 감정 분석 API 호출
+        try { //Python 감정 분석 API 호출
             return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(textFile.getContent()));
         }catch (PythonAPIException e){
             throw new PythonAPIException("Python AI API Error");

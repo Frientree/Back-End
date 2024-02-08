@@ -30,9 +30,10 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitCreateResponse.class))),
-            @ApiResponse(responseCode = "503", description = "(message : \"Naver API Error\", code : 503)\\n" +
-                    "\n" +
-                    "(message : \"Python AI API Error\", code : 503)")
+            @ApiResponse(responseCode = "503", description = """
+                    (message : "Naver API Error", code : 503)
+
+                    (message : "Python AI API Error", code : 503)""", content = @Content)
     })
     @PostMapping(value = "/speech-to-text-audio", consumes = "multipart/form-data")
     public CompletableFuture<ResponseEntity<UserFruitCreateResponse>> speechToTextAudio(@RequestParam("file") MultipartFile file) throws Exception {
@@ -43,9 +44,10 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitCreateResponse.class))),
-            @ApiResponse(responseCode = "503", description = "(message : \"Naver API Error\", code : 503)\\n" +
-                    "\n" +
-                    "(message : \"Python AI API Error\", code : 503)")
+            @ApiResponse(responseCode = "503", description = """
+                    (message : "Naver API Error", code : 503)
+
+                    (message : "Python AI API Error", code : 503)""", content = @Content)
     })
     @PostMapping(value = "/speech-to-text-text")
     public ResponseEntity<UserFruitCreateResponse> speechToTextText(@RequestBody UserFruitTextRequest textFile) throws Exception {
@@ -56,8 +58,8 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitSaveResponse.class))),
-            @ApiResponse(responseCode = "404", description = "(message : \"Fruit Not Found\", code : 404)"),
-            @ApiResponse(responseCode = "500", description = "(message : \"User Modify Exception\", code : 500)"),
+            @ApiResponse(responseCode = "404", description = "(message : \"Fruit Not Found\", code : 404)", content = @Content),
+            @ApiResponse(responseCode = "500", description = "(message : \"User Modify Exception\", code : 500)", content = @Content),
     })
     @PostMapping
     public ResponseEntity<UserFruitSaveResponse> userFruitSave(@RequestParam("fruitNum") Long fruitNum){
@@ -68,9 +70,10 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitTodayInfoResponse.class))),
-            @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)\\n" +
-                    "\n" +
-                    "(message : \"User Fruit Not Found\", code : 404)")
+            @ApiResponse(responseCode = "404", description = """
+                    (message : "User Not Found", code : 404)
+                    
+                    (message : "User Fruit Not Found", code : 404)""", content = @Content)
     })
     @GetMapping
     public ResponseEntity<UserFruitTodayInfoResponse> userFruitTodayInfo(@RequestHeader("Date") String CreateDate){
