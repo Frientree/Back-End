@@ -66,10 +66,10 @@ class FruitCreateViewModel @Inject constructor(
                 }
             }
             delay.await()
-            when (val result = fruitResult.await()) {
+            val result = fruitResult.await()
+            when (result) {
                 is Result.Success -> {
                     _todayFruitList.update { result.data }
-                    emitEvent(CreateFruitDialogViewEvent.FruitCreationLoadingViewEvent)
                 }
 
                 is Result.Failure -> {
