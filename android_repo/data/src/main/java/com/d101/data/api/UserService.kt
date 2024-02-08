@@ -16,6 +16,7 @@ import com.d101.data.model.user.response.NicknameChangeResponse
 import com.d101.data.model.user.response.TokenResponse
 import com.d101.data.model.user.response.UserResponse
 import com.d101.data.model.user.response.UserStatusResponse
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -72,6 +73,9 @@ interface UserService {
     suspend fun changeNotificationSet(
         @Body notificationSetRequest: NotificationSetRequest,
     ): ApiResult<ApiResponse<Boolean>>
+
+    @PUT("/users/deactivation")
+    fun signOut(): Call<ApiResponse<Boolean>>
 
     @POST("/users/update-fcm-token")
     suspend fun updateFcmToken(
