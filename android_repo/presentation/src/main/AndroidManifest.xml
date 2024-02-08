@@ -8,8 +8,7 @@
 
         <service
             android:name=".music.BackgroundMusicService"
-            android:enabled="true"
-            android:exported="true" />
+            android:enabled="true" />
 
         <activity
             android:name=".mypage.PasswordChangeActivity"
