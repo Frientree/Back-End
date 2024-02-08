@@ -166,10 +166,8 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserStatus(): Result<UserStatus> {
-        val localUserStatus = userStatusDataStore.data.first()
-
-        return Result.Success(localUserStatus.toUserStatus())
+    override suspend fun getUserStatus(): Flow<UserStatus> = userStatusDataStore.data.map {
+        it.toUserStatus()
     }
 
     override suspend fun findPassword(userEmail: String): Result<Unit> =
