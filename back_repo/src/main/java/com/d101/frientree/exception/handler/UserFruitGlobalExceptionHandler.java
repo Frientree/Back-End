@@ -3,6 +3,7 @@ package com.d101.frientree.exception.handler;
 import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import com.d101.frientree.exception.userfruit.PythonAPIException;
 import com.d101.frientree.exception.fruit.FruitNotFoundException;
+import com.d101.frientree.exception.userfruit.UserFruitCreateException;
 import com.d101.frientree.exception.userfruit.UserFruitNotFoundException;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,13 @@ public class UserFruitGlobalExceptionHandler {
     @ExceptionHandler(UserFruitNotFoundException.class)
     public ResponseEntity<String> handleUserFruitNotFoundException(UserFruitNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .headers(JSON_HEADERS)
+                .body(stringToGson(e.getMessage()));
+    }
+
+    @ExceptionHandler(UserFruitCreateException.class)
+    public ResponseEntity<String> handleUserFruitCreateException(UserFruitCreateException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .headers(JSON_HEADERS)
                 .body(stringToGson(e.getMessage()));
     }

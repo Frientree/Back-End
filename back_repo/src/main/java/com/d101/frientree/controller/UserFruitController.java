@@ -30,10 +30,13 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitCreateResponse.class))),
+            @ApiResponse(responseCode = "404", description = "(message : \"m4a Not Found\", code : 404)", content = @Content),
+            @ApiResponse(responseCode = "409", description = "(message : \"Already produced fruit\", code : 409)", content = @Content),
+            @ApiResponse(responseCode = "500", description = "(message : \"Aws Server Error\", code : 500)", content = @Content),
             @ApiResponse(responseCode = "503", description = """
                     (message : "Naver API Error", code : 503)
 
-                    (message : "Python AI API Error", code : 503)""", content = @Content)
+                    (message : "Python AI API Error", code : 503)""", content = @Content),
     })
     @PostMapping(value = "/speech-to-text-audio", consumes = "multipart/form-data")
     public CompletableFuture<ResponseEntity<UserFruitCreateResponse>> speechToTextAudio(@RequestParam("file") MultipartFile file) throws Exception {
@@ -44,6 +47,7 @@ public class UserFruitController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = UserFruitCreateResponse.class))),
+            @ApiResponse(responseCode = "409", description = "(message : \"Already produced fruit\", code : 409)", content = @Content),
             @ApiResponse(responseCode = "503", description = """
                     (message : "Naver API Error", code : 503)
 

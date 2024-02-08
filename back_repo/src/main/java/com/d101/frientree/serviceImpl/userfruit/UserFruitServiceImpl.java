@@ -15,6 +15,7 @@ import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import com.d101.frientree.exception.userfruit.PythonAPIException;
 import com.d101.frientree.exception.fruit.FruitNotFoundException;
+import com.d101.frientree.exception.userfruit.UserFruitCreateException;
 import com.d101.frientree.exception.userfruit.UserFruitNotFoundException;
 import com.d101.frientree.repository.FruitDetailRepository;
 import com.d101.frientree.repository.UserFruitRepository;
@@ -70,7 +71,16 @@ public class UserFruitServiceImpl implements UserFruitService {
 
     @Async("taskExecutor")
     @Override
-    public CompletableFuture<ResponseEntity<UserFruitCreateResponse>> speechToTextAudio(MultipartFile file) throws Exception {
+    public CompletableFuture<ResponseEntity<UserFruitCreateResponse>> speechToTextAudio(MultipartFile file) {
+        // LocalDate를 java.sql.Date로 변환
+        Date date = java.sql.Date.valueOf(LocalDate.now());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
+                Long.valueOf(authentication.getName()),
+                date
+        );
+        if(userFruit.isPresent()){throw new UserFruitCreateException("Already produced fruit");}
         try{
             // 1. 음성 파일 Aws S3 저장
             String awsS3Path = awsS3ObjectStorage.uploadFile(file);
@@ -133,6 +143,15 @@ public class UserFruitServiceImpl implements UserFruitService {
     }
     @Override
     public ResponseEntity<UserFruitCreateResponse> speechToTextText(UserFruitTextRequest textFile) throws Exception {
+        // LocalDate를 java.sql.Date로 변환
+        Date date = java.sql.Date.valueOf(LocalDate.now());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
+                Long.valueOf(authentication.getName()),
+                date
+        );
+        if(userFruit.isPresent()){throw new UserFruitCreateException("Already produced fruit");}
         try { //Python 감정 분석 API 호출
             return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(textFile.getContent()));
         }catch (PythonAPIException e){
@@ -231,12 +250,8 @@ public class UserFruitServiceImpl implements UserFruitService {
         Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
         if(user.isEmpty()){throw new UserNotFoundException("User Not Found");}
 
-        //헤더에 들어온 Client 기준 Date 값을 변환
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(createDate, formatter);
-
         // LocalDate를 java.sql.Date로 변환
-        Date date = java.sql.Date.valueOf(localDate);
+        Date date = java.sql.Date.valueOf(LocalDate.now());
 
         Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
                 user.get().getUserId(), date);

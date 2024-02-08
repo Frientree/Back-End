@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class CalendarController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = CalendarMonthlyFruitsResponse.class))),
-            @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)")
+            @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)", content = @Content)
     })
     @PostMapping("/monthly-fruits")
     public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(@RequestBody CalendarDateRequest request) throws ParseException {
@@ -39,7 +40,7 @@ public class CalendarController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = CalendarWeeklyFruitsResponse.class))),
-            @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)")
+            @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)", content = @Content)
     })
     @PostMapping("/weekly-fruits")
     public ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(@RequestBody CalendarDateRequest request) throws ParseException{
@@ -50,7 +51,7 @@ public class CalendarController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = CalendarTodayFeelStatisticsResponse.class))),
-            @ApiResponse(responseCode = "404", description = "(message : \"User Fruit Not Found\", code : 404)")
+            @ApiResponse(responseCode = "404", description = "(message : \"User Fruit Not Found\", code : 404)", content = @Content)
     })
     @GetMapping("/today-feel-statistics")
     public ResponseEntity<CalendarTodayFeelStatisticsResponse> todayFeelStatistics(
@@ -62,9 +63,10 @@ public class CalendarController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "(message : \"Success\", code : 200)",
                     content = @Content(schema = @Schema(implementation = CalendarWeeklyJuiceResponse.class))),
-            @ApiResponse(responseCode = "404", description = "(message : \"User Not Found\", code : 404)\n" +
-                    "\n" +
-                    "(message : \"User Juice Not Found\", code : 404)")
+            @ApiResponse(responseCode = "404", description = """
+                    (message : "User Not Found", code : 404)
+                    
+                    (message : "User Juice Not Found", code : 404)""", content = @Content)
     })
     @PostMapping("/weekly-juice")
     public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(@RequestBody CalendarDateRequest request) throws ParseException{
