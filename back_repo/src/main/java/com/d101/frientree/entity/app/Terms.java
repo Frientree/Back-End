@@ -24,7 +24,7 @@ public class Terms {
     private String termsUrl;
 
     @Builder.Default
-    @Column(name = "necessary")
+    @Column(name = "terms_necessary")
     private Boolean isNecessary = true;
 
 }
