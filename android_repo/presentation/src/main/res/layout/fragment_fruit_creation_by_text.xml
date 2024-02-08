@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.d101.presentation.main.viewmodel.FruitCreateViewModel" />
@@ -44,13 +45,15 @@
                 android:id="@+id/input_by_text_edit_text"
                 style="@style/Base.FTR.EditText.Transparent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="20dp"
                 android:autofillHints="name"
+                android:gravity="top"
                 android:hint="@string/input_by_text_hint"
-                android:text="@={viewModel.inputText}"
                 android:inputType="textMultiLine"
+                android:maxLength="200"
                 android:scrollbars="vertical"
+                android:text="@={viewModel.inputText}"
                 android:textColorHighlight="@color/main_green"
                 android:textCursorDrawable="@drawable/bg_text_cursor" />
 
