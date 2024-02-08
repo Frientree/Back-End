@@ -1,6 +1,5 @@
 package com.d101.presentation.splash
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result
@@ -56,12 +55,10 @@ class SplashViewModel @Inject constructor(
                     if (it.data.isBackgroundMusicEnabled) {
                         onSetBackGroundMusic(it.data.backgroundMusicName)
                     }
-                    Log.d("확인", "checkSignInStatus: 로그인 성공")
                     onSignInSuccess()
                 }
 
                 is Result.Failure -> {
-                    Log.d("확인", "checkSignInStatus: 로그인 실패")
                     onSignInFailed()
                 }
             }

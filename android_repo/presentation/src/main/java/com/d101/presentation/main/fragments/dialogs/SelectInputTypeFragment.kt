@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -94,18 +93,14 @@ class SelectInputTypeFragment : Fragment() {
     ) { permissions ->
         permissions.entries.forEach { (permission, granted) ->
             if (granted) {
-                // 권한이 허용된 경우
                 isTextInput = false
                 moveToFragment()
             } else {
-                // 권한이 거부된 경우
                 if (shouldShowRequestPermissionRationale(permission)) {
 
                     FruitDialogInterface.dialog.dismiss()
                     showToast("권한을 허용해야 말하기 기능을 이용할 수 있습니다.")
                 } else {
-                    // '다시 보지 않기' 선택 또는 기타 상황 처리
-                    Log.i("Permission", "Permission denied without ask again: $permission")
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     val uri = Uri.fromParts("package", activity.packageName, null)
                     intent.data = uri
