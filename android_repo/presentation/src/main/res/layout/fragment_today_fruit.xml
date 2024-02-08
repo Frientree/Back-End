@@ -30,7 +30,7 @@
                     android:id="@+id/fruit_image_view"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    app:imageUrl="@{viewModel.todayFruit.fruitImageUrl}"
+                    app:imageUrl="@{viewModel.todayFruit.imageUrl}"
                     android:layout_marginTop="28dp"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:textSize="30sp"
-                    android:text="@{viewModel.todayFruit.fruitName}"
+                    android:text="@{viewModel.todayFruit.name}"
                     tools:text="신나는 레몬"
                     app:layout_constraintTop_toBottomOf="@id/fruit_image_view"
                     app:layout_constraintStart_toStartOf="parent"
@@ -68,7 +68,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:padding="16dp"
-                        android:text="@{viewModel.todayFruit.fruitDescription}"
+                        android:text="@{viewModel.todayFruit.description}"
                         tools:text="오늘 열매 설명이 들어갑니다." />
 
                 </com.google.android.material.card.MaterialCardView>
