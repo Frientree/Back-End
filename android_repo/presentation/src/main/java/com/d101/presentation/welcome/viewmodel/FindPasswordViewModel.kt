@@ -1,6 +1,5 @@
 package com.d101.presentation.welcome.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.d101.domain.model.Result

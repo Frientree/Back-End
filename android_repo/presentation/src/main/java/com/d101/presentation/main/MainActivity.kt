@@ -148,7 +148,9 @@ class MainActivity : AppCompatActivity() {
                 if (viewModel.currentViewState.value == MainActivityViewState.TreeView) {
                     if (canLaunchMenu.not()) {
                         controlLeafButton()
-                    } else if (System.currentTimeMillis() - lastBackPressedTime < BACK_PRESS_INTERVAL) {
+                    } else if (
+                        System.currentTimeMillis() - lastBackPressedTime < BACK_PRESS_INTERVAL
+                    ) {
                         isEnabled = false
                         onBackPressed()
                     } else {
