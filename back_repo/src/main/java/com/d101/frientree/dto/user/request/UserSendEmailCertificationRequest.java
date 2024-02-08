@@ -1,5 +1,6 @@
 package com.d101.frientree.dto.user.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserSendEmailCertificationRequest {
-
+    @Schema(description = "이메일", example = "testuser@email.com")
     private String userEmail;
 }

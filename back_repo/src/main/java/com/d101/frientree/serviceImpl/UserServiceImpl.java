@@ -7,7 +7,6 @@ import com.d101.frientree.dto.user.response.dto.*;
 import com.d101.frientree.entity.EmailCode;
 import com.d101.frientree.entity.RefreshToken;
 import com.d101.frientree.entity.fruit.UserFruit;
-import com.d101.frientree.entity.juice.JuiceDetail;
 import com.d101.frientree.entity.juice.UserJuice;
 import com.d101.frientree.entity.leaf.LeafDetail;
 import com.d101.frientree.entity.leaf.LeafReceive;
