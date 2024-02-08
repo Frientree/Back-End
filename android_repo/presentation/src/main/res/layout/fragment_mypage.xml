@@ -44,8 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
             android:orientation="horizontal"
-            android:visibility="@{myPageViewModel.uiState.isSocial ? View.GONE : View.VISIBLE}"
-            >
+            android:visibility="@{myPageViewModel.uiState.isSocial ? View.GONE : View.VISIBLE}">
 
             <TextView
                 style="@style/Base.FTR.MenuText"
@@ -233,45 +232,57 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
             android:layout_marginTop="24dp"
-            android:orientation="horizontal"
-            android:paddingHorizontal="32dp">
+            android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <TextView
                 android:id="@+id/change_password_button"
-                style="@style/Base.FTR.ElevatedButton"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:layout_weight="1"
-                android:background="@drawable/btn_white_lightgray_36dp"
+                android:autoSizeTextType="uniform"
+                android:background="@drawable/bg_button_selector"
+                android:gravity="center"
+                android:maxLines="1"
+                android:paddingTop="8dp"
+                android:paddingBottom="12dp"
                 android:onClick="@{() -> myPageViewModel.onTapChangePasswordButton()}"
                 android:text="@string/change_password"
-                android:textSize="16sp"
+                android:textAppearance="@style/Base.FTR.SmallButtonText"
                 android:visibility="@{myPageViewModel.uiState.isSocial ? View.GONE : View.VISIBLE}" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <TextView
                 android:id="@+id/log_out_button"
-                style="@style/Base.FTR.ElevatedButton"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="12dp"
                 android:layout_weight="1"
-                android:background="@drawable/btn_white_lightgray_36dp"
+                android:autoSizeTextType="uniform"
+                android:paddingTop="8dp"
+                android:paddingBottom="12dp"
+                android:background="@drawable/bg_button_selector"
+                android:gravity="center"
+                android:maxLines="1"
                 android:onClick="@{() -> myPageViewModel.onTapLogOutButton()}"
                 android:text="@string/log_out"
-                android:textSize="16sp" />
+                android:textAppearance="@style/Base.FTR.SmallButtonText" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <TextView
                 android:id="@+id/sign_out_button"
-                style="@style/Base.FTR.ElevatedButton"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/btn_white_lightgray_36dp"
+                android:autoSizeTextType="uniform"
+                android:background="@drawable/bg_button_selector"
+                android:gravity="center"
+                android:maxLines="1"
                 android:onClick="@{() -> myPageViewModel.onTapSignOutButton()}"
                 android:text="@string/sign_out"
-                android:textSize="16sp" />
+                android:paddingTop="8dp"
+                android:paddingBottom="12dp"
+                android:textAppearance="@style/Base.FTR.SmallButtonText" />
 
         </LinearLayout>
 

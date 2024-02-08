@@ -43,7 +43,7 @@ interface UserRepository {
     suspend fun signOutWithNaver(
         naverClientId: String,
         naverSecret: String,
-        accessToken: String
+        accessToken: String,
     ): Result<Unit>
 
     suspend fun updateFcmToken(fcmToken: String): Result<Unit>

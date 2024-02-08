@@ -38,6 +38,6 @@ interface UserDataSource {
     suspend fun signOutWithNaver(
         naverClientId: String,
         naverSecret: String,
-        accessToken: String
+        accessToken: String,
     ): Result<Unit>
 }
