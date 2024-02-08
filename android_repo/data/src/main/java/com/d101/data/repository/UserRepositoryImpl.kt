@@ -52,7 +52,7 @@ class UserRepositoryImpl @Inject constructor(
                                 .setUserNickname(data.userNickname)
                                 .setIsNotificationEnabled(data.userNotification)
                                 .setIsBackgroundMusicEnabled(true)
-                                .setBackgroundMusicName("aldebaran_50meru")
+                                .setBackgroundMusicName("canopus_50mang")
                                 .build()
                         }
                     }
