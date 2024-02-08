@@ -4,16 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.bumptech.glide.Glide
 import com.d101.domain.model.FruitResources
 import com.d101.presentation.R
 import com.d101.presentation.databinding.FragmentAppleBinding
 import com.d101.presentation.main.viewmodel.FruitCreateViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import utils.CustomToast
+import utils.darkenColor
 import utils.repeatOnStarted
 import java.util.Timer
 import java.util.TimerTask
@@ -45,15 +46,21 @@ class AppleFragment : Fragment() {
         FruitDialogInterface.dialog.isCancelable = true
 
         setVisibility(true)
+        val appleColorResource = FruitResources.APPLE
+        appleColorResource.let { fruitResources ->
+            val backgroundColor = resources.getColor(fruitResources.color, null)
+            binding.fruitDescriptionCardView.setCardBackgroundColor(
+                backgroundColor,
+            )
 
-        val fruitColorValue = FruitResources.APPLE.color
+            binding.fruitDescriptionCardView.strokeColor =
+                backgroundColor.darkenColor()
 
-        binding.fruitDescriptionCardView.setCardBackgroundColor(
-            ContextCompat.getColor(
-                requireContext(),
-                fruitColorValue,
-            ),
-        )
+            Glide.with(requireContext())
+                .asGif()
+                .load(fruitResources.fallingImage)
+                .into(binding.fruitDetailBackgroundImageView)
+        }
 
         viewLifecycleOwner.repeatOnStarted {
             viewModel.appleUiState.collect {
@@ -64,7 +71,7 @@ class AppleFragment : Fragment() {
         var repeatCnt = 0
         val timerTask = object : TimerTask() {
             override fun run() {
-                viewModel.cardFlip(fruitColorValue)
+                viewModel.cardFlip(appleColorResource.color)
                 repeatCnt++
                 if (repeatCnt == 6) timer.cancel()
             }
@@ -91,6 +98,7 @@ class AppleFragment : Fragment() {
             }
         }
     }
+
     private fun showToast(message: String) =
         CustomToast.createAndShow(requireContext(), message)
 

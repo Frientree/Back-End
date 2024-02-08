@@ -18,6 +18,15 @@
             android:id="@+id/apple_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/fruit_detail_background_image_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.6"
+                android:rotation="90"
+                android:scaleType="centerCrop" />
+
             <ImageView
                 android:id="@+id/fruit_image_view"
                 android:layout_width="80dp"
@@ -50,7 +59,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_marginHorizontal="28dp"
+                android:layout_marginHorizontal="24dp"
                 >
                 <TextView
                     android:id="@+id/fruit_description_text_view"
