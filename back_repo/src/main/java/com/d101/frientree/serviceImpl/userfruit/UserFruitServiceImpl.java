@@ -35,11 +35,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -155,6 +152,13 @@ public class UserFruitServiceImpl implements UserFruitService {
 
     @Override
     public ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum) {
+        //사용자 정보 가져오기 (PK 값)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Optional<UserFruit> userFruitOptional =
+        userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
+                Long.valueOf(authentication.getName()), LocalDate.now());
+        if(userFruitOptional.isPresent()){throw new UserFruitCreateException("Already produced fruit");}
+
         //반환 객체 미리 생성
         UserFruitSaveResponse userFruitSaveResponse;
 
@@ -169,8 +173,6 @@ public class UserFruitServiceImpl implements UserFruitService {
         }else{ //열매 디테일 정보 없음
             throw new FruitNotFoundException("Fruit Not Found");
         }
-        //사용자 정보 가져오기 (PK 값)
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         //수정된 결과 NoSQL 수정(유저 PK 값 기준으로 가장 최근 저장된 감정 데이터 수정하기)
         Optional<Emotion> emotionOptional = mongoEmotionRepository.findTopByUserPKOrderByTimestampDesc(authentication.getName());
@@ -220,13 +222,11 @@ public class UserFruitServiceImpl implements UserFruitService {
         //UserFruit Table 정보 저장
         userFruitRepository.save(newUserFruit);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
         //UserFruitSaveResponse 생성
         userFruitSaveResponse = UserFruitSaveResponse.createUserFruitSaveResponse("Success"
                 , UserFruitSaveDTO.createUserFruitSaveDTO(
                         isApple,
-                        dateFormat.format(newUserFruit.getUserFruitCreateDate()),
+                        newUserFruit.getUserFruitCreateDate().toString(),
                         fruitDetail,
                         userScore)
         );
