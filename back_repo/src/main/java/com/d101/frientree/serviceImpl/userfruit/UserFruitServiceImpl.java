@@ -160,7 +160,7 @@ public class UserFruitServiceImpl implements UserFruitService {
         userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
                 Long.valueOf(authentication.getName()), LocalDate.now());
         if(userFruitOptional.isPresent()){
-            log.warn("요청 왜 자꾸 하세요????!!!????");
+            log.warn("요청 왜 자꾸 하세요???!!!????");
             throw new UserFruitCreateException("Already produced fruit");
         }
 
