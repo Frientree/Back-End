@@ -157,7 +157,10 @@ public class UserFruitServiceImpl implements UserFruitService {
         Optional<UserFruit> userFruitOptional =
         userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
                 Long.valueOf(authentication.getName()), LocalDate.now());
-        if(userFruitOptional.isPresent()){throw new UserFruitCreateException("Already produced fruit");}
+        if(userFruitOptional.isPresent()){
+            log.warn("요청 왜 자꾸 하세요????!!!????");
+            throw new UserFruitCreateException("Already produced fruit");
+        }
 
         //반환 객체 미리 생성
         UserFruitSaveResponse userFruitSaveResponse;
