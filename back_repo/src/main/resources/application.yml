@@ -62,8 +62,8 @@ jasypt:
   encryptor:
     naver:
       clova:
-        key: ENC(/4gocWtV/BmAvU7+80AeceqYsDqVO3ij/w6vMn6dhDuzzOVg8DFsc/vmc0BJmlRC)
-        invokeurl: ENC(tRYnWsnPcp3mr7VJ8yN00HOzyigqTxhV5l2FYkifWRH2pYJdIEBDpS9B9ixXxk9wNmChPk99u6zxbhG65vEqVda5E9ICosn7tH9RsAsXwY3O0mamNC9Mv53cNGUCJGJdoUsHq2oL3fc+UMhs1XBsjDJ1/c8gpN9J3y6wM0ltqoA=)
+        key: ENC(v52uyWTGl3PS7eZ+v7IrGaBy1d+hXjFBJW4D4VMT4JzkjmZgSf1SGbZESjlvOzkI)
+        invokeurl: ENC(x3lkQZbGbmOOgrmbc0HE4xejf6f1xkjHq1IZLpOQIMAtuMgDFY0+Ji/1JcKUC+XMd8cpSNS3fkObFJ8Q8mpvGOLsRq1u7/WcE+kc/Y8uqYlkgSJnSKYxkso9JPwngIIEahInZpe/JgN5hWIi8yDP2kTgnV/Gbx63J4K7YRjcu2s=)
 ---
 jasypt:
   encryptor:
@@ -91,7 +91,6 @@ cloud:
 logging:
   level:
     com.d101.frientree : info
-    org.springframework.security: trace
 
 ---
 spring:

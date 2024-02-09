@@ -89,7 +89,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             return true;
         }
 
-        if(path.equals("/s3")){
+        if (path.equals("/s3")){
             return true;
         }
 
@@ -103,7 +103,7 @@ public class JwtCheckFilter extends OncePerRequestFilter {
 
         String authHeaderStr = request.getHeader("Authorization");
 
-        System.out.println(authHeaderStr);
+        //System.out.println(authHeaderStr);
         // Bearer // 7 Jwt 문자열
         try {
             String accessToken = authHeaderStr.substring(7);

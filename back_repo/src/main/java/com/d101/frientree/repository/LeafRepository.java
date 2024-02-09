@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface LeafRepository extends JpaRepository<LeafDetail, Long> {
-    Optional<LeafDetail> findById(Long id);
+    Optional<LeafDetail> findTopByLeafCategoryOrderByLeafViewAsc(LeafCategory leafCategory);
 
-    List<LeafDetail> findByLeafCategoryOrderByLeafViewAsc(LeafCategory leafCategory);
-
-    List<LeafDetail> findAllByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(LeafCategory selectedCategory, List<Long> sentAndReceivedLeafNums);
+    Optional<LeafDetail> findTopByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(
+            LeafCategory leafCategory, List<Long> sentAndReceivedLeafNums);
 }
 

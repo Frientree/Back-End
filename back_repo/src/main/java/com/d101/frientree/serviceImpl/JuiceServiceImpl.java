@@ -23,8 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -78,7 +76,7 @@ public class JuiceServiceImpl implements JuiceService {
     }
 
     @Override
-    public ResponseEntity<JuiceGenerationResponse> generate(JuiceGenerationRequest juiceGenerationRequest) throws ParseException {
+    public ResponseEntity<JuiceGenerationResponse> generate(JuiceGenerationRequest juiceGenerationRequest){
 
         User currentUser = getUser();
         LocalDate startDate = LocalDate.parse(juiceGenerationRequest.getStartDate());
@@ -111,7 +109,9 @@ public class JuiceServiceImpl implements JuiceService {
         }
 
         // 해당 기간에 유저가 보유한 모든 과일을 가져온다.
-        List<UserFruit> userFruits = userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(currentUser.getUserId(), startDate, endDate);
+        List<UserFruit> userFruits = userFruitRepository.
+                findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(
+                        currentUser.getUserId(), startDate, endDate);
 
         if (userFruits.size() < 4) {
             throw new JuiceGenerationException("Not enough fruits to generate juice");

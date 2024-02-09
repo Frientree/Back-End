@@ -13,7 +13,6 @@ import com.d101.frientree.entity.leaf.LeafReceive;
 import com.d101.frientree.entity.leaf.LeafSend;
 import com.d101.frientree.entity.mongo.leaf.Leaf;
 import com.d101.frientree.entity.user.User;
-import com.d101.frientree.exception.leaf.CategoryNotFoundException;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
 import com.d101.frientree.exception.leaf.LeafCreationFailedException;
 import com.d101.frientree.exception.user.UserNotFoundException;
@@ -61,21 +60,16 @@ public class LeafServiceImpl implements LeafService {
         Optional<LeafDetail> leaves;
 
         if (sentAndReceivedLeafNums.isEmpty()) {
-            // 선택한 카테고리에 해당하는 모든 LeafDetail 가져오기
-            leaves = leafRepository.findByLeafCategoryOrderByLeafViewAsc(selectedCategory).stream().findFirst();
+            // 선택된 카테고리에 해당하는 LeafDetail 중에서 조회수(LeafView)가 가장 낮은 항목 한 개만 가져오기
+            leaves = leafRepository.findTopByLeafCategoryOrderByLeafViewAsc(selectedCategory);
         } else {
             // 선택한 카테고리에 속하면서 sentAndReceivedLeafNums에 포함되지 않은 LeafDetail 가져오기
-            leaves = leafRepository.findAllByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(
-                            selectedCategory, sentAndReceivedLeafNums)
-                    .stream()
-                    .findFirst();
+            leaves = leafRepository.findTopByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(
+                            selectedCategory, sentAndReceivedLeafNums);
         }
-
-        Optional<LeafDetail> selectedorderbyLeaf = leaves;
-
-        if (selectedorderbyLeaf.isPresent()) {
+        if (leaves.isPresent()) {
             // 선택된 leaf의 leaf_view 값을 1 증가
-            LeafDetail selectedLeaf = selectedorderbyLeaf.get();
+            LeafDetail selectedLeaf = leaves.get();
 
             selectedLeaf.setLeafView(selectedLeaf.getLeafView() + 1);
 
@@ -83,7 +77,6 @@ public class LeafServiceImpl implements LeafService {
             leafRepository.save(selectedLeaf);
 
             // leaf_receive 테이블에 이파리 추가
-
             LeafReceive leafReceive = LeafReceive.createLeafReceive(selectedLeaf, currentUser);
             leafReceiveRepository.save(leafReceive);
 
@@ -92,23 +85,19 @@ public class LeafServiceImpl implements LeafService {
                     LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(selectedLeaf)
             );
             return ResponseEntity.ok(response);
+        }else{ // 더 이상 받을 이파리가 없을 때
+            ResponseEntity<MessageResponse> messageResponseEntity = messageService.confirm();
+            if (messageResponseEntity.getStatusCode() == HttpStatus.OK) {
+                String description = messageResponseEntity.getBody().getData();
+
+                // LeafConfirmationResponse 객체 생성
+                LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
+                        "Success",
+                        LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(description)
+                );
+                return ResponseEntity.ok(response);
+            }
         }
-
-        // 더 이상 받을 이파리가 없을 때 MessageResponse의 description을 가져와서 LeafConfirmationResponse 형식으로 반환
-        ResponseEntity<MessageResponse> messageResponseEntity = messageService.confirm();
-        MessageResponse messageResponse = messageResponseEntity.getBody();
-
-        if (messageResponse != null) {
-            String description = messageResponse.getData();
-
-            // LeafConfirmationResponse 객체 생성
-            LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
-                    "Success",
-                    LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(description)  // 또는 description를 이용하여 DTO를 생성
-            );
-            return ResponseEntity.ok(response);
-        }
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
