@@ -187,12 +187,8 @@ public class LeafServiceImpl implements LeafService {
             }
 
             // 2. leaf_detail 테이블에서 leaf_num에 해당하는 leaf_view 값 모두 더하기
-            long totalLeafView = leafNumList.stream()
-                    .mapToLong(leafNum -> {
-                        LeafDetail leafDetail = leafDetailRepository.findByLeafNum(leafNum);
-                        return leafDetail != null ? leafDetail.getLeafView() : 0;
-                    })
-                    .sum();
+            long totalLeafView = leafDetailRepository.getTotalLeafViewByUserId(userId);
+
 
             // LeafViewResponse를 생성하고 반환
             LeafViewResponse response = LeafViewResponse.createLeafViewResponse(

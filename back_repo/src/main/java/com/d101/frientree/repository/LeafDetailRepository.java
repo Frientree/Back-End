@@ -16,7 +16,9 @@ public interface LeafDetailRepository extends JpaRepository<LeafDetail, Long> {
     @Query("SELECT SUM(ld.leafView) FROM LeafDetail ld WHERE ld = :leafDetail")
     Long sumLeafViewByLeafDetail(@Param("leafDetail") LeafDetail leafDetail);
 
-    LeafDetail findByLeafNum(Long leafNum);
+    // join테이블 사용해서 userId 조회 후 보낸 이파리 노출횟수 조회하기
+    @Query("SELECT SUM(ld.leafView) FROM LeafDetail ld JOIN ld.leafSends ls WHERE ls.user.userId = :userId")
+    Long getTotalLeafViewByUserId(@Param("userId") Long userId);
 
     List<LeafDetail> findAllByLeafCreateDateBefore(LocalDate date);
 
