@@ -1,6 +1,7 @@
 package com.d101.frientree.security.filter;
 
 import com.d101.frientree.dto.user.UserDTO;
+import com.d101.frientree.exception.user.CustomJwtException;
 import com.d101.frientree.util.JwtUtil;
 import com.google.gson.Gson;
 import jakarta.servlet.FilterChain;
@@ -102,6 +103,10 @@ public class JwtCheckFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws IOException {
 
         String authHeaderStr = request.getHeader("Authorization");
+        if(authHeaderStr.isEmpty()){
+            log.warn("Null Token");
+            throw new CustomJwtException("Null Token");
+        }
 
         //System.out.println(authHeaderStr);
         // Bearer // 7 Jwt 문자열

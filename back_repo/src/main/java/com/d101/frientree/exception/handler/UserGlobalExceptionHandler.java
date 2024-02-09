@@ -92,6 +92,7 @@ public class UserGlobalExceptionHandler {
                 .headers(JSON_HEADERS)
                 .body(stringToGson(e.getMessage()));
     }
+
     public String stringToGson(String message){
         return gson.toJson(Collections.singletonMap("message", message));
     }
