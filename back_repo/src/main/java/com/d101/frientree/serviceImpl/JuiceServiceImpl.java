@@ -16,6 +16,7 @@ import com.d101.frientree.exception.juice.JuiceNotFoundException;
 import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.*;
 import com.d101.frientree.service.JuiceService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,6 +76,7 @@ public class JuiceServiceImpl implements JuiceService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @Transactional
     @Override
     public ResponseEntity<JuiceGenerationResponse> generate(JuiceGenerationRequest juiceGenerationRequest){
 

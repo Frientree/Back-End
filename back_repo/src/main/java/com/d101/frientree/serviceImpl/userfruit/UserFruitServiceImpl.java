@@ -27,6 +27,7 @@ import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechResponse;
 import com.d101.frientree.serviceImpl.userfruit.fastapi.HttpPostAIRequest;
 import com.d101.frientree.serviceImpl.userfruit.objectstorage.AwsS3ObjectStorage;
 import com.google.gson.Gson;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -150,6 +151,7 @@ public class UserFruitServiceImpl implements UserFruitService {
         }
     }
 
+    @Transactional
     @Override
     public ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum) {
         //사용자 정보 가져오기 (PK 값)
