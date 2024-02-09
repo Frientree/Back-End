@@ -111,7 +111,12 @@ public class JwtCheckFilter extends OncePerRequestFilter {
         //System.out.println(authHeaderStr);
         // Bearer // 7 Jwt 문자열
         try {
-            String accessToken = authHeaderStr.substring(7);
+            String accessToken;
+            try {
+                accessToken = authHeaderStr.substring(7);
+            }catch (CustomJwtException e){
+                throw new CustomJwtException("Null Token");
+            }
             Map<String, Object> claims = JwtUtil.validateToken(accessToken);
 
             String username = (String) claims.get("username");

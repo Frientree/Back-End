@@ -61,10 +61,10 @@ public class UserServiceImpl implements UserService {
     private final RedisTemplate<String, String> redisTemplate;
     private final UserFruitRepository userFruitRepository;
     private final UserJuiceRepository userJuiceRepository;
-    private final LeafRepository leafRepository;
     private final MongoLeafRepository mongoLeafRepository;
     private final LeafReceiveRepository leafReceiveRepository;
     private final LeafSendRepository leafSendRepository;
+    private final LeafDetailRepository leafDetailRepository;
 
     private static final int VERIFICATION_CODE_LENGTH = 6;
 
@@ -277,7 +277,7 @@ public class UserServiceImpl implements UserService {
         });
 
         //기간 지난 이파리 삭제하기
-        leafRepository.deleteAllInBatch(deleteLeafs);
+        leafDetailRepository.deleteAllInBatch(deleteLeafs);
 
         UserDeactivationResponse response = UserDeactivationResponse.createUserDeactivationResponse(
                 "Success",

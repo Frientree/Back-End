@@ -34,8 +34,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class LeafServiceImpl implements LeafService {
-
-    private final LeafRepository leafRepository;
     private final LeafSendRepository leafSendRepository;
     private final LeafReceiveRepository leafReceiveRepository;
     private final UserRepository userRepository;
@@ -61,10 +59,10 @@ public class LeafServiceImpl implements LeafService {
 
         if (sentAndReceivedLeafNums.isEmpty()) {
             // 선택된 카테고리에 해당하는 LeafDetail 중에서 조회수(LeafView)가 가장 낮은 항목 한 개만 가져오기
-            leaves = leafRepository.findTopByLeafCategoryOrderByLeafViewAsc(selectedCategory);
+            leaves = leafDetailRepository.findTopByLeafCategoryOrderByLeafViewAsc(selectedCategory);
         } else {
             // 선택한 카테고리에 속하면서 sentAndReceivedLeafNums에 포함되지 않은 LeafDetail 가져오기
-            leaves = leafRepository.findTopByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(
+            leaves = leafDetailRepository.findTopByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(
                             selectedCategory, sentAndReceivedLeafNums);
         }
         if (leaves.isPresent()) {
@@ -74,7 +72,7 @@ public class LeafServiceImpl implements LeafService {
             selectedLeaf.setLeafView(selectedLeaf.getLeafView() + 1);
 
             // leaf 업데이트
-            leafRepository.save(selectedLeaf);
+            leafDetailRepository.save(selectedLeaf);
 
             // leaf_receive 테이블에 이파리 추가
             LeafReceive leafReceive = LeafReceive.createLeafReceive(selectedLeaf, currentUser);
@@ -116,7 +114,7 @@ public class LeafServiceImpl implements LeafService {
             newLeaf.setLeafCreateDate(date);
 
             // LeafDetail 저장
-            leafRepository.save(newLeaf);
+            leafDetailRepository.save(newLeaf);
             LeafSend leafSend = LeafSend.createLeafSend(newLeaf, currentUser);
 
             // LeafSend 테이블에 추가
@@ -144,7 +142,7 @@ public class LeafServiceImpl implements LeafService {
     @Override
     @Transactional
     public ResponseEntity<LeafComplaintResponse> complain(Long leafId) {
-        LeafDetail currentLeaf = leafRepository.findById(leafId)
+        LeafDetail currentLeaf = leafDetailRepository.findById(leafId)
                 .orElseThrow(() -> new LeafNotFoundException("Leaf not found."));
 
         currentLeaf.setLeafComplain(currentLeaf.getLeafComplain() + 1);
@@ -159,7 +157,7 @@ public class LeafServiceImpl implements LeafService {
             leafReceiveRepository.deleteAll(relatedReceives);
 
             // LeafDetail에 저장된 이파리 삭제
-            leafRepository.delete(currentLeaf);
+            leafDetailRepository.delete(currentLeaf);
         }
 
         LeafComplaintResponse response = LeafComplaintResponse.createLeafComplaintResponse(
@@ -222,7 +220,7 @@ public class LeafServiceImpl implements LeafService {
         });
 
         //기간 지난 이파리 삭제하기
-        leafRepository.deleteAll(oldLeafs);
+        leafDetailRepository.deleteAll(oldLeafs);
     }
 
 
