@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="360dp"
+        android:layout_height="360dp"
+        android:background="@color/white"
+        tools:context=".main.fragments.dialogs.LeafBlowingFragment">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/leaf_blowing_lottie_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/leaf_blowing_text_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/lottie_blowing_leaf"
+            tools:layout_editor_absoluteX="20dp" />
+
+        <TextView
+            android:id="@+id/leaf_blowing_text_view"
+            style="@style/Base.FTR.TextView.DialogMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="@string/leaf_blowing_text"
+            app:layout_constraintBottom_toTopOf="@id/leaf_blowing_progress_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/leaf_blowing_progress_bar"
+            style="@style/Base.FTR.ProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginBottom="40dp"
+            android:max="30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:progress="20" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
