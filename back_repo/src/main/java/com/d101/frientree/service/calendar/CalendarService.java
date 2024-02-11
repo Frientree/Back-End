@@ -8,8 +8,6 @@ import com.d101.frientree.dto.calendar.response.CalendarWeeklyFruitsResponse;
 import com.d101.frientree.dto.calendar.response.CalendarWeeklyJuiceResponse;
 import org.springframework.http.ResponseEntity;
 
-import java.text.ParseException;
-
 public interface CalendarService {
     ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request);
     ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(CalendarDateRequest request);
