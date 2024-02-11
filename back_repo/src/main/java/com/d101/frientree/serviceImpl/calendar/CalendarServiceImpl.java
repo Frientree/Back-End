@@ -12,10 +12,10 @@ import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.exception.userfruit.UserFruitNotFoundException;
 import com.d101.frientree.exception.userjuice.UserJuiceNotFoundException;
-import com.d101.frientree.repository.UserFruitRepository;
-import com.d101.frientree.repository.UserJuiceRepository;
-import com.d101.frientree.repository.UserRepository;
-import com.d101.frientree.service.CalendarService;
+import com.d101.frientree.repository.fruit.UserFruitRepository;
+import com.d101.frientree.repository.juice.UserJuiceRepository;
+import com.d101.frientree.repository.user.UserRepository;
+import com.d101.frientree.service.calendar.CalendarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +23,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 

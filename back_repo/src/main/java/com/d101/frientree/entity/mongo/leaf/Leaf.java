@@ -1,13 +1,9 @@
 package com.d101.frientree.entity.mongo.leaf;
 
-import com.d101.frientree.entity.LeafCategory;
+import com.d101.frientree.entity.leaf.LeafCategory;
 import com.d101.frientree.entity.leaf.LeafDetail;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;

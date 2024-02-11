@@ -4,8 +4,8 @@ package com.d101.frientree.serviceImpl.userfruit.fastapi;
 import com.d101.frientree.dto.userfruit.dto.UserFruitCreateDTO;
 import com.d101.frientree.dto.userfruit.response.UserFruitCreateResponse;
 import com.d101.frientree.entity.fruit.FruitDetail;
-import com.d101.frientree.repository.FruitDetailRepository;
-import com.d101.frientree.repository.UserRepository;
+import com.d101.frientree.repository.fruit.FruitDetailRepository;
+import com.d101.frientree.repository.user.UserRepository;
 import com.d101.frientree.service.mongo.MongoEmotionService;
 import com.google.gson.Gson;
 import lombok.Data;
@@ -16,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
