@@ -53,7 +53,9 @@ public class LeafServiceImpl implements LeafService {
 
         // 2. leaf_detail 테이블에서 leaf_category에 해당하는 이파리 중에서
         //    로그인한 사용자가 보낸 및 받은 leaf를 제외한 이파리들 가져오기
-        LeafCategory selectedCategory = LeafCategory.findByValue(leafCategoryValue);
+        String selectedCategory = LeafCategory.findLeafCategory(leafCategoryValue);
+
+        System.out.println("String Check : " + selectedCategory);
 
         Optional<LeafDetail> leaves;
 

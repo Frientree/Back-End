@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LeafGenerationRequest {
 
-    private LeafCategory leafCategory;
+    private String leafCategory;
 
     private String leafContent;
 

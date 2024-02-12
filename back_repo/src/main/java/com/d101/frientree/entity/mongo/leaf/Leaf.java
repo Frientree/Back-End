@@ -21,7 +21,8 @@ public class Leaf {
     private String Id;
 
     private String leafContent;
-    private LeafCategory leafCategory;
+    @Enumerated(EnumType.STRING)
+    private String leafCategory;
     private Long leafComplain;
     private Long leafView;
 
@@ -31,4 +32,5 @@ public class Leaf {
         this.leafComplain = leafDetail.getLeafComplain();
         this.leafView = leafDetail.getLeafView();
     }
+
 }

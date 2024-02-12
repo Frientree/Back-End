@@ -19,8 +19,8 @@ public interface LeafDetailRepository extends JpaRepository<LeafDetail, Long> {
 
     List<LeafDetail> findAllByLeafCreateDateBefore(LocalDate date);
 
-    Optional<LeafDetail> findTopByLeafCategoryOrderByLeafViewAsc(LeafCategory leafCategory);
+    Optional<LeafDetail> findTopByLeafCategoryOrderByLeafViewAsc(String leafCategory);
 
     Optional<LeafDetail> findTopByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(
-            LeafCategory leafCategory, List<Long> sentAndReceivedLeafNums);
+            String leafCategory, List<Long> sentAndReceivedLeafNums);
 }
