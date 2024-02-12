@@ -205,7 +205,7 @@ public class LeafServiceImpl implements LeafService {
     @Override
     public void moveAndDeleteOldLeaves() {
         //이파리 전체 조회해서 7일이 지난 지난 이파리 들고오기
-        LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+        LocalDate sevenDaysAgo = LocalDate.now().minusDays(6);
         List<LeafDetail> oldLeafs = leafDetailRepository.findAllByLeafCreateDateBefore(sevenDaysAgo);
 
         //MongoDB에 저장하기
