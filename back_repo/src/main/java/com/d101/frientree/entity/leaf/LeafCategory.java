@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public enum LeafCategory {
-    FREEDOM,
+    COMFORT,
     ENCOURAGEMENT,
-    COMFORT;
+    FREEDOM;
 
     public static String findLeafCategory(int num){
         if(num>=0 && num<=2){
