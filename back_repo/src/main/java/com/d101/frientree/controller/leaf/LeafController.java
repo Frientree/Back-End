@@ -55,8 +55,8 @@ public class LeafController {
                     (message : "input data error", code : 400)""", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<LeafGenerationResponse> leafGeneration(@RequestHeader ("Date") String createDate, @RequestBody LeafGenerationRequest leafGenerationRequest) {
-        return leafService.generate(leafGenerationRequest, createDate);
+    public ResponseEntity<LeafGenerationResponse> leafGeneration(@RequestBody LeafGenerationRequest leafGenerationRequest) {
+        return leafService.generate(leafGenerationRequest);
     }
 
 
