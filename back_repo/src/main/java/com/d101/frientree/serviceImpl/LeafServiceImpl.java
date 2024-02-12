@@ -55,8 +55,6 @@ public class LeafServiceImpl implements LeafService {
         //    로그인한 사용자가 보낸 및 받은 leaf를 제외한 이파리들 가져오기
         String selectedCategory = LeafCategory.findLeafCategory(leafCategoryValue);
 
-        System.out.println("String Check : " + selectedCategory);
-
         Optional<LeafDetail> leaves;
 
         if (sentAndReceivedLeafNums.isEmpty()) {
