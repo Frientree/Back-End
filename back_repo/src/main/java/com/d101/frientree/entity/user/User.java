@@ -46,7 +46,7 @@ public class User {
 
     @Builder.Default
     @Column(name = "user_leaf_status")
-    private Boolean userLeafStatus = true;
+    private Integer userLeafStatus = 3;
 
     @Builder.Default
     @Column(name = "user_notification")

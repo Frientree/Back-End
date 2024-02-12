@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     //모든 유저 열매, 이파리 상태 수정
     @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE User u SET u.userFruitStatus = true, u.userLeafStatus = true")
+    @Query("UPDATE User u SET u.userFruitStatus = true, u.userLeafStatus = 3")
     void incrementAllUserFruitAndLeafStatus();
 
 

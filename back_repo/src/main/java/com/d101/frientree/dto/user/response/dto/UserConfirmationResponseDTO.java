@@ -20,7 +20,7 @@ public class UserConfirmationResponseDTO {
     @Schema(description = "가입 날짜", example = "2023-12-01")
     private Date userCreateDate;
     @Schema(description = "이파리 생성 가능 여부", example = "true")
-    private boolean userLeafStatus;
+    private Integer userLeafStatus;
     @Schema(description = "유저 이메일", example = "testuser1@email.com")
     private String userEmail;
     @Schema(description = "알림 on/off 여부", example = "true")
