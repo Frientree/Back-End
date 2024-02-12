@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/welcome_nav_graph"
+    app:startDestination="@id/signInFragment">
+
+    <fragment
+        android:id="@+id/findPasswordFragment"
+        android:name="com.d101.presentation.welcome.fragments.FindPasswordFragment"
+        android:label="fragment_find_password"
+        tools:layout="@layout/fragment_find_password" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.d101.presentation.welcome.fragments.SignInFragment"
+        android:label="fragment_sign_in"
+        tools:layout="@layout/fragment_sign_in">
+        <action
+            android:id="@+id/action_signInFragment_to_findPasswordFragment"
+            app:destination="@id/findPasswordFragment" />
+        <action
+            android:id="@+id/action_signInFragment_to_termsAgreeFragment"
+            app:destination="@id/termsAgreeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.d101.presentation.welcome.fragments.SignUpFragment"
+        android:label="fragment_sign_up"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signUpFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/termsAgreeFragment"
+        android:name="com.d101.presentation.welcome.fragments.TermsAgreeFragment"
+        android:label="fragment_terms_agree"
+        tools:layout="@layout/fragment_terms_agree">
+        <action
+            android:id="@+id/action_termsAgreeFragment_to_signUpFragment"
+            app:destination="@id/signUpFragment" />
+    </fragment>
+</navigation>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Base.FTR" parent="Theme.Frientree" />
+
+    <style name="Base.FTR.Text" parent="Base.FTR">
+        <item name="android:fontFamily">@font/binggrae</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.Text.Bold" parent="Base.FTR.Text">
+        <item name="android:fontFamily">@font/binggrae_bold</item>
+    </style>
+
+    <style name="Base.FTR.Text.Small" parent="Base.FTR.Text">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Base.FTR.Text.Big" parent="Base.FTR.Text">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Base.FTR.Text.Medium" parent="Base.FTR.Text">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Base.FTR.Text.NanumBarunGothic" parent="Base.FTR.Text">
+        <item name="android:fontFamily">@font/nanum_barun_gothic</item>
+    </style>
+
+
+    <style name="Base.FTR.MainTitle" parent="Base.FTR.Text">
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Base.FTR.Bold_20sp" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+
+    <style name="Base.FTR.TextView.DialogMain" parent="Base.FTR.TextView">
+        <item name="android:textAppearance">@style/Base.FTR.Bold_20sp</item>
+    </style>
+
+    <style name="Base.FTR.Title" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.MenuText" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.MyInfo" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.SmallButtonText" parent="Base.FTR">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.TextView.SmallDialogTitle" parent="Base.FTR.TextView">
+        <item name="fontFamily">@font/binggrae_bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.AppBarTitle" parent="Base.FTR.Text.Medium">
+        <item name="fontFamily">@font/binggrae_bold</item>
+    </style>
+
+    <style name="Base.FTR.TextView.DialogText" parent="Base.FTR.TextView" />
+
+    <style name="Base.FTR.MainButton" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textAppearance">@style/Base.FTR.Bold_20sp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:paddingStart">28dp</item>
+        <item name="android:paddingEnd">28dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:background">@drawable/bg_main_button_selector</item>
+    </style>
+
+    <style name="Base.FTR.ElevatedButton" parent="Widget.AppCompat.Button">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+
+    <style name="Base.FTR.EditTextInput" parent="@style/Widget.AppCompat.EditText">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:layout_width">300dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingHorizontal">12dp</item>
+        <item name="android:background">@drawable/bg_white_radius_16dp_with_stroke</item>
+    </style>
+
+    <style name="Base.FTR.EditTextExtended" parent="Base.FTR.EditTextInput">
+        <item name="android:layout_width">0dp</item>
+    </style>
+
+    <style name="Base.FTR.TextView" parent="@style/Widget.AppCompat.TextView">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Base.FTR.TextView.Label" parent="Base.FTR.TextView">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Base.FTR.TextView.WelcomeTitle" parent="Base.FTR.TextView">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Base.FTR.Button" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+    </style>
+
+    <style name="Base.FTR.Button.Confirm" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textAppearance">@style/Base.FTR.Text.Small</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/btn_small_confirm</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
+
+    <style name="Base.FTR.Button.DialogButton" parent="@style/Base.FTR.Button.Confirm">
+        <item name="android:background">@drawable/btn_white_with_stroke_36dp</item>
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:paddingHorizontal">20dp</item>
+        <item name="android:paddingVertical">10dp</item>
+    </style>
+
+    <style name="Base.FTR.FullScreenDialog" parent="Theme.AppCompat.Dialog">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
+    <style name="Base.FTR.NumberPicker">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:editTextColor">@color/black</item>
+        <item name="android:colorControlNormal">@color/black</item>
+    </style>
+
+    <style name="Base.FTR.EditText.Transparent" parent="Widget.AppCompat.EditText">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Base.FTR.Chip" parent="Widget.Material3.Chip.Assist">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="chipBackgroundColor">@color/bg_fruit_chip_selector</item>
+        <item name="chipStrokeColor">@color/gray</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:checkable">true</item>
+    </style>
+
+    <style name="Base.FTR.Chip.Leaf" parent="Base.FTR.Chip">
+        <item name="chipBackgroundColor">@color/bg_leaf_chip_selector</item>
+        <item name="chipCornerRadius">16dp</item>
+        <item name="chipStrokeColor">@color/black</item>
+        <item name="android:checkable">true</item>
+    </style>
+
+    <style name="Base.FTR.ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/bg_progress_bar</item>
+        <item name="layout_constraintCircleRadius">40dp</item>
+    </style>
+
+    <style name="Base.FTR.TextView.Calendar" parent="Base.FTR.TextView">
+        <item name="android:textAppearance">@style/Base.FTR.Text.Small</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Base.FTR.TextView.Calendar.Title" parent="Base.FTR.TextView.Calendar">
+        <item name="android:textAppearance">@style/Base.FTR.Bold_20sp</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Base.FTR.TextView.Greeting" parent="@style/Widget.AppCompat.TextView">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:shadowColor">@color/gray</item>
+        <item name="android:shadowRadius">8</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">4</item>
+    </style>
+
+    <style name="Base.FTR.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textAppearance">@style/Base.FTR.Text</item>
+        <item name="android:padding">12dp</item>
+        <item name="buttonTint">@color/bg_checkbox_color_selector</item>
+    </style>
+</resources>

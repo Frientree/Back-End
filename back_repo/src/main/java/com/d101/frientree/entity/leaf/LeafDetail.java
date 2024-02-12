@@ -22,9 +22,13 @@ public class LeafDetail {
     @Column(name = "leaf_content")
     private String leafContent;
 
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
+//    @Column(name = "leaf_category")
+//    private LeafCategory leafCategory;
+
     @Column(name = "leaf_category")
-    private LeafCategory leafCategory;
+    private String leafCategory;
+
 
     @Column(name = "leaf_complain")
     @Builder.Default
@@ -47,8 +51,10 @@ public class LeafDetail {
     private List<LeafSend> leafSends;
 
     public static LeafDetail createLeafDetail(LeafGenerationRequest leafGenerationRequest) {
+        String leafCategory = LeafCategory.findLeafCategory(leafGenerationRequest.getLeafCategory());
+
         return LeafDetail.builder()
-                .leafCategory(leafGenerationRequest.getLeafCategory())
+                .leafCategory(String.valueOf(leafCategory))
                 .leafContent(leafGenerationRequest.getLeafContent())
                 .build();
     }

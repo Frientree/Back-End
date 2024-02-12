@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.d101.presentation.main.viewmodel.LeafReceiveViewModel" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="360dp"
+        android:layout_height="360dp"
+        android:background="@color/main_green">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/leaf_icon_image_view"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="28dp"
+                android:src="@drawable/img_leaf_category_chip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/report_button"
+                style="@style/Base.FTR.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/leaf_report"
+                android:textColor="@color/gray"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/leaf_content_card_view" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/leaf_content_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="28dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="36dp"
+                app:layout_constraintBottom_toTopOf="@id/report_button"
+                app:layout_constraintTop_toBottomOf="@id/leaf_icon_image_view">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/leaf_description_text_view"
+                        style="@style/Base.FTR.Text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:padding="16dp"
+                        android:scrollbars="vertical"
+                        android:text="@{viewModel.leaf.leafContent}"
+                        tools:text="힘내세요!!" />
+                </ScrollView>
+
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </FrameLayout>
+</layout>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_white"
+    android:nestedScrollingEnabled="false"
+    tools:context=".main.MainActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?attr/actionBarSize"
+        app:defaultNavHost="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:navGraph="@navigation/nav_graph" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottom_app_bar"
+        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom"
+        android:backgroundTint="@color/white"
+        app:fabAlignmentMode="center"
+        app:fabCradleMargin="16dp"
+        app:fabCradleRoundedCornerRadius="20dp"
+        app:hideOnScroll="true">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_view"
+            style="@style/Widget.MaterialComponents.BottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:background="@drawable/bg_transparent"
+            app:itemBackground="@drawable/bg_transparent"
+            app:itemIconTint="@drawable/bg_bottom_navigation_selector"
+            app:itemTextColor="@drawable/bg_bottom_navigation_selector"
+            app:labelVisibilityMode="unlabeled"
+            app:menu="@menu/menu" />
+    </com.google.android.material.bottomappbar.BottomAppBar>
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/write_leaf_button"
+        style="@style/Base.FTR.Button.Confirm"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="18dp"
+        android:text="@string/send_leaf_text"
+        android:layout_gravity="bottom|center_horizontal"
+        android:translationZ="5dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:padding="15dp"
+        android:visibility="gone"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/read_leaf_button"
+        style="@style/Base.FTR.Button.Confirm"
+        android:text="@string/receive_leaf_text"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="18dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:translationZ="5dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="25dp"
+        android:visibility="gone"
+        android:padding="15dp"
+        />
+
+    <View
+        android:id="@+id/blur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#55000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/leaf_floating_action_button"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/main_green"
+        android:elevation="8dp"
+        android:src="@drawable/btn_leaf"
+        app:borderWidth="0dp"
+        app:layout_anchor="@id/bottom_app_bar"
+        app:layout_anchorGravity="bottom|center" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</FrameLayout>

@@ -5,22 +5,17 @@ import lombok.Getter;
 
 @Getter
 public enum LeafCategory {
-    ENCOURAGEMENT(1),
-    COMFORT(2),
-    FREEDOM(0);
+    FREEDOM,
+    ENCOURAGEMENT,
+    COMFORT;
 
-    private final int value;
-
-    LeafCategory(int value) {
-        this.value = value;
-    }
-
-    public static LeafCategory findByValue(int value) {
-        for (LeafCategory category : values()) {
-            if (category.getValue() == value) {
-                return category;
-            }
+    public static String findLeafCategory(int num){
+        if(num>=0 && num<=2){
+            LeafCategory value = LeafCategory.values()[num];
+            return value.toString();
         }
-        throw new CategoryNotFoundException("Category not found");
+        else{
+            throw new CategoryNotFoundException("Category Not Found");
+        }
     }
 }
