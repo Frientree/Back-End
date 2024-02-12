@@ -104,14 +104,17 @@ public class LeafServiceImpl implements LeafService {
 
     @Override
     @Transactional
-    public ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest) {
+    public ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest, String createDate) {
+        //createDate String --> LocalDate 변경
+        LocalDate date = LocalDate.parse(createDate);
+
         User currentUser = getUser();
 
-        // 유저의 leaf_status가 0보다 큰 경우에만 이파리 생성 가능
-        if(currentUser.getUserLeafStatus() > 0){
+        // 유저의 leaf_status가 true 일 경우에만 이파리 생성 가능
+        if(currentUser.getUserLeafStatus()){
 
             LeafDetail newLeaf = LeafDetail.createLeafDetail(leafGenerationRequest);
-            newLeaf.setLeafCreateDate(LocalDate.now());
+            newLeaf.setLeafCreateDate(date);
 
             // LeafDetail 저장
             leafDetailRepository.save(newLeaf);
@@ -121,13 +124,14 @@ public class LeafServiceImpl implements LeafService {
             leafSendRepository.save(leafSend);
 
             // 이파리 생성할 때 user의 leaf_status를 false로 변경
-            currentUser.setUserLeafStatus(currentUser.getUserLeafStatus()-1);
+            currentUser.setUserLeafStatus(false);
             userRepository.save(currentUser);
+
 
             // LeafGenerationResponse 생성
             LeafGenerationResponse response = LeafGenerationResponse.createLeafGenerationResponse(
                     "Success",
-                    currentUser.getUserLeafStatus()
+                    true
             );
 
             // LeafGenerationResponse 반환

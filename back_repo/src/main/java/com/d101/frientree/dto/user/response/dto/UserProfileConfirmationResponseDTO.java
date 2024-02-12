@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Date;
 
 @Data
 @Builder
@@ -15,7 +16,7 @@ public class UserProfileConfirmationResponseDTO {
     @Schema(description = "닉네임", example = "nickname")
     private String userNickname;
     @Schema(description = "이파리 생성 가능 여부", example = "true")
-    private Integer userLeafStatus;
+    private boolean userLeafStatus;
     @Schema(description = "유저 이메일", example = "testuser1@email.com")
     private String userEmail;
     @Schema(description = "열매 생성 가능 여부", example = "true")

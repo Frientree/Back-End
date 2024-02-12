@@ -10,7 +10,7 @@ import lombok.Data;
 public class UserCreateStatusResponseDTO {
 
     @Schema(description = "이파리 생성 가능 여부", example = "true")
-    private Integer userLeafStatus;
+    private Boolean userLeafStatus;
     @Schema(description = "열매 생성 가능 여부", example = "true")
     private Boolean userFruitStatus;
 
