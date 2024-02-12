@@ -54,7 +54,7 @@ public class LeafDetail {
     private List<LeafSend> leafSends;
 
     public static LeafDetail createLeafDetail(LeafGenerationRequest leafGenerationRequest) {
-        String leafCategory = LeafCategory.findLeafCategory(Integer.parseInt(leafGenerationRequest.getLeafCategory()));
+        String leafCategory = LeafCategory.findLeafCategory(leafGenerationRequest.getLeafCategory());
 
         return LeafDetail.builder()
                 .leafCategory(String.valueOf(leafCategory))
