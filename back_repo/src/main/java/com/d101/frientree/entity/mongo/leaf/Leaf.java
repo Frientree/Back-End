@@ -1,6 +1,6 @@
 package com.d101.frientree.entity.mongo.leaf;
 
-import com.d101.frientree.entity.leaf.LeafCategory;
+
 import com.d101.frientree.entity.leaf.LeafDetail;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,6 @@ public class Leaf {
     private String Id;
 
     private String leafContent;
-    @Enumerated(EnumType.STRING)
     private String leafCategory;
     private Long leafComplain;
     private Long leafView;
