@@ -8,25 +8,20 @@ import com.d101.frientree.dto.juice.response.dto.*;
 import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.juice.JuiceDetail;
 import com.d101.frientree.entity.juice.UserJuice;
-import com.d101.frientree.entity.message.Message;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.juice.InvalidDateException;
 import com.d101.frientree.exception.juice.JuiceGenerationException;
 import com.d101.frientree.exception.juice.JuiceNotFoundException;
-import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.fruit.UserFruitRepository;
 import com.d101.frientree.repository.juice.JuiceDetailRepository;
 import com.d101.frientree.repository.juice.JuiceMessageRepository;
 import com.d101.frientree.repository.juice.UserJuiceRepository;
-import com.d101.frientree.repository.message.MessageRepository;
-import com.d101.frientree.repository.user.UserRepository;
 import com.d101.frientree.service.juice.JuiceService;
+import com.d101.frientree.util.CommonUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -39,16 +34,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JuiceServiceImpl implements JuiceService {
 
-    private final UserRepository userRepository;
     private final JuiceDetailRepository juiceDetailRepository;
     private final UserJuiceRepository userJuiceRepository;
     private final UserFruitRepository userFruitRepository;
     private final JuiceMessageRepository juiceMessageRepository;
+    private final CommonUtil commonUtil;
 
     @Override
     public ResponseEntity<JuiceListConfirmationResponse> listConfirm() {
-
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
         // 모든 주스
         List<JuiceDetail> allJuices = juiceDetailRepository.findAll();
         // 유저가 가진 모든 주스
@@ -71,6 +66,7 @@ public class JuiceServiceImpl implements JuiceService {
 
     @Override
     public ResponseEntity<JuiceConfirmationResponse> confirm(Long juiceId) {
+        commonUtil.checkServerInspectionTime();
         JuiceDetail currentJuice = juiceDetailRepository.findById(juiceId)
                 .orElseThrow(() -> new JuiceNotFoundException("juice not found"));
 
@@ -84,8 +80,8 @@ public class JuiceServiceImpl implements JuiceService {
     @Transactional
     @Override
     public ResponseEntity<JuiceGenerationResponse> generate(JuiceGenerationRequest juiceGenerationRequest){
-
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
         LocalDate startDate = LocalDate.parse(juiceGenerationRequest.getStartDate());
         LocalDate endDate = LocalDate.parse(juiceGenerationRequest.getEndDate());
 
@@ -191,26 +187,6 @@ public class JuiceServiceImpl implements JuiceService {
         userJuiceRepository.save(userJuice);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    private User getUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
-
-        User currentUser = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        if (currentUser.getUserDisabled()) {
-            throw new UserNotFoundException("User disabled");
-        }
-
-        return currentUser;
-    }
-
-    private <T> T getRandomElement(List<T> list) {
-        Random random = new Random();
-        int randomIndex = random.nextInt(list.size());
-        return list.get(randomIndex);
     }
 
     private Boolean isSunday(LocalDate startDate) {
