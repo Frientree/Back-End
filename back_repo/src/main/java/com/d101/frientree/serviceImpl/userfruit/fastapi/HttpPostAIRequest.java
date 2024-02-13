@@ -106,28 +106,21 @@ public class HttpPostAIRequest {
         // JSON 본문 구성
         String jsonInputString = "{\"s3Url\":\"" + sendFileS3Url + "\"}";
 
-        System.out.println(aiS3UrlString);
-        System.out.println(url);
-        System.out.println(jsonInputString);
-
         // 요청 본문에 데이터 작성
         try(OutputStream os = connection.getOutputStream()) {
             byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
 
-        System.out.println("본문 데이터 작성 함");
-
         // 서버로부터의 응답 읽기
         try(InputStream is = connection.getInputStream()) {
-            System.out.println("try in");
             BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             StringBuilder response = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 response.append(line.trim());
             }
-            System.out.println("Response from the server: " + response.toString());
+            log.info("Response from the server: {}", response);
         } catch (IOException e) {
             // 서버로부터 오류 응답 처리
             InputStream errorStream = connection.getErrorStream();
@@ -138,7 +131,7 @@ public class HttpPostAIRequest {
                     while ((line = reader.readLine()) != null) {
                         errorResponse.append(line.trim());
                     }
-                    System.out.println("Error response from the server: " + errorResponse.toString());
+                    log.warn("Error response from the server: {}", errorResponse);
                 }
             }
             // 예외를 다시 던지거나 적절히 처리

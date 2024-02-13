@@ -23,6 +23,7 @@ import com.d101.frientree.repository.mongo.MongoLeafRepository;
 import com.d101.frientree.repository.user.UserRepository;
 import com.d101.frientree.service.leaf.LeafService;
 import com.d101.frientree.service.message.MessageService;
+import com.d101.frientree.util.CommonUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,16 +44,17 @@ public class LeafServiceImpl implements LeafService {
     private final LeafDetailRepository leafDetailRepository;
     private final MessageService messageService;
     private final MongoLeafRepository mongoLeafRepository;
+    private final CommonUtil commonUtil;
 
     @Override
     public ResponseEntity<LeafConfirmationResponse> confirm(int leafCategoryValue) {
-        User currentUser = getUser();
-        Long userId = currentUser.getUserId();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
 
         // 1. leaf_send와 leaf_receive 테이블에서 현재 로그인한 사용자가 보낸 및 받은 leaf_num 가져오기
         List<Long> sentAndReceivedLeafNums = new ArrayList<>();
-        sentAndReceivedLeafNums.addAll(leafSendRepository.findSentLeafNumsByUserId(userId));
-        sentAndReceivedLeafNums.addAll(leafReceiveRepository.findReceivedLeafNumsByUserId(userId));
+        sentAndReceivedLeafNums.addAll(leafSendRepository.findSentLeafNumsByUserId(currentUser.getUserId()));
+        sentAndReceivedLeafNums.addAll(leafReceiveRepository.findReceivedLeafNumsByUserId(currentUser.getUserId()));
 
         // 2. leaf_detail 테이블에서 leaf_category에 해당하는 이파리 중에서
         //    로그인한 사용자가 보낸 및 받은 leaf를 제외한 이파리들 가져오기
@@ -105,7 +107,8 @@ public class LeafServiceImpl implements LeafService {
     @Override
     @Transactional
     public ResponseEntity<LeafGenerationResponse> generate(LeafGenerationRequest leafGenerationRequest) {
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
 
         // 유저의 leaf_status가 true 일 경우에만 이파리 생성 가능
         if(currentUser.getUserLeafStatus() > 0){
@@ -142,6 +145,8 @@ public class LeafServiceImpl implements LeafService {
     @Override
     @Transactional
     public ResponseEntity<LeafComplaintResponse> complain(Long leafId) {
+        commonUtil.checkServerInspectionTime();
+
         LeafDetail currentLeaf = leafDetailRepository.findById(leafId)
                 .orElseThrow(() -> new LeafNotFoundException("Leaf not found."));
 
@@ -172,30 +177,28 @@ public class LeafServiceImpl implements LeafService {
     @Override
     @Transactional
     public ResponseEntity<LeafViewResponse> view() {
+        commonUtil.checkServerInspectionTime();
         // security를 이용해 로그인 정보를 받아옴
-        User currentUser = getUser();
-            Long userId = currentUser.getUserId();
+        User currentUser = commonUtil.getUser();
 
-            // 1. leaf_send 테이블에서 user_id를 기준으로 leaf_num을 가져오기
-            List<Long> leafNumList = leafSendRepository.findLeafNumsByUser(userId);
+        // 1. leaf_send 테이블에서 user_id를 기준으로 leaf_num을 가져오기
+        List<Long> leafNumList = leafSendRepository.findLeafNumsByUser(currentUser.getUserId());
 
-            // 보낸 이파리가 없어서 leafNumList가 비어있을 경우 예외처리
-            if (leafNumList.isEmpty()) {
-                throw new LeafNotFoundException("보낸 이파리를 찾을 수 없습니다.");
-            }
+        // 보낸 이파리가 없어서 leafNumList가 비어있을 경우 예외처리
+        if (leafNumList.isEmpty()) {
+            throw new LeafNotFoundException("보낸 이파리를 찾을 수 없습니다.");
+        }
 
-            // 2. leaf_detail 테이블에서 leaf_num에 해당하는 leaf_view 값 모두 더하기
-            long totalLeafView = leafDetailRepository.getTotalLeafViewByUserId(userId);
+        // 2. leaf_detail 테이블에서 leaf_num에 해당하는 leaf_view 값 모두 더하기
+        long totalLeafView = leafDetailRepository.getTotalLeafViewByUserId(currentUser.getUserId());
 
+        // LeafViewResponse를 생성하고 반환
+        LeafViewResponse response = LeafViewResponse.createLeafViewResponse(
+                "Success",
+                totalLeafView);
 
-            // LeafViewResponse를 생성하고 반환
-            LeafViewResponse response = LeafViewResponse.createLeafViewResponse(
-                    "Success",
-                    totalLeafView);
-
-            // response 반환
-            return ResponseEntity.ok(response);
-
+        // response 반환
+        return ResponseEntity.ok(response);
     }
 
     @Transactional
@@ -221,21 +224,5 @@ public class LeafServiceImpl implements LeafService {
 
         //기간 지난 이파리 삭제하기
         leafDetailRepository.deleteAll(oldLeafs);
-    }
-
-
-    private User getUser() {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
-
-        User currentUser = userRepository.findById(Long.valueOf(userId)
-                )
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
-
-        if (currentUser.getUserDisabled()) {
-            throw new UserNotFoundException("user disabled");
-        }
-        return currentUser;
     }
 }

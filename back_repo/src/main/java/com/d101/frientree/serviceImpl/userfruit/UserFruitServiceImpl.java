@@ -26,6 +26,7 @@ import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechClient;
 import com.d101.frientree.serviceImpl.userfruit.clova.ClovaSpeechResponse;
 import com.d101.frientree.serviceImpl.userfruit.fastapi.HttpPostAIRequest;
 import com.d101.frientree.serviceImpl.userfruit.objectstorage.AwsS3ObjectStorage;
+import com.d101.frientree.util.CommonUtil;
 import com.google.gson.Gson;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
@@ -52,12 +53,13 @@ public class UserFruitServiceImpl implements UserFruitService {
     private final FruitDetailRepository fruitDetailRepository;
     private final UserFruitRepository userFruitRepository;
     private final UserRepository userRepository;
+    private final CommonUtil commonUtil;
     // 생성자를 통한 의존성 주입
 
     public UserFruitServiceImpl(ClovaSpeechClient clovaSpeechClient, HttpPostAIRequest httpPostAIRequest,
                                 AwsS3ObjectStorage awsS3ObjectStorage, MongoEmotionRepository mongoEmotionRepository,
                                 FruitDetailRepository fruitDetailRepository, UserFruitRepository userFruitRepository,
-                                UserRepository userRepository) {
+                                UserRepository userRepository, CommonUtil commonUtil) {
         this.clovaSpeechClient = clovaSpeechClient;
         this.httpPostAIRequest = httpPostAIRequest;
         this.awsS3ObjectStorage = awsS3ObjectStorage;
@@ -65,14 +67,16 @@ public class UserFruitServiceImpl implements UserFruitService {
         this.fruitDetailRepository = fruitDetailRepository;
         this.userFruitRepository = userFruitRepository;
         this.userRepository = userRepository;
+        this.commonUtil = commonUtil;
     }
 
     @Async("taskExecutor")
     @Override
     public CompletableFuture<ResponseEntity<UserFruitCreateResponse>> speechToTextAudio(MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        commonUtil.checkServerInspectionTime();
+        User user = commonUtil.getUser();
         Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
-                Long.valueOf(authentication.getName()),
+                user.getUserId(),
                 LocalDate.now()
         );
         if(userFruit.isPresent()){throw new UserFruitCreateException("Already produced fruit");}
@@ -138,9 +142,10 @@ public class UserFruitServiceImpl implements UserFruitService {
     }
     @Override
     public ResponseEntity<UserFruitCreateResponse> speechToTextText(UserFruitTextRequest textFile) throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        commonUtil.checkServerInspectionTime();
+        User user = commonUtil.getUser();
         Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
-                Long.valueOf(authentication.getName()),
+                user.getUserId(),
                 LocalDate.now()
         );
         if(userFruit.isPresent()){throw new UserFruitCreateException("Already produced fruit");}
@@ -154,13 +159,13 @@ public class UserFruitServiceImpl implements UserFruitService {
     @Transactional
     @Override
     public ResponseEntity<UserFruitSaveResponse> userFruitSave(Long fruitNum) {
+        commonUtil.checkServerInspectionTime();
         //사용자 정보 가져오기 (PK 값)
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = commonUtil.getUser();
         Optional<UserFruit> userFruitOptional =
         userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
-                Long.valueOf(authentication.getName()), LocalDate.now());
+                user.getUserId(), LocalDate.now());
         if(userFruitOptional.isPresent()){
-            log.warn("요청 왜 자꾸 하세요???!!!????");
             throw new UserFruitCreateException("Already produced fruit");
         }
 
@@ -180,7 +185,7 @@ public class UserFruitServiceImpl implements UserFruitService {
         }
 
         //수정된 결과 NoSQL 수정(유저 PK 값 기준으로 가장 최근 저장된 감정 데이터 수정하기)
-        Optional<Emotion> emotionOptional = mongoEmotionRepository.findTopByUserPKOrderByTimestampDesc(authentication.getName());
+        Optional<Emotion> emotionOptional = mongoEmotionRepository.findTopByUserPKOrderByTimestampDesc(String.valueOf(user.getUserId()));
         if(emotionOptional.isPresent()){
             Emotion emotion = emotionOptional.get();
             //저장된 감정 결과와 사용자 최종 감정과 다를 경우 수정
@@ -213,12 +218,12 @@ public class UserFruitServiceImpl implements UserFruitService {
 
         //UserFruit Table 생성날짜, 유저 열매 점수, 유저 PK, 생성된 열매 번호 insert
         UserFruit newUserFruit = new UserFruit();
-        Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
-        if(user.isPresent()) {
+        Optional<User> optionalUser = userRepository.findById(user.getUserId());
+        if(optionalUser.isPresent()) {
             try{ //유저 열매 생성 상태 변경
-                int isChange = userRepository.updateUserFruitStatusById(user.get().getUserId(), false);
+                int isChange = userRepository.updateUserFruitStatusById(optionalUser.get().getUserId(), false);
                 if(isChange>0){ //수정 성공
-                    newUserFruit = UserFruit.createUserFruit(user.get(), fruitDetail, LocalDate.now(), userScore);
+                    newUserFruit = UserFruit.createUserFruit(optionalUser.get(), fruitDetail, LocalDate.now(), userScore);
                 }
             }catch (UserModifyException e){ //수정 실패
                 throw new UserModifyException("User Modify Exception");
@@ -242,14 +247,12 @@ public class UserFruitServiceImpl implements UserFruitService {
 
     @Override
     public ResponseEntity<UserFruitTodayInfoResponse> userFruitTodayInfo(String createDate) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
-        if(user.isEmpty()){throw new UserNotFoundException("User Not Found");}
+        commonUtil.checkServerInspectionTime();
+        User user = commonUtil.getUser();
 
         Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(
-                user.get().getUserId(), LocalDate.now());
+                user.getUserId(), LocalDate.now());
         if(userFruit.isEmpty()){throw new UserFruitNotFoundException("User Fruit Not Found");}
-
 
         UserFruitTodayInfoResponse response =
                 UserFruitTodayInfoResponse.createUserFruitTodayInfoResponse(

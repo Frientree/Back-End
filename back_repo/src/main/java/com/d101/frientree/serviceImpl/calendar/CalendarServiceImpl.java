@@ -16,6 +16,7 @@ import com.d101.frientree.repository.fruit.UserFruitRepository;
 import com.d101.frientree.repository.juice.UserJuiceRepository;
 import com.d101.frientree.repository.user.UserRepository;
 import com.d101.frientree.service.calendar.CalendarService;
+import com.d101.frientree.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
@@ -33,21 +34,20 @@ public class CalendarServiceImpl implements CalendarService {
     private final UserRepository userRepository;
     private final UserFruitRepository userFruitRepository;
     private final UserJuiceRepository userJuiceRepository;
+    private final CommonUtil commonUtil;
 
     @Override
     public ResponseEntity<CalendarMonthlyFruitsResponse> monthlyFruits(CalendarDateRequest request) {
+        commonUtil.checkServerInspectionTime();
+        //사용자 정보 가져오기
+        User user = commonUtil.getUser();
+
         LocalDate startDate = LocalDate.parse(request.getStartDate());
         LocalDate endDate = LocalDate.parse(request.getEndDate());
 
-        //사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
-        if(user.isEmpty()){throw new UserNotFoundException("User Not Found");}
-
         //시작 date 와 종료 date 기준으로 유저 열매 조회하기
         List<UserFruit> userFruits = userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(
-                user.get().getUserId(), startDate, endDate);
+                user.getUserId(), startDate, endDate);
 
         List<CalendarMonthlyFruitsDTO> calendarMonthlyFruitsDTOList = new ArrayList<>();
 
@@ -93,14 +93,15 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public ResponseEntity<CalendarTodayFeelStatisticsResponse> todayFeelStatistics(String todayDate) {
+        commonUtil.checkServerInspectionTime();
+        //사용자 정보 가져오기
+        User user = commonUtil.getUser();
+
         //request todayDate --> LocalDate 타입으로 변환
         LocalDate today = LocalDate.parse(todayDate);
 
-        //사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         //사용자가 금일 생성한 열매 감정 가져오기
-        Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(Long.valueOf(authentication.getName()), today);
+        Optional<UserFruit> userFruit = userFruitRepository.findByUser_UserIdAndUserFruitCreateDate(user.getUserId(), today);
         if(userFruit.isEmpty()){throw new UserFruitNotFoundException("User Fruit Not Found");}
 
         //금일 생성한 열매 감정과 같은 사용자 수 가져오기
@@ -108,7 +109,7 @@ public class CalendarServiceImpl implements CalendarService {
                 .countByFruitNumAndDateExcludingUser(
                         userFruit.get().getFruitDetail().getFruitNum(),
                         today,
-                        Long.valueOf(authentication.getName())
+                        user.getUserId()
                 );
 
         //DTO 담으면서 Response 형식으로 저장
@@ -128,18 +129,17 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public ResponseEntity<CalendarWeeklyJuiceResponse> weeklyJuice(CalendarDateRequest request) {
+        commonUtil.checkServerInspectionTime();
+        //사용자 정보 가져오기
+        User user = commonUtil.getUser();
+
         //주간 주스 조회
         LocalDate startDate = LocalDate.parse(request.getStartDate());
         LocalDate endDate = LocalDate.parse(request.getEndDate());
 
-        //사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
-        if(user.isEmpty()){throw new UserNotFoundException("User Not Found");}
-
         //endDate 기준으로 유저가 주스 생성한 것 가져오기
         Optional<UserJuice> userJuice = userJuiceRepository.findByUser_UserIdAndUserJuiceCreateDate(
-                user.get().getUserId(), endDate);
+                user.getUserId(), endDate);
         if(userJuice.isEmpty()){throw new UserJuiceNotFoundException("User Juice Not Found");}
 
         //juiceData DTO 담기
@@ -152,7 +152,7 @@ public class CalendarServiceImpl implements CalendarService {
         //start, end 날짜 기준으로 유저가 생성한 열매 정보들 가져오기
         List<UserFruit> userFruitList =
                 userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(
-                user.get().getUserId(), startDate, endDate
+                user.getUserId(), startDate, endDate
         );
 
         List<CalendarWeeklyJuiceFruitsGraphDTO> calendarWeeklyJuiceFruitsGraphDTOList = new ArrayList<>();
@@ -210,19 +210,17 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public ResponseEntity<CalendarWeeklyFruitsResponse> weeklyFruits(CalendarDateRequest request) {
+        commonUtil.checkServerInspectionTime();
+        //사용자 정보 가져오기
+        User user = commonUtil.getUser();
+
         //주간 열매 리스트 조회
         LocalDate startDate = LocalDate.parse(request.getStartDate());
         LocalDate endDate = LocalDate.parse(request.getEndDate());
 
-        //사용자 정보 가져오기
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Optional<User> user = userRepository.findById(Long.valueOf(authentication.getName()));
-        if(user.isEmpty()){throw new UserNotFoundException("User Not Found");}
-
         //시작 date, 종료 date 기준 유저 열매 조회
         List<UserFruit> userFruits = userFruitRepository.findAllByUser_UserIdAndUserFruitCreateDateBetweenOrderByUserFruitCreateDateAsc(
-                user.get().getUserId(), startDate, endDate);
+                user.getUserId(), startDate, endDate);
 
         List<CalendarWeeklyFruitsDTO> calendarWeeklyFruitsDTOList = new ArrayList<>();
 

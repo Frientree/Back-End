@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppVersionResponseDTO {
-    @Schema(description = "앱 사용 가능 시간 여부", example = "true")
-    private boolean appAvailable;
     @Schema(description = "앱 스토어 링크", example = "www.bbb.com")
     private String url;
     @Schema(description = "앱 최소 실행 버전", example = "Success")
@@ -21,9 +19,8 @@ public class AppVersionResponseDTO {
 
     private static String updateUrl = "www.naver.com";
 
-    public static AppVersionResponseDTO createAppVersionResponseDTO(AppVersion appVersion, boolean appAvailable) {
+    public static AppVersionResponseDTO createAppVersionResponseDTO(AppVersion appVersion) {
         return AppVersionResponseDTO.builder()
-                .appAvailable(appAvailable)
                 .url(updateUrl)
                 .minVersion(appVersion.getAppMinVersion())
                 .build();

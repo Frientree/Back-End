@@ -21,6 +21,7 @@ public class FrientreeApplication {
 //		SpringApplication.run(FrientreeApplication.class, args);
 		SpringApplication app = new SpringApplication(FrientreeApplication.class);
 		app.setAdditionalProfiles("development");
+//		app.setAdditionalProfiles("test");
 		app.run(args);
 	}
 

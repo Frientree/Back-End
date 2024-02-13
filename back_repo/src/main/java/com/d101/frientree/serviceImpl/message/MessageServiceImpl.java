@@ -5,6 +5,7 @@ import com.d101.frientree.dto.message.response.MessageResponse;
 import com.d101.frientree.entity.message.Message;
 import com.d101.frientree.repository.message.MessageRepository;
 import com.d101.frientree.service.message.MessageService;
+import com.d101.frientree.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,13 @@ import java.util.Random;
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
+    private final CommonUtil commonUtil;
 
 
     @Override
     public ResponseEntity<MessageResponse> confirm() {
+        commonUtil.checkServerInspectionTime();
+
         List<Message> messages = messageRepository.findAll();
 
         Random random = new Random();

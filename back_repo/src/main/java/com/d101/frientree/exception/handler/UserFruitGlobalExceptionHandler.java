@@ -27,14 +27,14 @@ public class UserFruitGlobalExceptionHandler {
 
     @ExceptionHandler(NaverClovaAPIException.class)
     public ResponseEntity<String> handleNaverClovaAPIException(NaverClovaAPIException e){
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .headers(JSON_HEADERS)
                 .body(stringToGson(e.getMessage()));
     }
 
     @ExceptionHandler(PythonAPIException.class)
     public ResponseEntity<String> handlePythonAPIException(PythonAPIException e){
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .headers(JSON_HEADERS)
                 .body(stringToGson(e.getMessage()));
     }

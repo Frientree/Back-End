@@ -5,6 +5,7 @@ import com.d101.frientree.dto.appversion.dto.AppVersionResponseDTO;
 import com.d101.frientree.entity.app.AppVersion;
 import com.d101.frientree.repository.app.AppVersionRespository;
 import com.d101.frientree.service.app.AppVersionService;
+import com.d101.frientree.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,18 +18,11 @@ import java.util.List;
 public class AppVersionServiceImpl implements AppVersionService {
 
     private final AppVersionRespository appVersionRespository;
-
+    private final CommonUtil commonUtil;
 
     @Override
     public ResponseEntity<AppVersionResponse> confirm() {
-        //현재 시간 가져오기
-        LocalTime now = LocalTime.now();
-
-        //00:00과 00:10을 나타내는 LocalTime 객체를 생성
-        LocalTime startTime = LocalTime.of(0, 0);
-        LocalTime endTime = LocalTime.of(0, 10);
-
-        boolean appAvailable = !(now.isAfter(startTime) && now.isBefore(endTime) || now.equals(startTime));
+        commonUtil.checkServerInspectionTime();
 
         List<AppVersion> appVersions = appVersionRespository.findAll();
 
@@ -36,7 +30,7 @@ public class AppVersionServiceImpl implements AppVersionService {
 
         AppVersionResponse response = AppVersionResponse.createAppVersionResponse(
                 "Success",
-                AppVersionResponseDTO.createAppVersionResponseDTO(appVersion, appAvailable)
+                AppVersionResponseDTO.createAppVersionResponseDTO(appVersion)
         );
 
         return ResponseEntity.ok(response);
