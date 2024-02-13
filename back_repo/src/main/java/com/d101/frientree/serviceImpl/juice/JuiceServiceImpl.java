@@ -16,6 +16,7 @@ import com.d101.frientree.exception.juice.JuiceNotFoundException;
 import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.fruit.UserFruitRepository;
 import com.d101.frientree.repository.juice.JuiceDetailRepository;
+import com.d101.frientree.repository.juice.JuiceMessageRepository;
 import com.d101.frientree.repository.juice.UserJuiceRepository;
 import com.d101.frientree.repository.message.MessageRepository;
 import com.d101.frientree.repository.user.UserRepository;
@@ -42,7 +43,7 @@ public class JuiceServiceImpl implements JuiceService {
     private final JuiceDetailRepository juiceDetailRepository;
     private final UserJuiceRepository userJuiceRepository;
     private final UserFruitRepository userFruitRepository;
-    private final MessageRepository messageRepository;
+    private final JuiceMessageRepository juiceMessageRepository;
 
     @Override
     public ResponseEntity<JuiceListConfirmationResponse> listConfirm() {
@@ -123,6 +124,39 @@ public class JuiceServiceImpl implements JuiceService {
             throw new JuiceGenerationException("Not enough fruits to generate juice");
         }
 
+        // 만약 userFruits 중에 사과가 하나라도 있으면 행운의 사과주스 생성
+        boolean haveApple = false;
+        for (UserFruit userFruit: userFruits) {
+            if (userFruit.getUserFruitScore() == 22) {
+                haveApple = true;
+                break;
+            }
+        }
+
+        if (haveApple) {
+            JuiceDetail createdJuice = juiceDetailRepository.findJuicesByScore(0L);
+            List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO =
+                    JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(startDate, endDate, userFruits);
+            String juiceMessage = juiceMessageRepository.findRandomMessage(createdJuice.getJuiceNum());
+            UserJuice userJuice = UserJuice.builder()
+                    .user(currentUser)
+                    .juiceDetail(createdJuice)
+                    .userJuiceCreateDate(endDate)
+                    .userJuiceMessage(juiceMessage)
+                    .build();
+
+            JuiceDataDTO juiceDataDTO = JuiceDataDTO.createJuiceDataDTO(createdJuice, juiceMessage);
+
+            JuiceGenerationResponse response = JuiceGenerationResponse.createJuiceGenerationResponse(
+                    "success",
+                    juiceDataDTO,
+                    juiceFruitsGraphDataDTO
+            );
+            userJuiceRepository.save(userJuice);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+
         long scoreSum = userFruits.stream()
                 .mapToLong(UserFruit::getUserFruitScore)
                 .sum();
@@ -134,12 +168,18 @@ public class JuiceServiceImpl implements JuiceService {
         List<JuiceFruitsGraphDataDTO> juiceFruitsGraphDataDTO =
                 JuiceFruitsGraphDataDTO.createJuiceFruitsGraphDataDTO(startDate, endDate, userFruits);
 
-        // Message data 중 랜덤으로 하나 가져와야 됨.
-        List<Message> allMessages = messageRepository.findAll();
-        // 랜덤한 메시지 하나 선택
-        Message randomMessage = getRandomElement(allMessages);
+        // 주스 위로 메세지에서 createJuice의 juiceNum에 접근 -> 해당 juiceNum인 message 중에서 랜덤으로 하나 가져오기
+        String juiceMessage = juiceMessageRepository.findRandomMessage(createdJuice.getJuiceNum());
 
-        JuiceDataDTO juiceDataDTO = JuiceDataDTO.createJuiceDataDTO(createdJuice, randomMessage);
+
+        UserJuice userJuice = UserJuice.builder()
+                .user(currentUser)
+                .juiceDetail(createdJuice)
+                .userJuiceCreateDate(endDate)
+                .userJuiceMessage(juiceMessage)
+                .build();
+
+        JuiceDataDTO juiceDataDTO = JuiceDataDTO.createJuiceDataDTO(createdJuice, juiceMessage);
 
         JuiceGenerationResponse response = JuiceGenerationResponse.createJuiceGenerationResponse(
                 "success",
@@ -147,12 +187,6 @@ public class JuiceServiceImpl implements JuiceService {
                 juiceFruitsGraphDataDTO
         );
 
-        UserJuice userJuice = UserJuice.builder()
-                .user(currentUser)
-                .juiceDetail(createdJuice)
-                .userJuiceCreateDate(endDate)
-                .userJuiceMessage(randomMessage.getMessageDescription())
-                .build();
 
         userJuiceRepository.save(userJuice);
 
