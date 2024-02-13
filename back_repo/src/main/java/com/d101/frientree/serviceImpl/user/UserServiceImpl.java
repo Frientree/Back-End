@@ -248,7 +248,7 @@ public class UserServiceImpl implements UserService {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    // 유저 비활성화
+    //유저 비활성화
     @Override
     @Transactional
     public ResponseEntity<UserDeactivationResponse> deactivate() {
@@ -256,34 +256,44 @@ public class UserServiceImpl implements UserService {
         User currentUser = commonUtil.getUser();
         currentUser.setUserDisabled(true);
 
-        // 내가 생성한 과일과 생성한 주스 삭제, 그리고 내가 받은 이파리 수신 테이블에서 삭제
+        // 내가 생성한 과일과 생성한 주스 삭제
         List<UserJuice> deleteJuices = userJuiceRepository.findAllByUser(currentUser);
         List<UserFruit> deleteFruits = userFruitRepository.findAllByUser(currentUser);
-        List<LeafReceive> deleteReceives = leafReceiveRepository.findAllByUser(currentUser);
         userJuiceRepository.deleteAllInBatch(deleteJuices);
         userFruitRepository.deleteAllInBatch(deleteFruits);
+
+        // 내가 받은 이파리 수신 테이블에서 삭제
+        List<LeafReceive> deleteReceives = leafReceiveRepository.findAllByUser(currentUser);
         leafReceiveRepository.deleteAllInBatch(deleteReceives);
 
         // 내가 보낸 이파리 송수신 테이블에서 삭제하고 이파리 객체도 삭제
         List<LeafSend> sendsLeaf = leafSendRepository.findAllByUser(currentUser);
-        List<LeafDetail> deleteLeafs = new ArrayList<>();
-        sendsLeaf.forEach(leafSend -> deleteLeafs.add(leafSend.getLeafDetail()));
+        sendsLeaf.forEach(leafSend -> {
+            leafReceiveRepository.deleteByLeafDetail(leafSend.getLeafDetail());
+            leafSendRepository.deleteByLeafDetail(leafSend.getLeafDetail());
+        });
 
-        //MongoDB에 저장하기
-        deleteLeafs.forEach(leafDetail -> {
+        // MongoDB에 저장하기 전에 모든 LeafDetail 연관 관계를 삭제
+        List<LeafDetail> deleteLeafs = new ArrayList<>();
+        for (LeafSend leafSend : sendsLeaf) {
+            LeafDetail leafDetail = leafSend.getLeafDetail();
+            if (!deleteLeafs.contains(leafDetail)) {
+                deleteLeafs.add(leafDetail);
+            }
+        }
+
+        for (LeafDetail leafDetail : deleteLeafs) {
+            leafReceiveRepository.deleteByLeafDetail(leafDetail);
+            leafSendRepository.deleteByLeafDetail(leafDetail);
+        }
+
+        // MongoDB에 저장
+        for (LeafDetail leafDetail : deleteLeafs) {
             Leaf mongoLeaf = new Leaf(leafDetail);
             mongoLeafRepository.save(mongoLeaf);
-        });
+        }
 
-        //유저 이파리 연관관계 제거하기
-        deleteLeafs.forEach(leafDetail -> {
-            //LeafReceive 제거
-            leafReceiveRepository.deleteByLeafDetail(leafDetail);
-            //LeafSend 제거
-            leafSendRepository.deleteByLeafDetail(leafDetail);
-        });
-
-        //기간 지난 이파리 삭제하기
+        // 회원 탈퇴한 이파리 삭제하기
         leafDetailRepository.deleteAllInBatch(deleteLeafs);
 
         UserDeactivationResponse response = UserDeactivationResponse.createUserDeactivationResponse(
@@ -291,8 +301,14 @@ public class UserServiceImpl implements UserService {
                 true
         );
 
+        // 네이버로 가입된 유저면 DB에서 삭제 (소셜 로그인 때문에)
+        if (currentUser.getUserEmail() == null || currentUser.getUserEmail().isEmpty()) {
+            userRepository.deleteById(currentUser.getUserId());
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
 
     // 이메일 중복체크
     @Override
