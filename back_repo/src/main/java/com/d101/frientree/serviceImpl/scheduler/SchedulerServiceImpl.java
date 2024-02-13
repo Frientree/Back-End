@@ -25,7 +25,7 @@ public class SchedulerServiceImpl {
         leafService.moveAndDeleteOldLeaves();
     }
 
-    @Scheduled(cron = "0 5 0 * * 2") //매주 월요일 00:05 실행
+    @Scheduled(cron = "0 5 0 * * 1") //매주 월요일 00:05 실행
     public void emotionFeedbackTasks() throws Exception {
         //AWS S3 csv 파일 업로드 (MongoDB Emotion 데이터)
         String csvFileUrl = mongoEmotionService.makeFileCsv();
