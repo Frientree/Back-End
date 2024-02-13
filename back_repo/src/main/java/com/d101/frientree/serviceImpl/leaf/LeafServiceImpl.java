@@ -15,7 +15,6 @@ import com.d101.frientree.entity.mongo.leaf.Leaf;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
 import com.d101.frientree.exception.leaf.LeafCreationFailedException;
-import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.repository.leaf.LeafDetailRepository;
 import com.d101.frientree.repository.leaf.LeafReceiveRepository;
 import com.d101.frientree.repository.leaf.LeafSendRepository;
@@ -28,8 +27,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

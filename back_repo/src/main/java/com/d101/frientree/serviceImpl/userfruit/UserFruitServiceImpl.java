@@ -11,7 +11,6 @@ import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.mongo.emotion.Emotion;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.user.UserModifyException;
-import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.exception.userfruit.NaverClovaAPIException;
 import com.d101.frientree.exception.userfruit.PythonAPIException;
 import com.d101.frientree.exception.fruit.FruitNotFoundException;
@@ -32,8 +31,6 @@ import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

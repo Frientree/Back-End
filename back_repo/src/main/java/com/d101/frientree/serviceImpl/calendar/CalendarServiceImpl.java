@@ -9,7 +9,6 @@ import com.d101.frientree.dto.calendar.response.CalendarWeeklyJuiceResponse;
 import com.d101.frientree.entity.fruit.UserFruit;
 import com.d101.frientree.entity.juice.UserJuice;
 import com.d101.frientree.entity.user.User;
-import com.d101.frientree.exception.user.UserNotFoundException;
 import com.d101.frientree.exception.userfruit.UserFruitNotFoundException;
 import com.d101.frientree.exception.userjuice.UserJuiceNotFoundException;
 import com.d101.frientree.repository.fruit.UserFruitRepository;
@@ -20,8 +19,6 @@ import com.d101.frientree.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,7 +28,6 @@ import java.util.*;
 @Log4j2
 @RequiredArgsConstructor
 public class CalendarServiceImpl implements CalendarService {
-    private final UserRepository userRepository;
     private final UserFruitRepository userFruitRepository;
     private final UserJuiceRepository userJuiceRepository;
     private final CommonUtil commonUtil;
