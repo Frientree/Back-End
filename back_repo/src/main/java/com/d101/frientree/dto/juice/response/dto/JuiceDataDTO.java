@@ -18,12 +18,12 @@ public class JuiceDataDTO {
     @Schema(description = "위로 메시지", example = "목표 없는 배낭여행은 그냥 쓸모없는 짐이다.")
     private String condolenceMessage;
 
-    public static JuiceDataDTO createJuiceDataDTO(JuiceDetail juiceDetail, Message message) {
+    public static JuiceDataDTO createJuiceDataDTO(JuiceDetail juiceDetail, String message) {
         return JuiceDataDTO.builder()
                 .juiceDescription(juiceDetail.getJuiceInfo())
                 .juiceName(juiceDetail.getJuiceName())
                 .juiceImageUrl(juiceDetail.getJuiceImageUrl())
-                .condolenceMessage(message.getMessageDescription())
+                .condolenceMessage(message)
                 .build();
     }
 }
