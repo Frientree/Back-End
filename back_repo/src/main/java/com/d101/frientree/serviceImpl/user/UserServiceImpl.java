@@ -25,6 +25,7 @@ import com.d101.frientree.repository.mongo.MongoLeafRepository;
 import com.d101.frientree.repository.user.UserRepository;
 import com.d101.frientree.security.CustomUserDetailsService;
 import com.d101.frientree.service.user.UserService;
+import com.d101.frientree.util.CommonUtil;
 import com.d101.frientree.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -72,6 +73,7 @@ public class UserServiceImpl implements UserService {
     private final LeafReceiveRepository leafReceiveRepository;
     private final LeafSendRepository leafSendRepository;
     private final LeafDetailRepository leafDetailRepository;
+    private final CommonUtil commonUtil;
 
     private static final int VERIFICATION_CODE_LENGTH = 6;
 
@@ -81,7 +83,7 @@ public class UserServiceImpl implements UserService {
     // 로그인 + 토큰 발급 로직
     @Override
     public ResponseEntity<UserSignInResponse> signIn(UserSignInRequest userSignInRequest) {
-
+        commonUtil.checkServerInspectionTime();
         // 유저 정보를 가져오고, 이메일 불일치시 404 예외처리
         UserDetails userDetails;
 
@@ -127,7 +129,7 @@ public class UserServiceImpl implements UserService {
     // 토큰 재발급 로직
     @Override
     public ResponseEntity<UserTokenRefreshGenerationResponse> tokenRefreshGenerate(UserTokenRefreshGenerationRequest userTokenRefreshGenerationRequest) {
-
+        commonUtil.checkServerInspectionTime();
         String clientRefreshToken = userTokenRefreshGenerationRequest.getRefreshToken();
 
         Optional<RefreshToken> refreshTokenOptional =
@@ -174,8 +176,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<UserNicknameModificationResponse> nicknameModify(UserNicknameModificationRequest userNicknameModificationRequest) {
-
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
 
         if (userNicknameModificationRequest.getUserNickname() == null || userNicknameModificationRequest.getUserNickname().isEmpty()) {
             throw new NicknameValidateException("nickname valid error");
@@ -198,8 +200,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<UserProfileConfirmationResponse> profileConfirm() {
-
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
 
         String decodeEmail = "";
         if (currentUser.getUserEmail() != null) {
@@ -220,8 +222,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<UserAlamModificationResponse> alamModify(UserAlamModificationRequest userAlamModificationRequest) {
-
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
         currentUser.setUserNotification(userAlamModificationRequest.isNotification());
 
         UserAlamModificationResponse response = UserAlamModificationResponse.createUserAlamModificationResponse(
@@ -236,8 +238,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<UserRemovalResponse> remove() {
-
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
         userRepository.delete(currentUser);
 
         UserRemovalResponse response = UserRemovalResponse.createUserRemovalResponse(
@@ -252,8 +254,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<UserDeactivationResponse> deactivate() {
-
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
         currentUser.setUserDisabled(true);
 
         // 내가 생성한 과일과 생성한 주스 삭제, 그리고 내가 받은 이파리 수신 테이블에서 삭제
@@ -297,7 +299,7 @@ public class UserServiceImpl implements UserService {
     // 이메일 중복체크
     @Override
     public ResponseEntity<UserDuplicateCheckResponse> duplicateCheck(UserDuplicateCheckRequest userDuplicateCheckRequest) {
-
+        commonUtil.checkServerInspectionTime();
         if (!userDuplicateCheckRequest.getUserEmail().matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
             throw new CustomValidationException("email valid error");
         }
@@ -320,7 +322,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<UserSendEmailCertificationResponse> sendEmailCertificate(UserSendEmailCertificationRequest userSendEmailCertificationRequest) {
-
+        commonUtil.checkServerInspectionTime();
         if (!userSendEmailCertificationRequest.getUserEmail().matches("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$")) {
             throw new CustomValidationException("email valid error");
         }
@@ -344,7 +346,7 @@ public class UserServiceImpl implements UserService {
     // 이메일 인증 처리
     @Override
     public ResponseEntity<UserPassEmailCertificationResponse> passEmailCertificate(UserPassEmailCertificationRequest userPassEmailCertificationRequest) {
-
+        commonUtil.checkServerInspectionTime();
         String userEmail = userPassEmailCertificationRequest.getUserEmail();
         String code = userPassEmailCertificationRequest.getCode();
 
@@ -369,8 +371,8 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ResponseEntity<UserPasswordModificationResponse> passwordModify(UserPasswordModificationRequest userPasswordModificationRequest) {
-
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
 
         if (!passwordEncoder.matches(userPasswordModificationRequest.getUserPw(), currentUser.getUserPassword())) {
             throw new CustomValidationException("current password not match");
@@ -394,7 +396,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<UserTemporaryPasswordSendMailResponse> temporaryPasswordSend(UserTemporaryPasswordSendMailRequest userTemporaryPasswordSendMailRequest) {
-
+        commonUtil.checkServerInspectionTime();
         String hashingEmail = getAESEncoded(userTemporaryPasswordSendMailRequest.getUserEmail());
 
         User currentUser = userRepository.findByUserEmail(hashingEmail)
@@ -417,8 +419,8 @@ public class UserServiceImpl implements UserService {
     // 이파리, 열매 생성 가능 여부 조회
     @Override
     public ResponseEntity<UserCreateStatusConfirmationResponse> createStatusConfirm() {
-
-        User currentUser = getUser();
+        commonUtil.checkServerInspectionTime();
+        User currentUser = commonUtil.getUser();
 
         UserCreateStatusConfirmationResponse result = UserCreateStatusConfirmationResponse.createUserCreateStatusConfirmationResponse(
                 "Success",
@@ -431,7 +433,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public ResponseEntity<UserSignInNaverResponse> userSignInNaver(UserSignInNaverRequest userSignInNaverRequest) {
-
+        commonUtil.checkServerInspectionTime();
         String naverCode = userSignInNaverRequest.getCode();
 
         Optional<User> currentUser = userRepository.findByNaverCode(naverCode);
@@ -526,7 +528,7 @@ public class UserServiceImpl implements UserService {
     // 유저 개별 조회
     @Override
     public ResponseEntity<UserConfirmationResponse> confirm(Long id) {
-
+        commonUtil.checkServerInspectionTime();
         User currentUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("user not found"));
 
@@ -541,7 +543,7 @@ public class UserServiceImpl implements UserService {
     // 유저 전체 조회
     @Override
     public ResponseEntity<UserListConfirmationResponse> listConfirm() {
-
+        commonUtil.checkServerInspectionTime();
         List<User> users = userRepository.findAll();
         UserListConfirmationResponse response = UserListConfirmationResponse.createUserListConfirmationResponse(
                 "Success",
@@ -554,6 +556,7 @@ public class UserServiceImpl implements UserService {
     // 유저 가입
     @Override
     public ResponseEntity<UserGenerationResponse> userGenerate(UserGenerationRequest userGenerationRequest) {
+        commonUtil.checkServerInspectionTime();
         // 입력 정보의 유효성 검증
         validateUserCreateRequest(userGenerationRequest);
 
@@ -579,7 +582,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<UserFcmTokenUpdateResponse> updateFcmToken(UserFcmTokenUpdateRequest request) {
-        User user = getUser();
+        commonUtil.checkServerInspectionTime();
+        User user = commonUtil.getUser();
         user.setFcmToken(request.getFcmToken());
         userRepository.save(user);
 
@@ -606,22 +610,6 @@ public class UserServiceImpl implements UserService {
 
         // 하루 이하로 남았으면 true 반환
         return leftMin <= 1440 && !duration.isNegative();
-    }
-
-    // 현재 접속한 유저 정보를 가져오는 메서드
-    private User getUser() {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = authentication.getName();
-
-        User currentUser = userRepository.findById(Long.valueOf(userId))
-                .orElseThrow(() -> new UserNotFoundException("user not found"));
-
-        if (currentUser.getUserDisabled()) {
-            throw new UserNotFoundException("user disabled");
-        }
-
-        return currentUser;
     }
 
     private void sendVerificationEmail(String email) {
