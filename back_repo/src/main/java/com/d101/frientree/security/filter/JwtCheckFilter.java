@@ -103,20 +103,18 @@ public class JwtCheckFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws IOException {
 
         String authHeaderStr = request.getHeader("Authorization");
-        if(authHeaderStr.isEmpty()){
-            log.warn("Null Token");
-            throw new CustomJwtException("Null Token");
+        if (authHeaderStr == null || !authHeaderStr.startsWith("Bearer ")) {
+            // 적절하지 않은 Authorization 헤더일 경우 401 에러 반환
+            sendUnauthorizedError(response);
+            return;
         }
 
-        //System.out.println(authHeaderStr);
         // Bearer // 7 Jwt 문자열
         try {
             String accessToken;
-            try {
-                accessToken = authHeaderStr.substring(7);
-            }catch (CustomJwtException e){
-                throw new CustomJwtException("Null Token");
-            }
+
+            accessToken = authHeaderStr.substring(7);
+
             Map<String, Object> claims = JwtUtil.validateToken(accessToken);
 
             String username = (String) claims.get("username");
@@ -156,6 +154,17 @@ public class JwtCheckFilter extends OncePerRequestFilter {
             printWriter.close();
         }
 
+    }
+
+    private void sendUnauthorizedError(HttpServletResponse response) throws IOException {
+        Gson gson = new Gson();
+        String msg = gson.toJson(Collections.singletonMap("message", "Fail"));
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        PrintWriter printWriter = response.getWriter();
+        printWriter.println(msg);
+        printWriter.close();
     }
 
 }
