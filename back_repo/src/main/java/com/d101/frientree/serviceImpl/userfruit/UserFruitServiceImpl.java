@@ -147,7 +147,8 @@ public class UserFruitServiceImpl implements UserFruitService {
         );
         if(userFruit.isPresent()){throw new UserFruitCreateException("Already produced fruit");}
         try { //Python 감정 분석 API 호출
-            return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(textFile.getContent()));
+            String receiveText = textFile.getContent().replaceAll("(\r\n|\r|\n|\n\r)", " ");
+            return ResponseEntity.ok(httpPostAIRequest.sendPostRequest(receiveText));
         }catch (PythonAPIException e){
             throw new PythonAPIException("Python AI API Error");
         }
