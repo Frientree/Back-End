@@ -726,8 +726,8 @@ public class UserServiceImpl implements UserService {
 
     public String getAESEncoded(String data) {
         try {
-            String key = "insert 16 length";
-            String iv = "insert 16 length";
+            String key = aesKey;
+            String iv = aesKey;
 
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
