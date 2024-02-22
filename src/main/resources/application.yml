@@ -44,7 +44,7 @@ spring:
       on-profile: mongo_database
   data:
     mongodb:
-      host: ENC(KBrZKlr9InMEm8d7jyt7nHk30/9EU2nlLRcqxaMZEu4=)
+      host: ENC(Cgkhtl5xSuIYpZnuNHl9L4DX8FPC9Nmt)
       port: 27017
       database: ENC(C3tpIZlYiC8I7crNUf5mAA==)
       username: ENC(TBH7CAtg639UJAR2SOEIOQ==)
