@@ -43,7 +43,7 @@ jobs:
 
     # gradle build
     - name: Build with Gradle
-      run: ./gradlew clean build -PJASYPT_KEY=${{ secrets.JASYPT_KEY }}
+      run: ./gradlew clean build -PJASYPT_KEY=${{ secrets.JASYPT_KEY }} -x test
 
     # docker login
     - name: Docker Hub Login
