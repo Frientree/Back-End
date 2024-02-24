@@ -1,6 +1,5 @@
 package com.d101.frientree.repository.leaf;
 
-import com.d101.frientree.entity.leaf.LeafCategory;
 import com.d101.frientree.entity.leaf.LeafDetail;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +22,7 @@ public interface LeafDetailRepository extends JpaRepository<LeafDetail, Long> {
 
     Optional<LeafDetail> findTopByLeafCategoryAndLeafNumNotInOrderByLeafViewAsc(
             String leafCategory, List<Long> sentAndReceivedLeafNums);
+
+    @Query(value = "SELECT * FROM leaf_detail WHERE category = ?1 ORDER BY RAND() LIMIT 1", nativeQuery = true)
+    Optional<LeafDetail> findRandomByCategory(String leafCategory);
 }
