@@ -37,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -200,12 +201,13 @@ public class UserFruitServiceImpl implements UserFruitService {
 
         long userScore = minScore + (long) (Math.random() * (maxScore - minScore + 1));
 
-        //딸기일 때 -- 현재 시간 밀리세컨드 단위로 뒤에 숫자 한 개 들고와서 랜덤 점수 끝자리랑 같은지 비교
+        //딸기일 때 -- 1%확률로 사과 저장시켜주기
         //같으면 luck 열매 사과 생성해주기
         if(fruitDetail.getFruitFeel().equals("happy")){
-            long currentTimeMillis = System.currentTimeMillis();
+            Random random = new Random();
+            int chance = random.nextInt(100) + 1;
 
-            if((userScore % 10) == (currentTimeMillis % 10)){
+            if((userScore % 10) == (chance)){
                 userScore = 22;
                 //luck 열매로 정보 바꾸기
                 optionalFruitDetail = fruitDetailRepository.findByFruitFeel("luck");
