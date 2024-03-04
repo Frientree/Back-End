@@ -57,7 +57,7 @@ public class AwsS3ObjectStorage {
                 throw new AwsS3FileNotFoundException("m4a Not Found");
             }
         } catch (Exception e) { //error
-            log.error("Failed to delete file: {}", fileUrl, e);
+            log.error("Failed to delete file!: {}", fileUrl, e);
             throw new AwsS3InternalServerErrorException("Aws Server Error");
         }
     }
