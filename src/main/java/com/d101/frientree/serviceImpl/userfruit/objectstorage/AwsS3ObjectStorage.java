@@ -50,14 +50,14 @@ public class AwsS3ObjectStorage {
             if (amazonS3.doesObjectExist(bucket, key)) {
                 // S3에서 파일 삭제
                 amazonS3.deleteObject(bucket, key);
-                //log.info("File deleted successfully: {}", key);
+                log.info("File deleted successfully: {}", key);
                 return 1;
             } else { // file not found
-                //log.warn("File not found: {}", key);
+                log.warn("File not found: {}", key);
                 throw new AwsS3FileNotFoundException("m4a Not Found");
             }
         } catch (Exception e) { //error
-            //log.error("Failed to delete file: {}", fileUrl, e);
+            log.error("Failed to delete file: {}", fileUrl, e);
             throw new AwsS3InternalServerErrorException("Aws Server Error");
         }
     }
