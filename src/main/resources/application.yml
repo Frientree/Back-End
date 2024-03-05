@@ -77,7 +77,7 @@ jasypt:
 cloud:
   aws:
     s3:
-      bucket: ENC(SQ8ML9hOfJxAvysRavaWUknimwYxQ49M)
+      bucket: ENC(UPXLV475FTxy+qaL4JpyCHO/oxzrFepz)
     credentials:
       access-key: ENC(suEkJGQlefKkAn2kq7k4u8wN2QEjkdkKgQXuDAw/fB8=)
       secret-key: ENC(XZODL9HyWZIgY+j6N6Kiaf12iz+jcsbCoZgu6VNc6LDh85iH/50M0FD+9MPB6QquaVgu/jKXYVg=)
