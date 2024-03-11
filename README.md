@@ -62,17 +62,17 @@
 
   이파리 내용을 작성하고 직접 입으로 불어서 전송해 보세요.
   <br>
-  <img src="/assets/image/leaf_send.gif" width="400">
+  <img src="/assets/image/leaf_send.gif" width="300">
 
   원하는 카테고리를 선택한 후, 휴대폰을 흔들어 이파리를 받아보세요
   <br>
-  <img src="/assets/image/leaf_receive.gif" width="400">
+  <img src="/assets/image/leaf_receive.gif" width="300">
 
 
 - STT 서비스 (열매)
     - 친구에게 얘기하듯 편하게 오늘 있었던 일들을 얘기해보세요. 당신의 감정을 분석하여 귀여운 열매로 받아볼 수 있답니다.
       <br>
-      <img src="/assets/image/kiwi.gif" width="400">
+      <img src="/assets/image/kiwi.gif" width="300">
 
 
 ### :tropical_drink: 주스 만들기
@@ -80,16 +80,16 @@
 - 감정 통계 서비스 (주스)
     - 일주일간 모아둔 열매들로 휴대폰을 흔들어 주스를 만들어 보세요
 
-<img src="/assets/image/make_juice.gif" width="400">
+<img src="/assets/image/make_juice.gif" width="300">
 
 - 감정 통계 서비스 (캘린더)
     - 내가 모은 열매들과 감정의 변화를 한 눈에 알아보세요
 
-  <img src="/assets/image/juice_calendar.gif" width="400">
+  <img src="/assets/image/juice_calendar.gif" width="300">
 
 - 감정 토로
     - 억울하고 답답해 힘든 감정들을 내뱉고 터뜨려 해소하세요!
-      <img src="/assets/image/blackholeee.gif" width="400">
+      <img src="/assets/image/blackholeee.gif" width="300">
 
 
 ### 안드로이드
