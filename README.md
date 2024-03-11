@@ -89,7 +89,8 @@
 
 - 감정 토로
     - 억울하고 답답해 힘든 감정들을 내뱉고 터뜨려 해소하세요!
-      <img src="/assets/image/blackholeee.gif" width="300">
+  
+<img src="/assets/image/blackholeee.gif" width="300">
 
 
 ### 안드로이드
