@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0acc15e0-89bb-4bef-82a6-e172c1806fee" name="Changes" comment="" />
+    <list default="true" id="0acc15e0-89bb-4bef-82a6-e172c1806fee" name="Changes" comment="feat : leaf life cycle 30 day modify&#10;&#10;이파리 생명주기 7일에서 30일로 생명주기 변경">
+      <change beforePath="$PROJECT_DIR$/.idea/Back-End.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/d101/frientree/dto/juice/response/dto/JuiceDataDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/d101/frientree/dto/juice/response/dto/JuiceDataDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/d101/frientree/entity/juice/JuiceDetail.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/d101/frientree/entity/juice/JuiceDetail.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,12 +23,37 @@
       <ProjectState />
     </projectState>
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="frientree" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="develop_1.1.1" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2cZ13RQBkdrlsE0j8wZ8N32G1Qi" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -28,14 +61,71 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Gradle.Build Back-End.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "BE__develop__1.1.0",
+    "Spring Boot.FrientreeApplication.executor": "Run",
+    "git-widget-placeholder": "juice__background",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/SSAFY/Desktop/githubFrienTree/Back-End/src/main/resources",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "configurable.group.language",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\SSAFY\Desktop\githubFrienTree\Back-End\src\main\resources" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="FrientreeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <additionalParameters>
+        <param>
+          <option name="enabled" value="true" />
+          <option name="name" value="JASYPT_KEY" />
+          <option name="value" value="dhgkqlsWkd" />
+        </param>
+      </additionalParameters>
+      <module name="frientree.main" />
+      <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.d101.frientree.FrientreeApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.d101.frientree.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <option name="SHORTEN_COMMAND_LINE" value="ARGS_FILE" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.FrientreeApplication" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-17.0.9-corretto-17.0.9-f644763e9732-ebaef533" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -45,10 +135,187 @@
       <option name="presentableId" value="Default" />
       <updated>1708304088081</updated>
       <workItem from="1708304090047" duration="16000" />
+      <workItem from="1708611805032" duration="3267000" />
+      <workItem from="1708615441587" duration="1047000" />
+      <workItem from="1708769964663" duration="1818000" />
+      <workItem from="1708772166855" duration="624000" />
+      <workItem from="1709009283699" duration="684000" />
+      <workItem from="1709166448576" duration="500000" />
+      <workItem from="1709558971360" duration="2738000" />
+      <workItem from="1709598754990" duration="1284000" />
+      <workItem from="1709601970223" duration="601000" />
+      <workItem from="1710201770044" duration="1463000" />
+      <workItem from="1710302582380" duration="439000" />
+      <workItem from="1710827562491" duration="20185000" />
+      <workItem from="1711503931939" duration="49000" />
+      <workItem from="1711604663653" duration="3757000" />
+      <workItem from="1711672221108" duration="2865000" />
+      <workItem from="1712485992907" duration="491000" />
     </task>
+    <task id="LOCAL-00001" summary="feat : Mongo ip setting&#10;&#10;MongoDB IP 변경 및 암호화 작업했습니다.">
+      <option name="closed" value="true" />
+      <created>1708612363485</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1708612363485</updated>
+    </task>
+    <task id="LOCAL-00002" summary="hotfix : CI/CD Setting&#10;&#10;CI/CD git Actions Setting">
+      <option name="closed" value="true" />
+      <created>1708614030969</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1708614030969</updated>
+    </task>
+    <task id="LOCAL-00003" summary="hotfix : CI/CD Setting&#10;&#10;CI/CD git Actions Setting-2">
+      <option name="closed" value="true" />
+      <created>1708614518273</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1708614518273</updated>
+    </task>
+    <task id="LOCAL-00004" summary="hotfix : CI/CD Setting&#10;&#10;CI/CD git Actions Setting-3">
+      <option name="closed" value="true" />
+      <created>1708615910144</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1708615910144</updated>
+    </task>
+    <task id="LOCAL-00005" summary="hotfix : CI/CD Setting&#10;&#10;CI/CD git Actions Setting-4">
+      <option name="closed" value="true" />
+      <created>1708616169029</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1708616169029</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat : Leaf receive modify&#10;&#10;나무메시지 랜덤 조회 로직 변경 - 쿼리문으로 랜덤 조회&#10;&#10;이파리 더 이상 받을 거 없을 때 카테고리에 맞는 랜덤 이파리 조회하는 것으로 로직 변경">
+      <option name="closed" value="true" />
+      <created>1708771728111</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1708771728111</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat : Leaf, Message Repository modify&#10;&#10;이파리, 메시지 조회 쿼리 수정">
+      <option name="closed" value="true" />
+      <created>1708772357563</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1708772357563</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat : apple probability modify&#10;&#10;사과 확률 등장하는 확률 1%로 변경">
+      <option name="closed" value="true" />
+      <created>1709166912484</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1709166912484</updated>
+    </task>
+    <task id="LOCAL-00009" summary="hotfix : aws s3 delete log add&#10;&#10;AWS S3 음성 파일 삭제 로그 추가">
+      <option name="closed" value="true" />
+      <created>1709559463152</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1709559463152</updated>
+    </task>
+    <task id="LOCAL-00010" summary="hotfix : aws s3 delete log add&#10;&#10;AWS S3 음성 파일 삭제 로그 추가-2">
+      <option name="closed" value="true" />
+      <created>1709561148905</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1709561148905</updated>
+    </task>
+    <task id="LOCAL-00011" summary="hotfix : aws s3 key change&#10;&#10;AWS S3 버킷 개인 자격 증명 사용자 변경">
+      <option name="closed" value="true" />
+      <created>1709562045271</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1709562045271</updated>
+    </task>
+    <task id="LOCAL-00012" summary="hotfix : aws s3 key change&#10;&#10;AWS S3 버킷 개인 자격 증명 사용자 변경">
+      <option name="closed" value="true" />
+      <created>1709562291925</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1709562291925</updated>
+    </task>
+    <task id="LOCAL-00013" summary="hotfix : aws s3 key change&#10;&#10;AWS S3 버킷 개인 자격 증명 사용자 변경-2">
+      <option name="closed" value="true" />
+      <created>1709599155425</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1709599155425</updated>
+    </task>
+    <task id="LOCAL-00014" summary="hotfix : aws s3 key change&#10;&#10;AWS S3 버킷 개인 자격 증명 사용자 변경-3">
+      <option name="closed" value="true" />
+      <created>1709599408414</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1709599408414</updated>
+    </task>
+    <task id="LOCAL-00015" summary="feat : leaf life cycle 30 day modify&#10;&#10;이파리 생명주기 7일에서 30일로 생명주기 변경">
+      <option name="closed" value="true" />
+      <created>1710202085519</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1710202085519</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat : Mongo ip setting&#10;&#10;MongoDB IP 변경 및 암호화 작업했습니다." />
+    <MESSAGE value="hotfix : CI/CD Setting&#10;&#10;CI/CD git Actions Setting" />
+    <MESSAGE value="hotfix : CI/CD Setting&#10;&#10;CI/CD git Actions Setting-2" />
+    <MESSAGE value="hotfix : CI/CD Setting&#10;&#10;CI/CD git Actions Setting-3" />
+    <MESSAGE value="hotfix : CI/CD Setting&#10;&#10;CI/CD git Actions Setting-4" />
+    <MESSAGE value="feat : Leaf receive modify&#10;&#10;나무메시지 랜덤 조회 로직 변경 - 쿼리문으로 랜덤 조회&#10;&#10;이파리 더 이상 받을 거 없을 때 카테고리에 맞는 랜덤 이파리 조회하는 것으로 로직 변경" />
+    <MESSAGE value="feat : Leaf, Message Repository modify&#10;&#10;이파리, 메시지 조회 쿼리 수정" />
+    <MESSAGE value="feat : apple probability modify&#10;&#10;사과 확률 등장하는 확률 1%로 변경" />
+    <MESSAGE value="hotfix : aws s3 delete log add&#10;&#10;AWS S3 음성 파일 삭제 로그 추가" />
+    <MESSAGE value="hotfix : aws s3 delete log add&#10;&#10;AWS S3 음성 파일 삭제 로그 추가-2" />
+    <MESSAGE value="hotfix : aws s3 key change&#10;&#10;AWS S3 버킷 개인 자격 증명 사용자 변경" />
+    <MESSAGE value="hotfix : aws s3 key change&#10;&#10;AWS S3 버킷 개인 자격 증명 사용자 변경-2" />
+    <MESSAGE value="hotfix : aws s3 key change&#10;&#10;AWS S3 버킷 개인 자격 증명 사용자 변경-3" />
+    <MESSAGE value="feat : leaf life cycle 30 day modify&#10;&#10;이파리 생명주기 7일에서 30일로 생명주기 변경" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat : leaf life cycle 30 day modify&#10;&#10;이파리 생명주기 7일에서 30일로 생명주기 변경" />
   </component>
 </project>

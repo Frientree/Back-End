@@ -30,4 +30,7 @@ public class JuiceDetail {
 
     @Column(name = "juice_max_score")
     private Long juiceMaxScore;
+
+    @Column(name = "juice_background_image_url")
+    private String juiceBackgroundImageUrl;
 }
