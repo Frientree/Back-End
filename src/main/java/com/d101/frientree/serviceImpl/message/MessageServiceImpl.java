@@ -10,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,15 +24,12 @@ public class MessageServiceImpl implements MessageService {
     public ResponseEntity<MessageResponse> confirm() {
         commonUtil.checkServerInspectionTime();
 
-        List<Message> messages = messageRepository.findAll();
-
-        Random random = new Random();
-        int randomIndex = random.nextInt(messages.size());
-
-        Message selectedMessage = messages.get(randomIndex);
-        MessageResponse response = MessageResponse.createMessageResponse("Success", selectedMessage.getMessageDescription());
-
+        Optional<Message> messages = messageRepository.findRandomMessage();
+        MessageResponse response =
+                MessageResponse.createMessageResponse(
+                        "Success",
+                        messages.get().getMessageDescription()
+                );
         return ResponseEntity.ok(response);
-
-        }
     }
+}

@@ -6,11 +6,11 @@ import com.d101.frientree.dto.leaf.response.LeafConfirmationResponse;
 import com.d101.frientree.dto.leaf.response.LeafGenerationResponse;
 import com.d101.frientree.dto.leaf.response.LeafViewResponse;
 import com.d101.frientree.dto.leaf.response.dto.LeafConfirmationResponseDTO;
-import com.d101.frientree.dto.message.response.MessageResponse;
 import com.d101.frientree.entity.leaf.LeafCategory;
 import com.d101.frientree.entity.leaf.LeafDetail;
 import com.d101.frientree.entity.leaf.LeafReceive;
 import com.d101.frientree.entity.leaf.LeafSend;
+import com.d101.frientree.entity.message.Message;
 import com.d101.frientree.entity.mongo.leaf.Leaf;
 import com.d101.frientree.entity.user.User;
 import com.d101.frientree.exception.leaf.LeafNotFoundException;
@@ -18,10 +18,10 @@ import com.d101.frientree.exception.leaf.LeafCreationFailedException;
 import com.d101.frientree.repository.leaf.LeafDetailRepository;
 import com.d101.frientree.repository.leaf.LeafReceiveRepository;
 import com.d101.frientree.repository.leaf.LeafSendRepository;
+import com.d101.frientree.repository.message.MessageRepository;
 import com.d101.frientree.repository.mongo.MongoLeafRepository;
 import com.d101.frientree.repository.user.UserRepository;
 import com.d101.frientree.service.leaf.LeafService;
-import com.d101.frientree.service.message.MessageService;
 import com.d101.frientree.util.CommonUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class LeafServiceImpl implements LeafService {
     private final LeafReceiveRepository leafReceiveRepository;
     private final UserRepository userRepository;
     private final LeafDetailRepository leafDetailRepository;
-    private final MessageService messageService;
+    private final MessageRepository messageRepository;
     private final MongoLeafRepository mongoLeafRepository;
     private final CommonUtil commonUtil;
 
@@ -85,17 +85,24 @@ public class LeafServiceImpl implements LeafService {
                     LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(selectedLeaf)
             );
             return ResponseEntity.ok(response);
-        }else{ // 더 이상 받을 이파리가 없을 때
-            ResponseEntity<MessageResponse> messageResponseEntity = messageService.confirm();
-            if (messageResponseEntity.getStatusCode() == HttpStatus.OK) {
-                String description = messageResponseEntity.getBody().getData();
-
+        }else{ // 더 이상 받을 이파리가 없을 때 (카테고리에 맞는 이파리 중 하나 랜덤으로 가져오기)
+            Optional<LeafDetail> leafDetail = leafDetailRepository.findRandomByCategory(selectedCategory);
+            if(leafDetail.isPresent()){
                 // LeafConfirmationResponse 객체 생성
                 LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
                         "Success",
-                        LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(description)
+                        LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(leafDetail.get())
                 );
                 return ResponseEntity.ok(response);
+            }else{ //카테고리에 맞는 이파리가 하나도 없을 때 (나무 메시지 던지기)
+                Optional<Message> message = messageRepository.findRandomMessage();
+                if(message.isPresent()){
+                    LeafConfirmationResponse response = LeafConfirmationResponse.createLeafConfirmationResponse(
+                            "Success",
+                            LeafConfirmationResponseDTO.createLeafConfirmationResponseDTO(message.get().getMessageDescription())
+                    );
+                    return ResponseEntity.ok(response);
+                }
             }
         }
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
