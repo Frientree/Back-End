@@ -23,6 +23,7 @@ public class JuiceConfirmationResponseDTO {
                 .juiceImageUrl(juiceDetail.getJuiceImageUrl())
                 .juiceName(juiceDetail.getJuiceName())
                 .juiceDescription(juiceDetail.getJuiceInfo())
+                .juiceBackgroundImageUrl(juiceDetail.getJuiceBackgroundImageUrl())
                 .build();
     }
 }
